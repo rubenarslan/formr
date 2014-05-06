@@ -265,7 +265,9 @@ formr_simulate_from_items = function (item_list, n = 300)
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to https://formr.org
-#' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse #' @param ... passed to  \code{\link[psych:alpha]{alpha}}
+#' @param compute_alphas defaults to FALSE, whether to compute  \code{\link[psych:alpha]{alpha}}
+#' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
+#' @param ... passed to  \code{\link[psych:alpha]{alpha}}
 #' @export
 #' @examples
 #' \dontrun{
