@@ -158,40 +158,44 @@ formr_recognise = function (survey_name,
 								host = "https://formr.org")
 {
 	results = tryCatch({
-	if(is.null(item_list)) stop("No item list provided, using type.convert as a fallback.")
-	for(i in seq_along(item_list)) {
-		item = item_list[[i]]
-		if(item$type %in% c("note","mc_heading")) next;
-		if( length( item$choices) )  { # choice-based items
-			results[, item$name ] = type.convert( as.character(results[, item$name ]) , as.is = T)
-			if(is.character(results[, item$name ])) { # numeric choices should be typed correctly by default
-				# save the factor with all possible levels
-				if(all(
-					unique(results[, item$name ]) %in%  c(NA,names(item$choices))
-					)
-					)# e.g. mc, select
-					results[, item$name ] = factor(results[, item$name ], levels = names(item$choices) )
-				# e.g. select_or_add_one stay character
+	if(is.null(item_list)) {
+		warning("No item list provided, using type.convert as a fallback.")
+		char_vars = sapply(results,is.character)
+		results[,char_vars] = plyr::colwise(function(x) { 
+			type.convert(x,as.is=TRUE)
+		})(results[,char_vars,drop = F])
+	}
+	else {
+		for(i in seq_along(item_list)) {
+			item = item_list[[i]]
+			if(item$type %in% c("note","mc_heading")) next;
+			if( length( item$choices) )  { # choice-based items
+				results[, item$name ] = type.convert( as.character(results[, item$name ]) , as.is = T)
+				if(is.character(results[, item$name ])) { # numeric choices should be typed correctly by default
+					# save the factor with all possible levels
+					if(all(
+						unique(results[, item$name ]) %in%  c(NA,names(item$choices))
+						)
+						)# e.g. mc, select
+						results[, item$name ] = factor(results[, item$name ], levels = names(item$choices) )
+					# e.g. select_or_add_one stay character
+				}
+			} else if(item$type %in% c("text","textarea","email","letters")) {
+				results[, item$name ] = as.character(results[, item$name ])
+			} else if(item$type %in% c("datetime")) {
+				results[, item$name ] = as.POSIXct(results[, item$name ])
+			} else if(item$type %in% c("date")) {
+				results[, item$name ] = as.Date(results[, item$name ],format='%Y-%m-%d')
+			} else if(item$type %in% c("time")) {
+	#			results[, item$name ] = (results[, item$name ])
+			} else if(item$type %in% c("number","range","range_list")) {
+				results[, item$name ] = as.numeric(results[, item$name ])
 			}
-		} else if(item$type %in% c("text","textarea","email","letters")) {
-			results[, item$name ] = as.character(results[, item$name ])
-		} else if(item$type %in% c("datetime")) {
-			results[, item$name ] = as.POSIXct(results[, item$name ])
-		} else if(item$type %in% c("date")) {
-			results[, item$name ] = as.Date(results[, item$name ],format='%Y-%m-%d')
-		} else if(item$type %in% c("time")) {
-#			results[, item$name ] = (results[, item$name ])
-		} else if(item$type %in% c("number","range","range_list")) {
-			results[, item$name ] = as.numeric(results[, item$name ])
 		}
 	}
 		return(results)
 	}, error = function(e) {
 		warning(e)
-		char_vars = sapply(results,is.character)
-		results[,char_vars] = plyr::colwise(function(x) { 
-			type.convert(x,as.is=TRUE)
-		})(results[,char_vars,drop = F])
 		return(results)
 	})
 	# results fields that appear in all formr_results but aren't custom items
