@@ -69,6 +69,64 @@ current = function(x) {
     stringr::str_detect(haystack, stringr::fixed(as.character(needle)) )
 }
 
+#' check whether a character string contains another as a word
+#'
+#' Looks for a string appearing on its own. This is needed e.g.
+#' when checking whether the replies to a mmc item, stored as a 
+#' comma-separated list from 1 to 12 contain option 1 - you wouldn't
+#' want to get a hit for 11 and 12.
+#' Only works for search terms containing alphanumeric characters.
+#' Just a simple shorthand so that inexperienced R users don't have
+#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#'
+#' @param haystack string in which you search
+#' @param needle string to search for
+#' @export
+#' @examples
+#' "1, 3, 4" %contains_word% "1" # TRUE
+#' "1, 3, 4" %contains_word% 1 # TRUE unlike str_detect casts all needles as characters
+#' "12, 14, 17" %contains_word% "1" # FALSE even though 12 contains 1
+
+"%contains_word%" = function(haystack, needle) {
+	stringr::str_detect(haystack, paste0("\\b",Hmisc::escapeRegex(as.character(needle)),"\\b") )
+}
+
+#' check whether a character string begins with a string
+#'
+#' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the beginning.
+#' Just a simple shorthand so that inexperienced R users don't have
+#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#'
+#' @param haystack string in which you search
+#' @param needle string to search for
+#' @export
+#' @examples
+#' "1, 3, 4" %begins_with% "1" # TRUE
+#' "1, 3, 4" %begins_with% 1 # unlike str_detect casts all needles as characters
+#' "1, 3, 4" %begins_with% "." # FALSE
+
+"%begins_with%" = function(haystack, needle) {
+	stringr::str_detect(haystack, paste0("^",Hmisc::escapeRegex(as.character(needle))) )
+}
+
+#' check whether a character string ends with a string
+#'
+#' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the ending.
+#' Just a simple shorthand so that inexperienced R users don't have
+#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#'
+#' @param haystack string in which you search
+#' @param needle string to search for
+#' @export
+#' @examples
+#' "1, 3, 4" %ends_with% "4" # TRUE
+#' "1, 3, 4" %ends_with% 4 # unlike str_detect casts all needles as characters
+#' "1, 3, 4" %ends_with% "." # FALSE
+
+"%ends_with%" = function(haystack, needle) {
+	stringr::str_detect(haystack, paste0(Hmisc::escapeRegex(as.character(needle)),"$") )
+}
+
 
 #' percentage of missings for each variable in a data.frame
 #'

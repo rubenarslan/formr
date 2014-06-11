@@ -22,7 +22,23 @@ formr_connect = function(email, password = NULL, host = "https://formr.org") {
  	else warning("Already logged in.")
 }
 
+#' Disconnect from formr
+#'
+#' Disconnects from formr if connected.
+#'
+#' @param host defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_disconnect()
+#' }
 
+formr_disconnect = function(host = "https://formr.org") {
+	resp = httr::GET( paste0(host,"/public/logout"))
+	text = httr::content(resp,encoding="utf8",as="text")
+	if(resp$status_code == 200 && grepl("Logged out",text,fixed = T)) invisible(TRUE)
+	else warning("You weren't logged in.")
+}
 
 #' Download data from formr
 #'
@@ -403,17 +419,19 @@ formr_aggregate = function (survey_name,
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
+#' @param compute_alpha passed to formr_recognise, defaults to FALSE
+#' @param fallback_max passed to formr_recognise, defaults to 5
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_results(survey_name = "training_diary" )
 #' }
 
-formr_results = function(survey_name, host = "https://formr.org") {
+formr_results = function(survey_name, host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
 	results = formr_recognise(item_list = item_list, results = results)
-	formr_aggregate(item_list = item_list, results = results)
+	formr_aggregate(item_list = item_list, results = results, compute_alphas, fallback_max)
 }
 
 # 
