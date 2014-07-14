@@ -22,6 +22,7 @@ Imports:
     plyr,
     httr,
     jsonlite,
-    psych
+    psych,
+    Hmisc
 License: BSD_2_clause + file LICENSE
 LazyData: true

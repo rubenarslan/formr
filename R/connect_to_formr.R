@@ -313,7 +313,6 @@ formr_aggregate = function (survey_name,
 														compute_alphas = FALSE,
 														fallback_max = 5, ...)
 {
-
 	dont_use = c()
 	# reverse items
 	# first we're playing dumb and don't have the item table to base our aggregation on?
@@ -419,7 +418,7 @@ formr_aggregate = function (survey_name,
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
-#' @param compute_alpha passed to formr_recognise, defaults to FALSE
+#' @param compute_alphas passed to formr_recognise, defaults to FALSE
 #' @param fallback_max passed to formr_recognise, defaults to 5
 #' @export
 #' @examples
@@ -431,7 +430,7 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
 	results = formr_recognise(item_list = item_list, results = results)
-	formr_aggregate(item_list = item_list, results = results, compute_alphas, fallback_max)
+	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max)
 }
 
 # 
@@ -442,7 +441,7 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 # vorab_item_displays = formr_item_displays("Vorab_Fragebogen1")
 # vorab_processed = formr_recognise(item_list=vorab_items, results=vorab)
 # vorab_sim = formr_simulate_from_items(item_list=vorab_items)
-# vorab_sim_agg = formr_aggregate(item_list=vorab_items, results=vorab_sim)
+# vorab_sim_agg = formr_aggregate(item_list=vorab_items, results=vorab_sim, compute_alphas = T)
 # vorab_proc_agg = formr_aggregate(item_list=vorab_items, results=vorab_processed,compute_alphas=T)
 # vorab_raw_agg = formr_aggregate(item_list=vorab_items, results=vorab,compute_alphas=T)
 # vorab_raw_agg = formr_aggregate(item_list=NULL, results=vorab,compute_alphas=T)
