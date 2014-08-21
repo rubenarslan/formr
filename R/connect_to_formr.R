@@ -55,9 +55,6 @@ formr_disconnect = function(host = "https://formr.org") {
 
 formr_raw_results = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_results?format=json"))
-# 	if(resp$status_code == 200) as.data.frame(
-# 		httr::content(resp,encoding="utf8",as="parsed",type="application/json")
-# 	)
 	if(resp$status_code == 200) jsonlite::fromJSON(
 		httr::content(resp,encoding="utf8",as="text")
 	)
@@ -126,8 +123,8 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
 
 formr_shuffled = function(run_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/run/",run_name,"/random_groups_export?format=json"))
-	if(resp$status_code == 200) as.data.frame(
-		httr::content(resp,encoding="utf8",as="parsed",type="application/json")
+	if(resp$status_code == 200) jsonlite::fromJSON(
+		httr::content(resp,encoding="utf8",as="text")
 	)
 	else stop("This run does not exist.")
 }
