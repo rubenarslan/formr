@@ -430,7 +430,59 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max)
 }
 
-# 
+#' Get Likert scales
+#'
+#' If you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' function to retrieve a \code{\link[likert:likert]{likert}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
+#'  
+#'
+#' @param survey_name case-sensitive name of a survey your account owns
+#' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
+#' @param results survey results, will be auto-retrieved based on survey_name if omitted
+#' @param host defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_connect(email = "you@@example.net", password = "zebrafinch" )
+#' icar_items = formr_items(survey_name="ICAR",host = "http://localhost:8888/formr/")
+#' # get some simulated data and aggregate it
+#' sim_results = formr_simulate_from_items(icar_items)
+#' likert_items = formr_likert(item_list = icar_items, results = sim_results)
+#' }
+
+formr_likert = function (survey_name, 
+														item_list = formr_items(survey_name, host = host),
+														results = formr_raw_results(survey_name, host = host),
+														host = "https://formr.org",
+														compute_alphas = FALSE,
+														fallback_max = 5, ...)
+{
+	item_numbers = c()
+	for(i in seq_along(item_list)) {
+		item = item_list[[i]]
+		item_number = which(names(results)==item$name)
+		if(length(item_number)>0 & item$type %in% c('mc_button','mc','rating_button')) {
+			if(exists("response_type", inherits = FALSE) && response_type != paste(item$choices,collapse = " ")) {
+				warning("Response format changed from ", response_type, " to ", paste(item$choices,collapse = " "), " ...interrupting")
+				break
+			} else {
+				response_type = paste(item$choices,collapse = " ")
+			}
+			item_numbers = c(item_numbers, item_number)
+			if(item$type != "rating_button") {
+				results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
+			} else {
+				labels = 1:as.numeric(item$type_options)
+				labels[1] = item$choices[1]
+				labels[as.numeric(item$type_options)] = item$choices[2]
+				results[, item_number] = factor(results[, item$name], levels = 1:as.numeric(item$type_options), labels = labels)
+			}
+			names(results)[item_number] = paste(item$label,paste0("[",item$name,"]")) # seriously cumbersome way to rename single column
+		}
+	}
+	likert::likert(results[, item_numbers,drop=FALSE])
+}
+
 # # # # # ## testing with credentials
 # formr_connect("", "")
 # vorab = formr_raw_results("Vorab_Fragebogen1")
@@ -440,7 +492,9 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 # vorab_sim = formr_simulate_from_items(item_list=vorab_items)
 # vorab_sim_agg = formr_aggregate(item_list=vorab_items, results=vorab_sim, compute_alphas = T)
 # vorab_proc_agg = formr_aggregate(item_list=vorab_items, results=vorab_processed,compute_alphas=T)
-# vorab_raw_agg = formr_aggregate(item_list=vorab_items, results=vorab,compute_alphas=T)
+# # vorab_raw_agg = formr_aggregate(item_list=vorab_items, results=vorab,compute_alphas=T)
 # vorab_raw_agg = formr_aggregate(item_list=NULL, results=vorab,compute_alphas=T)
 # vorab_comp = formr_results("Vorab_Fragebogen1")
 # options(warn=2)
+
+# todo: better rmarkdown with proper linebreaks http://rmarkdown.rstudio.com/developer_custom_formats.html

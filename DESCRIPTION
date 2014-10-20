@@ -23,6 +23,8 @@ Imports:
     httr,
     jsonlite,
     psych,
-    Hmisc
+    Hmisc,
+    rmarkdown,
+    likert
 License: BSD_2_clause + file LICENSE
 LazyData: true
