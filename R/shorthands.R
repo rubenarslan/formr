@@ -193,4 +193,29 @@ aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL, remove_old_v
 	df
 }
 
+#' loads an RDS object, assigns it to an object of the base-filename
+#'
+#' \code{\link{saveRDS}} saves an object to a file, so unlike \code{\link{save}} and \code{\link{load}} you can assign the loaded object to a new variable using \code{\link{readRDS}}. 
+#' However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what \code{\link{loadRDS}} does. It extracts the filename using \code{\link{basename}} and \code{\link[tools:file_path_sans_ext]{file_path_sans_ext}}
+#'
+#' @param file path to file
+#' @param refhook passed to readRDS
+#' @param overwrite whether to overwrite an existing object of the same name. defaults to false.
+#' @export
+#' @examples
+#' \dontrun{
+#' loadRDS(file = "~/Models/Spouses.rds") # assigns object contained in file to variable "Spouses"
+#' }
+
+loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
+	object_name = basename(tools::file_path_sans_ext(file))
+	if(exists(object_name, envir = parent.frame(), inherits = F) & !overwrite) {
+		warning(paste(object_name, "would have been overwritten. Specify overwrite = TRUE to do so."))
+	} else {
+	assign(object_name,	readRDS(file, refhook), envir = parent.frame())
+	}
+}
+
+
+
 # todo: in_time_window() days_passed_since()
