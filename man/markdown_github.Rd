@@ -3,7 +3,12 @@
 \alias{markdown_github}
 \title{github_markdown for rmarkdown}
 \usage{
-markdown_github()
+markdown_github(toc = FALSE, toc_depth = 3, number_sections = FALSE,
+  fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2,
+  fig_caption = FALSE, smart = TRUE, self_contained = TRUE,
+  theme = "default", highlight = "default", mathjax = "default",
+  template = "default", css = NULL, includes = NULL, keep_md = FALSE,
+  lib_dir = NULL, pandoc_args = NULL, ...)
 }
 \description{
 Custom template with github-flavoured markdown.

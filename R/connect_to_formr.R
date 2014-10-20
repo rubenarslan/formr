@@ -453,9 +453,7 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 formr_likert = function (survey_name, 
 														item_list = formr_items(survey_name, host = host),
 														results = formr_raw_results(survey_name, host = host),
-														host = "https://formr.org",
-														compute_alphas = FALSE,
-														fallback_max = 5, ...)
+														host = "https://formr.org")
 {
 	item_numbers = c()
 	for(i in seq_along(item_list)) {

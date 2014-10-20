@@ -222,14 +222,26 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' Custom template with github-flavoured markdown.
 #'
 #' @export
-
-markdown_github = function ()
+markdown_github = function (toc = FALSE, toc_depth = 3, number_sections = FALSE, 
+																		fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2, 
+																		fig_caption = FALSE, smart = TRUE, self_contained = TRUE, 
+																		theme = "default", highlight = "default", mathjax = "default", 
+																		template = "default", css = NULL, includes = NULL, keep_md = FALSE, 
+																		lib_dir = NULL, pandoc_args = NULL, ...) 
 {
-	require(rmarkdown)
-	output_format(knitr = knitr_options(opts_chunk = list(dev = 'png')),
-								pandoc = pandoc_options(to = "html",from="markdown_github"),
-								clean_supporting = FALSE)
+	output = rmarkdown::html_document(toc, toc_depth, number_sections, fig_width, fig_height, fig_retina,
+												 fig_caption, smart, self_contained, 
+												 theme, highlight , mathjax, 
+												 template, css, includes, keep_md, 
+												 lib_dir, pandoc_args, ...)
+	
+	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
+		output$pandoc$from = paste0("markdown_github", stringr::str_sub(output$pandoc$from,9))
+	}
+	output
 }
+
+
 
 #' hard line breaks
 #'
@@ -239,44 +251,23 @@ markdown_github = function ()
 #' @export
 
 markdown_hardlinebreaks = function (toc = FALSE, toc_depth = 3, number_sections = FALSE, 
-					fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2, 
-					fig_caption = FALSE, smart = TRUE, self_contained = TRUE, 
-					theme = "default", highlight = "default", mathjax = "default", 
-					template = "default", css = NULL, includes = NULL, keep_md = FALSE, 
-					lib_dir = NULL, pandoc_args = NULL, ...) 
+																		fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2, 
+																		fig_caption = FALSE, smart = TRUE, self_contained = TRUE, 
+																		theme = "default", highlight = "default", mathjax = "default", 
+																		template = "default", css = NULL, includes = NULL, keep_md = FALSE, 
+																		lib_dir = NULL, pandoc_args = NULL, ...) 
 {
-	require(rmarkdown)
-	args <- c("--standalone")
-	args <- c(args, "--section-divs")
-	args <- c(args, pandoc_toc_args(toc, toc_depth))
-	if (identical(template, "default")) 
-		args <- c(args, "--template", rmarkdown:::pandoc_path_arg(rmarkdown:::rmarkdown_system_file("rmd/h/default.html")))
-	else if (!is.null(template)) 
-		args <- c(args, "--template", rmarkdown:::pandoc_path_arg(template))
-	if (number_sections) 
-		args <- c(args, "--number-sections")
-	for (css_file in css) args <- c(args, "--css", rmarkdown:::pandoc_path_arg(css_file))
-	pre_processor <- function(metadata, input_file, runtime, 
-														knit_meta, files_dir, output_dir) {
-		if (is.null(lib_dir)) 
-			lib_dir <- files_dir
-		args <- c()
-		args <- c(args, rmarkdown:::pandoc_html_highlight_args(highlight, 
-																							 template, self_contained, lib_dir, output_dir))
-		args <- c(args, rmarkdown:::includes_to_pandoc_args(includes, filter = if (identical(runtime, 
-																																						 "shiny")) normalize_path else identity))
-		args
+	output = rmarkdown::html_document(toc, toc_depth, number_sections, fig_width, fig_height, fig_retina,
+												 fig_caption, smart, self_contained, 
+												 theme, highlight , mathjax, 
+												 template, css, includes, keep_md, 
+												 lib_dir, pandoc_args, ...)
+	
+	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
+		output$pandoc$from = paste0(output$pandoc$from, "+hard_line_breaks")
 	}
-	output_format(knitr = rmarkdown:::knitr_options_html(fig_width, fig_height, 
-																					 fig_retina, keep_md), pandoc = pandoc_options(to = "html", 
-																					 																							from = "markdown+hard_line_breaks", args = args), keep_md = keep_md, 
-								clean_supporting = self_contained, pre_processor = pre_processor, 
-								base_format = html_document_base(smart = smart, theme = theme, 
-																								 self_contained = self_contained, lib_dir = lib_dir, 
-																								 mathjax = mathjax, template = template, pandoc_args = pandoc_args, 
-																								 ...))
+	output
 }
-
 
 
 # todo: in_time_window() days_passed_since()
