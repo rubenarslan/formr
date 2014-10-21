@@ -4,7 +4,8 @@
 \title{custom markdown options for rmarkdown's pandoc}
 \usage{
 markdown_custom_options(add_to_format = c("+autolink_bare_uris",
-  "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"), ...)
+  "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"),
+  fragment.only = FALSE, ...)
 }
 \arguments{
 \item{add_to_format}{add these arguments to the default specification}

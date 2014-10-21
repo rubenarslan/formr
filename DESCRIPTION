@@ -25,6 +25,7 @@ Imports:
     psych,
     Hmisc,
     rmarkdown,
-    likert
+    likert,
+    opencpu
 License: BSD_2_clause + file LICENSE
 LazyData: true
