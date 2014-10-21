@@ -3,7 +3,7 @@
 \alias{markdown_github}
 \title{github_markdown for rmarkdown}
 \usage{
-markdown_github(...)
+markdown_github(fragment.only = FALSE, ...)
 }
 \arguments{
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}}

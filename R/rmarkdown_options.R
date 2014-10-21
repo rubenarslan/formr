@@ -9,9 +9,13 @@
 #'
 #' @export
 
-markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures'), ...) 
+markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures'), fragment.only = FALSE, ...) 
 {
-	output = rmarkdown::html_document(...)
+	if(fragment.only) {
+		output = rmarkdown::html_fragment(...)
+	} else {
+		output = rmarkdown::html_document(...)
+	}
 	
 	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
 		output$pandoc$from = paste0("markdown", paste( add_to_format, collapse=""))
@@ -29,9 +33,14 @@ markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+a
 #' @param ... all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 #'
 #' @export
-markdown_github = function ( ...) 
+markdown_github = function ( fragment.only = FALSE, ...) 
 {
-	output = rmarkdown::html_document(...)
+	if(fragment.only) {
+		output = rmarkdown::html_fragment(...)
+	} else {
+		output = rmarkdown::html_document(...)
+	}
+
 	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
 		output$pandoc$from = "markdown_github+yaml_metadata_block"
 	}
@@ -53,3 +62,25 @@ markdown_hard_line_breaks = function (...)
 	markdown_custom_options(add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures', '+hard_line_breaks'), ...)
 }
 
+#' render text
+#'
+#'
+#' Render text
+#'
+#' @param text that will be written to a tmp file and used as the input argument
+#' @param ... all other arguments passed to \code{\link[rmarkdown:render]{render}}
+#' 
+#' @export
+
+render_text = function (text, ...) 
+{
+	fileName = rmarkdown::render(input = write_to_file(text), ...)
+	readChar(fileName, file.info(fileName)$size)
+}
+
+write_to_file <- function(...){
+	mytempfile <- tempfile();
+	mytext <- eval(...)
+	write(mytext, mytempfile);
+	return(mytempfile)
+}
