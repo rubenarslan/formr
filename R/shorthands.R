@@ -217,5 +217,4 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 }
 
 
-
 # todo: in_time_window() days_passed_since()
