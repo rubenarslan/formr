@@ -10,6 +10,8 @@ markdown_custom_options(add_to_format = c("+autolink_bare_uris",
 \arguments{
 \item{add_to_format}{add these arguments to the default specification}
 
+\item{fragment.only}{whether to get only a html fragment}
+
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 
 Custom rmarkdown input format options based on the standard \code{\link[rmarkdown:html_document]{html_document}}, but with options that you can specify. Find the format options here in the pandoc documentation: http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html

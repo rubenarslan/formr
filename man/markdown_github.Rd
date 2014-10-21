@@ -6,6 +6,8 @@
 markdown_github(fragment.only = FALSE, ...)
 }
 \arguments{
+\item{fragment.only}{whether to get only a html fragment}
+
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}}
 }
 \description{

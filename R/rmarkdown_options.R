@@ -1,6 +1,7 @@
 #' custom markdown options for rmarkdown's pandoc
 #'
 #' @param add_to_format add these arguments to the default specification
+#' @param fragment.only whether to get only a html fragment
 #' @param ... all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 #'
 #' Custom rmarkdown input format options based on the standard \code{\link[rmarkdown:html_document]{html_document}}, but with options that you can specify. Find the format options here in the pandoc documentation: http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html
@@ -30,9 +31,11 @@ markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+a
 #'
 #' Custom template with github-flavoured markdown based on the standard \code{\link[rmarkdown:html_document]{html_document}}. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see \code{\link{markdown_custom_options}}), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
 #' 
+#' @param fragment.only whether to get only a html fragment
 #' @param ... all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 #'
 #' @export
+
 markdown_github = function ( fragment.only = FALSE, ...) 
 {
 	if(fragment.only) {
@@ -77,6 +80,23 @@ render_text = function (text, ...)
 	fileName = rmarkdown::render(input = write_to_file(text), ...)
 	readChar(fileName, file.info(fileName)$size)
 }
+
+#' render text for formr
+#'
+#'
+#' Render text
+#'
+#' @param text that will be written to a tmp file and used as the input argument
+#' @param ... all other arguments passed to \code{\link[rmarkdown:render]{render}}
+#' 
+#' @export
+
+formr_render = function (text, ...)
+{
+	fileName = rmarkdown::render(input = write_to_file(text), output_format = "formr::markdown_hard_line_breaks", output_options = list(fragment.only = TRUE), ...)
+	readChar(fileName, file.info(fileName)$size)
+}
+
 
 write_to_file <- function(...){
 	mytempfile <- tempfile();
