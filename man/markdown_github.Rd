@@ -3,14 +3,12 @@
 \alias{markdown_github}
 \title{github_markdown for rmarkdown}
 \usage{
-markdown_github(toc = FALSE, toc_depth = 3, number_sections = FALSE,
-  fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2,
-  fig_caption = FALSE, smart = TRUE, self_contained = TRUE,
-  theme = "default", highlight = "default", mathjax = "default",
-  template = "default", css = NULL, includes = NULL, keep_md = FALSE,
-  lib_dir = NULL, pandoc_args = NULL, ...)
+markdown_github(...)
+}
+\arguments{
+\item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}}
 }
 \description{
-Custom template with github-flavoured markdown.
+Custom template with github-flavoured markdown based on the standard \code{\link[rmarkdown:html_document]{html_document}}. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see \code{\link{markdown_custom_options}}), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
 }
 

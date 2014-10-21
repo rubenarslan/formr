@@ -216,58 +216,5 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 	}
 }
 
-#' github_markdown for rmarkdown
-#'
-#'
-#' Custom template with github-flavoured markdown.
-#'
-#' @export
-markdown_github = function (toc = FALSE, toc_depth = 3, number_sections = FALSE, 
-																		fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2, 
-																		fig_caption = FALSE, smart = TRUE, self_contained = TRUE, 
-																		theme = "default", highlight = "default", mathjax = "default", 
-																		template = "default", css = NULL, includes = NULL, keep_md = FALSE, 
-																		lib_dir = NULL, pandoc_args = NULL, ...) 
-{
-	output = rmarkdown::html_document(toc, toc_depth, number_sections, fig_width, fig_height, fig_retina,
-												 fig_caption, smart, self_contained, 
-												 theme, highlight , mathjax, 
-												 template, css, includes, keep_md, 
-												 lib_dir, pandoc_args, ...)
-	
-	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
-		output$pandoc$from = paste0("markdown_github", stringr::str_sub(output$pandoc$from,9))
-	}
-	output
-}
-
-
-
-#' hard line breaks
-#'
-#'
-#' Custom template with hard line breaks.
-#'
-#' @export
-
-markdown_hardlinebreaks = function (toc = FALSE, toc_depth = 3, number_sections = FALSE, 
-																		fig_width = 7, fig_height = 5, fig_retina = if (!fig_caption) 2, 
-																		fig_caption = FALSE, smart = TRUE, self_contained = TRUE, 
-																		theme = "default", highlight = "default", mathjax = "default", 
-																		template = "default", css = NULL, includes = NULL, keep_md = FALSE, 
-																		lib_dir = NULL, pandoc_args = NULL, ...) 
-{
-	output = rmarkdown::html_document(toc, toc_depth, number_sections, fig_width, fig_height, fig_retina,
-												 fig_caption, smart, self_contained, 
-												 theme, highlight , mathjax, 
-												 template, css, includes, keep_md, 
-												 lib_dir, pandoc_args, ...)
-	
-	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
-		output$pandoc$from = paste0(output$pandoc$from, "+hard_line_breaks")
-	}
-	output
-}
-
 
 # todo: in_time_window() days_passed_since()
