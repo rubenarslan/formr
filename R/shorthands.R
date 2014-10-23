@@ -216,11 +216,6 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 	}
 }
 
-#' @export
-.formr.last_action_time = NA
-#' @export
-.formr.last_action_date = NA
-
 #' checks how much time has passed relative to the user's last action
 #'
 #' checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. No months and other uncertain time spans.
@@ -235,7 +230,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' time_passed(hours = 7, time = Sys.time())
 
 time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = .formr.last_action_time) {
-	if(is.null(time)) time = .formr.last_action_time
+	if(is.null(time) & exists(".formr.last_action_time")) time = .formr.last_action_time
 	(time + 
 	 	lubridate::dseconds( seconds + 
 	 												60* minutes + 
@@ -254,7 +249,7 @@ time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = .fo
 #' next_day(as.Date(Sys.time()))
 
 next_day = function(date = NULL) {
-	if(is.null(date)) date = .formr.last_action_date
+	if(is.null(date) & exists(".formr.last_action_date")) date = .formr.last_action_date
 	date < lubridate::today("")
 }
 
