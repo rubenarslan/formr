@@ -3,10 +3,10 @@
 \alias{next_day}
 \title{checks whether a new day has broken (date has changed)}
 \usage{
-next_day(date = .formr.last_action_date)
+next_day(date = NULL)
 }
 \arguments{
-\item{date}{defaults to .formr.last_action_date}
+\item{date}{defaults to .formr.last_action_date, a hidden variable that is automatically set by formr.org}
 }
 \description{
 a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.

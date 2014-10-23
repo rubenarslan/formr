@@ -216,7 +216,9 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 	}
 }
 
+#' @export
 .formr.last_action_time = NA
+#' @export
 .formr.last_action_date = NA
 
 #' checks how much time has passed relative to the user's last action
@@ -233,6 +235,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' time_passed(hours = 7, time = Sys.time())
 
 time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = .formr.last_action_time) {
+	if(is.null(time)) time = .formr.last_action_time
 	(time + 
 	 	lubridate::dseconds( seconds + 
 	 												60* minutes + 
@@ -245,12 +248,13 @@ time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = .fo
 #'
 #' a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 #'
-#' @param date defaults to .formr.last_action_date
+#' @param date defaults to .formr.last_action_date, a hidden variable that is automatically set by formr.org 
 #' @export
 #' @examples
 #' next_day(as.Date(Sys.time()))
 
-next_day = function(date = .formr.last_action_date) {
+next_day = function(date = NULL) {
+	if(is.null(date)) date = .formr.last_action_date
 	date < lubridate::today("")
 }
 
