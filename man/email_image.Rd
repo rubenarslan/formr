@@ -6,9 +6,9 @@
 email_image(x, ext = ".png")
 }
 \arguments{
-\item{min}{}
+\item{x}{image ID}
 
-\item{max}{}
+\item{ext}{extension, defaults to .png}
 }
 \description{
 can be used as an argument to \code{\link[knitr:opts_knit]{opts_knit}}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
