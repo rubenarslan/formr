@@ -237,7 +237,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' time_passed(hours = 7, time = Sys.time())
 
 time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
-	if(is.null(time) & !is.null(.formr$last_action_time)) date = .formr$last_action_time
+	if(is.null(time) & !is.null(.formr$last_action_time)) time = .formr$last_action_time
 	(time + 
 	 	lubridate::dseconds( seconds + 
 	 												60* minutes + 
