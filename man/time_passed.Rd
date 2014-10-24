@@ -4,7 +4,7 @@
 \title{checks how much time has passed relative to the user's last action}
 \usage{
 time_passed(days = 0, hours = 0, minutes = 0, seconds = 0,
-  time = .formr.last_action_time)
+  time = NULL)
 }
 \arguments{
 \item{days}{24 hours}
@@ -15,7 +15,7 @@ time_passed(days = 0, hours = 0, minutes = 0, seconds = 0,
 
 \item{seconds}{argument to \code{\link[lubridate:dseconds]{dseconds}}}
 
-\item{time}{defaults to .formr.last_action_time}
+\item{time}{defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org}
 }
 \description{
 checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. No months and other uncertain time spans.
