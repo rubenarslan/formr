@@ -3,10 +3,12 @@
 \alias{formr_render}
 \title{render text for formr}
 \usage{
-formr_render(text, ...)
+formr_render(text, self_contained = TRUE, ...)
 }
 \arguments{
 \item{text}{that will be written to a tmp file and used as the input argument}
+
+\item{self_contained}{passed to \link{markdown_custom_options}}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{render}}}
 }

@@ -282,8 +282,10 @@ in_time_window = function(min, max) {
 #' @param ext extension, defaults to .png
 #' @export
 #' @examples
+#' \dontrun{
 #' library(knitr); library(formr)
 #' opts_knit$set(upload.fun=formr::email_image)
+#' }
 
 email_image = function(x, ext = '.png') {
 	cid = gsub("[^a-zA-Z0-9]", "", substring(x,8))
