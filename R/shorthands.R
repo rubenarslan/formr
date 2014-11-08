@@ -291,3 +291,33 @@ email_image = function(x, ext = '.png') {
 	cid = gsub("[^a-zA-Z0-9]", "", substring(x,8))
 	structure(paste0("cid:",cid,ext), link = x)
 }
+
+#' pass in the url to the RDS representation of a openCPU session object, get the object
+#'
+#' useful to programmatically access openCPU session object stored in character variables etc.
+#'
+#' @param session_url the session url, e.g. https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds
+#' @param local defaults to FALSE, if true, will assume that the session is not on another server, and do some not-very-smart substitution to load it via the file system instead of HTTP/HTTPS
+#' @export
+#' @examples
+#' \dontrun{
+#' get_opencpu_rds("https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds")
+#' }
+get_opencpu_rds= function(session_url, local = TRUE) {
+	if(local) {
+		sessionenv <- new.env();
+		filepath = stringr::str_match(session_url, "/ocpu/tmp/([xa-f0-9]+)/([a-z0-9A-Z/.]+)")
+		sessionfile <- file.path("/tmp/ocpu-www-data/tmp_library", filepath[,2], ".RData")
+		if(file.exists(sessionfile)){
+			load(sessionfile, envir=sessionenv);
+			desired_obj = stringr::str_sub(filepath[,3],3, -5)
+			sessionenv[[desired_obj]]
+		}
+	} else { # if(substring(session_url,6)=="https") 
+		tmp = tempfile()
+		download.file(session_url, tmp, method = "curl", mode = "wb")
+		readRDS(tmp)
+	}# else {
+	#	readRDS(gzcon(url(session_url)))
+	#	}
+}

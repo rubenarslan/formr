@@ -99,8 +99,8 @@ formr_render = function (text, self_contained = TRUE, ...)
 }
 
 write_to_file <- function(..., ext = ".Rmd"){
-	mytempfile <- paste0(tempfile(), ext);
+	local_tempfile <- paste0(substring(tempfile(tmpdir="/"),3), ext);
 	mytext <- eval(...)
-	write(mytext, mytempfile);
-	return(mytempfile)
+	write(mytext, local_tempfile);
+	return(local_tempfile)
 }
