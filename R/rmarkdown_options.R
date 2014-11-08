@@ -87,19 +87,19 @@ render_text = function (text, ...)
 #' Render text
 #'
 #' @param text that will be written to a tmp file and used as the input argument
+#' @param self_contained passed to \link{markdown_custom_options}
 #' @param ... all other arguments passed to \code{\link[rmarkdown:render]{render}}
 #' 
 #' @export
 
-formr_render = function (text, ...)
+formr_render = function (text, self_contained = TRUE, ...)
 {
-	fileName = rmarkdown::render(input = write_to_file(text), output_format = "formr::markdown_hard_line_breaks", output_options = list(fragment.only = TRUE), ...)
+	fileName = rmarkdown::render(input = write_to_file(text), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE), ...)
 	readChar(fileName, file.info(fileName)$size)
 }
 
-
-write_to_file <- function(...){
-	mytempfile <- tempfile();
+write_to_file <- function(..., ext = ".Rmd"){
+	mytempfile <- paste0(tempfile(), ext);
 	mytext <- eval(...)
 	write(mytext, mytempfile);
 	return(mytempfile)

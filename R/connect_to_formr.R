@@ -247,7 +247,7 @@ formr_simulate_from_items = function (item_list, n = 300)
 {
 	sim = data.frame(id = 1:n)
 	sim$created = random_date_in_range(n, Sys.time() - 10000000, Sys.time())
-	sim$modified = sim$ended = sim$created + lubridate::seconds(
+	sim$modified = sim$ended = sim$created + lubridate::dseconds(
 		rpois( n, lambda = length(item_list) * 20) # assume 20 seconds per item
 	)
 	for(i in seq_along(item_list)) {

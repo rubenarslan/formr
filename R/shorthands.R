@@ -216,5 +216,78 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 	}
 }
 
+#' @export
+.formr <- new.env()
+#' @export
+.formr$last_action_time <- NULL
+#' @export
+.formr$last_action_date <- NULL
 
-# todo: in_time_window() days_passed_since()
+#' checks how much time has passed relative to the user's last action
+#'
+#' checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. No months and other uncertain time spans.
+#'
+#' @param seconds argument to \code{\link[lubridate:dseconds]{dseconds}}
+#' @param minutes 60 seconds
+#' @param hours 60 minutes
+#' @param days 24 hours
+#' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org
+#' @export
+#' @examples
+#' time_passed(hours = 7, time = Sys.time())
+
+time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
+	if(is.null(time) & !is.null(.formr$last_action_time)) time = .formr$last_action_time
+	(time + 
+	 	lubridate::dseconds( seconds + 
+	 												60* minutes + 
+	 												60*60* hours + 
+	 												60*60*24* days ) 
+	) < lubridate::here() # local time
+}
+
+#' checks whether a new day has broken (date has changed)
+#'
+#' a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
+#'
+#' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org 
+#' @export
+#' @examples
+#' next_day(as.Date(Sys.time()))
+
+next_day = function(date = NULL) {
+	if(is.null(date) & !is.null(.formr$last_action_date)) date = .formr$last_action_date
+	date < lubridate::today("")
+}
+
+#' checks whether the current time is in a certain time window
+#'
+#' supply min,max as POSIXct
+#'
+#' @param min POSIXct < max
+#' @param max POSIXct > min
+#' @export
+#' @examples
+#' in_time_window(Sys.time() - 1, Sys.time() + 1)
+
+in_time_window = function(min, max) {
+	min < lubridate::here() && max > lubridate::here()
+}
+
+#' generates valid email cids
+#'
+#' can be used as an argument to \code{\link[knitr:opts_knit]{opts_knit}}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
+#'
+#' @param x image ID
+#' @param ext extension, defaults to .png
+#' @export
+#' @examples
+#' \dontrun{
+#' library(knitr); library(formr)
+#' opts_knit$set(upload.fun=formr::email_image)
+#' }
+
+email_image = function(x, ext = '.png') {
+	cid = gsub("[^a-zA-Z0-9]", "", substring(x,8))
+	structure(paste0("cid:",cid,ext), link = x)
+}
