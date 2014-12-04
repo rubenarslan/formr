@@ -25,7 +25,8 @@ Imports:
     psych,
     Hmisc,
     rmarkdown,
-    likert
+    likert,
+    curl
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-11-09 00:50:54
