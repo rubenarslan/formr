@@ -313,11 +313,38 @@ get_opencpu_rds= function(session_url, local = TRUE) {
 			desired_obj = stringr::str_sub(filepath[,3],3, -5)
 			sessionenv[[desired_obj]]
 		}
-	} else { # if(substring(session_url,6)=="https") 
-		tmp = tempfile()
-		download.file(session_url, tmp, method = "curl", mode = "wb")
-		readRDS(tmp)
-	}# else {
-	#	readRDS(gzcon(url(session_url)))
-	#	}
+	} else {
+		readRDS(gzcon(curl::curl(session_url)))
+	}
+}
+
+#' xtabs with sensible defaults
+#'
+#' xtabs requires two arguments (na.action and exclude) to show missing values along with other values. This function defaults to including missings and has only one argument 
+#'
+#' @param x passed to xtabs if it is a formula, transformed into a formula if it's a single object
+#' @param ... passed to xtabs
+#' @param exclude defaults to NULL (i.e. includes NA)
+#' @export
+#' @examples
+#' x = NA
+#' crosstabs(~ x)
+crosstabs = function(x, ..., exclude = NULL) {
+	if(!inherits(x,'formula')) x = as.formula(paste("~",deparse(substitute(x))),env = parent.frame())
+	xtabs(formula = x, ..., na.action = na.pass, exclude = exclude)
+}
+
+#' proportions table
+#'
+#' quick and easy function  to show proportions of values of a variable,
+#' defaults to including missings
+#'
+#' @param ... passed to crosstabs
+#' @param exclude defaults to NULL (i.e. includes NA)
+#' @export
+#' @examples
+#' x = NA
+#' props(~ x)
+props = function(..., exclude = NULL) { 
+	prop.table(crosstabs(..., exclude = NULL))
 }
