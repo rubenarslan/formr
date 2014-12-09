@@ -149,7 +149,7 @@ miss_frac = function(df, vars = 1:NCOL(df)) {
     if(NCOL(df) == 1) fracts = sum(is.na(df))
     else if(NCOL(df[,vars]) == 1) fracts = sum(is.na(df[,vars]))
     else fracts = colSums( plyr::colwise(is.na)(df[,vars]) )
-    round( fracts / NROW(df) , 2) 
+    fracts / NROW(df)
 }
 
 #' aggregates two variables from two sources into one
@@ -347,4 +347,84 @@ crosstabs = function(x, ..., exclude = NULL) {
 #' props(~ x)
 props = function(..., exclude = NULL) { 
 	prop.table(crosstabs(..., exclude = NULL))
+}
+
+#' take only nonmissing
+#'
+#' this function takes a subset of a dataset, omitting all
+#' cases with missings in variables specified in "keep"
+#' and omitting all variables that still have missings after that.
+#' Good to see how large your dataset for a certain analysis 
+#' will be and which covariates are "free" in terms of sample size.
+#'
+#' @param df dataset
+#' @param keep defaults to empty vector
+#' @export
+#' @examples
+#' data(ChickWeight)
+#' ChickWeight[1:2,c('weight','Chick')] = NA
+#' ChickWeight[3:4,'Diet'] = NA
+#' names(ChickWeight); nrow(ChickWeight)
+#' ChickWeight2 = take_nonmissing(ChickWeight, keep = c('weight'))
+#' names(ChickWeight2); nrow(ChickWeight2)
+take_nonmissing = function(df, keep = c()) {
+	df = df[rowSums(is.na(df[,keep, drop=F]))==0, ] # omit all cases with missings in keep
+	df = df[,names(which(colSums(is.na(df))==0))] # omit all variables with missings
+}
+
+
+
+#' missingness patterns
+#'
+#' this function shows how common possible missingness patterns are. Emulates misschk in stata.
+#'
+#' @param df dataset
+#' @param min_freq show only patterns that occur at least this often. Defaults to 1 observation.
+#' @param long_pattern by default (FALSE) only shows column indices for space and legibility reasons.
+#' @param print_legend prints a legend for the column indices, defaults to FALSE if long_pattern is set
+#' @param show_culprit defaults to TRUE. In case a missingness pattern boils down to one variable, it will be shown here.
+#' @param relative defaults to FALSE. If true, percentages are shown (relative to total before excluding minimum frequency).
+#' @export
+#' @examples
+#' data(ChickWeight)
+#' ChickWeight[1:2,c('weight','Chick')] = NA
+#' ChickWeight[3:4,'Diet'] = NA
+#' names(ChickWeight); nrow(ChickWeight)
+#' missingness_patterns(ChickWeight)
+missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE), show_culprit = TRUE, relative = FALSE) {
+	cols = names(df)
+	df = !is.na(df)
+	if(min_freq > 0) {
+		counted = plyr::count(df)		
+		names(counted) = c(cols, "Freq")
+	} else {
+		counted = as.data.frame(xtabs(data=df))
+	}
+	if(relative) {
+		counted$Freq = counted$Freq/sum(counted$Freq)
+	}
+	counted = counted[counted$Freq >= min_freq, ]
+	pattern = character(length = nrow(counted))
+	if(show_culprit) {
+		culprit = rep(x = '_', nrow(counted))
+	}
+	for(i in 1:length(cols)) {
+		if(show_culprit) {
+		culprit[counted[,i]=="FALSE"] = ifelse(culprit[counted[,i]=="FALSE"]=="_", cols[i], "") # if it's a _, set it, if it's set, set it to empty
+		}
+		pattern = paste0(pattern, ifelse(counted[,i]=="TRUE","_", as.character(i) ))
+	}
+	missingness = data.frame(Pattern = pattern, Freq = counted$Freq, Culprit = culprit)
+	
+	if(long_pattern == TRUE) {
+		long_pattern = character(length = nrow(counted))
+		for(i in 1:length(cols)) {
+			long_pattern = paste0(long_pattern, ifelse(counted[,i]=="TRUE","_",paste0(cols[i],".")))
+		}
+		missingness$Pattern = long_pattern
+	}
+	if(print_legend) {
+		print(data.frame(index = 1:length(cols),col =cols))
+	}
+	missingness[order(missingness$Freq,decreasing = T),]
 }
