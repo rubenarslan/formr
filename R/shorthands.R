@@ -368,8 +368,8 @@ props = function(..., exclude = NULL) {
 #' ChickWeight2 = take_nonmissing(ChickWeight, keep = c('weight'))
 #' names(ChickWeight2); nrow(ChickWeight2)
 take_nonmissing = function(df, keep = c()) {
-	df = df[rowSums(is.na(df[,keep, drop=F]))==0, ] # omit all cases with missings in keep
-	df = df[,names(which(colSums(is.na(df))==0))] # omit all variables with missings
+	df = df[rowSums(is.na(subset(df, select = keep, drop=F)))==0, ] # omit all cases with missings in keep
+	df = subset(df, select = names(which(colSums(is.na(df))==0)), drop = F) # omit all variables with missings
 }
 
 
@@ -377,6 +377,9 @@ take_nonmissing = function(df, keep = c()) {
 #' missingness patterns
 #'
 #' this function shows how common possible missingness patterns are. Emulates misschk in stata.
+#' 1. excludes any variables that don't have any missings, so as not to clutter output. Disable using omit_complete
+#' 2. sorts variables by number of missings, so that the usual suspects show up at the front.
+#' 3. displays number of missings accounted for by each pattern
 #'
 #' @param df dataset
 #' @param min_freq show only patterns that occur at least this often. Defaults to 1 observation.
@@ -384,15 +387,30 @@ take_nonmissing = function(df, keep = c()) {
 #' @param print_legend prints a legend for the column indices, defaults to FALSE if long_pattern is set
 #' @param show_culprit defaults to TRUE. In case a missingness pattern boils down to one variable, it will be shown here.
 #' @param relative defaults to FALSE. If true, percentages are shown (relative to total before excluding minimum frequency).
+#' @param omit_complete defaults to TRUE. Columns that don't have any missings are excluded.
 #' @export
 #' @examples
 #' data(ChickWeight)
 #' ChickWeight[1:2,c('weight','Chick')] = NA
-#' ChickWeight[3:4,'Diet'] = NA
+#' ChickWeight[3:5,'Diet'] = NA
 #' names(ChickWeight); nrow(ChickWeight)
 #' missingness_patterns(ChickWeight)
-missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE), show_culprit = TRUE, relative = FALSE) {
+missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE) {
+	missings_by_column = colSums(is.na(df))
+	if(omit_complete) {
+		takethese = missings_by_column!=0
+	} else {
+		takethese = TRUE
+	}
+	names(missings_by_column) = names(df)
+	missings_by_column = sort(missings_by_column[ takethese  ],decreasing = T)
+	any_missing_sorted = names(missings_by_column)
+	df = subset(df, select = any_missing_sorted)
 	cols = names(df)
+	if(length(cols)==0) {
+		cat("No missings at all.\n")
+		return(invisible(NULL))
+	}
 	df = !is.na(df)
 	if(min_freq > 0) {
 		counted = plyr::count(df)		
@@ -424,7 +442,7 @@ missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), l
 		missingness$Pattern = long_pattern
 	}
 	if(print_legend) {
-		print(data.frame(index = 1:length(cols),col =cols))
+		print(data.frame(index = 1:length(cols),col =cols, missings = missings_by_column), row.names=FALSE)
 	}
 	missingness[order(missingness$Freq,decreasing = T),]
 }
