@@ -104,3 +104,24 @@ write_to_file <- function(..., ext = ".Rmd"){
 	write(mytext, local_tempfile);
 	return(local_tempfile)
 }
+
+#' knit prefixed
+#'
+#'
+#' Knit using knitr, but prefix file name to figure and cache folder (to knit in parallel on e.g. a cluster)
+#'
+#' @param input input document
+#' @param ... all arguments passed to \code{\link[knitr:knit]{render}}
+#' 
+#' @export
+#' @import knitr
+#' 
+knit_prefixed = function(input, ...) {
+	prefix = tools::file_path_sans_ext(basename(input))
+	library(knitr)
+	opts_chunk$set(
+		fig.path = paste0(prefix, '/figure/'),
+		cache.path = paste0(prefix, '/cache/')
+	)
+	knit(input, ...)
+}
