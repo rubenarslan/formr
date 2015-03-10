@@ -1,3 +1,5 @@
+.datatable.aware = TRUE
+
 #' custom markdown options for rmarkdown's pandoc
 #'
 #' @param add_to_format add these arguments to the default specification
