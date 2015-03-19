@@ -1,82 +1,98 @@
-#   ## function for rendering a multi trait multi method matrix
-#   mtmm = function (
-#   	variables, # data frame of variables that are supposed to be correlated
-#   	reliabilities = NULL, # reliabilties: column 1: scale, column 2: rel. coefficient
-#   	regex = "^([a-z][a-z][a-z])((\\.[a-z0-9][a-z0-9][a-z0-9])?([A-Z0-9_][A-Z0-9_][A-Z0-9_])?_(x|r|d|c|z|s|l|p|t|i)(_w2)?)$", # regular expression to separate construct and method from the variable name. the first two matched groups are chosen
-#   	cors = NULL,
-#   	construct = 2,
-#   	method = 3
-#   	) {
-#   	library(stringr); library(Hmisc)
-#   	
-#   	if(is.null(cors)) 
-#   		cors = cor(variables, use="pairwise.complete.obs") # select variables
-#   	
-#   	var.names = colnames(cors)
-#   	#cors2 = rcorr(as.matrix(multitraitmultimethod))
-#   	#print(qplot(x=as.vector(cors2$P),y=abs(as.vector(cors2$r)) ))
-#   	library(reshape2)
-#   	corm = melt(cors)
-#   	corm = corm[ corm[,'Var1']!=corm[,'Var2'] , ] # substitute the 1s with the scale reliabilities here
-#   	if(!is.null(reliabilities)) {
-#   		rel = reliabilities
-#   		names(rel) = c('Var1','value')
-#   		rel$Var2 = rel$Var1
-#   		rel = rel[which(rel$Var1 %in% var.names), c('Var1','Var2','value')]
-#   		corm = rbind(corm,rel)
-#   	}
-#   	if(any(is.na(str_match(corm$Var1,regex)[,c(construct,method)]))) 
-#   	{
-#   		print(unique(str_match(corm$Var1,regex)[,c(0,construct,method)]))
-#   		stop ("regex broken")
-#   	}
-#   	corm[, c('trait_X','method_X')] = str_match(corm$Var1,regex)[,c(construct,method)]  # regex matching our column naming schema to extract trait and method
-#   	corm[, c('trait_Y','method_Y')] = str_match(corm$Var2,regex)[,c(construct,method)] 
-#   	
-#   	corm[,c('var1.s','var2.s')] <- t(apply(corm[,c('Var1','Var2')], 1, sort)) # sort pairs to find dupes
-#   	corm[which(
-#   		corm[ ,'trait_X']==corm[,'trait_Y'] 
-#   		& corm[,'method_X']!=corm[,'method_Y']),'type'] = 'monotrait-heteromethod (validity)'
-#   	corm[which(
-#   		corm[ ,'trait_X']!=corm[,'trait_Y'] 
-#   		& corm[,'method_X']==corm[,'method_Y']), 'type'] = 'heterotrait-monomethod'
-#   	corm[which(
-#   		corm[ ,'trait_X']!=corm[,'trait_Y'] 
-#   		& corm[,'method_X']!=corm[,'method_Y']), 'type'] = 'heterotrait-heteromethod'
-#   	corm[which( 
-#   		corm[, 'trait_X']==corm[,'trait_Y'] 
-#   		& corm[,'method_X']==corm[,'method_Y']), 'type'] = 'monotrait-monomethod (reliability)'
-#   	
-#   	corm$trait_X = factor(corm$trait_X)
-#   	corm$trait_Y = factor(corm$trait_Y,levels=rev(levels(corm$trait_X)))
-#   	corm$method_X = factor(corm$method_X)
-#   	corm$method_Y = factor(corm$method_Y,levels=levels(corm$method_X))
-#   	corm = corm[order(corm$method_X,corm$trait_X),]
-#   	corm = corm[!duplicated(corm[,c('var1.s','var2.s')]), ] # remove dupe pairs
-#   	
-#   	#building ggplot
-#   	mtmm_plot <- ggplot(data= corm) + # the melted correlation matrix
-#   		layer(geom = 'tile', mapping = aes(x = trait_X, y = trait_Y, fill = type)) + 
-#   		#layer(geom = 'raster', mapping = aes(x = trait_X, y = trait_Y,  fill = abs(value))) + # the tiles (raster is faster, tiles are the same size)
-#   		layer(geom = 'text', mapping = aes(x = trait_X, y = trait_Y, label = str_replace(round(value,2),"0\\.", ".") ,size=log(value^2))) + # the correlation text
-#   		facet_grid(method_Y ~ method_X) + 
-#   		theme_bw() + 
-#   		theme(panel.background = element_rect(colour = NA), 
-#   					panel.grid.minor = element_blank(), 
-#   					axis.line = element_line(), 
-#   					strip.background = element_blank(),
-#   					panel.grid = element_blank()
-#   					
-#   		) + 
-#   		scale_fill_brewer('Type') +
-#   		scale_size("Absolute size",guide=F) +
-#   		scale_colour_gradient(guide=F)
-#   	
-#   	mtmm_plot
-#   }
-#   # data.mtmm = data.frame(
-#   #	'ach.self_report' = rnorm(200),'pow.self_report'= rnorm(200),'aff.self_report'= rnorm(200),
-#   #	'ach.peer_report' = rnorm(200),'pow.peer_report'= rnorm(200),'aff.peer_report'= rnorm(200),
-#   #	'ach.diary' = rnorm(200),'pow.diary'= rnorm(200),'aff.diary'= rnorm(200))
-#   # reliabilities = data.frame(scale = names(data.mtmm), rel = runif(length(names(data.mtmm))))
-#   # mtmm(data.mtmm, reliabilities = reliabilities, regex="^(.+)\\.(.+)$")
+#' multi trait multi method matrix
+#' 
+#' renders a MTMM using ggplot2. This function will split the variable names in a correlation matrix, or a data.frame. The first part will be used as the trait, the second as the method. Correlations are displayed as text, with the font size corresponding to absolute size.
+#' You can optionally supply a data frame of reliabilites to show in the diagonal.
+#'
+#' @param variables data frame of variables that are supposed to be correlated
+#' @param reliabilities data frame of reliabilties: column 1: scale, column 2: rel. coefficient
+#' @param split_regex regular expression to separate construct and method from the variable name, splits on "." by default
+#' @param cors you can also supply a (named) correlation matrix
+#' 
+#' @import ggplot2
+#' 
+#' @export
+#' @examples
+#' data.mtmm = data.frame(
+#' `Ach_self_report` = rnorm(200), `Pow_self_report` = rnorm(200), `Aff_self_report`= rnorm(200),
+#' `Ach_peer_report` = rnorm(200),`Pow_peer_report`= rnorm(200),`Aff_peer_report` = rnorm(200),
+#' `Ach_diary` = rnorm(200), `Pow_diary` = rnorm(200),`Aff_diary` = rnorm(200))
+#' reliabilities = data.frame(scale = names(data.mtmm), rel = runif(length(names(data.mtmm))))
+#' mtmm(data.mtmm, reliabilities = reliabilities)
+#' 
+mtmm = function (
+	variables = NULL,
+	reliabilities = NULL,
+	split_regex = "_", 
+	cors = NULL
+) {
+	if(is.null(cors) & is.null(variables)) {
+		stop("You have to provide either cors or variables.")
+	}
+	if(is.null(cors) & !is.null(variables)) 
+		cors = cor(variables, use="pairwise.complete.obs") # select variables
+	
+	var.names = colnames(cors)
+	
+	corm = reshape2::melt(cors)
+	corm = corm[ corm[,'Var1']!=corm[,'Var2'] , ] # substitute the 1s with the scale reliabilities here
+	if(!is.null(reliabilities)) {
+		rel = reliabilities
+		names(rel) = c('Var1','value')
+		rel$Var2 = rel$Var1
+		rel = rel[which(rel$Var1 %in% var.names), c('Var1','Var2','value')]
+		corm = rbind(corm,rel)
+	}
+	
+	if(any(is.na(stringr::str_split_fixed(corm$Var1,split_regex,n = 2)))) 
+	{
+		print(unique(stringr::str_split_fixed(corm$Var1,split_regex,n = 2)))
+		stop ("regex broken")
+	}
+	corm[, c('trait_X','method_X')] = stringr::str_split_fixed(corm$Var1,split_regex,n = 2)  # regex matching our column naming schema to extract trait and method
+	corm[, c('trait_Y','method_Y')] = stringr::str_split_fixed(corm$Var2,split_regex,n = 2)
+	corm[, c('trait_Y','method_Y','trait_X','method_X')] = sapply(corm[, c('trait_Y','method_Y','trait_X','method_X')],FUN = function(x)stringr::str_replace_all(x, "(\\.|_)"," "))
+	corm[,c('var1.s','var2.s')] <- t(apply(corm[,c('Var1','Var2')], 1, sort)) # sort pairs to find dupes
+	corm[which(
+		corm[ ,'trait_X']==corm[,'trait_Y'] 
+		& corm[,'method_X']!=corm[,'method_Y']),'type'] = 'validity'
+	corm[which(
+		corm[ ,'trait_X']!=corm[,'trait_Y'] 
+		& corm[,'method_X']==corm[,'method_Y']), 'type'] = 'heterotrait-monomethod'
+	corm[which(
+		corm[ ,'trait_X']!=corm[,'trait_Y'] 
+		& corm[,'method_X']!=corm[,'method_Y']), 'type'] = 'heterotrait-heteromethod'
+	corm[which( 
+		corm[, 'trait_X']==corm[,'trait_Y'] 
+		& corm[,'method_X']==corm[,'method_Y']), 'type'] = 'reliability'
+	
+	# would be nice to have the facet_grid labels in the same palce as the tick marks 
+	corm$trait_X = factor(corm$trait_X)
+	corm$trait_Y = factor(corm$trait_Y,levels=rev(levels(corm$trait_X)))
+	corm$method_X = factor(corm$method_X)
+	corm$method_Y = factor(corm$method_Y,levels=levels(corm$method_X))
+	corm = corm[order(corm$method_X,corm$trait_X),]
+	corm = corm[!duplicated(corm[,c('var1.s','var2.s')]), ] # remove dupe pairs
+	corm$rvalue = stringr::str_replace(round(corm$value,2),"0\\.", ".")
+	corm$logvalue = log(corm$value^2)
+	#building ggplot
+	mtmm_plot <- ggplot(data= corm) + # the melted correlation matrix
+		geom_tile(aes_string(x = "trait_X", y = "trait_Y", fill = "type")) + 
+		geom_text(aes_string(x = "trait_X", y = "trait_Y", label = "rvalue", size = "logvalue")) + # the correlation text
+		facet_grid(method_Y ~ method_X) + 
+		ylab("")+ xlab("")+
+		theme_bw(base_size = 18) + 
+		theme(panel.background = element_rect(colour = NA), 
+					panel.grid.minor = element_blank(), 
+					axis.line = element_blank(), 
+					panel.border = element_blank(),
+					strip.background = element_blank(),
+					panel.grid = element_blank(),
+					legend.position = c(1,1),
+					legend.justification = c(1, 1)
+		) + 
+		scale_fill_brewer('Type') +
+		scale_size("Absolute size",guide=F) +
+		scale_colour_gradient(guide=F)
+	
+	mtmm_plot
+}

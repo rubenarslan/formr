@@ -79,7 +79,7 @@ markdown_hard_line_breaks = function (...)
 
 render_text = function (text, ...) 
 {
-	fileName = rmarkdown::render(input = write_to_file(text), ...)
+	fileName = rmarkdown::render(input = write_to_file(text, ext = ".Rmd"), ...)
 	readChar(fileName, file.info(fileName)$size)
 }
 
@@ -96,15 +96,19 @@ render_text = function (text, ...)
 
 formr_render = function (text, self_contained = TRUE, ...)
 {
-	fileName = rmarkdown::render(input = write_to_file(text), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE), ...)
+	fileName = rmarkdown::render(input = write_to_file(text, name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE), ...)
 	readChar(fileName, file.info(fileName)$size)
 }
 
-write_to_file <- function(..., ext = ".Rmd"){
-	local_tempfile <- paste0(substring(tempfile(tmpdir="/"),3), ext);
+write_to_file <- function(..., name = NULL, ext = ".Rmd"){
+	if(is.null(name)) {
+		filename <- paste0(tempfile(), ext);
+	} else {
+		filename = paste0(name,ext)
+	}
 	mytext <- eval(...)
-	write(mytext, local_tempfile);
-	return(local_tempfile)
+	write(mytext, filename);
+	return(filename)
 }
 
 #' knit prefixed
@@ -120,7 +124,6 @@ write_to_file <- function(..., ext = ".Rmd"){
 #' 
 knit_prefixed = function(input, ...) {
 	prefix = tools::file_path_sans_ext(basename(input))
-	library(knitr)
 	opts_chunk$set(
 		fig.path = paste0(prefix, '/figure/'),
 		cache.path = paste0(prefix, '/cache/')
