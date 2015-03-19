@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.1.11
+Version: 0.1.14
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -27,7 +27,8 @@ Imports:
     rmarkdown,
     likert,
     knitr,
-    curl
+    curl,
+    reshape2
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54

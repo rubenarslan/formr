@@ -82,7 +82,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
 		normed_data$ymax = normed_data$value + normed_data$se
 	}
 	plot = 
-	ggplot(normed_data, aes(x = variable, y = value, fill = variable)) +
+	ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "variable")) +
 		ggtitle(title)+
 		scale_fill_brewer("",palette="Set1")+
 		scale_y_continuous(ylab, breaks=c(-2,-1,0,1,2),labels= y_ticks) +
@@ -91,7 +91,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
 		theme(text= element_text(size = 18)) +
 		expand_limits(y=c(-2.5,2.5))
 	if(exists("ymin",where=normed_data)) {
-		plot + geom_linerange(aes(ymin = ymin, ymax = ymax, colour = variable), size = 1) + scale_colour_brewer("",palette="Set1") + geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)
+		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "variable"), size = 1) + scale_colour_brewer("",palette="Set1") + geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)
 
 	} else plot + geom_bar(stat="identity",position=position_dodge())
 }
@@ -126,7 +126,7 @@ qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
 		normed_data$ymax = normed_data$value + normed_data$se
 	}
 	plot = 
-		ggplot(normed_data, aes(x = variable, y = value, fill = value)) +
+		ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "value")) +
 		ggtitle(title)+
 		scale_y_continuous("",breaks=c()) +
 		xlab("") +
@@ -135,9 +135,207 @@ qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
 		theme(text= element_text(size = 18)) +
 		coord_polar()
 	if(exists("ymin",where=normed_data)) {
-		plot + geom_linerange(aes(ymin = ymin, ymax = ymax, colour = value), size = 1) + geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)	+ scale_colour_continuous(ylab)
+		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "value"), size = 1) + 
+			geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)	+ scale_colour_continuous(ylab)
 		
 	} else plot + geom_bar(stat="identity",position=position_dodge())
+}
+
+waffle_df = function(x, rows = NULL, cols = NULL) {
+	x = sort(x)
+	total = length(x)
+	# Specify unique x and y coord for each case
+	if(is.null(rows) & is.null(cols)) {
+		rows = cols = ceiling(sqrt(total))
+		if((rows * cols - total) == cols) {
+			cols = cols - 1 # if we have an empty column, remove it
+		}
+	} else if(is.numeric(cols) & is.numeric(rows)) {
+		if(total < rows * cols) {
+			warning(paste0("Total ",total," smaller than number of cells (",rows,"x",cols,")"))
+		}
+	} else if(is.numeric(rows)) {
+		cols = ceiling(total / rows)
+	} else if(is.numeric(cols)) {
+		rows = ceiling(total / cols)
+	}
+	x_pa = c(x, rep(NA, times = rows * cols - total))
+	dim(x_pa) = c(cols, rows)
+	xdf = reshape2::melt(x_pa)
+	xdf$value = factor(xdf$value,exclude = NA)
+	xdf$Var1 = xdf$Var1 - 1
+	xdf$Var2 = xdf$Var2 - 1
+	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 5) * 2 / sqrt(total)
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 5) * 2 / sqrt(total)
+	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 10) * 1 / sqrt(total)
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 10) * 1 / sqrt(total)
+	xdf
+}
+
+#' Waffle plot
+#'
+#' Pass in a a variable and get a waffle plot.
+#' Useful to display simple counts or if the variable has different values,
+#' a square pie chart. If the variable has a length that makes the individual squares
+#' hard to see, consider showing hundreds, thousands etc.
+#' 
+#' To avoid the Hermann grid illusion, don't use dark colours.
+#'
+#' @param x a variable with not too many unique values
+#' @param shape defaults to a filled square
+#' @param rows defaults to the rounded up square root of the number of values
+#' @param cols defaults to the rounded down square root of the number of values
+#' @param drop_shadow_h horizontal offset of the drop shadow, tinker with this to get a proper shadow effect
+#' @param drop_shadow_v vertical offset of the drop shadow
+#' @export
+#' @import ggplot2
+#' @examples
+#' qplot_waffle(rep(1,500))
+qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h = -0.3, drop_shadow_v = 0.3) {
+	xdf = waffle_df(x, rows, cols)
+	total = length(x)
+	types = length(unique(na.omit(x)))
+	
+	miss_value = is.na(levels(xdf$value)[xdf$value])
+	xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
+	xdf$Var2_offset = xdf$Var2 + drop_shadow_v/sqrt(total)
+	ggplot(xdf) + 
+		geom_point(aes_string(x = "Var1_offset", y = "Var2_offset"), 
+							 colour = ifelse(miss_value, NA, "black"),
+							 shape = shape,
+							 size = round(140/sqrt(total)),
+							 show_guide = F) +
+		geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"), 
+							 shape = shape,
+							 size = round(140/sqrt(total)),
+							 show_guide = ifelse(types>1,T,F)) +
+		coord_fixed() +
+		theme_minimal() +
+		guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
+		ylab("")+ xlab("")+
+		scale_x_continuous(expand = c(0.12, 0.12)) +
+		scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
+		theme(
+			panel.background = element_rect(colour = NA), 
+			panel.border = element_blank(),
+			strip.background = element_blank(),
+			panel.grid = element_blank(),
+			axis.line = element_blank(), 
+			axis.text = element_blank(),
+			axis.title = element_blank(),
+			axis.ticks = element_blank(),
+			legend.title = element_blank()) +
+	scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+}
+
+#' Waffle plot (text)
+#'
+#' Pass in a a variable and get a waffle plot.
+#' Useful to display simple counts or if the variable has different values,
+#' a square pie chart. If the variable has a length that makes the individual squares
+#' hard to see, consider showing hundreds, thousands etc.
+#' 
+#' This functions is like waffle_plot but it allows you to specify custom symbols
+#' from FontAwesome. Copypaste them from here: http://fontawesome.io/cheatsheet
+#'
+#' To avoid the Hermann grid illusion, don't use dark colours.
+#'
+#' @param x a variable with not too many unique values
+#' @param symbol pass a unicode symbol from FontAwesome here. Defaults to a square with rounded edges
+#' @param rows defaults to the rounded up square root of the number of values
+#' @param cols defaults to the rounded down square root of the number of values
+#' @param drop_shadow_h horizontal offset of the drop shadow, tinker with this to get a proper shadow effect
+#' @param drop_shadow_v vertical offset of the drop shadow
+#' @param font_family defaults to FontAwesome
+#' @param font_face defaults to Regular
+#' @export
+#' @import ggplot2
+#' @encoding UTF-8
+#' @examples
+#' \dontrun{
+#' qplot_waffle_text(rep(1:2,each=30), rows = 5)
+#' }
+qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular") {
+	xdf = waffle_df(x, rows, cols)
+	total = length(x)
+	types = length(unique(na.omit(x)))
+	
+	miss_value = is.na(levels(xdf$value)[xdf$value])
+	xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
+	xdf$Var2_offset = xdf$Var2 + drop_shadow_v/sqrt(total)
+	ggplot(xdf) + 
+				geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_guide = ifelse(types>1,T,F)) +
+				geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
+									colour = ifelse(miss_value, NA, "black"),
+									size = round(140/sqrt(total)),label= symbol,
+									show_guide = F, alpha = .3, family = font_family, face = font_face) +
+				geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_guide = F,
+									size = round(140/sqrt(total)), label= symbol, family = font_family, face = font_face) +
+		coord_fixed() +
+		theme_minimal() +
+		guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
+		ylab("")+ xlab("")+
+		scale_x_continuous(expand = c(0.12, 0.12)) +
+		scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
+		theme(
+			panel.background = element_rect(colour = NA), 
+			panel.border = element_blank(),
+			strip.background = element_blank(),
+			panel.grid = element_blank(),
+			axis.line = element_blank(), 
+			axis.text = element_blank(),
+			axis.title = element_blank(),
+			axis.ticks = element_blank(),
+			legend.title = element_blank()) +
+		scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+}
+
+
+#' Waffle plot (tile)
+#'
+#' Pass in a a variable and get a waffle plot.
+#' Useful to display simple counts or if the variable has different values,
+#' a square pie chart. If the variable has a length that makes the individual squares
+#' hard to see, consider showing hundreds, thousands etc.
+#' 
+#' This function allows and requires the least tinkering, but also does not
+#' drop shadows.
+#' To avoid the Hermann grid illusion, don't use dark colours.
+#'
+#' adapted from http://shinyapps.stat.ubc.ca/r-graph-catalog/
+#' who adapted it from http://www.techques.com/question/17-17842/How-to-make-waffle-charts-in-R
+#' who adapted it from http://ux.stackexchange.com/a/46543/56341
+#' 
+#'
+#' @param x a variable with not too many unique values
+#' @param rows defaults to the rounded up square root of the number of values
+#' @param cols defaults to the rounded down square root of the number of values
+#' @export
+#' @import ggplot2
+#' @examples
+#' qplot_waffle_tile(rep(1,each=1000))
+qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
+	xdf = waffle_df(x, rows, cols)
+	total = length(x)
+	types = length(unique(na.omit(x)))
+		
+	miss_value = is.na(levels(xdf$value)[xdf$value])
+	
+	ggplot(xdf) + 
+		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value"), color = "white", size = 2,show_guide = ifelse(types > 1, T, F)) +
+		scale_x_continuous(expand = c(0, 0)) +
+		scale_y_continuous(expand = c(0, 0), trans = "reverse") +
+		coord_fixed() +
+		theme_minimal() + 
+		theme(panel.border = element_blank(),
+					plot.title = element_text(size = rel(1.2), face = "bold"),
+					axis.line = element_blank(),
+					axis.text = element_blank(),
+					axis.title = element_blank(),
+					axis.ticks = element_blank(),
+					panel.grid = element_blank(),
+					legend.title = element_blank())  +
+	scale_fill_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 #    
