@@ -334,7 +334,8 @@ formr_aggregate = function (survey_name,
 			}
 			if( length( item$choices) )  { # choice-based items
 				if(stringr::str_detect(item$name, "^[a-zA-Z0-9_]+?[0-9]+R$")) {# with a number and an "R" at the end
-					possible_replies = type.convert(names(item$choices))
+					if(item$type == "rating_button") { possible_replies = 1:item$type_options
+					} else possible_replies = type.convert(names(item$choices))
 					if(! is.numeric(possible_replies)) {
 						warning(item$name, " is not numeric and cannot be reversed.")
 					} else {
