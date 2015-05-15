@@ -163,12 +163,12 @@ waffle_df = function(x, rows = NULL, cols = NULL) {
 	dim(x_pa) = c(cols, rows)
 	xdf = reshape2::melt(x_pa)
 	xdf$value = factor(xdf$value,exclude = NA)
-	xdf$Var1 = xdf$Var1 - 1
-	xdf$Var2 = xdf$Var2 - 1
+	xdf$Var1 = xdf$Var1 - 1 # left shift all
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 5) * 2 / sqrt(total) # every fifth gets extra distance
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 10) * 1 / sqrt(total) # every tenth gets even more
+	xdf$Var2 = xdf$Var2 - 1 # up shift all
 	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 5) * 2 / sqrt(total)
-	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 5) * 2 / sqrt(total)
 	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 10) * 1 / sqrt(total)
-	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 10) * 1 / sqrt(total)
 	xdf
 }
 
@@ -190,7 +190,7 @@ waffle_df = function(x, rows = NULL, cols = NULL) {
 #' @export
 #' @import ggplot2
 #' @examples
-#' qplot_waffle(rep(1,500))
+#' qplot_waffle(rep(1:2,each=200))
 qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h = -0.3, drop_shadow_v = 0.3) {
 	xdf = waffle_df(x, rows, cols)
 	total = length(x)
@@ -313,18 +313,20 @@ qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, dro
 #' @export
 #' @import ggplot2
 #' @examples
-#' qplot_waffle_tile(rep(1,each=1000))
+#' qplot_waffle_tile(rep(1:2,each=500))
 qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
 	xdf = waffle_df(x, rows, cols)
 	total = length(x)
 	types = length(unique(na.omit(x)))
 		
 	miss_value = is.na(levels(xdf$value)[xdf$value])
+	xdf$color = "white"
 	
 	ggplot(xdf) + 
-		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value"), color = "white", size = 2,show_guide = ifelse(types > 1, T, F)) +
+		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value", color = "color"), size = 25/sqrt(total),show_guide = ifelse(types > 1, T, F)) +
 		scale_x_continuous(expand = c(0, 0)) +
 		scale_y_continuous(expand = c(0, 0), trans = "reverse") +
+		scale_color_manual(values="white",guide=F)+
 		coord_fixed() +
 		theme_minimal() + 
 		theme(panel.border = element_blank(),
