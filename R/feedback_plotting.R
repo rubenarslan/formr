@@ -255,39 +255,41 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 #' \dontrun{
 #' qplot_waffle_text(rep(1:2,each=30), rows = 5)
 #' }
-qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular") {
-	xdf = waffle_df(x, rows, cols)
-	total = length(x)
-	types = length(unique(na.omit(x)))
-	
-	miss_value = is.na(levels(xdf$value)[xdf$value])
-	xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
-	xdf$Var2_offset = xdf$Var2 + drop_shadow_v/sqrt(total)
-	ggplot(xdf) + 
-				geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_guide = ifelse(types>1,T,F)) +
-				geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
-									colour = ifelse(miss_value, NA, "black"),
-									size = round(140/sqrt(total)),label= symbol,
-									show_guide = F, alpha = .3, family = font_family, face = font_face) +
-				geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_guide = F,
-									size = round(140/sqrt(total)), label= symbol, family = font_family, face = font_face) +
-		coord_fixed() +
-		theme_minimal() +
-		guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
-		ylab("")+ xlab("")+
-		scale_x_continuous(expand = c(0.12, 0.12)) +
-		scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
-		theme(
-			panel.background = element_rect(colour = NA), 
-			panel.border = element_blank(),
-			strip.background = element_blank(),
-			panel.grid = element_blank(),
-			axis.line = element_blank(), 
-			axis.text = element_blank(),
-			axis.title = element_blank(),
-			axis.ticks = element_blank(),
-			legend.title = element_blank()) +
-		scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular",
+  font_size = round(140/sqrt(total))) {
+  xdf = waffle_df(x, rows, cols)
+  total = length(x)
+  types = length(unique(na.omit(x)))
+
+  miss_value = is.na(levels(xdf$value)[xdf$value])
+  xdf$Var1_offset = xdf$Var1 + drop_shadow_h * font_size/140
+  xdf$Var2_offset = xdf$Var2 + drop_shadow_v * font_size/140
+
+  ggplot(xdf) + 
+    geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_guide = ifelse(types>1,T,F)) +
+    geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
+              colour = ifelse(miss_value, NA, "black"),
+              size = font_size,label= symbol,
+              show_guide = F, alpha = .3, family = font_family, face = font_face) +
+    geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_guide = F,
+              size = font_size, label= symbol, family = font_family, face = font_face) +
+    coord_fixed() +
+    theme_minimal() +
+    guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
+    ylab("")+ xlab("")+
+    scale_x_continuous(expand = c(0.12, 0.12)) +
+    scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
+    theme(
+      panel.background = element_rect(colour = NA), 
+      panel.border = element_blank(),
+      strip.background = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(), 
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      legend.title = element_blank()) +
+    scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 
