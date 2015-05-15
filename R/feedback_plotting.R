@@ -142,7 +142,7 @@ qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
 }
 
 waffle_df = function(x, rows = NULL, cols = NULL) {
-	x = sort(x)
+	# x = sort(x)
 	total = length(x)
 	# Specify unique x and y coord for each case
 	if(is.null(rows) & is.null(cols)) {
@@ -223,9 +223,8 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 			axis.line = element_blank(), 
 			axis.text = element_blank(),
 			axis.title = element_blank(),
-			axis.ticks = element_blank(),
-			legend.title = element_blank()) +
-	scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+			axis.ticks = element_blank()) +
+	scale_colour_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 #' Waffle plot (text)
@@ -287,9 +286,8 @@ qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, dro
       axis.line = element_blank(), 
       axis.text = element_blank(),
       axis.title = element_blank(),
-      axis.ticks = element_blank(),
-      legend.title = element_blank()) +
-    scale_colour_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+      axis.ticks = element_blank()) +
+    scale_colour_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 
@@ -337,9 +335,8 @@ qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
 					axis.text = element_blank(),
 					axis.title = element_blank(),
 					axis.ticks = element_blank(),
-					panel.grid = element_blank(),
-					legend.title = element_blank())  +
-	scale_fill_manual(values = c("#aea96f","#a5c25c","#a3ccdc"))
+					panel.grid = element_blank())  +
+	scale_fill_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 #    
