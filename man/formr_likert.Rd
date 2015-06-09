@@ -4,18 +4,12 @@
 \alias{formr_likert}
 \title{Get Likert scales}
 \usage{
-formr_likert(survey_name, item_list = formr_items(survey_name, host = host),
-  results = formr_raw_results(survey_name, host = host),
-  host = "https://formr.org")
+formr_likert(item_list, results)
 }
 \arguments{
-\item{survey_name}{case-sensitive name of a survey your account owns}
+\item{item_list}{an item_list}
 
-\item{item_list}{an item_list, will be auto-retrieved based on survey_name if omitted}
-
-\item{results}{survey results, will be auto-retrieved based on survey_name if omitted}
-
-\item{host}{defaults to https://formr.org}
+\item{results}{survey results}
 }
 \description{
 If you've retrieved an item table using \code{\link{formr_items}} you can use this

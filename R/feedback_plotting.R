@@ -227,6 +227,8 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 	scale_colour_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
+fontawesome_square = '\uf0c8'
+
 #' Waffle plot (text)
 #'
 #' Pass in a a variable and get a waffle plot.
@@ -247,6 +249,7 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 #' @param drop_shadow_v vertical offset of the drop shadow
 #' @param font_family defaults to FontAwesome
 #' @param font_face defaults to Regular
+#' @param font_size defaults to round(140/sqrt(total))
 #' @export
 #' @import ggplot2
 #' @encoding UTF-8
@@ -254,7 +257,7 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 #' \dontrun{
 #' qplot_waffle_text(rep(1:2,each=30), rows = 5)
 #' }
-qplot_waffle_text = function(x, symbol = '\uf0c8', rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular",
+qplot_waffle_text = function(x, symbol = fontawesome_square, rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular",
   font_size = round(140/sqrt(total))) {
   xdf = waffle_df(x, rows, cols)
   total = length(x)

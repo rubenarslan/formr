@@ -29,6 +29,6 @@ who adapted it from http://www.techques.com/question/17-17842/How-to-make-waffle
 who adapted it from http://ux.stackexchange.com/a/46543/56341
 }
 \examples{
-qplot_waffle_tile(rep(1,each=1000))
+qplot_waffle_tile(rep(1:2,each=500))
 }
 

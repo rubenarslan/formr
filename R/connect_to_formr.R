@@ -77,10 +77,45 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 
 formr_items = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_item_table?format=json"))
-	if(resp$status_code == 200) jsonlite::fromJSON(simplifyDataFrame=FALSE,
-		httr::content(resp,encoding="utf8",as="text")
-	)
+	if(resp$status_code == 200) {
+		item_list = jsonlite::fromJSON(simplifyDataFrame=FALSE,
+		httr::content(resp,encoding="utf8",as="text") )
+		class(item_list) = c("formr_item_list", class(item_list))
+		item_list
+	}
 	else stop("This survey does not exist.")
+}
+
+#' Transform formr_item_list into a data.frame for ease of use
+#'
+#' This function just turns a formr_item_list into a data.frame. The reason, these lists don't come as data.frames as default is because the "choices" are a list themselves. When transforming, the choice column contains a collapsed choice list, which may be less useful for some purposes. 
+#'
+#' @param x a formr_item_list
+#' @param row.names not used
+#' @param ... not used
+#' 
+#' @export
+#' @import data.table
+#' @examples
+#' \dontrun{
+#' formr_connect(email = "you@@example.net", password = "zebrafinch" )
+#' as.data.frame(formr_items(survey_name = "training_diary" ))
+#' }
+
+as.data.frame.formr_item_list = function(x, row.names, ...) {
+	item_list = x
+	for(i in seq_along(item_list)) {
+		item_list[[i]][sapply(item_list[[i]], is.null)] <- NA # NULLs are annoying when wanting to transform into a df
+		
+		if(!is.null(item_list[[i]]$choices)) {
+			item_list[[i]]$choices = paste(paste0(names(item_list[[i]]$choices),"=",item_list[[i]]$choices),collapse=",")
+		} else { # in some cases the choices column is missing
+			# item_list[[i]]["choices"] = list(NULL)
+		}
+	}
+	item_list = (data.table::setDF(data.table::rbindlist(item_list,fill=T)))
+	item_list$index = 1:nrow(item_list)
+	item_list
 }
 
 
@@ -254,7 +289,12 @@ formr_simulate_from_items = function (item_list, n = 300)
 		item = item_list[[i]]
 		if(item$type %in% c("note","mc_heading")) { next;
 		} else if(item$type == "rating_button") { # bit of a special case
-			sample_from = 1:as.numeric(item$type_options)
+			if(is.null(item$type_options)) { 
+				max_rat = 5
+			} else {
+				max_rat = as.numeric(item$type_options)
+			}
+			sample_from = 1:max_rat
 			sim[, item$name] = sample(sample_from,size=n,replace=T)
 		}	else if( length( item$choices) )  { # choice-based items
 			sample_from = type.convert( names(item$choices), as.is = F)
@@ -273,6 +313,80 @@ formr_simulate_from_items = function (item_list, n = 300)
 }
 
 
+#' Reverse items based on item table or a fallback_max
+#'
+#' Example: If your data contains Extraversion_1, Extraversion_2R and Extraversion_3, there will be two new variables in the result: Extraversion_2 (reversed to align with _1 and _2) and Extraversion, the mean score of the three. If you supply an item table, the maximum possible answer to the item will be used to reverse it. If you don't, the maximum actually given answer or the fallback_max argument will be used to reverse it. It's faster to do this without an item table, but this can lead to problems, if you mis-specify the fallback max or the highest possible value does not occur in the data. 
+#'  
+#'
+#' @param results survey results
+#' @param item_list an item_list, defaults to NULL
+#' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_connect(email = "you@@example.net", password = "zebrafinch" )
+#' icar_items = formr_items(survey_name="ICAR",host = "http://localhost:8888/formr/")
+#' # get some simulated data and aggregate it
+#' sim_results = formr_simulate_from_items(icar_items)
+#' reversed_items = formr_reverse(item_list = icar_items, results = sim_results)
+#' }
+
+
+formr_reverse = function (results, 
+													item_list = NULL,
+													fallback_max = 5)
+{
+	dont_use = c()
+	# reverse items
+	# first we're playing dumb and don't have the item table to base our aggregation on?
+	item_names = names(results) # we use the item names of all items, including notes and text, hoping that there is no false positive
+	
+	if(is.null(item_list)) {
+		char_vars = sapply(results,is.character)
+		results[,char_vars] = plyr::colwise(function(x) { 
+			type.convert(x,as.is=TRUE)
+		})(results[,char_vars,drop = F])
+		reversed_items = item_names[stringr::str_detect(item_names, "^[a-zA-Z0-9_]+?[0-9]+R$")] # get reversed items
+		if(length(reversed_items)) {
+			for(i in seq_along(reversed_items)) {
+				results[,  stringr::str_sub(reversed_items[i], 1, -2) ] = # reverse these items
+					(max(results[, reversed_items[i] ], fallback_max,na.rm=T) + 1) - results[, reversed_items[i] ]				 # based on fallback_max, or if higher the item's own maximum
+			}
+		}
+	} else { # if we have an item list we can do more
+		
+		for(i in seq_along(item_list)) {
+			item = item_list[[i]]
+			if(item$type %in% c('note','mc_heading','submit')) {
+				dont_use = c(dont_use,
+										 stringr::str_match(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R?$")[,2]
+				)
+			}
+			if( length( item$choices) )  { # choice-based items
+				if(stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {# with a number and an "R" at the end
+					if(item$type == "rating_button") { 
+						if(is.null(item$type_options)) { 
+							max_rat = 5
+						} else {
+							max_rat = as.numeric(item$type_options)
+						}
+						possible_replies = 1:max_rat
+					} else {
+						possible_replies = type.convert(names(item$choices))
+					}
+					
+					if(! is.numeric(possible_replies)) {
+						warning(item$name, " is not numeric and cannot be reversed.")
+					} else {
+						results[, stringr::str_sub(item$name, 1, -2) ] = max(possible_replies) + 1 - as.numeric(results[, item$name ]) # reverse	# save as item name with the R truncated
+					}
+				}
+			}
+		}
+	}
+	results
+}
+
 #' Aggregate data based on item table
 #'
 #' If you've retrieved an item table using \code{\link{formr_items}} you can use this
@@ -285,8 +399,10 @@ formr_simulate_from_items = function (item_list, n = 300)
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to https://formr.org
-#' @param compute_alphas defaults to FALSE, whether to compute  \code{\link[psych:alpha]{alpha}}
+#' @param compute_alphas defaults to TRUE, whether to compute  \code{\link[psych:alpha]{alpha}}
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
+#' @param plot_likert defaults to TRUE - whether to make \code{\link[likert:likert]{likert}} plots. Only possible if item_list is specified.
+
 #' @param ... passed to  \code{\link[psych:alpha]{alpha}}
 #' @export
 #' @examples
@@ -307,102 +423,93 @@ formr_aggregate = function (survey_name,
 														item_list = formr_items(survey_name, host = host),
 														results = formr_raw_results(survey_name, host = host),
 														host = "https://formr.org",
-														compute_alphas = FALSE,
-														fallback_max = 5, ...)
+														compute_alphas = TRUE,
+														fallback_max = 5, 
+														plot_likert = TRUE, ...)
 {
-	dont_use = c()
-	# reverse items
-	# first we're playing dumb and don't have the item table to base our aggregation on?
-	names = names(results) # we use the item names of all items, including notes and text, hoping that there is no false positive
-
-	if(is.null(item_list)) {
-		char_vars = sapply(results,is.character)
-		results[,char_vars] = plyr::colwise(function(x) { 
-				type.convert(x,as.is=TRUE)
-			})(results[,char_vars,drop = F])
-		reversed_items = names[stringr::str_detect(names, "^[a-zA-Z0-9_]+?[0-9]+R$")] # get reversed items
-		if(length(reversed_items))
-			results[,  stringr::str_sub(reversed_items, 1, -2) ] = # reverse these items
-				(fallback_max + 1) - results[, reversed_items]				 # based on fallback_max
-	} else {
-		for(i in seq_along(item_list)) {
-			item = item_list[[i]]
-			if(item$type %in% c('note','mc_heading','submit')) {
-				dont_use = c(dont_use,
-					stringr::str_match(item$name, "^([a-zA-Z0-9_]+?)[0-9]+R?$")[,2]
-				)
-			}
-			if( length( item$choices) )  { # choice-based items
-				if(stringr::str_detect(item$name, "^[a-zA-Z0-9_]+?[0-9]+R$")) {# with a number and an "R" at the end
-					if(item$type == "rating_button") { possible_replies = 1:item$type_options
-					} else possible_replies = type.convert(names(item$choices))
-					if(! is.numeric(possible_replies)) {
-						warning(item$name, " is not numeric and cannot be reversed.")
-					} else {
-						results[, stringr::str_sub(item$name, 1, -2) ] = max(possible_replies) + 1 - as.numeric(results[, item$name ]) # reverse	# save as item name with the R truncated
-					}
+	results = formr_reverse(results, item_list, fallback_max = fallback_max)
+	item_names = names(results) # update after reversing
+	
+	if(!is.null(item_list)) {
+		if(!inherits(item_list, "formr_item_list")) {
+			stop("The item_list has to be either a formr item list.")
+		}
+		item_list_df = as.data.frame(item_list)
+		item_list_df$scale = suppressWarnings(stringr::str_match(item_list_df$name, "(?i)^([a-z0-9_]+?)_?[0-9]+R?$")[,2]) # fit the pattern
+		likert_scales = item_list_df[item_list_df$type %in% c("mc","mc_button","rating_button"), ]
+	}
+	
+	scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+$")[,2] # fit the pattern
+	# if the scale name ends in an underscore, remove it
+	scales = unique(na.omit(scale_stubs[duplicated(scale_stubs)])) # only those which occur more than once
+	# todo: should check whether they all share the same reply options (choices, type_options)
+	for(i in seq_along(scales)) {
+		save_scale = scales[i]
+		
+		if(exists(save_scale,where=results)) {
+			warning(save_scale,": Would have generated scale, but a variable of that name existed already.")
+			next
+		}
+		scale_item_names = item_names[which(scale_stubs == save_scale)]
+		numbers = as.numeric(stringr::str_match(scale_item_names, "(?i)^[a-z0-9_]+?([0-9])+$")[,2])
+		if(! setequal(
+			intersect(scale_item_names, names(results)),
+			scale_item_names)) {
+				warning(save_scale, ": Some items were missing. ", paste(setdiff(scale_item_names, names(results)), collapse = " "))
+				next
+		}
+		if ( length(scale_item_names) == 1) {
+			warning(save_scale, ": seems to consist of only a single item.")
+			next
+		}
+		if (! setequal( min(numbers):max(numbers), numbers) ){
+				warning(save_scale, ": Some items from the scale might be missing, the lowest item number was ", min(numbers), " the highest was ", max(numbers), " but we didn't see ", paste(setdiff(min(numbers):max(numbers), numbers), collapse = " "))
+				next
+		} 
+		if(! all(sapply(results[, scale_item_names ],is.numeric))) {
+			warning(save_scale, ": One of the items in the scale is not numeric. The scale was not aggregated.")
+			next
+		}
+		available_choices = unique(likert_scales[which(likert_scales$scale == save_scale), "choices"])
+		if(length(available_choices) != 1) {
+			warning(save_scale, ": The response options/item choices weren't identical across items, we saw ", paste(available_choices, collapse = " & "))
+			next
+		}
+		# actually aggregate scale
+		results[, save_scale] = rowMeans( results[, scale_item_names ] )
+		
+		if(plot_likert) {
+			print(plot(
+				formr_likert(item_list[ 
+					likert_scales[which(likert_scales$scale == save_scale),"index"]
+					], results)
+			))
+		}
+		if(compute_alphas) {
+			if(length(numbers) > 2) {
+				rows_with_missings = nrow(results[, scale_item_names ]) - nrow(na.omit(results[, scale_item_names ]))
+				if(rows_with_missings > 0) {
+					warning("There were ", rows_with_missings ," rows with missings in ", save_scale)
 				}
+				tryCatch({
+					psych::print.psych(
+						psych::alpha(na.omit( results[, scale_item_names ] ), title = save_scale, check.keys = F, ...)
+					)
+				}, error = function(e) { 
+					warning("There were problems with ", save_scale, " or its items ", paste(scale_item_names, collapse = " "), " while trying to compute internal consistencies. ", e)
+				})
+			} else {
+				message("Just two items in scale ", save_scale, " so we only calculated a correlation.")
+				print(cor(results[, scale_item_names[1] ], results[, scale_item_names[2] ], use = "na.or.complete"))
 			}
 		}
 	}
-	names = names(results) # update after reversing
-	
-	scale_stubs = stringr::str_match(names, "^([a-zA-Z0-9_]+?)[0-9]+$")[,2] # fit the pattern
-	scales = unique(na.omit(scale_stubs[duplicated(scale_stubs)])) # only those which occur more than once
-	scales = setdiff(scales, dont_use) # but not notes etc.
-	# todo: should check whether they all share the same reply options (choices, type_options)
-	for(i in seq_along(scales)) {
-		scale = scales[i]
-		# if the scale name ends in an underscore, remove it
-		if(stringr::str_sub(scale, -1) == "_") {
-			save_scale = stringr::str_sub(scale,1, -2)
-		} else
-		{
-			save_scale = scale
-		}
-		
-		if(exists(save_scale,where=results)) {
-			warning(paste("Would have generated scale",save_scale,"but a variable of that name existed already."))
-		} else {
-			scale_item_names = names[which(scale_stubs == scale)]
-			numbers = as.numeric(stringr::str_match(scale_item_names, "^[a-zA-Z0-9_]+?([0-9]+)$")[,2])
-						
-			if(! setequal(
-				intersect(scale_item_names, names(results)),
-				scale_item_names)) {
-				warning("Some items were missing. ", paste(setdiff(scale_item_names, names(results)), collapse = " "))
-			}
-			else if ( length(scale_item_names) == 1) {
-				warning(save_scale, " seems to consist of only a single item.")
-			}
-			else if (! setequal( min(numbers):max(numbers), numbers) ){
-					warning("Some items from ",save_scale," might be missing, the lowest item number was ", min(numbers), " the highest was ", max(numbers), " but we didn't see ", paste(setdiff(min(numbers):max(numbers), numbers), collapse = " "))
-				} else {
-				if(! all(sapply(results[, scale_item_names ],is.numeric))) {
-					warning("One of the items in the scale ", save_scale, " is not numeric. The scale was not aggregated.")
-				} else {
-					results[, save_scale] = rowMeans( results[, scale_item_names ] )
-					if(compute_alphas) {
-						cat(paste0("\n\n",save_scale))
-						if(length(numbers) > 2) {
-							rows_with_missings = nrow(results[, scale_item_names ]) - nrow(na.omit(results[, scale_item_names ]))
-							if(rows_with_missings > 0) {
-								warning("There were ", rows_with_missings ," rows with missings in ", save_scale)
-							}
-							tryCatch({
-							print(
-								psych::alpha(na.omit( results[, scale_item_names ] ), check.keys = F, ...)
-							)
-							}, error = function(e) { 
-								warning("There were problems with ", save_scale, " or its items ", paste(scale_item_names, collapse = " "), " while trying to compute internal consistencies. ", e)
-							})
-						} else {
-							message("Just two items in scale ", save_scale, " so we only calculated a correlation.")
-							print(cor(results[, scale_item_names[1] ], results[, scale_item_names[2] ], use = "na.or.complete"))
-						}
-					}
-				}
-			}
+	if(plot_likert) {
+		leftover_items = item_list[ likert_scales[which(!likert_scales$scale %in% scales),"index"] ]
+		for(i in seq_along(leftover_items)) {
+				print(plot(
+					formr_likert(leftover_items[i], results)
+				,centered = F))
 		}
 	}
 	results
@@ -416,19 +523,20 @@ formr_aggregate = function (survey_name,
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
-#' @param compute_alphas passed to formr_recognise, defaults to FALSE
-#' @param fallback_max passed to formr_recognise, defaults to 5
+#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
+#' @param fallback_max passed to formr_reverse, defaults to 5
+#' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_results(survey_name = "training_diary" )
 #' }
 
-formr_results = function(survey_name, host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5) {
+formr_results = function(survey_name, host = "https://formr.org", compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
 	results = formr_recognise(item_list = item_list, results = results)
-	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max)
+	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max, plot_likert = plot_likert)
 }
 
 #' Get Likert scales
@@ -437,10 +545,8 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 #' function to retrieve a \code{\link[likert:likert]{likert}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
 #'  
 #'
-#' @param survey_name case-sensitive name of a survey your account owns
-#' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
-#' @param results survey results, will be auto-retrieved based on survey_name if omitted
-#' @param host defaults to https://formr.org
+#' @param item_list an item_list
+#' @param results survey results
 #' @export
 #' @examples
 #' \dontrun{
@@ -451,30 +557,36 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 #' likert_items = formr_likert(item_list = icar_items, results = sim_results)
 #' }
 
-formr_likert = function (survey_name, 
-														item_list = formr_items(survey_name, host = host),
-														results = formr_raw_results(survey_name, host = host),
-														host = "https://formr.org")
+formr_likert = function (item_list,
+												results)
 {
+	if(!inherits(item_list, "formr_item_list") & !inherits(item_list, "list")) {
+		stop("The item_list has to be a formr_item_list or a list.")
+	}
 	item_numbers = c()
 	for(i in seq_along(item_list)) {
 		item = item_list[[i]]
 		item_number = which(names(results)==item$name)
 		if(length(item_number)>0 & item$type %in% c('mc_button','mc','rating_button')) {
-			if(exists("response_type", inherits = FALSE) && response_type != paste(item$choices,collapse = " ")) {
-				warning("Response format changed from ", response_type, " to ", paste(item$choices,collapse = " "), " ...interrupting")
+			if(exists("response_type", inherits = FALSE) && !(diff <- all.equal(response_type, item$choices))) {
+				warning("Response format changed from ", paste(response_type,collapse = " "), " to ", paste(item$choices,collapse = " "), " ...interrupting, difference: ", diff)
 				break
 			} else {
-				response_type = paste(item$choices,collapse = " ")
+				response_type = item$choices
 			}
 			item_numbers = c(item_numbers, item_number)
 			if(item$type != "rating_button") {
 				results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
 			} else {
-				labels = 1:as.numeric(item$type_options)
+				if(is.null(item$type_options)) { 
+					max_rat = 5
+				} else {
+					max_rat = as.numeric(item$type_options)
+				}
+				labels = 1:max_rat
 				labels[1] = item$choices[1]
-				labels[as.numeric(item$type_options)] = item$choices[2]
-				results[, item_number] = factor(results[, item$name], levels = 1:as.numeric(item$type_options), labels = labels)
+				labels[max_rat] = item$choices[2]
+				results[, item_number] = factor(results[, item$name], levels = 1:max_rat, labels = labels)
 			}
 			names(results)[item_number] = paste(item$label,paste0("[",item$name,"]")) # seriously cumbersome way to rename single column
 		}

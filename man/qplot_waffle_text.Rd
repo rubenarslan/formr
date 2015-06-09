@@ -5,9 +5,10 @@
 \alias{qplot_waffle_text}
 \title{Waffle plot (text)}
 \usage{
-qplot_waffle_text(x, symbol = "", rows = NULL, cols = NULL,
-  drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome",
-  font_face = "Regular")
+qplot_waffle_text(x, symbol = fontawesome_square, rows = NULL,
+  cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9,
+  font_family = "FontAwesome", font_face = "Regular",
+  font_size = round(140/sqrt(total)))
 }
 \arguments{
 \item{x}{a variable with not too many unique values}
@@ -25,6 +26,8 @@ qplot_waffle_text(x, symbol = "", rows = NULL, cols = NULL,
 \item{font_family}{defaults to FontAwesome}
 
 \item{font_face}{defaults to Regular}
+
+\item{font_size}{defaults to round(140/sqrt(total))}
 }
 \description{
 Pass in a a variable and get a waffle plot.
