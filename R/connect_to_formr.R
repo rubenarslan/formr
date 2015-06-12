@@ -535,6 +535,26 @@ formr_aggregate = function (survey_name,
 formr_results = function(survey_name, host = "https://formr.org", compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
+	formr_post_process_results(results = results, item_list = item_list, compute_alphas = compute_alphas, fallback_max = fallback_max, plot_likert = plot_likert)
+}
+
+#' Processed, aggregated results
+#'
+#' This function chains \code{\link{formr_recognise}} and \code{\link{formr_aggregate}} 
+#' in sequence. Useful if you want to post-process raw results before aggregating etc.
+#'
+#' @param item_list an item_list, defaults to NULL
+#' @param results survey results
+#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
+#' @param fallback_max passed to formr_reverse, defaults to 5
+#' @param plot_likert passed to formr_aggregate, defaults to TRUE
+#' @export
+#' @examples
+#' \dontrun{
+#' results = formr_post_process_results(item_list, results)
+#' }
+
+formr_post_process_results = function(item_list = NULL, results, compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
 	results = formr_recognise(item_list = item_list, results = results)
 	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max, plot_likert = plot_likert)
 }
