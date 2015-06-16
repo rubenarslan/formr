@@ -470,11 +470,19 @@ formr_aggregate = function (survey_name,
 			warning(save_scale, ": One of the items in the scale is not numeric. The scale was not aggregated.")
 			next
 		}
-		available_choices = unique(likert_scales[which(likert_scales$scale == save_scale), "choices"])
-		if(length(available_choices) != 1) {
-			warning(save_scale, ": The response options/item choices weren't identical across items, we saw ", paste(available_choices, collapse = " & "))
+		choice_lists = item_list[ 
+			likert_scales[which(likert_scales$scale == save_scale),"index"]
+			]
+		choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
+		choice_values = unique(lapply(choice_lists, FUN = function(x) { names(x$choices) } ))
+		if(length(choice_values) != 1) {
+			warning(save_scale, ": The responses were saved with different possible values. Hence, the scale could not be aggregated. We saw ", paste(sapply(choice_values, FUN = paste, collapse = ";"), collapse = " & "))
 			next
 		}
+		if(length(choice_labels) != 1) {
+			warning(save_scale, ": Was aggregated, but the response labels/item choices weren't identical across items, we saw ", paste(sapply(choice_labels, FUN = paste, collapse = ";"), collapse = " & "))
+		}
+		
 		# actually aggregate scale
 		results[, save_scale] = rowMeans( results[, scale_item_names ] )
 		
@@ -589,7 +597,7 @@ formr_likert = function (item_list,
 		item_number = which(names(results)==item$name)
 		if(length(item_number)>0 & item$type %in% c('mc_button','mc','rating_button')) {
 			if(exists("response_type", inherits = FALSE) && !(diff <- all.equal(response_type, item$choices))) {
-				warning("Response format changed from ", paste(response_type,collapse = " "), " to ", paste(item$choices,collapse = " "), " ...interrupting, difference: ", diff)
+				warning("Likert plot not possible, the response format changed from ", paste(response_type,collapse = " "), " to ", paste(item$choices,collapse = " "), " ...interrupting, difference: ", diff)
 				break
 			} else {
 				response_type = item$choices
