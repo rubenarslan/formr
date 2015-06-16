@@ -470,15 +470,13 @@ formr_aggregate = function (survey_name,
 			warning(save_scale, ": One of the items in the scale is not numeric. The scale was not aggregated.")
 			next
 		}
-		choice_lists = item_list[ 
-			likert_scales[which(likert_scales$scale == save_scale),"index"]
-			]
-		choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
+		choice_lists = item_list[ likert_scales[which(likert_scales$scale == save_scale),"index"] ]
 		choice_values = unique(lapply(choice_lists, FUN = function(x) { names(x$choices) } ))
 		if(length(choice_values) != 1) {
 			warning(save_scale, ": The responses were saved with different possible values. Hence, the scale could not be aggregated. We saw ", paste(sapply(choice_values, FUN = paste, collapse = ";"), collapse = " & "))
 			next
 		}
+		choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
 		if(length(choice_labels) != 1) {
 			warning(save_scale, ": Was aggregated, but the response labels/item choices weren't identical across items, we saw ", paste(sapply(choice_labels, FUN = paste, collapse = ";"), collapse = " & "))
 		}
@@ -487,11 +485,8 @@ formr_aggregate = function (survey_name,
 		results[, save_scale] = rowMeans( results[, scale_item_names ] )
 		
 		if(plot_likert) {
-			print(plot(
-				formr_likert(item_list[ 
-					likert_scales[which(likert_scales$scale == save_scale),"index"]
-					], results)
-			))
+			lik = formr_likert(choice_lists, results)
+			if(!is.null(lik))	plot( lik )
 		}
 		if(compute_alphas) {
 			if(length(numbers) > 2) {
@@ -585,23 +580,30 @@ formr_post_process_results = function(item_list = NULL, results, compute_alphas 
 #' likert_items = formr_likert(item_list = icar_items, results = sim_results)
 #' }
 
-formr_likert = function (item_list,
-												results)
+formr_likert = function (item_list, results)
 {
-	if(!inherits(item_list, "formr_item_list") & !inherits(item_list, "list")) {
-		stop("The item_list has to be a formr_item_list or a list.")
+	if(!inherits(item_list, "list")) {
+		stop("The item_list has to be a list.")
 	}
 	item_numbers = c()
+	choice_lists = item_list
+	choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
+	choice_values = unique(lapply(choice_lists, FUN = function(x) { names(x$choices) } ))
+	if(length(choice_values) != 1) {
+		warning("Likert plot not possible, their were multiple response values. We saw ", paste(sapply(choice_values, FUN = paste, collapse = ";"), collapse = " & "))
+		return(NULL)
+	}
+	if(length(choice_labels) != 1) {
+		warning("Likert plot not possible, their were multiple response labels. We saw ", paste(sapply(choice_labels, FUN = paste, collapse = ";"), collapse = " & "))
+		return(NULL)
+	}
+	
 	for(i in seq_along(item_list)) {
 		item = item_list[[i]]
 		item_number = which(names(results)==item$name)
+		
+		
 		if(length(item_number)>0 & item$type %in% c('mc_button','mc','rating_button')) {
-			if(exists("response_type", inherits = FALSE) && !(diff <- all.equal(response_type, item$choices))) {
-				warning("Likert plot not possible, the response format changed from ", paste(response_type,collapse = " "), " to ", paste(item$choices,collapse = " "), " ...interrupting, difference: ", diff)
-				break
-			} else {
-				response_type = item$choices
-			}
 			item_numbers = c(item_numbers, item_number)
 			if(item$type != "rating_button") {
 				results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
@@ -619,7 +621,11 @@ formr_likert = function (item_list,
 			names(results)[item_number] = paste(item$label,paste0("[",item$name,"]")) # seriously cumbersome way to rename single column
 		}
 	}
-	likert::likert(results[, item_numbers,drop=FALSE])
+	if(ncol(results[, item_numbers,drop=FALSE]) > 0 & nrow(na.omit(results[, item_numbers,drop=FALSE]))) {
+		likert::likert(results[, item_numbers,drop=FALSE])
+	} else {
+		NULL
+	}
 }
 
 # # # # # ## testing with credentials
