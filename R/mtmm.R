@@ -34,6 +34,7 @@ mtmm = function (
 	var.names = colnames(cors)
 	
 	corm = reshape2::melt(cors)
+	names(corm) = c("Var1", "Var2", "value")
 	corm = corm[ corm[,'Var1']!=corm[,'Var2'] , ] # substitute the 1s with the scale reliabilities here
 	if(!is.null(reliabilities)) {
 		rel = reliabilities
