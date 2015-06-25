@@ -238,6 +238,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
 	if(is.null(time) & !is.null(.formr$last_action_time)) time = .formr$last_action_time
+	stopifnot(!is.null(null))
 	(time + 
 	 	lubridate::dseconds( seconds + 
 	 												60* minutes + 
@@ -246,18 +247,20 @@ time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NUL
 	) < lubridate::here() # local time
 }
 
-#' checks whether a new day has broken (date has changed)
+#' checks whether a new day has broken (date has increased by at least one day)
 #'
 #' a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 #'
-#' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org 
+#' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.
 #' @export
 #' @examples
-#' next_day(as.Date(Sys.time()))
+#' next_day(Sys.time()) # always false
 
 next_day = function(date = NULL) {
 	if(is.null(date) & !is.null(.formr$last_action_date)) date = .formr$last_action_date
-	date < lubridate::today("")
+	stopifnot(!is.null(date))
+	date = lubridate::floor_date(as.POSIXct(date))
+	date < lubridate::floor_date(lubridate::now(),"day")
 }
 
 #' checks whether the current time is in a certain time window
