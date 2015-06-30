@@ -2,17 +2,17 @@
 % Please edit documentation in R/shorthands.R
 \name{next_day}
 \alias{next_day}
-\title{checks whether a new day has broken (date has changed)}
+\title{checks whether a new day has broken (date has increased by at least one day)}
 \usage{
 next_day(date = NULL)
 }
 \arguments{
-\item{date}{defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org}
+\item{date}{defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.}
 }
 \description{
 a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 }
 \examples{
-next_day(as.Date(Sys.time()))
+next_day(Sys.time()) # always false
 }
 
