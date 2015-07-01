@@ -423,9 +423,9 @@ formr_aggregate = function (survey_name,
 														item_list = formr_items(survey_name, host = host),
 														results = formr_raw_results(survey_name, host = host),
 														host = "https://formr.org",
-														compute_alphas = TRUE,
+														compute_alphas = FALSE,
 														fallback_max = 5, 
-														plot_likert = TRUE, ...)
+														plot_likert = FALSE, ...)
 {
 	results = formr_reverse(results, item_list, fallback_max = fallback_max)
 	item_names = names(results) # update after reversing
@@ -437,6 +437,8 @@ formr_aggregate = function (survey_name,
 		item_list_df = as.data.frame(item_list)
 		item_list_df$scale = suppressWarnings(stringr::str_match(item_list_df$name, "(?i)^([a-z0-9_]+?)_?[0-9]+R?$")[,2]) # fit the pattern
 		likert_scales = item_list_df[item_list_df$type %in% c("mc","mc_button","rating_button"), ]
+	} else {
+		plot_likert = FALSE
 	}
 	
 	scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+$")[,2] # fit the pattern
@@ -470,17 +472,20 @@ formr_aggregate = function (survey_name,
 			warning(save_scale, ": One of the items in the scale is not numeric. The scale was not aggregated.")
 			next
 		}
-		choice_lists = item_list[ likert_scales[which(likert_scales$scale == save_scale),"index"] ]
-		choice_values = unique(lapply(choice_lists, FUN = function(x) { names(x$choices) } ))
-		if(length(choice_values) != 1) {
-			warning(save_scale, ": The responses were saved with different possible values. Hence, the scale could not be aggregated. We saw ", paste(sapply(choice_values, FUN = paste, collapse = ";"), collapse = " & "))
-			next
-		}
-		choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
-		if(length(choice_labels) != 1) {
-			warning(save_scale, ": Was aggregated, but the response labels/item choices weren't identical across items, we saw ", paste(sapply(choice_labels, FUN = paste, collapse = ";"), collapse = " & "))
-		}
 		
+		if(!is.null(item_list)) {
+				
+			choice_lists = item_list[ likert_scales[which(likert_scales$scale == save_scale),"index"] ]
+			choice_values = unique(lapply(choice_lists, FUN = function(x) { names(x$choices) } ))
+			if(length(choice_values) != 1) {
+				warning(save_scale, ": The responses were saved with different possible values. Hence, the scale could not be aggregated. We saw ", paste(sapply(choice_values, FUN = paste, collapse = ";"), collapse = " & "))
+				next
+			}
+			choice_labels = unique(lapply(choice_lists, FUN = function(x) { x$choices} ))
+			if(length(choice_labels) != 1) {
+				warning(save_scale, ": Was aggregated, but the response labels/item choices weren't identical across items, we saw ", paste(sapply(choice_labels, FUN = paste, collapse = ";"), collapse = " & "))
+			}
+		}
 		# actually aggregate scale
 		results[, save_scale] = rowMeans( results[, scale_item_names ] )
 		
@@ -557,7 +562,7 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 #' results = formr_post_process_results(item_list, results)
 #' }
 
-formr_post_process_results = function(item_list = NULL, results, compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
+formr_post_process_results = function(item_list = NULL, results, compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE) {
 	results = formr_recognise(item_list = item_list, results = results)
 	formr_aggregate(item_list = item_list, results = results, compute_alphas = compute_alphas, fallback_max = fallback_max, plot_likert = plot_likert)
 }
