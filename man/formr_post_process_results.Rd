@@ -4,8 +4,8 @@
 \alias{formr_post_process_results}
 \title{Processed, aggregated results}
 \usage{
-formr_post_process_results(item_list = NULL, results, compute_alphas = TRUE,
-  fallback_max = 5, plot_likert = TRUE)
+formr_post_process_results(item_list = NULL, results,
+  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}

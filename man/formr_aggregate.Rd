@@ -6,8 +6,8 @@
 \usage{
 formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
   host), results = formr_raw_results(survey_name, host = host),
-  host = "https://formr.org", compute_alphas = TRUE, fallback_max = 5,
-  plot_likert = TRUE, ...)
+  host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5,
+  plot_likert = FALSE, ...)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}

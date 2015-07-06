@@ -4,7 +4,7 @@
 #'
 #' @param add_to_format add these arguments to the default specification
 #' @param fragment.only whether to get only a html fragment
-#' @param inline whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)
+#' @param section_divs whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)
 #' @param ... all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 #'
 #' Custom rmarkdown input format options based on the standard \code{\link[rmarkdown:html_document]{html_document}}, but with options that you can specify. Find the format options here in the pandoc documentation: http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html
@@ -13,7 +13,7 @@
 #'
 #' @export
 
-markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures'), fragment.only = FALSE, inline = FALSE, ...) 
+markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures'), fragment.only = FALSE, section_divs = TRUE, ...) 
 {
 	if(fragment.only) {
 		output = rmarkdown::html_fragment(...)
@@ -22,10 +22,10 @@ markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+a
 	}
 	
 	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
-		output$pandoc$from = paste0("markdown_strict", paste( add_to_format, collapse=""))
+		output$pandoc$from = paste0("markdown", paste( add_to_format, collapse=""))
 	}
-	output$pandoc$to = "html5"
-	if(inline) {
+	if(!section_divs) {
+		output$pandoc$to = "html5"
 		output$pandoc$args = setdiff(output$pandoc$args, "--section-divs")
 	}
 	
@@ -103,7 +103,7 @@ render_text = function (text, ...)
 
 formr_inline_render = function (text, self_contained = TRUE, ...)
 {
-	fileName = rmarkdown::render(input = write_to_file(text, name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE, inline = TRUE), ...)
+	fileName = rmarkdown::render(input = write_to_file(text, name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE, section_divs = FALSE), ...)
 	readChar(fileName, file.info(fileName)$size)
 }
 

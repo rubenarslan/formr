@@ -6,14 +6,14 @@
 \usage{
 markdown_custom_options(add_to_format = c("+autolink_bare_uris",
   "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"),
-  fragment.only = FALSE, inline = FALSE, ...)
+  fragment.only = FALSE, section_divs = TRUE, ...)
 }
 \arguments{
 \item{add_to_format}{add these arguments to the default specification}
 
 \item{fragment.only}{whether to get only a html fragment}
 
-\item{inline}{whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)}
+\item{section_divs}{whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 
