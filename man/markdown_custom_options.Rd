@@ -6,7 +6,7 @@
 \usage{
 markdown_custom_options(add_to_format = c("+autolink_bare_uris",
   "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"),
-  fragment.only = FALSE, section_divs = TRUE, ...)
+  fragment.only = FALSE, section_divs = TRUE, break_on_error = FALSE, ...)
 }
 \arguments{
 \item{add_to_format}{add these arguments to the default specification}
@@ -14,6 +14,8 @@ markdown_custom_options(add_to_format = c("+autolink_bare_uris",
 \item{fragment.only}{whether to get only a html fragment}
 
 \item{section_divs}{whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)}
+
+\item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 

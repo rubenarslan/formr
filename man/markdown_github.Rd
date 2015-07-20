@@ -4,10 +4,12 @@
 \alias{markdown_github}
 \title{github_markdown for rmarkdown}
 \usage{
-markdown_github(fragment.only = FALSE, ...)
+markdown_github(fragment.only = FALSE, break_on_error = FALSE, ...)
 }
 \arguments{
 \item{fragment.only}{whether to get only a html fragment}
+
+\item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}}
 }
