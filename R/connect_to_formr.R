@@ -289,7 +289,7 @@ formr_simulate_from_items = function (item_list, n = 300)
 		item = item_list[[i]]
 		if(item$type %in% c("note","mc_heading")) { next;
 		} else if(item$type == "rating_button") { # bit of a special case
-			if(is.null(item$type_options) | !is.numeric(type.convert(item$type_options))) { 
+			if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
 				max_rat = 5
 			} else {
 				max_rat = as.numeric(item$type_options)
@@ -365,7 +365,7 @@ formr_reverse = function (results,
 			if( length( item$choices) )  { # choice-based items
 				if(stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {# with a number and an "R" at the end
 					if(item$type == "rating_button") { 
-						if(is.null(item$type_options) | !is.numeric(type.convert(item$type_options))) { 
+						if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
 							max_rat = 5
 						} else {
 							max_rat = as.numeric(item$type_options)
@@ -614,7 +614,7 @@ formr_likert = function (item_list, results)
 			if(item$type != "rating_button") {
 				results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
 			} else {
-				if(is.null(item$type_options) | !is.numeric(type.convert(item$type_options))) { 
+				if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
 					max_rat = 5
 				} else {
 					max_rat = as.numeric(item$type_options)
