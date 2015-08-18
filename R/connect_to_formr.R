@@ -78,8 +78,31 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 formr_items = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_item_table?format=json"))
 	if(resp$status_code == 200) {
-		item_list = jsonlite::fromJSON(simplifyDataFrame=FALSE,
-		httr::content(resp,encoding="utf8",as="text") )
+		item_list = jsonlite::fromJSON(simplifyDataFrame=FALSE,	httr::content(resp,encoding="utf8",as="text") )
+		
+		for(i in seq_along(item_list)) {
+			if(item_list[[i]]$type == "rating_button") {
+				from = 1; to = 5; by = 1
+				if(!is.null(item_list[[i]]$type_options)) { # has the format 1,6 or 1,6,1
+					sequence = stringr::str_split(item_list[[i]]$type_options, ",")[[1]]
+					if(length(sequence) == 3) {
+						from = as.numeric(sequence[1])
+						to = as.numeric(sequence[2])
+						by = as.numeric(sequence[3])
+					} else if(length(sequence) == 2) {
+						from = as.numeric(sequence[1])
+						to = as.numeric(sequence[2])
+					} else if(length(sequence) == 1) {
+						to = as.numeric(sequence[1])
+					}
+				}
+				sequence = seq(from, to, by)
+				names(sequence) = sequence
+				sequence[1] = item_list[[i]]$choices[[1]]
+				sequence[length(sequence)] = item_list[[i]]$choices[[2]]
+				item_list[[i]]$choices = as.list(sequence)
+			}
+		}
 		class(item_list) = c("formr_item_list", class(item_list))
 		item_list
 	}
@@ -288,15 +311,7 @@ formr_simulate_from_items = function (item_list, n = 300)
 	for(i in seq_along(item_list)) {
 		item = item_list[[i]]
 		if(item$type %in% c("note","mc_heading")) { next;
-		} else if(item$type == "rating_button") { # bit of a special case
-			if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
-				max_rat = 5
-			} else {
-				max_rat = as.numeric(item$type_options)
-			}
-			sample_from = 1:max_rat
-			sim[, item$name] = sample(sample_from,size=n,replace=T)
-		}	else if( length( item$choices) )  { # choice-based items
+		} else if( length( item$choices) )  { # choice-based items
 			sample_from = type.convert( names(item$choices), as.is = F)
 			sim[, item$name] = sample(sample_from,size=n,replace=T)
 		} else if(length(item$type_options) && stringr::str_detect(item$type_options, "^[0-9.,]+$")) {
@@ -364,18 +379,8 @@ formr_reverse = function (results,
 			}
 			if( length( item$choices) )  { # choice-based items
 				if(stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {# with a number and an "R" at the end
-					if(item$type == "rating_button") { 
-						if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
-							max_rat = 5
-						} else {
-							max_rat = as.numeric(item$type_options)
-						}
-						
-						possible_replies = 1:max_rat
-					} else {
-						possible_replies = type.convert(names(item$choices))
-					}
-					
+					possible_replies = type.convert(names(item$choices))
+
 					if(! is.numeric(possible_replies)) {
 						warning(item$name, " is not numeric and cannot be reversed.")
 					} else {
@@ -611,20 +616,7 @@ formr_likert = function (item_list, results)
 		
 		if(length(item_number)>0 & item$type %in% c('mc_button','mc','rating_button')) {
 			item_numbers = c(item_numbers, item_number)
-			if(item$type != "rating_button") {
-				results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
-			} else {
-				if(is.null(item$type_options) | !is.numeric(type.convert(as.character(item$type_options)))) { 
-					max_rat = 5
-				} else {
-					max_rat = as.numeric(item$type_options)
-				}
-				
-				labels = 1:max_rat
-				labels[1] = item$choices[1]
-				labels[max_rat] = item$choices[2]
-				results[, item_number] = factor(results[, item$name], levels = 1:max_rat, labels = labels)
-			}
+			results[, item_number] = factor(results[, item$name], levels = names(item$choices), labels = item$choices)
 			names(results)[item_number] = paste(item$label,paste0("[",item$name,"]")) # seriously cumbersome way to rename single column
 		}
 	}
