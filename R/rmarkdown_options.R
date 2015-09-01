@@ -179,3 +179,20 @@ knit_prefixed = function(input, ...) {
 	)
 	knit(input, ...)
 }
+
+#' word_document from rmarkdown, but has an added option not to break on error
+#'
+#'
+#' Exactly like \code{\link[rmarkdown:word_document]{word_document}}, but with one added argument
+#' 
+#' @param ... all other arguments passed to \code{\link[rmarkdown:word_document]{word_document}}
+#' @param break_on_error should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE
+#'
+#' @export
+
+word_document = function ( ..., break_on_error = FALSE) 
+{
+	output = rmarkdown::word_document(...)
+	output$knitr$opts_chunk$error = ! break_on_error
+	output
+}
