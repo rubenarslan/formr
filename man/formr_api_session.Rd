@@ -2,15 +2,13 @@
 % Please edit documentation in R/formr_api.R
 \name{formr_api_session}
 \alias{formr_api_session}
-\title{Get current API session}
-\usage{
-formr_api_session(set = NULL)
-}
-\arguments{
-\item{set}{leave out to return current value
+\title{Get current API session
 Return or set URL in list form for formr API (if available)}
+\usage{
+formr_api_session()
 }
 \description{
 Get current API session
+Return or set URL in list form for formr API (if available)
 }
 

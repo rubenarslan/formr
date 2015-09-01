@@ -12,9 +12,10 @@
 #' }
 
 formr_api_access_token = function(client_id, client_secret, host = "https://formr.org/") {
-	url = httr::parse_url(host)
+	base_url = httr::parse_url(host)
 
-	token_url =	formr_api_session(url)
+	.formr_current_session$set(base_url)
+	token_url =	base_url
 	token_url$path = paste0(token_url$path, "api/oauth/token")
 	
 	result = httr::POST(url = token_url, 
@@ -29,25 +30,29 @@ formr_api_access_token = function(client_id, client_secret, host = "https://form
 	}	else if(!is.null(token$error)) {
 		stop("Error using formr API: ",token$error_code," ", token$error, " ",token$description)
 	}
-	base_url = formr_api_session()
 	base_url$query = list(access_token = token$access_token)
-	formr_api_session(base_url)
+	.formr_current_session$set(base_url)
 	
 	invisible(result)
 }
 
-.formr_current_session <- NULL
+.store_formr_current_session <- function() {
+	.formr_store_current_session <- NULL
+	
+	list(
+		get = function() .formr_store_current_session,
+		set = function(value) .formr_store_current_session <<- value
+	)
+}
+.formr_current_session <- .store_formr_current_session()
+
 
 #' Get current API session
-#' @param set leave out to return current value
 #' Return or set URL in list form for formr API (if available)
+#' @export
 #'
-formr_api_session = function(set = NULL) {
-	if(is.null(set)) {
-		return(.formr_current_session)
-	} else {
-		.formr_current_session <<- set
-	}
+formr_api_session = function() {
+		.formr_current_session$get()
 }
 
 #' Get result from formr
