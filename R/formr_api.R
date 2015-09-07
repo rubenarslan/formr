@@ -16,11 +16,14 @@ formr_api_access_token = function(client_id, client_secret, host = "https://form
 
 	.formr_current_session$set(base_url)
 	token_url =	base_url
-	token_url$path = paste0(token_url$path, "api/oauth/token")
+	token_url$path = paste0(token_url$path, "api/oauth/access_token")
 	
 	result = httr::POST(url = token_url, 
-								config = httr::authenticate(user = client_id, password = client_secret),
-								body = list(grant_type = "client_credentials")
+								body = list(
+									client_id = client_id, 
+									client_secret = client_secret,
+									grant_type = "client_credentials"
+									)
 	)
 	
 	token = httr::content(result)
@@ -68,7 +71,7 @@ formr_api_session = function() {
 #' formr_api_results(list(
 #'   run = list(
 #'      name = "rotate_me",  # for which run do you want results
-#'      session = "some_session_code" # and for which user
+#'      session = "lfI_8vlMDHxe8HA4DAd9jbdB1TU5m_bN4MNbbJyFNKO1ZZBzeyLnHaD1amOQAk65" # and for which user
 #'    )
 #'  ))
 #' }
