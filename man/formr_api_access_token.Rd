@@ -4,7 +4,8 @@
 \alias{formr_api_access_token}
 \title{Connect to formr API}
 \usage{
-formr_api_access_token(client_id, client_secret, host = "https://formr.org/")
+formr_api_access_token(client_id, client_secret,
+  host = "https://api.formr.org/")
 }
 \arguments{
 \item{client_id}{your client_id}

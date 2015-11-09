@@ -77,8 +77,8 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 
 formr_items = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_item_table?format=json"))
-	if(resp$status_code == 200) {
-		item_list = jsonlite::fromJSON(simplifyDataFrame=FALSE,	httr::content(resp,encoding="utf8",as="text") )
+	if (resp$status_code == 200) {
+		item_list = jsonlite::fromJSON(simplifyDataFrame = FALSE,	httr::content(resp,encoding = "utf8",as = "text") )[["items"]]
 		
 		for(i in seq_along(item_list)) {
 			if(item_list[[i]]$type == "rating_button") {

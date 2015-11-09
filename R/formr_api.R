@@ -11,12 +11,12 @@
 #' formr_api_access_token(client_id = "your_id", client_secret = "your_secret" )
 #' }
 
-formr_api_access_token = function(client_id, client_secret, host = "https://formr.org/") {
+formr_api_access_token = function(client_id, client_secret, host = "https://api.formr.org/") {
 	base_url = httr::parse_url(host)
 
 	.formr_current_session$set(base_url)
 	token_url =	base_url
-	token_url$path = paste0(token_url$path, "api/oauth/access_token")
+	token_url$path = paste0(token_url$path, "oauth/access_token")
 	
 	result = httr::POST(url = token_url, 
 								body = list(
@@ -68,10 +68,17 @@ formr_api_session = function() {
 #' @export
 #' @examples
 #' \dontrun{
-#' formr_api_results(list(
+#' formr_api_results(
+#' list(
 #'   run = list(
-#'      name = "rotate_me",  # for which run do you want results
-#'      session = "lfI_8vlMDHxe8HA4DAd9jbdB1TU5m_bN4MNbbJyFNKO1ZZBzeyLnHaD1amOQAk65" # and for which user
+#'      name = "validation",  # for which run do you want results
+#'      session = "joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46", # and for which user
+#'      surveys = list(
+#'      	list(
+#'      	name = "try_validation",
+#'      	items = c("mc_religion", "plz")
+#'      	)
+#'      )
 #'    )
 #'  ))
 #' }
@@ -80,7 +87,7 @@ formr_api_results = function(request = NULL, token = NULL) {
 	get_url = formr_api_session()
 	if(!is.null(token)) get_url = token
 	
-	get_url$path = paste0(get_url$path, "api/get/results")
+	get_url$path = paste0(get_url$path, "get/results")
 	get_url$query$request = jsonlite::toJSON(
 		request
 		,auto_unbox = T)

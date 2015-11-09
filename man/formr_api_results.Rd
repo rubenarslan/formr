@@ -16,10 +16,17 @@ After obtaining a token from formr, use this request
 }
 \examples{
 \dontrun{
-formr_api_results(list(
+formr_api_results(
+list(
   run = list(
-     name = "rotate_me",  # for which run do you want results
-     session = "some_session_code" # and for which user
+     name = "validation",  # for which run do you want results
+     session = "joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46", # and for which user
+     surveys = list(
+     	list(
+     	name = "try_validation",
+     	items = c("mc_religion", "plz")
+     	)
+     )
    )
  ))
 }
