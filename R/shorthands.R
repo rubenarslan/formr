@@ -402,8 +402,8 @@ take_nonmissing = function(df, keep = c()) {
 #' missingness_patterns(ChickWeight)
 missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE) {
 	missings_by_column = colSums(is.na(df))
-	if(omit_complete) {
-		takethese = missings_by_column!=0
+	if (omit_complete) {
+		takethese = missings_by_column != 0
 	} else {
 		takethese = TRUE
 	}
@@ -412,42 +412,45 @@ missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), l
 	any_missing_sorted = names(missings_by_column)
 	df = subset(df, select = any_missing_sorted)
 	cols = names(df)
-	if(length(cols)==0) {
+	if (length(cols) == 0) {
 		cat("No missings at all.\n")
 		return(invisible(NULL))
 	}
 	df = !is.na(df)
-	if(min_freq > 0) {
+	if (min_freq > 0) {
 		counted = plyr::count(df)		
 		names(counted) = c(cols, "Freq")
 	} else {
-		counted = as.data.frame(xtabs(data=df))
+		counted = as.data.frame( xtabs( data = df) )
 	}
-	if(relative) {
+	if (relative) {
 		counted$Freq = counted$Freq/sum(counted$Freq)
 	}
 	counted = counted[counted$Freq >= min_freq, ]
 	pattern = character(length = nrow(counted))
-	if(show_culprit) {
+	if (show_culprit) {
 		culprit = rep(x = '_', nrow(counted))
 	}
-	for(i in 1:length(cols)) {
-		if(show_culprit) {
-		culprit[counted[,i]=="FALSE"] = ifelse(culprit[counted[,i]=="FALSE"]=="_", cols[i], "") # if it's a _, set it, if it's set, set it to empty
+	for (i in 1:length(cols)) {
+		if (show_culprit) {
+		culprit[counted[,i] == "FALSE"] = ifelse(culprit[counted[,i] == "FALSE"] == "_", cols[i], "") # if it's a _, set it, if it's set, set it to empty
 		}
-		pattern = paste0(pattern, ifelse(counted[,i]=="TRUE","_", as.character(i) ))
+		nr = as.character(i)
+		pattern = paste0(pattern, ifelse(i == 1, '', '_'), ifelse(counted[,i] == "TRUE", stringr::str_pad('', stringr::str_length(nr), pad = '_') , nr ))
 	}
 	missingness = data.frame(Pattern = pattern, Freq = counted$Freq, Culprit = culprit)
 	
-	if(long_pattern == TRUE) {
+	if (long_pattern == TRUE) {
 		long_pattern = character(length = nrow(counted))
-		for(i in 1:length(cols)) {
-			long_pattern = paste0(long_pattern, ifelse(counted[,i]=="TRUE","_",paste0(cols[i],".")))
+		for (i in 1:length(cols)) {
+			long_pattern = paste0(long_pattern, ifelse(counted[,i] == "TRUE", "_", paste0(cols[i],".")))
 		}
 		missingness$Pattern = long_pattern
 	}
-	if(print_legend) {
-		print(data.frame(index = 1:length(cols),col =cols, missings = missings_by_column), row.names=FALSE)
+	if (print_legend) {
+		print(data.frame(index = 1:length(cols),col = cols, missings = missings_by_column), row.names = FALSE)
 	}
-	missingness[order(missingness$Freq,decreasing = T),]
+	missingness = missingness[order(missingness$Freq,decreasing = T),]
+	rownames(missingness) = NULL
+	missingness
 }
