@@ -225,18 +225,21 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 #' checks how much time has passed relative to the user's last action
 #'
-#' checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. No months and other uncertain time spans.
+#' checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
 #'
 #' @param seconds argument to \code{\link[lubridate:dseconds]{dseconds}}
 #' @param minutes 60 seconds
 #' @param hours 60 minutes
 #' @param days 24 hours
+#' @param weeks 7 days
+#' @param months 30 days
+#' @param years 365 days
 #' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org
 #' @export
 #' @examples
 #' time_passed(hours = 7, time = Sys.time())
 
-time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
+time_passed = function(years = 0, months = 0, weeks = 0, days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
 	if(is.null(time) & !is.null(.formr$last_action_time)) 
 		time = .formr$last_action_time
 	time = as.POSIXct(time)
@@ -245,7 +248,10 @@ time_passed = function(days = 0, hours = 0, minutes = 0, seconds = 0, time = NUL
 	 	lubridate::dseconds( seconds + 
 	 												60* minutes + 
 	 												60*60* hours + 
-	 												60*60*24* days ) 
+	 												60*60*24* days +
+	 											 	60*60*24*7* weeks +
+	 											 	60*60*24*30* months +
+	 											 	60*60*24*365* years) 
 	) < lubridate::here() # local time
 }
 
