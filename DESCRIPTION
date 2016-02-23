@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.2.10
+Version: 0.3.0
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -29,8 +29,9 @@ Imports:
     knitr,
     curl,
     reshape2,
-    data.table,
-    commonmark
+    dplyr,
+    commonmark,
+    pryr
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54

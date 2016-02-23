@@ -127,16 +127,17 @@ formr_items = function(survey_name, host = "https://formr.org") {
 
 as.data.frame.formr_item_list = function(x, row.names, ...) {
 	item_list = x
-	for(i in seq_along(item_list)) {
+	for (i in seq_along(item_list)) {
 		item_list[[i]][sapply(item_list[[i]], is.null)] <- NA # NULLs are annoying when wanting to transform into a df
 		
-		if(!is.null(item_list[[i]]$choices)) {
-			item_list[[i]]$choices = paste(paste0(names(item_list[[i]]$choices),"=",item_list[[i]]$choices),collapse=",")
-		} else { # in some cases the choices column is missing
+		if (!is.null(item_list[[i]]$choices)) {
+			item_list[[i]]$choices = paste(paste0(names(item_list[[i]]$choices),"=",item_list[[i]]$choices),collapse = ",")
+		} else {
+			# in some cases the choices column is missing
 			# item_list[[i]]["choices"] = list(NULL)
 		}
 	}
-	item_list = (data.table::setDF(data.table::rbindlist(item_list,fill=T)))
+	item_list = dplyr::bind_rows(item_list, fill = TRUE)
 	item_list$index = 1:nrow(item_list)
 	item_list
 }
@@ -158,8 +159,8 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 
 formr_item_displays = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_itemdisplay?format=json"))
-	if(resp$status_code == 200)	jsonlite::fromJSON(
-			httr::content(resp,encoding="utf8",as="text")
+	if (resp$status_code == 200)	jsonlite::fromJSON(
+			httr::content(resp,encoding = "utf8",as="text")
 		)
 	else stop("This survey does not exist.")
 }
@@ -181,7 +182,7 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
 
 formr_shuffled = function(run_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/run/",run_name,"/random_groups_export?format=json"))
-	if(resp$status_code == 200) jsonlite::fromJSON(
+	if (resp$status_code == 200) jsonlite::fromJSON(
 		httr::content(resp,encoding="utf8",as="text")
 	)
 	else stop("This run does not exist.")
@@ -196,10 +197,10 @@ formr_shuffled = function(run_name, host = "https://formr.org") {
 #' @param lower lower limit
 #' @param upper upper limit
 
-random_date_in_range <- function(N, lower="2012/01/01", upper="2012/12/31") {
+random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") {
 	st <- as.POSIXct(as.Date(lower))
 	et <- as.POSIXct(as.Date(upper))
-	dt <- as.numeric(difftime(et,st,units="sec"))
+	dt <- as.numeric(difftime(et,st, units = "sec"))
 	ev <- sort(runif(N, 0, dt))
 	rt <- st + ev
 	rt

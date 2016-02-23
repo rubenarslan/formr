@@ -460,3 +460,147 @@ missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), l
 	rownames(missingness) = NULL
 	missingness
 }
+
+
+#' iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade by confidence. Horribly inefficient, because smooth stat is computed every time, but flexible.
+#'
+#' @param levels the confidence levels that are supposed to be displayed, defaults to 0.6, 0.8, 0.95
+#' @param base_alpha divided by length(levels)
+#' @param fill_gradient a vector of colors that has at least the same length as levels. Color each ribbon differently
+#' @param ... everything else is passed to and document in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
+#' @export
+#' @examples
+#' data(beavers)
+#' plot = ggplot2::ggplot(beaver1, ggplot2::aes(time, temp))
+#' plot + geom_shady_smooth() + ggplot2::facet_wrap(~ day)
+#' plot + geom_shady_smooth(fill = "blue", levels = seq(0.05,0.95,0.1))
+#' plot + geom_shady_smooth(size = 0.1, fill = "#49afcd", levels = seq(0.1,0.8,0.01))
+#' plot + geom_shady_smooth(fill_gradient = c("red", "orange", "yellow"), base_alpha = 3)
+geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", method = "auto", 
+															 formula = y ~ x, se = TRUE, position = "identity", na.rm = FALSE, 
+															 show.legend = NA, inherit.aes = TRUE, levels = c(0.6, 0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", ...)  {
+	layers = list()
+	ribbon_alpha = base_alpha / length(levels)
+	if (ribbon_alpha > 1) ribbon_alpha = 1
+	
+	params <- list(na.rm = na.rm, fill = fill, ...)
+	if (identical(stat, "smooth")) {
+		params$method <- method
+		params$formula <- formula
+		params$se <- se
+	}
+	params_ribbon = params
+	params_ribbon$color = NULL # don't want the line color to be the stroke of the ribbon
+	params_ribbon$alpha = ribbon_alpha # alpha level for ribbon is automatically based on nr of levels and base_alpha
+	levels = rev(levels)
+	if (!is.null(fill_gradient)) {
+		stopifnot(length(fill_gradient) == length(levels))
+		fill_gradient = rev(fill_gradient)
+	}
+	for (i in seq_along(levels)) {
+		params_ribbon$level = levels[[i]]
+		if (!is.null(fill_gradient)) {
+			params_ribbon$fill = fill_gradient[i]
+		}
+		layers[[i]] = ggplot2::layer(data = data, mapping = mapping, stat = stat, geom = ggplot2::GeomRibbon, 
+												position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
+												params = params_ribbon)
+	}
+	params$fill = NULL # line knows no fill aesthetic
+	layers[[ i + 1 ]] = ggplot2::layer(data = data, mapping = mapping, stat = stat, geom = ggplot2::GeomLine, 
+			position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
+			params = params)
+	layers
+}
+
+
+#' get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.
+#'
+#' @param classes objects should have one of these classes 
+#' @param envir defaults to looking in the calling environment of this function
+#' @param top_class_only defaults to FALSE. If false, also returns objects inheriting from one of the specified classes.
+#' @export
+#' @examples
+#' data(ChickWeight)
+#' chickweight.m1 <- glm(weight ~ Time + Diet, family = gaussian, data = ChickWeight)
+#' ls_by_class("lm")
+#' c("chickweight.m1") %in% ls_by_class("lm")
+#' c("chickweight.m1") %in% ls_by_class("lm", top_class_only = TRUE)
+#' 
+ls_by_class = function(classes, envir = parent.frame(), top_class_only = FALSE, ...){
+	inlist <- ls(envir = envir, ...)
+	ifexistsgetclass = function(x, envir) { 
+		if (exists(x, envir = envir, inherits = FALSE)) {
+			obj = get(x, envir = envir, inherits = FALSE)
+			class(obj)
+		} else {
+			NULL
+		}
+	}
+	classlist <- sapply(inlist,function(x) ifexistsgetclass(x, envir = envir))
+	has_class = function(x) { 
+		if (top_class_only) {
+			x[[1]] %in% classes
+		} else {
+			!!length(intersect(x, classes) ) 
+		}
+	}
+	if (length(classlist) > 0 ) {
+		names(classlist[
+			sapply(classlist,has_class) ## take any who have a class that is in our list
+			])
+	} else {
+		character(0)
+	}
+}
+
+
+
+#' It's easy to attach packages that overwrite functions from other packages. Especially dplyr has a lot of conflicts
+#' with base packages, MASS and plyr. Because some of these conflicts do not always lead to error messages, sometimes
+#' just incorrect behaviour, this function exists. Don't trust your faulty memory, just check whether dplyr's (or any other
+#' package's) functions are "on top" if you so desire.
+#'
+#' @param fix defaults to true. Detaches the desired package (without unloading) and loads it again. Won't work for base packages and can't overwrite functions that you defined yourself.
+#' @param package the package you want to be on top (loaded last), defaults to dplyr
+#' @param iteration for internal use only, if set to 0 the function will call itself to check that it worked, if set to 1, it won't.
+#' @export
+#' @examples
+#' amigoingmad(fix = FALSE, package = "formr")
+amigoingmad = function(fix = TRUE, package = "dplyr", iteration = 0) {
+	if (iteration > 1) {
+		stop("Can't fix.")
+	}
+	conf = unique(conflicts())
+	want_package = paste0("package:", package)
+	conflicts_desired_package = conf[ conf %in% ls(want_package) ]
+	conflict_envs = sapply(conflicts_desired_package, FUN = function(x) { environmentName(pryr::where(x)) })
+	is_good = conflict_envs == want_package
+	potentially_bad_confs = conflicts_desired_package[ !is_good ]
+	potentially_bad_envs = conflict_envs[ !is_good ]
+	have_to_fix = rep(FALSE, length(potentially_bad_confs))
+	for (i in seq_along(potentially_bad_confs)) {
+		if (
+			!identical(
+				body( get(potentially_bad_confs[i], pos = want_package) ),
+				body( get(potentially_bad_confs[i]) )
+			)
+		) {
+			have_to_fix[i] = TRUE
+		}
+	}
+	
+	if (any(have_to_fix)) {
+		message("The following functions don't have the environment you want.")
+		print( data.frame(`function` = potentially_bad_confs[have_to_fix], environment = potentially_bad_envs[have_to_fix]), row.names = F)
+		if (fix) {
+			base::detach(name = want_package, character.only = TRUE)
+			base::library(package, character.only = TRUE)
+			message("Tried to fix this, calling myself again to make sure...")
+			amigoingmad(fix, want_package, iteration + 1)
+			message("Sanity restored!")
+		}
+	} else if (iteration == 0) {
+		message("Everything looks normal. Maybe it's you.")
+	}
+}
