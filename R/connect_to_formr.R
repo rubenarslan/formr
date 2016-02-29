@@ -79,7 +79,8 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_items(survey_name = 'training_diary' )
 #' }
-#' formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))[1:2]
+#' formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))[1:2]
 
 formr_items = function(survey_name = NULL, host = "https://formr.org", 
   path = NULL) {
@@ -148,7 +149,8 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' as.data.frame(formr_items(survey_name = 'training_diary' ))
 #' }
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' items_df = as.data.frame(items)
 #' items_df[1,]
 
@@ -247,9 +249,11 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' @param host defaults to https://formr.org
 #' @export
 #' @examples
-#' results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' results = jsonlite::fromJSON(txt = 
+#' system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 #' class(results$created)
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' results = formr_recognise(item_list = items, results = results)
 #' class(results$created)
 
@@ -340,7 +344,8 @@ formr_recognise = function(survey_name, item_list = formr_items(survey_name,
 #' sim = formr_simulate_from_items(item_list = formr_items('training_diary'), n = 100)
 #' summary(lm(pushups ~ pullups, data = sim))
 #' }
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' fakedata = formr_simulate_from_items(items, n = 20)
 #' fakedata[1:2,]
 
@@ -394,8 +399,10 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #' sim_results = formr_simulate_from_items(icar_items)
 #' reversed_items = formr_reverse(item_list = icar_items, results = sim_results)
 #' }
-#' results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = jsonlite::fromJSON(txt = 
+#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' formr_reverse(results, items)
 
 
@@ -482,9 +489,12 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' summary(lm(ICAR_matrix ~ ICAR_verbal, data = sim_agg))
 #' summary(lm(ICAR_matrix ~ ICAR_verbal, data = actual))
 #' }
-#' results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' agg = formr_aggregate(item_list = items, results = results, compute_alphas = TRUE, plot_likert = TRUE)
+#' results = jsonlite::fromJSON(txt = 
+#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' agg = formr_aggregate(item_list = items, results = results, 
+#' 	compute_alphas = TRUE, plot_likert = TRUE)
 #' agg[, c('religiousness', 'prefer')]
 
 
@@ -652,9 +662,12 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @export
 #' @examples
-#' results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' results = formr_post_process_results(items, results, compute_alphas = TRUE, plot_likert = TRUE)
+#' results = jsonlite::fromJSON(txt = 
+#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = formr_post_process_results(items, results, 
+#' compute_alphas = TRUE, plot_likert = TRUE)
 
 
 formr_post_process_results = function(item_list = NULL, results, 
@@ -675,8 +688,10 @@ formr_post_process_results = function(item_list = NULL, results,
 #' @param results survey results
 #' @export
 #' @examples
-#' results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = jsonlite::fromJSON(txt = 
+#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' likert_items = formr_likert(item_list = items[2:5], results = results)
 #' plot(likert_items)
 

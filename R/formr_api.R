@@ -64,8 +64,10 @@ formr_api_session = function() {
 #' formr_api_results(
 #' list(
 #'   run = list(
-#'      name = 'validation',  # for which run do you want results
-#'      session = 'joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46', # and for which user
+#'   		# for which run do you want results
+#'      name = 'validation',  
+#'      # and for which user
+#'      session = 'joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46', 
 #'      surveys = list(
 #'      \tlist(
 #'      \tname = 'try_validation',

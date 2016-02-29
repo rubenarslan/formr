@@ -32,6 +32,11 @@ text_message_massenversand(To, From, Body, id, pw, time = "0",
 Connects to Massenversand.de using your token and sends a text message.
 }
 \examples{
-text_message_massenversand(To = '492222', From = '15005000', Body = 'Hello friend',id = 'ID', pw = 'Tokentokentoken')
+text_message_massenversand(
+	To = '492222', 
+	From = '15005000', 
+	Body = 'Hello friend',
+	id = 'ID', 
+	pw = 'Tokentokentoken')
 }
 

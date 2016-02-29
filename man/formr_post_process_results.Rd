@@ -23,8 +23,11 @@ This function chains \code{\link{formr_recognise}} and \code{\link{formr_aggrega
 in sequence. Useful if you want to post-process raw results before aggregating etc.
 }
 \examples{
-results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-results = formr_post_process_results(items, results, compute_alphas = TRUE, plot_likert = TRUE)
+results = jsonlite::fromJSON(txt = 
+	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+items = formr_items(path = 
+	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = formr_post_process_results(items, results, 
+compute_alphas = TRUE, plot_likert = TRUE)
 }
 

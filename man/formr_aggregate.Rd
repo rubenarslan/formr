@@ -45,9 +45,12 @@ actual = formr_aggregate(survey_name='ICAR')
 summary(lm(ICAR_matrix ~ ICAR_verbal, data = sim_agg))
 summary(lm(ICAR_matrix ~ ICAR_verbal, data = actual))
 }
-results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-agg = formr_aggregate(item_list = items, results = results, compute_alphas = TRUE, plot_likert = TRUE)
+results = jsonlite::fromJSON(txt = 
+	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+items = formr_items(path = 
+	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+agg = formr_aggregate(item_list = items, results = results, 
+	compute_alphas = TRUE, plot_likert = TRUE)
 agg[, c('religiousness', 'prefer')]
 }
 

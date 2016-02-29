@@ -23,6 +23,10 @@ text_message_twilio(To, From, Body, Account, Token, return_result = F)
 Connects to Twilio using your token and sends a text message.
 }
 \examples{
-text_message_twilio(To = '492222', From = '15005000', Body = 'Hello friend',Account = 'ID', Token = 'Tokentokentoken')
+text_message_twilio(
+	To = '492222', 
+	From = '15005000', 
+	Body = 'Hello friend',
+	Account = 'ID', Token = 'Tokentokentoken')
 }
 

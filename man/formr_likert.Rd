@@ -16,8 +16,10 @@ If you've retrieved an item table using \code{\link{formr_items}} you can use th
 function to retrieve a \code{\link[likert:likert]{likert}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
 }
 \examples{
-results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = jsonlite::fromJSON(txt = 
+	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+items = formr_items(path = 
+	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 likert_items = formr_likert(item_list = items[2:5], results = results)
 plot(likert_items)
 }

@@ -21,7 +21,8 @@ This function just turns a formr_item_list into a data.frame. The reason, these 
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 as.data.frame(formr_items(survey_name = 'training_diary' ))
 }
-items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+items = formr_items(path = 
+system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 items_df = as.data.frame(items)
 items_df[1,]
 }

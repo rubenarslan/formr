@@ -98,10 +98,11 @@ current = function(x) {
 #'
 #' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the beginning.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr]{str_detect}}. You can also use \code{\%starts_with\%}.
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
+#' @aliases %starts_with%
 #' @export
 #' @examples
 #' '1, 3, 4' %begins_with% '1' # TRUE
@@ -111,6 +112,10 @@ current = function(x) {
 "%begins_with%" = function(haystack, needle) {
   stringr::str_detect(haystack, paste0("^", Hmisc::escapeRegex(as.character(needle))))
 }
+
+#' @rdname %begins_with% 
+#' @export
+"%starts_with%" = "%begins_with%"
 
 #' check whether a character string ends with a string
 #'
@@ -632,4 +637,53 @@ amigoingmad = function(fix = TRUE, package = "dplyr", iteration = 0) {
   } else if (iteration == 0) {
     message("Everything looks normal. Maybe it's you.")
   }
+}
+
+#' Summarises a dataset using \code\link[tidyr]{gather}} and \code\link[dplyr]{summarise}}.
+#' 
+#' @param data dataset
+#' @return return a tbl_df with one var per row and one column for mean, sd, max, min (all with missings removed), the number of missings, the number of nonmissing values, and the number of distinct values
+#' @export
+#' @examples
+#' data(beavers)
+#' summarise_all_vars(beaver1)
+#' beaver1 = dplyr::group_by(beaver1, activ)
+#' summarise_all_vars(beaver1)
+summarise_all_vars = function(data) {
+	dplyr_groups = as.character(dplyr::groups(data))
+	gather_cols = setdiff(names(data), dplyr_groups)
+	data = tidyr::gather_(data, "variable", "value", gather_cols = gather_cols, factor_key = TRUE)
+	data = dplyr::group_by_(data, .dots = c("variable", dplyr_groups))
+	summary_of_vars = dplyr::summarise(data, 
+		mean = mean(value, na.rm = T), 
+		sd = sd(value, na.rm = T), 
+		min = min(value, na.rm = T), 
+		max  = max(value, na.rm = T),
+		n_miss = n_missing(value),
+		n_nonmiss = n() - n_miss,
+		n_distinct = n_distinct(value)
+	)
+	summary_of_vars
+}
+
+#' Returns the number of missings in a variable or dataset. 
+#' If missings are an explicit level in a factor variable, this
+#' function defaults to reporting them anyway.
+#' 
+#' @param x
+#' @export
+#' @examples
+#' data(beavers)
+#' beaver1$activ[1:10] = NA
+#' n_missing(beaver1$activ)
+#' beaver1$activ = factor(beaver1$activ, exclude = NULL)
+#' sum(is.na(beaver1$activ))
+#' n_missing(beaver1$activ)
+#' n_missing(beaver1$activ, exclude = NULL)
+
+n_missing = function(x, exclude = NA) { 
+	if (!is.null(exclude) && is.factor(x) && sum(is.na(levels(x))) > 0) {
+		x = factor(x, exclude = exclude)
+	}
+	sum(is.na(x)) 
 }

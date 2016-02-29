@@ -24,8 +24,10 @@ icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/
 sim_results = formr_simulate_from_items(icar_items)
 reversed_items = formr_reverse(item_list = icar_items, results = sim_results)
 }
-results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = jsonlite::fromJSON(txt = 
+	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+items = formr_items(path = 
+	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 formr_reverse(results, items)
 }
 
