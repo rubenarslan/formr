@@ -13,8 +13,9 @@
 #' last( c(NA, 1:10), 2, TRUE )
 
 first = function(x, n = 1, na.rm = TRUE) {
-    if(na.rm) x = na.omit(x)
-    head(x, n)
+  if (na.rm) 
+    x = na.omit(x)
+  head(x, n)
 }
 
 #' Gives the last non-missing element
@@ -32,8 +33,9 @@ first = function(x, n = 1, na.rm = TRUE) {
 #' last( c(1:10,NA), 2, TRUE )
 
 last = function(x, n = 1, na.rm = TRUE) {
-    if(na.rm) x = na.omit(x)
-    tail(x, n)
+  if (na.rm) 
+    x = na.omit(x)
+  tail(x, n)
 }
 
 #' Gives the last element, doesn't omit missings
@@ -47,7 +49,7 @@ last = function(x, n = 1, na.rm = TRUE) {
 #' current( c(1:10,NA) )
 #' current( 1:10 )
 current = function(x) {
-    tail(x, 1)
+  tail(x, 1)
 }
 
 
@@ -61,12 +63,12 @@ current = function(x) {
 #' @param needle string to search for
 #' @export
 #' @examples
-#' "1, 2, 3, 4, you" %contains% "you"
-#' "1, 2, 3, 4, you" %contains% 1 # unlike str_detect casts all needles as characters
-#' "1, 2, 3, 4, you" %contains% 343
+#' '1, 2, 3, 4, you' %contains% 'you'
+#' '1, 2, 3, 4, you' %contains% 1 # unlike str_detect casts all needles as characters
+#' '1, 2, 3, 4, you' %contains% 343
 
 "%contains%" = function(haystack, needle) {
-    stringr::str_detect(haystack, stringr::fixed(as.character(needle)) )
+  stringr::str_detect(haystack, stringr::fixed(as.character(needle)))
 }
 
 #' check whether a character string contains another as a word
@@ -83,12 +85,13 @@ current = function(x) {
 #' @param needle string to search for
 #' @export
 #' @examples
-#' "1, 3, 4" %contains_word% "1" # TRUE
-#' "1, 3, 4" %contains_word% 1 # TRUE unlike str_detect casts all needles as characters
-#' "12, 14, 17" %contains_word% "1" # FALSE even though 12 contains 1
+#' '1, 3, 4' %contains_word% '1' # TRUE
+#' '1, 3, 4' %contains_word% 1 # TRUE unlike str_detect casts all needles as characters
+#' '12, 14, 17' %contains_word% '1' # FALSE even though 12 contains 1
 
 "%contains_word%" = function(haystack, needle) {
-	stringr::str_detect(haystack, paste0("\\b",Hmisc::escapeRegex(as.character(needle)),"\\b") )
+  stringr::str_detect(haystack, paste0("\\b", Hmisc::escapeRegex(as.character(needle)), 
+    "\\b"))
 }
 
 #' check whether a character string begins with a string
@@ -101,12 +104,12 @@ current = function(x) {
 #' @param needle string to search for
 #' @export
 #' @examples
-#' "1, 3, 4" %begins_with% "1" # TRUE
-#' "1, 3, 4" %begins_with% 1 # unlike str_detect casts all needles as characters
-#' "1, 3, 4" %begins_with% "." # FALSE
+#' '1, 3, 4' %begins_with% '1' # TRUE
+#' '1, 3, 4' %begins_with% 1 # unlike str_detect casts all needles as characters
+#' '1, 3, 4' %begins_with% '.' # FALSE
 
 "%begins_with%" = function(haystack, needle) {
-	stringr::str_detect(haystack, paste0("^",Hmisc::escapeRegex(as.character(needle))) )
+  stringr::str_detect(haystack, paste0("^", Hmisc::escapeRegex(as.character(needle))))
 }
 
 #' check whether a character string ends with a string
@@ -119,12 +122,13 @@ current = function(x) {
 #' @param needle string to search for
 #' @export
 #' @examples
-#' "1, 3, 4" %ends_with% "4" # TRUE
-#' "1, 3, 4" %ends_with% 4 # unlike str_detect casts all needles as characters
-#' "1, 3, 4" %ends_with% "." # FALSE
+#' '1, 3, 4' %ends_with% '4' # TRUE
+#' '1, 3, 4' %ends_with% 4 # unlike str_detect casts all needles as characters
+#' '1, 3, 4' %ends_with% '.' # FALSE
 
 "%ends_with%" = function(haystack, needle) {
-	stringr::str_detect(haystack, paste0(Hmisc::escapeRegex(as.character(needle)),"$") )
+  stringr::str_detect(haystack, paste0(Hmisc::escapeRegex(as.character(needle)), 
+    "$"))
 }
 
 
@@ -138,18 +142,18 @@ current = function(x) {
 #' @param vars subset of variables, defaults to all
 #' @export
 #' @examples
-#' fruits = c("apple", "banana", NA, "pear", "pinapple", NA)
-#' pets = c("cat", "dog", "anteater", NA, NA, NA)
+#' fruits = c('apple', 'banana', NA, 'pear', 'pinapple', NA)
+#' pets = c('cat', 'dog', 'anteater', NA, NA, NA)
 #' favorites = data.frame(fruits, pets)
 #' miss_frac(favorites)
 #' miss_frac(favorites$fruits)
 #' miss_frac(favorites, 2)
 
-miss_frac = function(df, vars = 1:NCOL(df)) { 
-    if(NCOL(df) == 1) fracts = sum(is.na(df))
-    else if(NCOL(df[,vars]) == 1) fracts = sum(is.na(df[,vars]))
-    else fracts = colSums( plyr::colwise(is.na)(df[,vars]) )
-    fracts / NROW(df)
+miss_frac = function(df, vars = 1:NCOL(df)) {
+  if (NCOL(df) == 1) 
+    fracts = sum(is.na(df)) else if (NCOL(df[, vars]) == 1) 
+    fracts = sum(is.na(df[, vars])) else fracts = colSums((plyr::colwise(is.na))(df[, vars]))
+  fracts/NROW(df)
 }
 
 #' aggregates two variables from two sources into one
@@ -172,25 +176,26 @@ miss_frac = function(df, vars = 1:NCOL(df)) {
 #' cars$dist = NULL # remove old variable
 #' cars = aggregate2sources(cars, 'dist')
 
-aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL, remove_old_variables = TRUE) {
-	if(is.null(var1) && is.null(var2)) {
-		var1 = paste0(new_var,".x")
-		var2 = paste0(new_var,".y")
-	}
-    if(exists(new_var, where = df)) {
-        warning(paste(new_var,"already exists. Maybe delete it or choose a different name, if you're saving over your original dataframe."))
-    }
-	df[, new_var ] = df[ , var1 ]
-	oldmiss = sum(is.na(df[, new_var]))
-	df[ is.na( df[, var1] ) , new_var] = df[ is.na( df[, var1] ) , var2]
-    
-    if(remove_old_variables) {
-    	df[, var1] = NULL
-    	df[, var2] = NULL
-    }
-	
-	message( paste(oldmiss - sum(is.na(df[, new_var]))	, " fewer missings") )
-	df
+aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL, 
+  remove_old_variables = TRUE) {
+  if (is.null(var1) && is.null(var2)) {
+    var1 = paste0(new_var, ".x")
+    var2 = paste0(new_var, ".y")
+  }
+  if (exists(new_var, where = df)) {
+    warning(paste(new_var, "already exists. Maybe delete it or choose a different name, if you're saving over your original dataframe."))
+  }
+  df[, new_var] = df[, var1]
+  oldmiss = sum(is.na(df[, new_var]))
+  df[is.na(df[, var1]), new_var] = df[is.na(df[, var1]), var2]
+  
+  if (remove_old_variables) {
+    df[, var1] = NULL
+    df[, var2] = NULL
+  }
+  
+  message(paste(oldmiss - sum(is.na(df[, new_var])), " fewer missings"))
+  df
 }
 
 #' loads an RDS object, assigns it to an object of the base-filename
@@ -204,16 +209,17 @@ aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL, remove_old_v
 #' @export
 #' @examples
 #' \dontrun{
-#' loadRDS(file = "~/Models/Spouses.rds") # assigns object contained in file to variable "Spouses"
+#' loadRDS(file = '~/Models/Spouses.rds') # assigns object contained in file to variable 'Spouses'
 #' }
 
 loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
-	object_name = basename(tools::file_path_sans_ext(file))
-	if(exists(object_name, envir = parent.frame(), inherits = F) & !overwrite) {
-		warning(paste(object_name, "would have been overwritten. Specify overwrite = TRUE to do so."))
-	} else {
-	assign(object_name,	readRDS(file, refhook), envir = parent.frame())
-	}
+  object_name = basename(tools::file_path_sans_ext(file))
+  if (exists(object_name, envir = parent.frame(), inherits = F) & 
+    !overwrite) {
+    warning(paste(object_name, "would have been overwritten. Specify overwrite = TRUE to do so."))
+  } else {
+    assign(object_name, readRDS(file, refhook), envir = parent.frame())
+  }
 }
 
 #' @export
@@ -239,20 +245,16 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' @examples
 #' time_passed(hours = 7, time = Sys.time())
 
-time_passed = function(years = 0, months = 0, weeks = 0, days = 0, hours = 0, minutes = 0, seconds = 0, time = NULL) {
-	if(is.null(time) & !is.null(.formr$last_action_time)) 
-		time = .formr$last_action_time
-	time = as.POSIXct(time)
-	stopifnot(!is.null(time))
-	(time + 
-	 	lubridate::dseconds( seconds + 
-	 												60* minutes + 
-	 												60*60* hours + 
-	 												60*60*24* days +
-	 											 	60*60*24*7* weeks +
-	 											 	60*60*24*30* months +
-	 											 	60*60*24*365* years) 
-	) < lubridate::here() # local time
+time_passed = function(years = 0, months = 0, weeks = 0, days = 0, 
+  hours = 0, minutes = 0, seconds = 0, time = NULL) {
+  if (is.null(time) & !is.null(.formr$last_action_time)) 
+    time = .formr$last_action_time
+  time = as.POSIXct(time)
+  stopifnot(!is.null(time))
+  (time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
+    60 * hours + 60 * 60 * 24 * days + 60 * 60 * 24 * 7 * 
+    weeks + 60 * 60 * 24 * 30 * months + 60 * 60 * 24 * 365 * 
+    years)) < lubridate::here()  # local time
 }
 
 #' checks whether a new day has broken (date has increased by at least one day)
@@ -265,10 +267,11 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0, hours = 0, mi
 #' next_day(Sys.time()) # always false
 
 next_day = function(date = NULL) {
-	if(is.null(date) & !is.null(.formr$last_action_date)) date = .formr$last_action_date
-	stopifnot(!is.null(date))
-	date = lubridate::floor_date(as.POSIXct(date))
-	date < lubridate::floor_date(lubridate::now(),"day")
+  if (is.null(date) & !is.null(.formr$last_action_date)) 
+    date = .formr$last_action_date
+  stopifnot(!is.null(date))
+  date = lubridate::floor_date(as.POSIXct(date))
+  date < lubridate::floor_date(lubridate::now(), "day")
 }
 
 #' checks whether the current time is in a certain time window
@@ -282,7 +285,7 @@ next_day = function(date = NULL) {
 #' in_time_window(Sys.time() - 1, Sys.time() + 1)
 
 in_time_window = function(min, max) {
-	min < lubridate::here() && max > lubridate::here()
+  min < lubridate::here() && max > lubridate::here()
 }
 
 #' generates valid email cids
@@ -298,9 +301,9 @@ in_time_window = function(min, max) {
 #' opts_knit$set(upload.fun=formr::email_image)
 #' }
 
-email_image = function(x, ext = '.png') {
-	cid = gsub("[^a-zA-Z0-9]", "", substring(x,8))
-	structure(paste0("cid:",cid,ext), link = x)
+email_image = function(x, ext = ".png") {
+  cid = gsub("[^a-zA-Z0-9]", "", substring(x, 8))
+  structure(paste0("cid:", cid, ext), link = x)
 }
 
 #' pass in the url to the RDS representation of a openCPU session object, get the object
@@ -312,21 +315,23 @@ email_image = function(x, ext = '.png') {
 #' @export
 #' @examples
 #' \dontrun{
-#' get_opencpu_rds("https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds")
+#' get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
 #' }
-get_opencpu_rds= function(session_url, local = TRUE) {
-	if(local) {
-		sessionenv <- new.env();
-		filepath = stringr::str_match(session_url, "/ocpu/tmp/([xa-f0-9]+)/([a-z0-9A-Z/.]+)")
-		sessionfile <- file.path("/tmp/ocpu-www-data/tmp_library", filepath[,2], ".RData")
-		if(file.exists(sessionfile)){
-			load(sessionfile, envir=sessionenv);
-			desired_obj = stringr::str_sub(filepath[,3],3, -5)
-			sessionenv[[desired_obj]]
-		}
-	} else {
-		readRDS(gzcon(curl::curl(session_url)))
-	}
+get_opencpu_rds = function(session_url, local = TRUE) {
+  if (local) {
+    sessionenv <- new.env()
+    filepath = stringr::str_match(session_url, "/ocpu/tmp/([xa-f0-9]+)/([a-z0-9A-Z/.]+)")
+    sessionfile <- file.path("/tmp/ocpu-www-data/tmp_library", 
+      filepath[, 2], ".RData")
+    if (file.exists(sessionfile)) {
+      load(sessionfile, envir = sessionenv)
+      desired_obj = stringr::str_sub(filepath[, 3], 3, 
+        -5)
+      sessionenv[[desired_obj]]
+    }
+  } else {
+    readRDS(gzcon(curl::curl(session_url)))
+  }
 }
 
 #' xtabs with sensible defaults
@@ -341,8 +346,9 @@ get_opencpu_rds= function(session_url, local = TRUE) {
 #' x = NA
 #' crosstabs(~ x)
 crosstabs = function(x, ..., exclude = NULL) {
-	if(!inherits(x,'formula')) x = as.formula(paste("~",deparse(substitute(x))),env = parent.frame())
-	xtabs(formula = x, ..., na.action = na.pass, exclude = exclude)
+  if (!inherits(x, "formula")) 
+    x = as.formula(paste("~", deparse(substitute(x))), env = parent.frame())
+  xtabs(formula = x, ..., na.action = na.pass, exclude = exclude)
 }
 
 #' proportions table
@@ -356,17 +362,17 @@ crosstabs = function(x, ..., exclude = NULL) {
 #' @examples
 #' x = NA
 #' props(~ x)
-props = function(..., exclude = NULL) { 
-	prop.table(crosstabs(..., exclude = NULL))
+props = function(..., exclude = NULL) {
+  prop.table(crosstabs(..., exclude = NULL))
 }
 
 #' take only nonmissing
 #'
 #' this function takes a subset of a dataset, omitting all
-#' cases with missings in variables specified in "keep"
+#' cases with missings in variables specified in 'keep'
 #' and omitting all variables that still have missings after that.
 #' Good to see how large your dataset for a certain analysis 
-#' will be and which covariates are "free" in terms of sample size.
+#' will be and which covariates are 'free' in terms of sample size.
 #'
 #' @param df dataset
 #' @param keep defaults to empty vector
@@ -379,8 +385,10 @@ props = function(..., exclude = NULL) {
 #' ChickWeight2 = take_nonmissing(ChickWeight, keep = c('weight'))
 #' names(ChickWeight2); nrow(ChickWeight2)
 take_nonmissing = function(df, keep = c()) {
-	df = df[rowSums(is.na(subset(df, select = keep, drop=F)))==0, ] # omit all cases with missings in keep
-	df = subset(df, select = names(which(colSums(is.na(df))==0)), drop = F) # omit all variables with missings
+  df = df[rowSums(is.na(subset(df, select = keep, drop = F))) == 
+    0, ]  # omit all cases with missings in keep
+  df = subset(df, select = names(which(colSums(is.na(df)) == 
+    0)), drop = F)  # omit all variables with missings
 }
 
 
@@ -406,60 +414,70 @@ take_nonmissing = function(df, keep = c()) {
 #' ChickWeight[3:5,'Diet'] = NA
 #' names(ChickWeight); nrow(ChickWeight)
 #' missingness_patterns(ChickWeight)
-missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE) {
-	missings_by_column = colSums(is.na(df))
-	if (omit_complete) {
-		takethese = missings_by_column != 0
-	} else {
-		takethese = TRUE
-	}
-	names(missings_by_column) = names(df)
-	missings_by_column = sort(missings_by_column[ takethese  ],decreasing = T)
-	any_missing_sorted = names(missings_by_column)
-	df = subset(df, select = any_missing_sorted)
-	cols = names(df)
-	if (length(cols) == 0) {
-		cat("No missings at all.\n")
-		return(invisible(NULL))
-	}
-	df = !is.na(df)
-	ddf = as.data.frame(df)
-	if (min_freq > 0) {
-		counted = dplyr::count_(ddf, vars = names(ddf))
-		names(counted) = c(cols, "Freq")
-	} else {
-		counted = as.data.frame( xtabs( data = df) )
-	}
-	if (relative) {
-		counted$Freq = counted$Freq/sum(counted$Freq)
-	}
-	counted = counted[counted$Freq >= min_freq, ]
-	pattern = character(length = nrow(counted))
-	if (show_culprit) {
-		culprit = rep(x = '_', nrow(counted))
-	}
-	for (i in 1:length(cols)) {
-		if (show_culprit) {
-		culprit[counted[,i] == "FALSE"] = ifelse(culprit[counted[,i] == "FALSE"] == "_", cols[i], "") # if it's a _, set it, if it's set, set it to empty
-		}
-		nr = as.character(i)
-		pattern = paste0(pattern, ifelse(i == 1, '', '_'), ifelse(counted[,i] == "TRUE", stringr::str_pad('', stringr::str_length(nr), pad = '_') , nr ))
-	}
-	missingness = data.frame(Pattern = pattern, Freq = counted$Freq, Culprit = culprit)
-	
-	if (long_pattern == TRUE) {
-		long_pattern = character(length = nrow(counted))
-		for (i in 1:length(cols)) {
-			long_pattern = paste0(long_pattern, ifelse(counted[,i] == "TRUE", "_", paste0(cols[i],".")))
-		}
-		missingness$Pattern = long_pattern
-	}
-	if (print_legend) {
-		print(data.frame(index = 1:length(cols),col = cols, missings = missings_by_column), row.names = FALSE)
-	}
-	missingness = missingness[order(missingness$Freq,decreasing = T),]
-	rownames(missingness) = NULL
-	missingness
+missingness_patterns = function(df, min_freq = ifelse(relative, 
+  1/nrow(df), 1), long_pattern = FALSE, print_legend = ifelse(long_pattern, 
+  FALSE, TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE) {
+  missings_by_column = colSums(is.na(df))
+  if (omit_complete) {
+    takethese = missings_by_column != 0
+  } else {
+    takethese = TRUE
+  }
+  names(missings_by_column) = names(df)
+  missings_by_column = sort(missings_by_column[takethese], 
+    decreasing = T)
+  any_missing_sorted = names(missings_by_column)
+  df = subset(df, select = any_missing_sorted)
+  cols = names(df)
+  if (length(cols) == 0) {
+    cat("No missings at all.\n")
+    return(invisible(NULL))
+  }
+  df = !is.na(df)
+  ddf = as.data.frame(df)
+  if (min_freq > 0) {
+    counted = dplyr::count_(ddf, vars = names(ddf))
+    names(counted) = c(cols, "Freq")
+  } else {
+    counted = as.data.frame(xtabs(data = df))
+  }
+  if (relative) {
+    counted$Freq = counted$Freq/sum(counted$Freq)
+  }
+  counted = counted[counted$Freq >= min_freq, ]
+  pattern = character(length = nrow(counted))
+  if (show_culprit) {
+    culprit = rep(x = "_", nrow(counted))
+  }
+  for (i in 1:length(cols)) {
+    if (show_culprit) {
+      culprit[counted[, i] == "FALSE"] = ifelse(culprit[counted[, 
+        i] == "FALSE"] == "_", cols[i], "")  # if it's a _, set it, if it's set, set it to empty
+    }
+    nr = as.character(i)
+    pattern = paste0(pattern, ifelse(i == 1, "", "_"), ifelse(counted[, 
+      i] == "TRUE", stringr::str_pad("", stringr::str_length(nr), 
+      pad = "_"), nr))
+  }
+  missingness = data.frame(Pattern = pattern, Freq = counted$Freq, 
+    Culprit = culprit)
+  
+  if (long_pattern == TRUE) {
+    long_pattern = character(length = nrow(counted))
+    for (i in 1:length(cols)) {
+      long_pattern = paste0(long_pattern, ifelse(counted[, 
+        i] == "TRUE", "_", paste0(cols[i], ".")))
+    }
+    missingness$Pattern = long_pattern
+  }
+  if (print_legend) {
+    print(data.frame(index = 1:length(cols), col = cols, 
+      missings = missings_by_column), row.names = FALSE)
+  }
+  missingness = missingness[order(missingness$Freq, decreasing = T), 
+    ]
+  rownames(missingness) = NULL
+  missingness
 }
 
 
@@ -474,44 +492,49 @@ missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), l
 #' data(beavers)
 #' plot = ggplot2::ggplot(beaver1, ggplot2::aes(time, temp))
 #' plot + geom_shady_smooth() + ggplot2::facet_wrap(~ day)
-#' plot + geom_shady_smooth(fill = "blue", levels = seq(0.05,0.95,0.1))
-#' plot + geom_shady_smooth(size = 0.1, fill = "#49afcd", levels = seq(0.1,0.8,0.01))
-#' plot + geom_shady_smooth(fill_gradient = c("red", "orange", "yellow"), base_alpha = 3)
-geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", method = "auto", 
-															 formula = y ~ x, se = TRUE, position = "identity", na.rm = FALSE, 
-															 show.legend = NA, inherit.aes = TRUE, levels = c(0.6, 0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", ...)  {
-	layers = list()
-	ribbon_alpha = base_alpha / length(levels)
-	if (ribbon_alpha > 1) ribbon_alpha = 1
-	
-	params <- list(na.rm = na.rm, fill = fill, ...)
-	if (identical(stat, "smooth")) {
-		params$method <- method
-		params$formula <- formula
-		params$se <- se
-	}
-	params_ribbon = params
-	params_ribbon$color = NULL # don't want the line color to be the stroke of the ribbon
-	params_ribbon$alpha = ribbon_alpha # alpha level for ribbon is automatically based on nr of levels and base_alpha
-	levels = rev(levels)
-	if (!is.null(fill_gradient)) {
-		stopifnot(length(fill_gradient) == length(levels))
-		fill_gradient = rev(fill_gradient)
-	}
-	for (i in seq_along(levels)) {
-		params_ribbon$level = levels[[i]]
-		if (!is.null(fill_gradient)) {
-			params_ribbon$fill = fill_gradient[i]
-		}
-		layers[[i]] = ggplot2::layer(data = data, mapping = mapping, stat = stat, geom = ggplot2::GeomRibbon, 
-												position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
-												params = params_ribbon)
-	}
-	params$fill = NULL # line knows no fill aesthetic
-	layers[[ i + 1 ]] = ggplot2::layer(data = data, mapping = mapping, stat = stat, geom = ggplot2::GeomLine, 
-			position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
-			params = params)
-	layers
+#' plot + geom_shady_smooth(fill = 'blue', levels = seq(0.05,0.95,0.1))
+#' plot + geom_shady_smooth(size = 0.1, fill = '#49afcd', levels = seq(0.1,0.8,0.01))
+#' plot + geom_shady_smooth(fill_gradient = c('red', 'orange', 'yellow'), base_alpha = 3)
+geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", 
+  method = "auto", formula = y ~ x, se = TRUE, position = "identity", 
+  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, levels = c(0.6, 
+    0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", 
+  ...) {
+  layers = list()
+  ribbon_alpha = base_alpha/length(levels)
+  if (ribbon_alpha > 1) 
+    ribbon_alpha = 1
+  
+  params <- list(na.rm = na.rm, fill = fill, ...)
+  if (identical(stat, "smooth")) {
+    params$method <- method
+    params$formula <- formula
+    params$se <- se
+  }
+  params_ribbon = params
+  params_ribbon$color = NULL  # don't want the line color to be the stroke of the ribbon
+  params_ribbon$alpha = ribbon_alpha  # alpha level for ribbon is automatically based on nr of levels and base_alpha
+  levels = rev(levels)
+  if (!is.null(fill_gradient)) {
+    stopifnot(length(fill_gradient) == length(levels))
+    fill_gradient = rev(fill_gradient)
+  }
+  for (i in seq_along(levels)) {
+    params_ribbon$level = levels[[i]]
+    if (!is.null(fill_gradient)) {
+      params_ribbon$fill = fill_gradient[i]
+    }
+    layers[[i]] = ggplot2::layer(data = data, mapping = mapping, 
+      stat = stat, geom = ggplot2::GeomRibbon, position = position, 
+      show.legend = show.legend, inherit.aes = inherit.aes, 
+      params = params_ribbon)
+  }
+  params$fill = NULL  # line knows no fill aesthetic
+  layers[[i + 1]] = ggplot2::layer(data = data, mapping = mapping, 
+    stat = stat, geom = ggplot2::GeomLine, position = position, 
+    show.legend = show.legend, inherit.aes = inherit.aes, 
+    params = params)
+  layers
 }
 
 
@@ -525,35 +548,36 @@ geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", meth
 #' @examples
 #' data(ChickWeight)
 #' chickweight.m1 <- glm(weight ~ Time + Diet, family = gaussian, data = ChickWeight)
-#' ls_by_class("lm")
-#' c("chickweight.m1") %in% ls_by_class("lm")
-#' c("chickweight.m1") %in% ls_by_class("lm", top_class_only = TRUE)
+#' ls_by_class('lm')
+#' c('chickweight.m1') %in% ls_by_class('lm')
+#' c('chickweight.m1') %in% ls_by_class('lm', top_class_only = TRUE)
 #' 
-ls_by_class = function(classes, envir = parent.frame(), top_class_only = FALSE, ...){
-	inlist <- ls(envir = envir, ...)
-	ifexistsgetclass = function(x, envir) { 
-		if (exists(x, envir = envir, inherits = FALSE)) {
-			obj = get(x, envir = envir, inherits = FALSE)
-			class(obj)
-		} else {
-			NULL
-		}
-	}
-	classlist <- sapply(inlist,function(x) ifexistsgetclass(x, envir = envir))
-	has_class = function(x) { 
-		if (top_class_only) {
-			x[[1]] %in% classes
-		} else {
-			!!length(intersect(x, classes) ) 
-		}
-	}
-	if (length(classlist) > 0 ) {
-		names(classlist[
-			sapply(classlist,has_class) ## take any who have a class that is in our list
-			])
-	} else {
-		character(0)
-	}
+ls_by_class = function(classes, envir = parent.frame(), top_class_only = FALSE, 
+  ...) {
+  inlist <- ls(envir = envir, ...)
+  ifexistsgetclass = function(x, envir) {
+    if (exists(x, envir = envir, inherits = FALSE)) {
+      obj = get(x, envir = envir, inherits = FALSE)
+      class(obj)
+    } else {
+      NULL
+    }
+  }
+  classlist <- sapply(inlist, function(x) ifexistsgetclass(x, 
+    envir = envir))
+  has_class = function(x) {
+    if (top_class_only) {
+      x[[1]] %in% classes
+    } else {
+      !(!length(intersect(x, classes)))
+    }
+  }
+  if (length(classlist) > 0) {
+    names(classlist[sapply(classlist, has_class)  ## take any who have a class that is in our list
+])
+  } else {
+    character(0)
+  }
 }
 
 
@@ -561,48 +585,48 @@ ls_by_class = function(classes, envir = parent.frame(), top_class_only = FALSE, 
 #' It's easy to attach packages that overwrite functions from other packages. Especially dplyr has a lot of conflicts
 #' with base packages, MASS and plyr. Because some of these conflicts do not always lead to error messages, sometimes
 #' just incorrect behaviour, this function exists. Don't trust your faulty memory, just check whether dplyr's (or any other
-#' package's) functions are "on top" if you so desire.
+#' package's) functions are 'on top' if you so desire.
 #'
 #' @param fix defaults to true. Detaches the desired package (without unloading) and loads it again. Won't work for base packages and can't overwrite functions that you defined yourself.
 #' @param package the package you want to be on top (loaded last), defaults to dplyr
 #' @param iteration for internal use only, if set to 0 the function will call itself to check that it worked, if set to 1, it won't.
 #' @export
 #' @examples
-#' amigoingmad(fix = FALSE, package = "formr")
+#' amigoingmad(fix = FALSE, package = 'formr')
 amigoingmad = function(fix = TRUE, package = "dplyr", iteration = 0) {
-	if (iteration > 1) {
-		stop("Can't fix.")
-	}
-	conf = unique(conflicts())
-	want_package = paste0("package:", package)
-	conflicts_desired_package = conf[ conf %in% ls(want_package) ]
-	conflict_envs = sapply(conflicts_desired_package, FUN = function(x) { environmentName(pryr::where(x)) })
-	is_good = conflict_envs == want_package
-	potentially_bad_confs = conflicts_desired_package[ !is_good ]
-	potentially_bad_envs = conflict_envs[ !is_good ]
-	have_to_fix = rep(FALSE, length(potentially_bad_confs))
-	for (i in seq_along(potentially_bad_confs)) {
-		if (
-			!identical(
-				body( get(potentially_bad_confs[i], pos = want_package) ),
-				body( get(potentially_bad_confs[i]) )
-			)
-		) {
-			have_to_fix[i] = TRUE
-		}
-	}
-	
-	if (any(have_to_fix)) {
-		message("The following functions don't have the environment you want.")
-		print( data.frame(`function` = potentially_bad_confs[have_to_fix], environment = potentially_bad_envs[have_to_fix]), row.names = F)
-		if (fix) {
-			base::detach(name = want_package, character.only = TRUE)
-			base::library(package, character.only = TRUE)
-			message("Tried to fix this, calling myself again to make sure...")
-			amigoingmad(fix, package, iteration + 1)
-			message("Sanity restored!")
-		}
-	} else if (iteration == 0) {
-		message("Everything looks normal. Maybe it's you.")
-	}
+  if (iteration > 1) {
+    stop("Can't fix.")
+  }
+  conf = unique(conflicts())
+  want_package = paste0("package:", package)
+  conflicts_desired_package = conf[conf %in% ls(want_package)]
+  conflict_envs = sapply(conflicts_desired_package, FUN = function(x) {
+    environmentName(pryr::where(x))
+  })
+  is_good = conflict_envs == want_package
+  potentially_bad_confs = conflicts_desired_package[!is_good]
+  potentially_bad_envs = conflict_envs[!is_good]
+  have_to_fix = rep(FALSE, length(potentially_bad_confs))
+  for (i in seq_along(potentially_bad_confs)) {
+    if (!identical(body(get(potentially_bad_confs[i], pos = want_package)), 
+      body(get(potentially_bad_confs[i])))) {
+      have_to_fix[i] = TRUE
+    }
+  }
+  
+  if (any(have_to_fix)) {
+    message("The following functions don't have the environment you want.")
+    print(data.frame(`function` = potentially_bad_confs[have_to_fix], 
+      environment = potentially_bad_envs[have_to_fix]), 
+      row.names = F)
+    if (fix) {
+      base::detach(name = want_package, character.only = TRUE)
+      base::library(package, character.only = TRUE)
+      message("Tried to fix this, calling myself again to make sure...")
+      amigoingmad(fix, package, iteration + 1)
+      message("Sanity restored!")
+    }
+  } else if (iteration == 0) {
+    message("Everything looks normal. Maybe it's you.")
+  }
 }

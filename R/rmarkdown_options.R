@@ -14,26 +14,29 @@
 #'
 #' @export
 
-markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures'), fragment.only = FALSE, section_divs = TRUE, break_on_error = FALSE, ...) 
-{
-	if(fragment.only) {
-		output = rmarkdown::html_fragment(...)
-	} else {
-		output = rmarkdown::html_document(...)
-	}
-	
-	# always show errors inline, try to finish
-	output$knitr$opts_chunk$error = ! break_on_error
-	
-	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
-		output$pandoc$from = paste0("markdown", paste( add_to_format, collapse=""))
-	}
-	if(!section_divs) {
-		output$pandoc$to = "html5"
-		output$pandoc$args = setdiff(output$pandoc$args, "--section-divs")
-	}
-	
-	output
+markdown_custom_options = function(add_to_format = c("+autolink_bare_uris", 
+  "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"), 
+  fragment.only = FALSE, section_divs = TRUE, break_on_error = FALSE, 
+  ...) {
+  if (fragment.only) {
+    output = rmarkdown::html_fragment(...)
+  } else {
+    output = rmarkdown::html_document(...)
+  }
+  
+  # always show errors inline, try to finish
+  output$knitr$opts_chunk$error = !break_on_error
+  
+  if (stringr::str_sub(output$pandoc$from, 1, 8) == "markdown") {
+    output$pandoc$from = paste0("markdown", paste(add_to_format, 
+      collapse = ""))
+  }
+  if (!section_divs) {
+    output$pandoc$to = "html5"
+    output$pandoc$args = setdiff(output$pandoc$args, "--section-divs")
+  }
+  
+  output
 }
 
 
@@ -49,35 +52,36 @@ markdown_custom_options = function (add_to_format = c('+autolink_bare_uris', '+a
 #'
 #' @export
 
-markdown_github = function ( fragment.only = FALSE, break_on_error = FALSE,  ...) 
-{
-	if(fragment.only) {
-		output = rmarkdown::html_fragment(...)
-	} else {
-		output = rmarkdown::html_document(...)
-	}
-	
-	output$knitr$opts_chunk$error = ! break_on_error
-
-	if(stringr::str_sub(output$pandoc$from,1,8)=="markdown" ) {
-		output$pandoc$from = "markdown_github+yaml_metadata_block"
-	}
-	output
+markdown_github = function(fragment.only = FALSE, break_on_error = FALSE, 
+  ...) {
+  if (fragment.only) {
+    output = rmarkdown::html_fragment(...)
+  } else {
+    output = rmarkdown::html_document(...)
+  }
+  
+  output$knitr$opts_chunk$error = !break_on_error
+  
+  if (stringr::str_sub(output$pandoc$from, 1, 8) == "markdown") {
+    output$pandoc$from = "markdown_github+yaml_metadata_block"
+  }
+  output
 }
 
 
 #' hard line breaks
 #'
 #'
-#' Custom rmarkdown template based on the standard \code{\link[rmarkdown:html_document]{html_document}}, but with hard line breaks. Will add the pandoc "+hard_line_breaks" argument if the origin format is markdown.
+#' Custom rmarkdown template based on the standard \code{\link[rmarkdown:html_document]{html_document}}, but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
 #'
 #' @param ... all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}
 #' 
 #' @export
 
-markdown_hard_line_breaks = function (...) 
-{
-	markdown_custom_options(add_to_format = c('+autolink_bare_uris', '+ascii_identifiers', '+tex_math_single_backslash', '-implicit_figures', '+hard_line_breaks'), ...)
+markdown_hard_line_breaks = function(...) {
+  markdown_custom_options(add_to_format = c("+autolink_bare_uris", 
+    "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures", 
+    "+hard_line_breaks"), ...)
 }
 
 #' render text
@@ -90,10 +94,10 @@ markdown_hard_line_breaks = function (...)
 #' 
 #' @export
 
-render_text = function (text, ...) 
-{
-	fileName = rmarkdown::render(input = write_to_file(text, ext = ".Rmd"), ...)
-	readChar(fileName, file.info(fileName)$size)
+render_text = function(text, ...) {
+  fileName = rmarkdown::render(input = write_to_file(text, 
+    ext = ".Rmd"), ...)
+  readChar(fileName, file.info(fileName)$size)
 }
 
 
@@ -108,10 +112,11 @@ render_text = function (text, ...)
 #' 
 #' @export
 
-formr_inline_render = function (text, self_contained = TRUE, ...)
-{
-	fileName = rmarkdown::render(input = write_to_file(text, name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE, section_divs = FALSE), ...)
-	readChar(fileName, file.info(fileName)$size)
+formr_inline_render = function(text, self_contained = TRUE, ...) {
+  fileName = rmarkdown::render(input = write_to_file(text, 
+    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, 
+    fragment.only = TRUE, section_divs = FALSE), ...)
+  readChar(fileName, file.info(fileName)$size)
 }
 
 #' render inline text for formr
@@ -125,11 +130,11 @@ formr_inline_render = function (text, self_contained = TRUE, ...)
 #' 
 #' @export
 
-formr_render_commonmark = function (text, self_contained = TRUE, ...)
-{
-	commonmark::markdown_html(text = 
-		knitr::knit(text = text, quiet = TRUE, encoding = "utf-8"),
-		hardbreaks = TRUE, smart = TRUE)
+formr_render_commonmark = function(text, self_contained = TRUE, 
+  ...) {
+  commonmark::markdown_html(text = knitr::knit(text = text, 
+    quiet = TRUE, encoding = "utf-8"), hardbreaks = TRUE, 
+    smart = TRUE)
 }
 
 #' render text for formr
@@ -143,21 +148,22 @@ formr_render_commonmark = function (text, self_contained = TRUE, ...)
 #' 
 #' @export
 
-formr_render = function (text, self_contained = TRUE, ...)
-{
-	fileName = rmarkdown::render(input = write_to_file(text, name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, fragment.only = TRUE), ...)
-	readChar(fileName, file.info(fileName)$size)
+formr_render = function(text, self_contained = TRUE, ...) {
+  fileName = rmarkdown::render(input = write_to_file(text, 
+    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, 
+    fragment.only = TRUE), ...)
+  readChar(fileName, file.info(fileName)$size)
 }
 
-write_to_file <- function(..., name = NULL, ext = ".Rmd"){
-	if(is.null(name)) {
-		filename <- paste0(tempfile(), ext);
-	} else {
-		filename = paste0(name,ext)
-	}
-	mytext <- eval(...)
-	write(mytext, filename);
-	return(filename)
+write_to_file <- function(..., name = NULL, ext = ".Rmd") {
+  if (is.null(name)) {
+    filename <- paste0(tempfile(), ext)
+  } else {
+    filename = paste0(name, ext)
+  }
+  mytext <- eval(...)
+  write(mytext, filename)
+  return(filename)
 }
 
 #' knit prefixed
@@ -172,12 +178,10 @@ write_to_file <- function(..., name = NULL, ext = ".Rmd"){
 #' @import knitr
 #' 
 knit_prefixed = function(input, ...) {
-	prefix = tools::file_path_sans_ext(basename(input))
-	opts_chunk$set(
-		fig.path = paste0(prefix, '/figure/'),
-		cache.path = paste0(prefix, '/cache/')
-	)
-	knit(input, ...)
+  prefix = tools::file_path_sans_ext(basename(input))
+  opts_chunk$set(fig.path = paste0(prefix, "/figure/"), cache.path = paste0(prefix, 
+    "/cache/"))
+  knit(input, ...)
 }
 
 #' word_document from rmarkdown, but has an added option not to break on error
@@ -190,9 +194,8 @@ knit_prefixed = function(input, ...) {
 #'
 #' @export
 
-word_document = function ( ..., break_on_error = FALSE) 
-{
-	output = rmarkdown::word_document(...)
-	output$knitr$opts_chunk$error = ! break_on_error
-	output
+word_document = function(..., break_on_error = FALSE) {
+  output = rmarkdown::word_document(...)
+  output$knitr$opts_chunk$error = !break_on_error
+  output
 }
