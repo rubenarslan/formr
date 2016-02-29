@@ -1,0 +1,147 @@
+{
+    "name": "example_r_package",
+    "items": [
+        {
+            "type": "mc_button",
+            "choice_list": "gods",
+            "type_options": "",
+            "name": "gods",
+            "label": "Who do you believe in the most?",
+            "label_parsed": "Who do you believe in the most?",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 1,
+            "choices": {
+                "glob": "Glob",
+                "cthulhu": "Cthulhu",
+                "spaghetti_monster": "Spaghetti Monster"
+            }
+        },
+        {
+            "type": "mc_button",
+            "choice_list": "agreement",
+            "type_options": "",
+            "name": "religiousness_1",
+            "label": "He touched me with his noodly appendages.",
+            "label_parsed": "He touched me with his noodly appendages.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 2,
+            "choices": {
+                "1": "strongly disagree",
+                "2": "somewhat disagree",
+                "3": "somewhat agree",
+                "4": "strongly agree"
+            }
+        },
+        {
+            "type": "mc_button",
+            "choice_list": "agreement",
+            "type_options": "",
+            "name": "religiousness_2R",
+            "label": "He will not reward me by eating me first.",
+            "label_parsed": "He will not reward me by eating me first.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 3,
+            "choices": {
+                "1": "strongly disagree",
+                "2": "somewhat disagree",
+                "3": "somewhat agree",
+                "4": "strongly agree"
+            }
+        },
+        {
+            "type": "mc_button",
+            "choice_list": "agreement",
+            "type_options": "",
+            "name": "religiousness_3",
+            "label": "He lives on Mars.",
+            "label_parsed": "He lives on Mars.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 4,
+            "choices": {
+                "1": "strongly disagree",
+                "2": "somewhat disagree",
+                "3": "somewhat agree",
+                "4": "strongly agree"
+            }
+        },
+        {
+            "type": "mc_button",
+            "choice_list": "agreement",
+            "type_options": "",
+            "name": "religiousness_4",
+            "label": "I want to free him from his watery prison.",
+            "label_parsed": "I want to free him from his watery prison.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 5,
+            "choices": {
+                "1": "strongly disagree",
+                "2": "somewhat disagree",
+                "3": "somewhat agree",
+                "4": "strongly agree"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "prefer_1",
+            "type_options": null,
+            "name": "prefer_1",
+            "label": "I prefer eternal bliss to being eaten first.",
+            "label_parsed": "I prefer eternal bliss to being eaten first.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 6,
+            "choices": {
+                "1": "nope",
+                "2": "very much so"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "prefer_2",
+            "type_options": null,
+            "name": "prefer_2",
+            "label": "I would believe in someone else, if I wasn't so scared.",
+            "label_parsed": "I would believe in someone else, if I wasn't so scared.",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 7,
+            "choices": {
+                "1": "nope",
+                "2": "very much so"
+            }
+        }
+    ],
+    "settings": {
+        "maximum_number_displayed": 0,
+        "displayed_percentage_maximum": 100,
+        "add_percentage_points": 0,
+        "enable_instant_validation": 1,
+        "expire_after": 0
+    }
+}

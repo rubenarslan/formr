@@ -4,21 +4,24 @@
 \alias{formr_items}
 \title{Download items from formr}
 \usage{
-formr_items(survey_name, host = "https://formr.org")
+formr_items(survey_name = NULL, host = "https://formr.org", path = NULL)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
 \item{host}{defaults to https://formr.org}
+
+\item{path}{path to local JSON copy of the item table}
 }
 \description{
 After connecting to formr using \code{\link{formr_connect}}
-you can download items using this command.
+you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 }
 \examples{
 \dontrun{
 formr_connect(email = "you@example.net", password = "zebrafinch" )
 formr_items(survey_name = "training_diary" )
 }
+formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))[1:2]
 }
 

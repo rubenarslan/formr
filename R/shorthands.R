@@ -423,8 +423,9 @@ missingness_patterns = function(df,  min_freq = ifelse(relative,1/nrow(df),1), l
 		return(invisible(NULL))
 	}
 	df = !is.na(df)
+	ddf = as.data.frame(df)
 	if (min_freq > 0) {
-		counted = plyr::count(df)		
+		counted = dplyr::count_(ddf, vars = names(ddf))
 		names(counted) = c(cols, "Freq")
 	} else {
 		counted = as.data.frame( xtabs( data = df) )
@@ -517,8 +518,9 @@ geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", meth
 #' get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.
 #'
 #' @param classes objects should have one of these classes 
-#' @param envir defaults to looking in the calling environment of this function
+#' @param envir defaults to looking in the calling environment of this function, passed to ls
 #' @param top_class_only defaults to FALSE. If false, also returns objects inheriting from one of the specified classes.
+#' @param ... passed to ls
 #' @export
 #' @examples
 #' data(ChickWeight)
@@ -597,7 +599,7 @@ amigoingmad = function(fix = TRUE, package = "dplyr", iteration = 0) {
 			base::detach(name = want_package, character.only = TRUE)
 			base::library(package, character.only = TRUE)
 			message("Tried to fix this, calling myself again to make sure...")
-			amigoingmad(fix, want_package, iteration + 1)
+			amigoingmad(fix, package, iteration + 1)
 			message("Sanity restored!")
 		}
 	} else if (iteration == 0) {

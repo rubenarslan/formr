@@ -9,9 +9,11 @@ ls_by_class(classes, envir = parent.frame(), top_class_only = FALSE, ...)
 \arguments{
 \item{classes}{objects should have one of these classes}
 
-\item{envir}{defaults to looking in the calling environment of this function}
+\item{envir}{defaults to looking in the calling environment of this function, passed to ls}
 
 \item{top_class_only}{defaults to FALSE. If false, also returns objects inheriting from one of the specified classes.}
+
+\item{...}{passed to ls}
 }
 \description{
 get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.

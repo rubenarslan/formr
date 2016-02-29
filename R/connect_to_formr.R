@@ -55,8 +55,8 @@ formr_disconnect = function(host = "https://formr.org") {
 
 formr_raw_results = function(survey_name, host = "https://formr.org") {
 	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_results?format=json"))
-	if(resp$status_code == 200) jsonlite::fromJSON(
-		httr::content(resp,encoding="utf8",as="text")
+	if (resp$status_code == 200) jsonlite::fromJSON(
+		httr::content(resp,  encoding = "utf8",as = "text")
 	)
 	else stop("This survey does not exist or isn't yours.")
 }
@@ -64,35 +64,48 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 #' Download items from formr
 #'
 #' After connecting to formr using \code{\link{formr_connect}}
-#' you can download items using this command.
+#' you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
+#' @param path path to local JSON copy of the item table
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_connect(email = "you@@example.net", password = "zebrafinch" )
 #' formr_items(survey_name = "training_diary" )
 #' }
+#' formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))[1:2]
 
-formr_items = function(survey_name, host = "https://formr.org") {
-	resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_item_table?format=json"))
-	if (resp$status_code == 200) {
-		item_list = jsonlite::fromJSON(simplifyDataFrame = FALSE,	httr::content(resp,encoding = "utf8",as = "text") )[["items"]]
-		
-		for(i in seq_along(item_list)) {
-			if(item_list[[i]]$type == "rating_button") {
+formr_items = function(survey_name = NULL, host = "https://formr.org", path = NULL) {
+	item_list = NULL
+	if (!is.null(survey_name)) {
+		resp = httr::GET( paste0(host,"/admin/survey/",survey_name,"/export_item_table?format=json"))
+		if (resp$status_code == 200) {
+			item_list = jsonlite::fromJSON(txt = httr::content(resp,encoding = "utf8",as = "text"), simplifyDataFrame = FALSE)
+		} else {
+			stop("This survey does not exist.")
+		}
+	} else {
+		item_list = jsonlite::fromJSON(txt = path, simplifyDataFrame = FALSE)
+	}
+	if (!is.null(item_list)) {
+		if ( !is.null(item_list[["items"]]) ) {
+			item_list = item_list[["items"]]
+		}
+		for (i in seq_along(item_list)) {
+			if (item_list[[i]]$type == "rating_button") {
 				from = 1; to = 5; by = 1
-				if(!is.null(item_list[[i]]$type_options)) { # has the format 1,6 or 1,6,1
+				if (!is.null(item_list[[i]]$type_options)) { # has the format 1,6 or 1,6,1
 					sequence = stringr::str_split(item_list[[i]]$type_options, ",")[[1]]
-					if(length(sequence) == 3) {
+					if (length(sequence) == 3) {
 						from = as.numeric(sequence[1])
 						to = as.numeric(sequence[2])
 						by = as.numeric(sequence[3])
-					} else if(length(sequence) == 2) {
+					} else if (length(sequence) == 2) {
 						from = as.numeric(sequence[1])
 						to = as.numeric(sequence[2])
-					} else if(length(sequence) == 1) {
+					} else if (length(sequence) == 1) {
 						to = as.numeric(sequence[1])
 					}
 				}
@@ -105,8 +118,9 @@ formr_items = function(survey_name, host = "https://formr.org") {
 		}
 		class(item_list) = c("formr_item_list", class(item_list))
 		item_list
+	} else {
+		stop("Have to specify either path to exported JSON file or get item table from formr.")
 	}
-	else stop("This survey does not exist.")
 }
 
 #' Transform formr_item_list into a data.frame for ease of use
@@ -118,12 +132,15 @@ formr_items = function(survey_name, host = "https://formr.org") {
 #' @param ... not used
 #' 
 #' @export
-#' @import data.table
 #' @examples
 #' \dontrun{
 #' formr_connect(email = "you@@example.net", password = "zebrafinch" )
 #' as.data.frame(formr_items(survey_name = "training_diary" ))
 #' }
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' items_df = as.data.frame(items)
+#' as.data.frame.formr_item_list(items[2:3])
+
 
 as.data.frame.formr_item_list = function(x, row.names, ...) {
 	item_list = x
@@ -137,7 +154,8 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 			# item_list[[i]]["choices"] = list(NULL)
 		}
 	}
-	item_list = dplyr::bind_rows(item_list, fill = TRUE)
+	# item_list = lapply(item_list, FUN = as.data.frame)
+	item_list = data.frame(dplyr::bind_rows(item_list))
 	item_list$index = 1:nrow(item_list)
 	item_list
 }
@@ -218,11 +236,12 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' @param host defaults to https://formr.org
 #' @export
 #' @examples
-#' \dontrun{
-#' formr_connect(email = "you@@example.net", password = "zebrafinch" )
-#' sim = formr_simulate_from_items(item_list = formr_items("training_diary"), n = 100)
-#' summary(lm(pushups ~ pullups, data = sim))
-#' }
+#' results = jsonlite::fromJSON(txt = system.file("extdata/gods_example_results.json", package = "formr", mustWork = TRUE))
+#' class(results$created)
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' results = formr_recognise(item_list = items, results = results)
+#' class(results$created)
+
 
 formr_recognise = function (survey_name, 
 								item_list = formr_items(survey_name, host = host),
@@ -301,6 +320,10 @@ formr_recognise = function (survey_name,
 #' sim = formr_simulate_from_items(item_list = formr_items("training_diary"), n = 100)
 #' summary(lm(pushups ~ pullups, data = sim))
 #' }
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' fakedata = formr_simulate_from_items(items, n = 20)
+#' fakedata[1:2,]
+
 
 formr_simulate_from_items = function (item_list, n = 300)
 {
@@ -346,6 +369,10 @@ formr_simulate_from_items = function (item_list, n = 300)
 #' sim_results = formr_simulate_from_items(icar_items)
 #' reversed_items = formr_reverse(item_list = icar_items, results = sim_results)
 #' }
+#' results = jsonlite::fromJSON(txt = system.file("extdata/gods_example_results.json", package = "formr", mustWork = TRUE))
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' formr_reverse(results, items)
+
 
 
 formr_reverse = function (results, 
@@ -425,6 +452,11 @@ formr_reverse = function (results,
 #' summary(lm(ICAR_matrix ~ ICAR_verbal, data = sim_agg))
 #' summary(lm(ICAR_matrix ~ ICAR_verbal, data = actual))
 #' }
+#' results = jsonlite::fromJSON(txt = system.file("extdata/gods_example_results.json", package = "formr", mustWork = TRUE))
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' agg = formr_aggregate(item_list = items, results = results, compute_alphas = TRUE, plot_likert = TRUE)
+#' agg[, c("religiousness", "prefer")]
+
 
 formr_aggregate = function (survey_name, 
 														item_list = formr_items(survey_name, host = host),
@@ -437,9 +469,9 @@ formr_aggregate = function (survey_name,
 	results = formr_reverse(results, item_list, fallback_max = fallback_max)
 	item_names = names(results) # update after reversing
 	
-	if(!is.null(item_list)) {
-		if(!inherits(item_list, "formr_item_list")) {
-			stop("The item_list has to be either a formr item list.")
+	if (!is.null(item_list)) {
+		if (!inherits(item_list, "formr_item_list")) {
+			stop("The item_list has to be a formr item list.")
 		}
 		item_list_df = as.data.frame(item_list)
 		item_list_df$scale = suppressWarnings(stringr::str_match(item_list_df$name, "(?i)^([a-z0-9_]+?)_?[0-9]+R?$")[,2]) # fit the pattern
@@ -565,9 +597,10 @@ formr_results = function(survey_name, host = "https://formr.org", compute_alphas
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @export
 #' @examples
-#' \dontrun{
-#' results = formr_post_process_results(item_list, results)
-#' }
+#' results = jsonlite::fromJSON(txt = system.file("extdata/gods_example_results.json", package = "formr", mustWork = TRUE))
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' results = formr_post_process_results(items, results, compute_alphas = TRUE, plot_likert = TRUE)
+
 
 formr_post_process_results = function(item_list = NULL, results, compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE) {
 	results = formr_recognise(item_list = item_list, results = results)
@@ -584,13 +617,12 @@ formr_post_process_results = function(item_list = NULL, results, compute_alphas 
 #' @param results survey results
 #' @export
 #' @examples
-#' \dontrun{
-#' formr_connect(email = "you@@example.net", password = "zebrafinch" )
-#' icar_items = formr_items(survey_name="ICAR",host = "http://localhost:8888/formr/")
-#' # get some simulated data and aggregate it
-#' sim_results = formr_simulate_from_items(icar_items)
-#' likert_items = formr_likert(item_list = icar_items, results = sim_results)
-#' }
+#' results = jsonlite::fromJSON(txt = system.file("extdata/gods_example_results.json", package = "formr", mustWork = TRUE))
+#' items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+#' likert_items = formr_likert(item_list = items[2:5], results = results)
+#' plot(likert_items)
+
+
 
 formr_likert = function (item_list, results)
 {
