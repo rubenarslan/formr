@@ -18,8 +18,8 @@ you can download the assigned random groups and merge them with your data.
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-formr_shuffled(run_name = "different_drills" )
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+formr_shuffled(run_name = 'different_drills' )
 }
 }
 

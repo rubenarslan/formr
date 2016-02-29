@@ -10,13 +10,52 @@ geom_shady_smooth(mapping = NULL, data = NULL, stat = "smooth",
   0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", ...)
 }
 \arguments{
+\item{mapping}{Set of aesthetic mappings created by \code{\link{aes}} or
+\code{\link{aes_}}. If specified and \code{inherit.aes = TRUE} (the
+default), is combined with the default mapping at the top level of the
+plot. You only need to supply \code{mapping} if there isn't a mapping
+defined for the plot.}
+
+\item{data}{A data frame. If specified, overrides the default data frame
+defined at the top level of the plot.}
+
+\item{stat}{defaults to smooth}
+
+\item{method}{smoothing method (function) to use, eg. lm, glm, gam, loess,
+rlm. For datasets with n < 1000 default is \code{\link{loess}}. For datasets
+with 1000 or more observations defaults to gam, see \code{\link[mgcv]{gam}}
+for more details.}
+
+\item{formula}{formula to use in smoothing function, eg. \code{y ~ x},
+\code{y ~ poly(x, 2)}, \code{y ~ log(x)}}
+
+\item{se}{display confidence interval around smooth? (TRUE by default, see
+level to control}
+
+\item{position}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
+
+\item{na.rm}{If \code{FALSE} (the default), removes missing values with
+a warning.  If \code{TRUE} silently removes missing values.}
+
+\item{show.legend}{logical. Should this layer be included in the legends?
+\code{NA}, the default, includes if any aesthetics are mapped.
+\code{FALSE} never includes, and \code{TRUE} always includes.}
+
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. \code{\link{borders}}.}
+
 \item{levels}{the confidence levels that are supposed to be displayed, defaults to 0.6, 0.8, 0.95}
 
 \item{base_alpha}{divided by length(levels)}
 
 \item{fill_gradient}{a vector of colors that has at least the same length as levels. Color each ribbon differently}
 
-\item{...}{everything else is passed to and document in \code{\link[ggplot2:geom_smooth]{geom_smooth}}}
+\item{fill}{a single color for the ribbon}
+
+\item{...}{everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{geom_smooth}}}
 }
 \description{
 iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade by confidence. Horribly inefficient, because smooth stat is computed every time, but flexible.
@@ -25,8 +64,8 @@ iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade b
 data(beavers)
 plot = ggplot2::ggplot(beaver1, ggplot2::aes(time, temp))
 plot + geom_shady_smooth() + ggplot2::facet_wrap(~ day)
-plot + geom_shady_smooth(fill = "blue", levels = seq(0.05,0.95,0.1))
-plot + geom_shady_smooth(size = 0.1, fill = "#49afcd", levels = seq(0.1,0.8,0.01))
-plot + geom_shady_smooth(fill_gradient = c("red", "orange", "yellow"), base_alpha = 3)
+plot + geom_shady_smooth(fill = 'blue', levels = seq(0.05,0.95,0.1))
+plot + geom_shady_smooth(size = 0.1, fill = '#49afcd', levels = seq(0.1,0.8,0.01))
+plot + geom_shady_smooth(fill_gradient = c('red', 'orange', 'yellow'), base_alpha = 3)
 }
 

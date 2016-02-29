@@ -486,7 +486,10 @@ missingness_patterns = function(df, min_freq = ifelse(relative,
 #' @param levels the confidence levels that are supposed to be displayed, defaults to 0.6, 0.8, 0.95
 #' @param base_alpha divided by length(levels)
 #' @param fill_gradient a vector of colors that has at least the same length as levels. Color each ribbon differently
-#' @param ... everything else is passed to and document in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
+#' @param fill a single color for the ribbon
+#' @param stat defaults to smooth
+#' @param ... everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
+#' @inheritParams ggplot2::geom_smooth
 #' @export
 #' @examples
 #' data(beavers)

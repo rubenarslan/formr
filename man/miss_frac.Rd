@@ -17,8 +17,8 @@ percentage of the maximum number of rows.
 It also works on single variables.
 }
 \examples{
-fruits = c("apple", "banana", NA, "pear", "pinapple", NA)
-pets = c("cat", "dog", "anteater", NA, NA, NA)
+fruits = c('apple', 'banana', NA, 'pear', 'pinapple', NA)
+pets = c('cat', 'dog', 'anteater', NA, NA, NA)
 favorites = data.frame(fruits, pets)
 miss_frac(favorites)
 miss_frac(favorites$fruits)

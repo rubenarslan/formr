@@ -150,7 +150,7 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
 #' }
 #' items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' items_df = as.data.frame(items)
-#' as.data.frame.formr_item_list(items[2:3])
+#' items_df[1,]
 
 
 as.data.frame.formr_item_list = function(x, row.names, ...) {

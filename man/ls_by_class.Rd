@@ -21,9 +21,9 @@ get functions in the environment by their class. Useful to find e.g. all regress
 \examples{
 data(ChickWeight)
 chickweight.m1 <- glm(weight ~ Time + Diet, family = gaussian, data = ChickWeight)
-ls_by_class("lm")
-c("chickweight.m1") \%in\% ls_by_class("lm")
-c("chickweight.m1") \%in\% ls_by_class("lm", top_class_only = TRUE)
+ls_by_class('lm')
+c('chickweight.m1') \%in\% ls_by_class('lm')
+c('chickweight.m1') \%in\% ls_by_class('lm', top_class_only = TRUE)
 
 }
 

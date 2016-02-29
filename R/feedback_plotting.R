@@ -4,7 +4,7 @@
 #' get a standard normal distribution. 
 #'
 #' @param normed_value a z-standardised value
-#' @param ylab Y-axis label, defaults to 'Percentage of other people with this value'
+#' @param ylab Y-axis label, defaults to "Percentage of other people with this value"
 #' @param xlab X-axis label, empty by default, useful for labeling the plotted trait
 #' @param colour defaults to blue
 #' @param x_ticks the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to minuses, pluses and the average sign 
@@ -12,16 +12,17 @@
 #' @import ggplot2
 #' @examples
 #' normed_value = scale(x = 20, center = 14, scale = 5) # standardise value
-#' qplot_on_normal(normed_value, xlab = 'Extraversion')
+#' qplot_on_normal(normed_value, xlab = "Extraversion")
 
-qplot_on_normal = function(normed_value, ylab = "Percentage of other people with this value", 
-  xlab = "", colour = "blue", x_ticks = c("--", "-", "0", "+", 
-    "++")) {
-  ggplot() + stat_function(aes(x = -3:3), fun = dnorm, size = I(1)) + 
-    geom_vline(xintercept = normed_value, colour = colour, 
-      size = I(1)) + scale_x_continuous(xlab, breaks = c(-2:2), 
-    labels = x_ticks) + scale_y_continuous(ylab, labels = scales::percent_format()) + 
-    theme_minimal() + theme(text = element_text(size = 18))
+qplot_on_normal = function(normed_value,  ylab = "Percentage of other people with this value", xlab = '' , colour = "blue", x_ticks = c('--','-','0','+','++')) 
+{
+	ggplot()+
+  stat_function(aes(x=-3:3), fun = dnorm,size = I(1)) + 
+  geom_vline(xintercept= normed_value, colour= colour,size = I(1)) +
+	scale_x_continuous(xlab, breaks = c(-2:2),labels = x_ticks) +
+	scale_y_continuous(ylab, labels = scales::percent_format())+
+	theme_minimal() + 
+	theme(text = element_text(size = 18))
 }
 
 
@@ -37,20 +38,19 @@ qplot_on_normal = function(normed_value, ylab = "Percentage of other people with
 #' @param chunks a three or five element long character vector containing the text chunks for feedback
 #' @export
 #' @examples
-#' feedback_chunk(normed_value = 0.7, chunks = c('You are rather introverted.','You're approximately as extraverted as most people.','You are rather extraverted.'))
+#' feedback_chunk(normed_value = 0.7, chunks = c("You are rather introverted.","You're approximately as extraverted as most people.","You are rather extraverted."))
 
-feedback_chunk = function(normed_value, chunks) {
-  chunks = as.character(chunks)
-  if (!(length(chunks) %in% c(3, 5))) 
-    stop("Have to provide either three or five chunks.")
-  if (length(chunks) == 3) 
-    chunks = c(chunks[1], chunks, chunks[3])  # recycle
-  
-  if (normed_value <= -2) 
-    chunks[1] else if (normed_value <= -1) 
-    chunks[2] else if (normed_value <= 1) 
-    chunks[3] else if (normed_value <= 2) 
-    chunks[4] else chunks[5]
+feedback_chunk = function(normed_value,  chunks) 
+{
+	chunks = as.character(chunks)
+	if(! (length(chunks) %in% c(3,5))) stop("Have to provide either three or five chunks.")
+	if(length(chunks) == 3) chunks = c(chunks[1], chunks, chunks[3]) # recycle
+	
+	if(normed_value <= -2)      chunks[1]
+	else if(normed_value <= -1) chunks[2]
+	else if(normed_value <= 1)  chunks[3]
+	else if(normed_value <= 2)  chunks[4]
+	else                        chunks[5]
 }
 
 #' Plot normed values as a barchart
@@ -61,39 +61,39 @@ feedback_chunk = function(normed_value, chunks) {
 #' If the data.frame has an se column or ymax/ymin columns, these will be displayed on top of the bars and the bars will become transparent.
 #'
 #' @param normed_data a dataset with a value column containing z-standardised value and a variable column containing labels for those values
-#' @param ylab Y-axis label, defaults to 'Percentage of other people with this value'
+#' @param ylab Y-axis label, defaults to "Percentage of other people with this value"
 #' @param xlab X-axis label, empty by default, useful for labeling the plotted trait
 #' @param title Plot title
 #' @param y_ticks the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to minuses, pluses and the average sign 
 #' @export
 #' @import ggplot2
 #' @examples
-#' normed_data = data.frame(variable = c('Extraversion','Openness','Agreeableness','Neuroticism','Conscientiousness'), value = c(-3,1,-1,0.5,2)) # standardise value
-#' qplot_on_bar(normed_data, title = 'Your personality')
-#' normed_data = data.frame(variable = c('Extraversion','Openness','Agreeableness','Neuroticism','Conscientiousness'), value = c(-3,1,-1,0.5,2), se = c(0.2,0.3,0.2,0.25,0.4)) # standardise value
-#' qplot_on_bar(normed_data, title = 'Your personality')
+#' normed_data = data.frame(variable = c("Extraversion","Openness","Agreeableness","Neuroticism","Conscientiousness"), value = c(-3,1,-1,0.5,2)) # standardise value
+#' qplot_on_bar(normed_data, title = "Your personality")
+#' normed_data = data.frame(variable = c("Extraversion","Openness","Agreeableness","Neuroticism","Conscientiousness"), value = c(-3,1,-1,0.5,2), se = c(0.2,0.3,0.2,0.25,0.4)) # standardise value
+#' qplot_on_bar(normed_data, title = "Your personality")
 
-qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", 
-  title = "", y_ticks = c("--", "-", "0", "+", "++")) {
-  if (!all(c("value", "variable") %in% names(normed_data))) 
-    stop("Malformed file, check help.")
-  if (exists("se", where = normed_data)) {
-    normed_data$ymin = normed_data$value - normed_data$se
-    normed_data$ymax = normed_data$value + normed_data$se
-  }
-  plot = ggplot(normed_data, aes_string(x = "variable", y = "value", 
-    fill = "variable")) + ggtitle(title) + scale_fill_brewer("", 
-    palette = "Set1") + scale_y_continuous(ylab, breaks = c(-2, 
-    -1, 0, 1, 2), labels = y_ticks) + scale_x_discrete(xlab) + 
-    theme_minimal() + theme(text = element_text(size = 18)) + 
-    expand_limits(y = c(-2.5, 2.5))
-  if (exists("ymin", where = normed_data)) {
-    plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", 
-      colour = "variable"), size = 1) + scale_colour_brewer("", 
-      palette = "Set1") + geom_bar(stat = "identity", position = position_dodge(), 
-      alpha = 0.7)
-    
-  } else plot + geom_bar(stat = "identity", position = position_dodge())
+qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title = '', y_ticks = c('--','-','0','+','++'))
+{
+	if(! all(c("value","variable") %in% names(normed_data))) stop("Malformed file, check help.")
+	if(exists("se",where = normed_data))
+	{
+		normed_data$ymin = normed_data$value - normed_data$se
+		normed_data$ymax = normed_data$value + normed_data$se
+	}
+	plot = 
+	ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "variable")) +
+		ggtitle(title)+
+		scale_fill_brewer("",palette="Set1")+
+		scale_y_continuous(ylab, breaks=c(-2,-1,0,1,2),labels= y_ticks) +
+		scale_x_discrete(xlab) +
+		theme_minimal() + 
+		theme(text= element_text(size = 18)) +
+		expand_limits(y=c(-2.5,2.5))
+	if(exists("ymin",where=normed_data)) {
+		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "variable"), size = 1) + scale_colour_brewer("",palette="Set1") + geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)
+
+	} else plot + geom_bar(stat="identity",position=position_dodge())
 }
 
 
@@ -105,68 +105,71 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait",
 #' If the data.frame has an se column or ymax/ymin columns, these will be displayed on top of the bars and the bars will become transparent.
 #'
 #' @param normed_data a dataset with a value column containing z-standardised value and a variable column containing labels for those values
-#' @param ylab Y-axis label, defaults to 'Percentage of other people with this value'
+#' @param ylab Y-axis label, defaults to "Percentage of other people with this value"
 #' @param title Plot title
 #' @export
 #' @import ggplot2
 #' @examples
-#' weekdays = c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')
+#' weekdays = c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
 #' normed_data = data.frame(variable = factor(weekdays, weekdays), value = c(0,1,0.2,0.5,1.5,2,1)) # standardise value
-#' qplot_on_polar(normed_data, title = 'Your alcohol consumption across the week')
+#' qplot_on_polar(normed_data, title = "Your alcohol consumption across the week")
 #' normed_data = data.frame(variable = factor(1:24,1:24), value = 3+rnorm(24), se = rep(0.2,24)) # standardise value
-#' qplot_on_polar(normed_data, title = 'Your mood around the clock')
+#' qplot_on_polar(normed_data, title = "Your mood around the clock")
 
-qplot_on_polar = function(normed_data, ylab = "Your value", title = "") {
-  if (!all(c("value", "variable") %in% names(normed_data))) 
-    stop("Malformed file, check help.")
-  
-  if (exists("se", where = normed_data)) {
-    normed_data$ymin = normed_data$value - normed_data$se
-    normed_data$ymax = normed_data$value + normed_data$se
-  }
-  plot = ggplot(normed_data, aes_string(x = "variable", y = "value", 
-    fill = "value")) + ggtitle(title) + scale_y_continuous("", 
-    breaks = c()) + xlab("") + scale_fill_continuous(ylab) + 
-    theme_minimal() + theme(text = element_text(size = 18)) + 
-    coord_polar()
-  if (exists("ymin", where = normed_data)) {
-    plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", 
-      colour = "value"), size = 1) + geom_bar(stat = "identity", 
-      position = position_dodge(), alpha = 0.7) + scale_colour_continuous(ylab)
-    
-  } else plot + geom_bar(stat = "identity", position = position_dodge())
+qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
+{
+	if(! all(c("value","variable") %in% names(normed_data)) ) stop("Malformed file, check help.")
+
+	if(exists("se",where = normed_data))
+	{
+		normed_data$ymin = normed_data$value - normed_data$se
+		normed_data$ymax = normed_data$value + normed_data$se
+	}
+	plot = 
+		ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "value")) +
+		ggtitle(title)+
+		scale_y_continuous("",breaks=c()) +
+		xlab("") +
+		scale_fill_continuous(ylab) +
+		theme_minimal() + 
+		theme(text= element_text(size = 18)) +
+		coord_polar()
+	if(exists("ymin",where=normed_data)) {
+		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "value"), size = 1) + 
+			geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)	+ scale_colour_continuous(ylab)
+		
+	} else plot + geom_bar(stat="identity",position=position_dodge())
 }
 
 waffle_df = function(x, rows = NULL, cols = NULL) {
-  # x = sort(x)
-  total = length(x)
-  # Specify unique x and y coord for each case
-  if (is.null(rows) & is.null(cols)) {
-    rows = cols = ceiling(sqrt(total))
-    if ((rows * cols - total) == cols) {
-      cols = cols - 1  # if we have an empty column, remove it
-    }
-  } else if (is.numeric(cols) & is.numeric(rows)) {
-    if (total < rows * cols) {
-      warning(paste0("Total ", total, " smaller than number of cells (", 
-        rows, "x", cols, ")"))
-    }
-  } else if (is.numeric(rows)) {
-    cols = ceiling(total/rows)
-  } else if (is.numeric(cols)) {
-    rows = ceiling(total/cols)
-  }
-  x_pa = c(x, rep(NA, times = rows * cols - total))
-  dim(x_pa) = c(cols, rows)
-  xdf = reshape2::melt(x_pa)
-  xdf$value = factor(xdf$value, exclude = NA)
-  xdf$Var1 = xdf$Var1 - 1  # left shift all
-  xdf$Var1 = xdf$Var1 + floor(xdf$Var1/5) * 2/sqrt(total)  # every fifth gets extra distance
-  xdf$Var1 = xdf$Var1 + floor(xdf$Var1/10) * 1/sqrt(total)  # every tenth gets even more
-  xdf$Var2 = xdf$Var2 - 1  # up shift all
-  xdf$Var2 = xdf$Var2 + floor(xdf$Var2/5) * 2/sqrt(total)
-  xdf$Var2 = xdf$Var2 + floor(xdf$Var2/10) * 1/sqrt(total)
-  xdf
+	# x = sort(x)
+	total = length(x)
+	# Specify unique x and y coord for each case
+	if(is.null(rows) & is.null(cols)) {
+		rows = cols = ceiling(sqrt(total))
+		if((rows * cols - total) == cols) {
+			cols = cols - 1 # if we have an empty column, remove it
+		}
+	} else if(is.numeric(cols) & is.numeric(rows)) {
+		if(total < rows * cols) {
+			warning(paste0("Total ",total," smaller than number of cells (",rows,"x",cols,")"))
+		}
+	} else if(is.numeric(rows)) {
+		cols = ceiling(total / rows)
+	} else if(is.numeric(cols)) {
+		rows = ceiling(total / cols)
+	}
+	x_pa = c(x, rep(NA, times = rows * cols - total))
+	dim(x_pa) = c(cols, rows)
+	xdf = reshape2::melt(x_pa)
+	xdf$value = factor(xdf$value,exclude = NA)
+	xdf$Var1 = xdf$Var1 - 1 # left shift all
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 5) * 2 / sqrt(total) # every fifth gets extra distance
+	xdf$Var1 = xdf$Var1 + floor(xdf$Var1 / 10) * 1 / sqrt(total) # every tenth gets even more
+	xdf$Var2 = xdf$Var2 - 1 # up shift all
+	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 5) * 2 / sqrt(total)
+	xdf$Var2 = xdf$Var2 + floor(xdf$Var2 / 10) * 1 / sqrt(total)
+	xdf
 }
 
 #' Waffle plot
@@ -188,32 +191,43 @@ waffle_df = function(x, rows = NULL, cols = NULL) {
 #' @import ggplot2
 #' @examples
 #' qplot_waffle(rep(1:2,each=200))
-qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, 
-  drop_shadow_h = -0.3, drop_shadow_v = 0.3) {
-  xdf = waffle_df(x, rows, cols)
-  total = length(x)
-  types = length(unique(na.omit(x)))
-  
-  miss_value = is.na(levels(xdf$value)[xdf$value])
-  xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
-  xdf$Var2_offset = xdf$Var2 + drop_shadow_v/sqrt(total)
-  ggplot(xdf) + geom_point(aes_string(x = "Var1_offset", y = "Var2_offset"), 
-    colour = ifelse(miss_value, NA, "black"), shape = shape, 
-    size = round(140/sqrt(total)), show_guide = F) + geom_point(aes_string(x = "Var1", 
-    y = "Var2", colour = "value"), shape = shape, size = round(140/sqrt(total)), 
-    show_guide = ifelse(types > 1, T, F)) + coord_fixed() + 
-    theme_minimal() + guides(colour = guide_legend(override.aes = list(shape = 15, 
-    size = 12))) + ylab("") + xlab("") + scale_x_continuous(expand = c(0.12, 
-    0.12)) + scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") + 
-    theme(panel.background = element_rect(colour = NA), panel.border = element_blank(), 
-      strip.background = element_blank(), panel.grid = element_blank(), 
-      axis.line = element_blank(), axis.text = element_blank(), 
-      axis.title = element_blank(), axis.ticks = element_blank()) + 
-    scale_colour_manual("", values = c("#aea96f", "#a5c25c", 
-      "#a3ccdc"))
+qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h = -0.3, drop_shadow_v = 0.3) {
+	xdf = waffle_df(x, rows, cols)
+	total = length(x)
+	types = length(unique(na.omit(x)))
+	
+	miss_value = is.na(levels(xdf$value)[xdf$value])
+	xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
+	xdf$Var2_offset = xdf$Var2 + drop_shadow_v/sqrt(total)
+	ggplot(xdf) + 
+		geom_point(aes_string(x = "Var1_offset", y = "Var2_offset"), 
+							 colour = ifelse(miss_value, NA, "black"),
+							 shape = shape,
+							 size = round(140/sqrt(total)),
+							 show_guide = F) +
+		geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"), 
+							 shape = shape,
+							 size = round(140/sqrt(total)),
+							 show_guide = ifelse(types>1,T,F)) +
+		coord_fixed() +
+		theme_minimal() +
+		guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
+		ylab("")+ xlab("")+
+		scale_x_continuous(expand = c(0.12, 0.12)) +
+		scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
+		theme(
+			panel.background = element_rect(colour = NA), 
+			panel.border = element_blank(),
+			strip.background = element_blank(),
+			panel.grid = element_blank(),
+			axis.line = element_blank(), 
+			axis.text = element_blank(),
+			axis.title = element_blank(),
+			axis.ticks = element_blank()) +
+	scale_colour_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
-fontawesome_square = ""
+fontawesome_square = '\uf0c8'
 
 #' Waffle plot (text)
 #'
@@ -243,33 +257,39 @@ fontawesome_square = ""
 #' \dontrun{
 #' qplot_waffle_text(rep(1:2,each=30), rows = 5)
 #' }
-qplot_waffle_text = function(x, symbol = fontawesome_square, 
-  rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, 
-  font_family = "FontAwesome", font_face = "Regular", font_size = round(140/sqrt(length(x)))) {
+qplot_waffle_text = function(x, symbol = fontawesome_square, rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular",
+  font_size = round(140/sqrt(length(x)))) {
   xdf = waffle_df(x, rows, cols)
   types = length(unique(na.omit(x)))
-  
+
   miss_value = is.na(levels(xdf$value)[xdf$value])
   xdf$Var1_offset = xdf$Var1 + drop_shadow_h * font_size/140
   xdf$Var2_offset = xdf$Var2 + drop_shadow_v * font_size/140
-  
-  ggplot(xdf) + geom_point(aes_string(x = "Var1", y = "Var2", 
-    colour = "value"), size = 0, show_guide = ifelse(types > 
-    1, T, F)) + geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
-    colour = ifelse(miss_value, NA, "black"), size = font_size, 
-    label = symbol, show_guide = F, alpha = 0.3, family = font_family, 
-    face = font_face) + geom_text(aes_string(x = "Var1", 
-    y = "Var2", colour = "value"), show_guide = F, size = font_size, 
-    label = symbol, family = font_family, face = font_face) + 
-    coord_fixed() + theme_minimal() + guides(colour = guide_legend(override.aes = list(shape = 15, 
-    size = 12))) + ylab("") + xlab("") + scale_x_continuous(expand = c(0.12, 
-    0.12)) + scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") + 
-    theme(panel.background = element_rect(colour = NA), panel.border = element_blank(), 
-      strip.background = element_blank(), panel.grid = element_blank(), 
-      axis.line = element_blank(), axis.text = element_blank(), 
-      axis.title = element_blank(), axis.ticks = element_blank()) + 
-    scale_colour_manual("", values = c("#aea96f", "#a5c25c", 
-      "#a3ccdc"))
+
+  ggplot(xdf) + 
+    geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_guide = ifelse(types>1,T,F)) +
+    geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
+              colour = ifelse(miss_value, NA, "black"),
+              size = font_size,label= symbol,
+              show_guide = F, alpha = .3, family = font_family, face = font_face) +
+    geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_guide = F,
+              size = font_size, label= symbol, family = font_family, face = font_face) +
+    coord_fixed() +
+    theme_minimal() +
+    guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
+    ylab("") + xlab("") +
+    scale_x_continuous(expand = c(0.12, 0.12)) +
+    scale_y_continuous(expand = c(0.12, 0.12), trans = "reverse") +
+    theme(
+      panel.background = element_rect(colour = NA), 
+      panel.border = element_blank(),
+      strip.background = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(), 
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank()) +
+    scale_colour_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 
@@ -297,24 +317,28 @@ qplot_waffle_text = function(x, symbol = fontawesome_square,
 #' @examples
 #' qplot_waffle_tile(rep(1:2,each=500))
 qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
-  xdf = waffle_df(x, rows, cols)
-  total = length(x)
-  types = length(unique(na.omit(x)))
-  
-  miss_value = is.na(levels(xdf$value)[xdf$value])
-  xdf$color = "white"
-  
-  ggplot(xdf) + geom_tile(aes_string(x = "Var1", y = "Var2", 
-    fill = "value", color = "color"), size = 25/sqrt(total), 
-    show_guide = ifelse(types > 1, T, F)) + scale_x_continuous(expand = c(0, 
-    0)) + scale_y_continuous(expand = c(0, 0), trans = "reverse") + 
-    scale_color_manual(values = "white", guide = F) + coord_fixed() + 
-    theme_minimal() + theme(panel.border = element_blank(), 
-    plot.title = element_text(size = rel(1.2), face = "bold"), 
-    axis.line = element_blank(), axis.text = element_blank(), 
-    axis.title = element_blank(), axis.ticks = element_blank(), 
-    panel.grid = element_blank()) + scale_fill_manual("", 
-    values = c("#aea96f", "#a5c25c", "#a3ccdc"))
+	xdf = waffle_df(x, rows, cols)
+	total = length(x)
+	types = length(unique(na.omit(x)))
+		
+	miss_value = is.na(levels(xdf$value)[xdf$value])
+	xdf$color = "white"
+	
+	ggplot(xdf) + 
+		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value", color = "color"), size = 25/sqrt(total),show_guide = ifelse(types > 1, T, F)) +
+		scale_x_continuous(expand = c(0, 0)) +
+		scale_y_continuous(expand = c(0, 0), trans = "reverse") +
+		scale_color_manual(values = "white",guide = F)+
+		coord_fixed() +
+		theme_minimal() + 
+		theme(panel.border = element_blank(),
+					plot.title = element_text(size = rel(1.2), face = "bold"),
+					axis.line = element_blank(),
+					axis.text = element_blank(),
+					axis.title = element_blank(),
+					axis.ticks = element_blank(),
+					panel.grid = element_blank())  +
+	scale_fill_manual("",values = c("#aea96f","#a5c25c","#a3ccdc"))
 }
 
 #    

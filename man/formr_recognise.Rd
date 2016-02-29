@@ -22,10 +22,10 @@ Once you've retrieved an item table using \code{\link{formr_items}} you can use 
 function to correctly type your variables based on the item table (e.g. formr free text types will be character, but select_add_one will be factor, dates are also typed as Date, datetimes as POSIXct).
 }
 \examples{
-\dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-sim = formr_simulate_from_items(item_list = formr_items("training_diary"), n = 100)
-summary(lm(pushups ~ pullups, data = sim))
-}
+results = jsonlite::fromJSON(txt = system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+class(results$created)
+items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = formr_recognise(item_list = items, results = results)
+class(results$created)
 }
 

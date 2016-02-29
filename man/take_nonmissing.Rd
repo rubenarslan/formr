@@ -13,10 +13,10 @@ take_nonmissing(df, keep = c())
 }
 \description{
 this function takes a subset of a dataset, omitting all
-cases with missings in variables specified in "keep"
+cases with missings in variables specified in 'keep'
 and omitting all variables that still have missings after that.
 Good to see how large your dataset for a certain analysis 
-will be and which covariates are "free" in terms of sample size.
+will be and which covariates are 'free' in terms of sample size.
 }
 \examples{
 data(ChickWeight)

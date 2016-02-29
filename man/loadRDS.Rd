@@ -19,7 +19,7 @@ However, sometimes it may be more convenient to assign the object in the RDS fil
 }
 \examples{
 \dontrun{
-loadRDS(file = "~/Models/Spouses.rds") # assigns object contained in file to variable "Spouses"
+loadRDS(file = '~/Models/Spouses.rds') # assigns object contained in file to variable 'Spouses'
 }
 }
 

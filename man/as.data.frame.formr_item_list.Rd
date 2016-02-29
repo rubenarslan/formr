@@ -14,12 +14,15 @@
 \item{...}{not used}
 }
 \description{
-This function just turns a formr_item_list into a data.frame. The reason, these lists don't come as data.frames as default is because the "choices" are a list themselves. When transforming, the choice column contains a collapsed choice list, which may be less useful for some purposes.
+This function just turns a formr_item_list into a data.frame. The reason, these lists don't come as data.frames as default is because the 'choices' are a list themselves. When transforming, the choice column contains a collapsed choice list, which may be less useful for some purposes.
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-as.data.frame(formr_items(survey_name = "training_diary" ))
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+as.data.frame(formr_items(survey_name = 'training_diary' ))
 }
+items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+items_df = as.data.frame(items)
+items_df[1,]
 }
 

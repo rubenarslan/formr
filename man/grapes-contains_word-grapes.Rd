@@ -21,8 +21,8 @@ Just a simple shorthand so that inexperienced R users don't have
 to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
 }
 \examples{
-"1, 3, 4" \%contains_word\% "1" # TRUE
-"1, 3, 4" \%contains_word\% 1 # TRUE unlike str_detect casts all needles as characters
-"12, 14, 17" \%contains_word\% "1" # FALSE even though 12 contains 1
+'1, 3, 4' \%contains_word\% '1' # TRUE
+'1, 3, 4' \%contains_word\% 1 # TRUE unlike str_detect casts all needles as characters
+'12, 14, 17' \%contains_word\% '1' # FALSE even though 12 contains 1
 }
 

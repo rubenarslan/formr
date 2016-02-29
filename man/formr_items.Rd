@@ -19,9 +19,9 @@ you can download items using this command. One of survey_name or path has to be 
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-formr_items(survey_name = "training_diary" )
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+formr_items(survey_name = 'training_diary' )
 }
-formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))[1:2]
+formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))[1:2]
 }
 

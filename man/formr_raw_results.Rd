@@ -17,7 +17,7 @@ you can download data using this command.
 }
 \examples{
 \dontrun{
-formr_raw_results(survey_name = "training_diary" )
+formr_raw_results(survey_name = 'training_diary' )
 }
 }
 

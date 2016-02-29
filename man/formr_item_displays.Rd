@@ -17,8 +17,8 @@ you can download detailed times and display counts for each item using this comm
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-formr_item_displays(survey_name = "training_diary" )
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+formr_item_displays(survey_name = 'training_diary' )
 }
 }
 

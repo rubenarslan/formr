@@ -25,7 +25,7 @@ you can download data, it basically just does \code{\link{formr_raw_results}} ,
 }
 \examples{
 \dontrun{
-formr_results(survey_name = "training_diary" )
+formr_results(survey_name = 'training_diary' )
 }
 }
 

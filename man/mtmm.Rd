@@ -12,7 +12,7 @@ mtmm(variables = NULL, reliabilities = NULL, split_regex = "_",
 
 \item{reliabilities}{data frame of reliabilties: column 1: scale, column 2: rel. coefficient}
 
-\item{split_regex}{regular expression to separate construct and method from the variable name, splits on "." by default}
+\item{split_regex}{regular expression to separate construct and method from the variable name, splits on '.' by default}
 
 \item{cors}{you can also supply a (named) correlation matrix}
 }

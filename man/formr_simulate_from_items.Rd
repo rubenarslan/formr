@@ -20,11 +20,11 @@ Does not yet handle dates, times, text, locations, colors
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
-sim = formr_simulate_from_items(item_list = formr_items("training_diary"), n = 100)
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+sim = formr_simulate_from_items(item_list = formr_items('training_diary'), n = 100)
 summary(lm(pushups ~ pullups, data = sim))
 }
-items = formr_items(path = system.file("extdata/gods_example_items.json", package = "formr", mustWork = TRUE))
+items = formr_items(path = system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 fakedata = formr_simulate_from_items(items, n = 20)
 fakedata[1:2,]
 }

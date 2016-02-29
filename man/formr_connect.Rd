@@ -19,7 +19,7 @@ which supports persistent session cookies.
 }
 \examples{
 \dontrun{
-formr_connect(email = "you@example.net", password = "zebrafinch" )
+formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 }
 }
 

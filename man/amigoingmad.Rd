@@ -5,7 +5,7 @@
 \title{It's easy to attach packages that overwrite functions from other packages. Especially dplyr has a lot of conflicts
 with base packages, MASS and plyr. Because some of these conflicts do not always lead to error messages, sometimes
 just incorrect behaviour, this function exists. Don't trust your faulty memory, just check whether dplyr's (or any other
-package's) functions are "on top" if you so desire.}
+package's) functions are 'on top' if you so desire.}
 \usage{
 amigoingmad(fix = TRUE, package = "dplyr", iteration = 0)
 }
@@ -20,9 +20,9 @@ amigoingmad(fix = TRUE, package = "dplyr", iteration = 0)
 It's easy to attach packages that overwrite functions from other packages. Especially dplyr has a lot of conflicts
 with base packages, MASS and plyr. Because some of these conflicts do not always lead to error messages, sometimes
 just incorrect behaviour, this function exists. Don't trust your faulty memory, just check whether dplyr's (or any other
-package's) functions are "on top" if you so desire.
+package's) functions are 'on top' if you so desire.
 }
 \examples{
-amigoingmad(fix = FALSE, package = "formr")
+amigoingmad(fix = FALSE, package = 'formr')
 }
 
