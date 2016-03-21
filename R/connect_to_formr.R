@@ -420,7 +420,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
     }))(results[, char_vars, drop = F])
     # get reversed items
     reversed_items = item_names[stringr::str_detect(item_names, 
-      "^[a-zA-Z0-9_]+?[0-9]+R$")]
+      "^(?i)[a-zA-Z0-9_]+?[0-9]+R$")]
     if (length(reversed_items)) {
       for (i in seq_along(reversed_items)) {
         # reverse these items based on fallback_max, or if higher the
@@ -742,6 +742,53 @@ formr_likert = function(item_list, results) {
   } else {
     NULL
   }
+}
+
+
+#' generates valid email cids
+#'
+#' can be used as an argument to \code{\link[knitr:opts_knit]{opts_knit}}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
+#'
+#' @param x image ID
+#' @param ext extension, defaults to .png
+#' @export
+#' @examples
+#' \dontrun{
+#' library(knitr); library(formr)
+#' opts_knit$set(upload.fun=formr::email_image)
+#' }
+
+email_image = function(x, ext = ".png") {
+	cid = gsub("[^a-zA-Z0-9]", "", substring(x, 8))
+	structure(paste0("cid:", cid, ext), link = x)
+}
+
+#' pass in the url to the RDS representation of a openCPU session object, get the object
+#'
+#' useful to programmatically access openCPU session object stored in character variables etc.
+#'
+#' @param session_url the session url, e.g. https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds
+#' @param local defaults to FALSE, if true, will assume that the session is not on another server, and do some not-very-smart substitution to load it via the file system instead of HTTP/HTTPS
+#' @export
+#' @examples
+#' \dontrun{
+#' get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
+#' }
+get_opencpu_rds = function(session_url, local = TRUE) {
+	if (local) {
+		sessionenv <- new.env()
+		filepath = stringr::str_match(session_url, "/ocpu/tmp/([xa-f0-9]+)/([a-z0-9A-Z/.]+)")
+		sessionfile <- file.path("/tmp/ocpu-www-data/tmp_library", 
+														 filepath[, 2], ".RData")
+		if (file.exists(sessionfile)) {
+			load(sessionfile, envir = sessionenv)
+			desired_obj = stringr::str_sub(filepath[, 3], 3, 
+																		 -5)
+			sessionenv[[desired_obj]]
+		}
+	} else {
+		readRDS(gzcon(curl::curl(session_url)))
+	}
 }
 
 # # # # # ## testing with credentials formr_connect('', '')

@@ -20,6 +20,6 @@ The inverse of \code{\link{last}}.
 }
 \examples{
 first( c(NA,1:10) )
-last( c(NA, 1:10), 2, TRUE )
+first( c(NA, 1:10), 2, TRUE )
 }
 

@@ -1,3 +1,62 @@
+#' iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade by confidence. Horribly inefficient, because smooth stat is computed every time, but flexible.
+#'
+#' @param levels the confidence levels that are supposed to be displayed, defaults to 0.6, 0.8, 0.95
+#' @param base_alpha divided by length(levels)
+#' @param fill_gradient a vector of colors that has at least the same length as levels. Color each ribbon differently
+#' @param fill a single color for the ribbon
+#' @param stat defaults to smooth
+#' @param ... everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
+#' @inheritParams ggplot2::geom_smooth
+#' @export
+#' @examples
+#' data(beavers)
+#' plot = ggplot2::ggplot(beaver1, ggplot2::aes(time, temp))
+#' plot + geom_shady_smooth() + ggplot2::facet_wrap(~ day)
+#' plot + geom_shady_smooth(fill = 'blue', levels = seq(0.05,0.95,0.1))
+#' plot + geom_shady_smooth(size = 0.1, fill = '#49afcd', levels = seq(0.1,0.8,0.01))
+#' plot + geom_shady_smooth(fill_gradient = c('red', 'orange', 'yellow'), base_alpha = 3)
+geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", 
+															method = "auto", formula = y ~ x, se = TRUE, position = "identity", 
+															na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, levels = c(0.6, 
+																																															0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", 
+															...) {
+	layers = list()
+	ribbon_alpha = base_alpha/length(levels)
+	if (ribbon_alpha > 1) 
+		ribbon_alpha = 1
+	
+	params <- list(na.rm = na.rm, fill = fill, ...)
+	if (identical(stat, "smooth")) {
+		params$method <- method
+		params$formula <- formula
+		params$se <- se
+	}
+	params_ribbon = params
+	params_ribbon$color = NULL  # don't want the line color to be the stroke of the ribbon
+	params_ribbon$alpha = ribbon_alpha  # alpha level for ribbon is automatically based on nr of levels and base_alpha
+	levels = rev(levels)
+	if (!is.null(fill_gradient)) {
+		stopifnot(length(fill_gradient) == length(levels))
+		fill_gradient = rev(fill_gradient)
+	}
+	for (i in seq_along(levels)) {
+		params_ribbon$level = levels[[i]]
+		if (!is.null(fill_gradient)) {
+			params_ribbon$fill = fill_gradient[i]
+		}
+		layers[[i]] = ggplot2::layer(data = data, mapping = mapping, 
+																 stat = stat, geom = ggplot2::GeomRibbon, position = position, 
+																 show.legend = show.legend, inherit.aes = inherit.aes, 
+																 params = params_ribbon)
+	}
+	params$fill = NULL  # line knows no fill aesthetic
+	layers[[i + 1]] = ggplot2::layer(data = data, mapping = mapping, 
+																	 stat = stat, geom = ggplot2::GeomLine, position = position, 
+																	 show.legend = show.legend, inherit.aes = inherit.aes, 
+																	 params = params)
+	layers
+}
+
 #' Plot a normed value on the standard normal
 #'
 #' Pass in a z-standardised value (x - Mean)/SD,

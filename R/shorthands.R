@@ -10,7 +10,7 @@
 #' @export
 #' @examples
 #' first( c(NA,1:10) )
-#' last( c(NA, 1:10), 2, TRUE )
+#' first( c(NA, 1:10), 2, TRUE )
 
 first = function(x, n = 1, na.rm = TRUE) {
   if (na.rm) 
@@ -113,9 +113,8 @@ current = function(x) {
   stringr::str_detect(haystack, paste0("^", Hmisc::escapeRegex(as.character(needle))))
 }
 
-#' @rdname %begins_with% 
 #' @export
-"%starts_with%" = "%begins_with%"
+"%starts_with%" = `%begins_with%`
 
 #' check whether a character string ends with a string
 #'
@@ -293,51 +292,6 @@ in_time_window = function(min, max) {
   min < lubridate::here() && max > lubridate::here()
 }
 
-#' generates valid email cids
-#'
-#' can be used as an argument to \code{\link[knitr:opts_knit]{opts_knit}}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
-#'
-#' @param x image ID
-#' @param ext extension, defaults to .png
-#' @export
-#' @examples
-#' \dontrun{
-#' library(knitr); library(formr)
-#' opts_knit$set(upload.fun=formr::email_image)
-#' }
-
-email_image = function(x, ext = ".png") {
-  cid = gsub("[^a-zA-Z0-9]", "", substring(x, 8))
-  structure(paste0("cid:", cid, ext), link = x)
-}
-
-#' pass in the url to the RDS representation of a openCPU session object, get the object
-#'
-#' useful to programmatically access openCPU session object stored in character variables etc.
-#'
-#' @param session_url the session url, e.g. https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds
-#' @param local defaults to FALSE, if true, will assume that the session is not on another server, and do some not-very-smart substitution to load it via the file system instead of HTTP/HTTPS
-#' @export
-#' @examples
-#' \dontrun{
-#' get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
-#' }
-get_opencpu_rds = function(session_url, local = TRUE) {
-  if (local) {
-    sessionenv <- new.env()
-    filepath = stringr::str_match(session_url, "/ocpu/tmp/([xa-f0-9]+)/([a-z0-9A-Z/.]+)")
-    sessionfile <- file.path("/tmp/ocpu-www-data/tmp_library", 
-      filepath[, 2], ".RData")
-    if (file.exists(sessionfile)) {
-      load(sessionfile, envir = sessionenv)
-      desired_obj = stringr::str_sub(filepath[, 3], 3, 
-        -5)
-      sessionenv[[desired_obj]]
-    }
-  } else {
-    readRDS(gzcon(curl::curl(session_url)))
-  }
-}
 
 #' xtabs with sensible defaults
 #'
@@ -370,181 +324,6 @@ crosstabs = function(x, ..., exclude = NULL) {
 props = function(..., exclude = NULL) {
   prop.table(crosstabs(..., exclude = NULL))
 }
-
-#' take only nonmissing
-#'
-#' this function takes a subset of a dataset, omitting all
-#' cases with missings in variables specified in 'keep'
-#' and omitting all variables that still have missings after that.
-#' Good to see how large your dataset for a certain analysis 
-#' will be and which covariates are 'free' in terms of sample size.
-#'
-#' @param df dataset
-#' @param keep defaults to empty vector
-#' @export
-#' @examples
-#' data(ChickWeight)
-#' ChickWeight[1:2,c('weight','Chick')] = NA
-#' ChickWeight[3:4,'Diet'] = NA
-#' names(ChickWeight); nrow(ChickWeight)
-#' ChickWeight2 = take_nonmissing(ChickWeight, keep = c('weight'))
-#' names(ChickWeight2); nrow(ChickWeight2)
-take_nonmissing = function(df, keep = c()) {
-  df = df[rowSums(is.na(subset(df, select = keep, drop = F))) == 
-    0, ]  # omit all cases with missings in keep
-  df = subset(df, select = names(which(colSums(is.na(df)) == 
-    0)), drop = F)  # omit all variables with missings
-}
-
-
-
-#' missingness patterns
-#'
-#' this function shows how common possible missingness patterns are. Emulates misschk in stata.
-#' 1. excludes any variables that don't have any missings, so as not to clutter output. Disable using omit_complete
-#' 2. sorts variables by number of missings, so that the usual suspects show up at the front.
-#' 3. displays number of missings accounted for by each pattern
-#'
-#' @param df dataset
-#' @param min_freq show only patterns that occur at least this often. Defaults to 1 observation.
-#' @param long_pattern by default (FALSE) only shows column indices for space and legibility reasons.
-#' @param print_legend prints a legend for the column indices, defaults to FALSE if long_pattern is set
-#' @param show_culprit defaults to TRUE. In case a missingness pattern boils down to one variable, it will be shown here.
-#' @param relative defaults to FALSE. If true, percentages are shown (relative to total before excluding minimum frequency).
-#' @param omit_complete defaults to TRUE. Columns that don't have any missings are excluded.
-#' @export
-#' @examples
-#' data(ChickWeight)
-#' ChickWeight[1:2,c('weight','Chick')] = NA
-#' ChickWeight[3:5,'Diet'] = NA
-#' names(ChickWeight); nrow(ChickWeight)
-#' missingness_patterns(ChickWeight)
-missingness_patterns = function(df, min_freq = ifelse(relative, 
-  1/nrow(df), 1), long_pattern = FALSE, print_legend = ifelse(long_pattern, 
-  FALSE, TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE) {
-  missings_by_column = colSums(is.na(df))
-  if (omit_complete) {
-    takethese = missings_by_column != 0
-  } else {
-    takethese = TRUE
-  }
-  names(missings_by_column) = names(df)
-  missings_by_column = sort(missings_by_column[takethese], 
-    decreasing = T)
-  any_missing_sorted = names(missings_by_column)
-  df = subset(df, select = any_missing_sorted)
-  cols = names(df)
-  if (length(cols) == 0) {
-    cat("No missings at all.\n")
-    return(invisible(NULL))
-  }
-  df = !is.na(df)
-  ddf = as.data.frame(df)
-  if (min_freq > 0) {
-    counted = dplyr::count_(ddf, vars = names(ddf))
-    names(counted) = c(cols, "Freq")
-  } else {
-    counted = as.data.frame(xtabs(data = df))
-  }
-  if (relative) {
-    counted$Freq = counted$Freq/sum(counted$Freq)
-  }
-  counted = counted[counted$Freq >= min_freq, ]
-  pattern = character(length = nrow(counted))
-  if (show_culprit) {
-    culprit = rep(x = "_", nrow(counted))
-  }
-  for (i in 1:length(cols)) {
-    if (show_culprit) {
-      culprit[counted[, i] == "FALSE"] = ifelse(culprit[counted[, 
-        i] == "FALSE"] == "_", cols[i], "")  # if it's a _, set it, if it's set, set it to empty
-    }
-    nr = as.character(i)
-    pattern = paste0(pattern, ifelse(i == 1, "", "_"), ifelse(counted[, 
-      i] == "TRUE", stringr::str_pad("", stringr::str_length(nr), 
-      pad = "_"), nr))
-  }
-  missingness = data.frame(Pattern = pattern, Freq = counted$Freq, 
-    Culprit = culprit)
-  
-  if (long_pattern == TRUE) {
-    long_pattern = character(length = nrow(counted))
-    for (i in 1:length(cols)) {
-      long_pattern = paste0(long_pattern, ifelse(counted[, 
-        i] == "TRUE", "_", paste0(cols[i], ".")))
-    }
-    missingness$Pattern = long_pattern
-  }
-  if (print_legend) {
-    print(data.frame(index = 1:length(cols), col = cols, 
-      missings = missings_by_column), row.names = FALSE)
-  }
-  missingness = missingness[order(missingness$Freq, decreasing = T), 
-    ]
-  rownames(missingness) = NULL
-  missingness
-}
-
-
-#' iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade by confidence. Horribly inefficient, because smooth stat is computed every time, but flexible.
-#'
-#' @param levels the confidence levels that are supposed to be displayed, defaults to 0.6, 0.8, 0.95
-#' @param base_alpha divided by length(levels)
-#' @param fill_gradient a vector of colors that has at least the same length as levels. Color each ribbon differently
-#' @param fill a single color for the ribbon
-#' @param stat defaults to smooth
-#' @param ... everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
-#' @inheritParams ggplot2::geom_smooth
-#' @export
-#' @examples
-#' data(beavers)
-#' plot = ggplot2::ggplot(beaver1, ggplot2::aes(time, temp))
-#' plot + geom_shady_smooth() + ggplot2::facet_wrap(~ day)
-#' plot + geom_shady_smooth(fill = 'blue', levels = seq(0.05,0.95,0.1))
-#' plot + geom_shady_smooth(size = 0.1, fill = '#49afcd', levels = seq(0.1,0.8,0.01))
-#' plot + geom_shady_smooth(fill_gradient = c('red', 'orange', 'yellow'), base_alpha = 3)
-geom_shady_smooth <- function(mapping = NULL, data = NULL, stat = "smooth", 
-  method = "auto", formula = y ~ x, se = TRUE, position = "identity", 
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, levels = c(0.6, 
-    0.8, 0.95), base_alpha = 1, fill_gradient = NULL, fill = "black", 
-  ...) {
-  layers = list()
-  ribbon_alpha = base_alpha/length(levels)
-  if (ribbon_alpha > 1) 
-    ribbon_alpha = 1
-  
-  params <- list(na.rm = na.rm, fill = fill, ...)
-  if (identical(stat, "smooth")) {
-    params$method <- method
-    params$formula <- formula
-    params$se <- se
-  }
-  params_ribbon = params
-  params_ribbon$color = NULL  # don't want the line color to be the stroke of the ribbon
-  params_ribbon$alpha = ribbon_alpha  # alpha level for ribbon is automatically based on nr of levels and base_alpha
-  levels = rev(levels)
-  if (!is.null(fill_gradient)) {
-    stopifnot(length(fill_gradient) == length(levels))
-    fill_gradient = rev(fill_gradient)
-  }
-  for (i in seq_along(levels)) {
-    params_ribbon$level = levels[[i]]
-    if (!is.null(fill_gradient)) {
-      params_ribbon$fill = fill_gradient[i]
-    }
-    layers[[i]] = ggplot2::layer(data = data, mapping = mapping, 
-      stat = stat, geom = ggplot2::GeomRibbon, position = position, 
-      show.legend = show.legend, inherit.aes = inherit.aes, 
-      params = params_ribbon)
-  }
-  params$fill = NULL  # line knows no fill aesthetic
-  layers[[i + 1]] = ggplot2::layer(data = data, mapping = mapping, 
-    stat = stat, geom = ggplot2::GeomLine, position = position, 
-    show.legend = show.legend, inherit.aes = inherit.aes, 
-    params = params)
-  layers
-}
-
 
 #' get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.
 #'
@@ -588,89 +367,12 @@ ls_by_class = function(classes, envir = parent.frame(), top_class_only = FALSE,
   }
 }
 
-
-
-#' It's easy to attach packages that overwrite functions from other packages. Especially dplyr has a lot of conflicts
-#' with base packages, MASS and plyr. Because some of these conflicts do not always lead to error messages, sometimes
-#' just incorrect behaviour, this function exists. Don't trust your faulty memory, just check whether dplyr's (or any other
-#' package's) functions are 'on top' if you so desire.
-#'
-#' @param fix defaults to true. Detaches the desired package (without unloading) and loads it again. Won't work for base packages and can't overwrite functions that you defined yourself.
-#' @param package the package you want to be on top (loaded last), defaults to dplyr
-#' @param iteration for internal use only, if set to 0 the function will call itself to check that it worked, if set to 1, it won't.
-#' @export
-#' @examples
-#' amigoingmad(fix = FALSE, package = 'formr')
-amigoingmad = function(fix = TRUE, package = "dplyr", iteration = 0) {
-  if (iteration > 1) {
-    stop("Can't fix.")
-  }
-  conf = unique(conflicts())
-  want_package = paste0("package:", package)
-  conflicts_desired_package = conf[conf %in% ls(want_package)]
-  conflict_envs = sapply(conflicts_desired_package, FUN = function(x) {
-    environmentName(pryr::where(x))
-  })
-  is_good = conflict_envs == want_package
-  potentially_bad_confs = conflicts_desired_package[!is_good]
-  potentially_bad_envs = conflict_envs[!is_good]
-  have_to_fix = rep(FALSE, length(potentially_bad_confs))
-  for (i in seq_along(potentially_bad_confs)) {
-    if (!identical(body(get(potentially_bad_confs[i], pos = want_package)), 
-      body(get(potentially_bad_confs[i])))) {
-      have_to_fix[i] = TRUE
-    }
-  }
-  
-  if (any(have_to_fix)) {
-    message("The following functions don't have the environment you want.")
-    print(data.frame(`function` = potentially_bad_confs[have_to_fix], 
-      environment = potentially_bad_envs[have_to_fix]), 
-      row.names = F)
-    if (fix) {
-      base::detach(name = want_package, character.only = TRUE)
-      base::library(package, character.only = TRUE)
-      message("Tried to fix this, calling myself again to make sure...")
-      amigoingmad(fix, package, iteration + 1)
-      message("Sanity restored!")
-    }
-  } else if (iteration == 0) {
-    message("Everything looks normal. Maybe it's you.")
-  }
-}
-
-#' Summarises a dataset using \code\link[tidyr]{gather}} and \code\link[dplyr]{summarise}}.
-#' 
-#' @param data dataset
-#' @return return a tbl_df with one var per row and one column for mean, sd, max, min (all with missings removed), the number of missings, the number of nonmissing values, and the number of distinct values
-#' @export
-#' @examples
-#' data(beavers)
-#' summarise_all_vars(beaver1)
-#' beaver1 = dplyr::group_by(beaver1, activ)
-#' summarise_all_vars(beaver1)
-summarise_all_vars = function(data) {
-	dplyr_groups = as.character(dplyr::groups(data))
-	gather_cols = setdiff(names(data), dplyr_groups)
-	data = tidyr::gather_(data, "variable", "value", gather_cols = gather_cols, factor_key = TRUE)
-	data = dplyr::group_by_(data, .dots = c("variable", dplyr_groups))
-	summary_of_vars = dplyr::summarise(data, 
-		mean = mean(value, na.rm = T), 
-		sd = sd(value, na.rm = T), 
-		min = min(value, na.rm = T), 
-		max  = max(value, na.rm = T),
-		n_miss = n_missing(value),
-		n_nonmiss = n() - n_miss,
-		n_distinct = n_distinct(value)
-	)
-	summary_of_vars
-}
-
 #' Returns the number of missings in a variable or dataset. 
 #' If missings are an explicit level in a factor variable, this
 #' function defaults to reporting them anyway.
 #' 
-#' @param x
+#' @param x variable
+#' @param exclude only needed for factors. defaults to NA (count level=missing as missing), setting to 0 allows you to count level=missing as nonmissing
 #' @export
 #' @examples
 #' data(beavers)
@@ -686,4 +388,49 @@ n_missing = function(x, exclude = NA) {
 		x = factor(x, exclude = exclude)
 	}
 	sum(is.na(x)) 
+}
+
+#' Returns the number of nonmissings in a variable or dataset. 
+#' If missings are an explicit level in a factor variable, this
+#' function defaults to excluding them anyway.
+#' 
+#' @param x variable
+#' @param exclude only needed for factors. defaults to NA (count level=missing as missing), setting to 0 allows you to count level=missing as nonmissing
+#' @export
+#' @examples
+#' data(beavers)
+#' beaver1$activ[1:10] = NA
+#' n_nonmissing(beaver1$activ)
+#' beaver1$activ = factor(beaver1$activ, exclude = NULL)
+#' sum(!is.na(beaver1$activ))
+#' n_nonmissing(beaver1$activ)
+#' n_nonmissing(beaver1$activ, exclude = NULL)
+
+n_nonmissing = function(x, exclude = NA) { 
+	if (!is.null(exclude) && is.factor(x) && sum(is.na(levels(x))) > 0) {
+		x = factor(x, exclude = exclude)
+	}
+	sum(!is.na(x)) 
+}
+
+#' Like \code{\link{ifelse}}, but allows you to assign a third value to missings.
+#' Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
+#' some sort of meaning for the variable you're trying to define.
+#' 
+#' @param test passed to ifelse
+#' @param yes passed to ifelse
+#' @param no passed to ifelse
+#' @param missing defaults to the value for no
+#' @export
+#' @examples
+#' data(beavers)
+#' beaver1$activ[1:10] = NA
+#' beaver1$hyperactive = ifelse(beaver1$activ > 1, 1, 0)
+#' table(beaver1$hyperactive)
+#' beaver1$hyperactive = ifelsena(beaver1$activ > 1, 1, 0)
+#' table(beaver1$hyperactive)
+ifelsena = function(test, yes, no, missing = no) {
+	x = ifelse(test, yes, no)
+	x[is.na(x)] = missing
+	x
 }
