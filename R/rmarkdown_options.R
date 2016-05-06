@@ -119,22 +119,32 @@ formr_inline_render = function(text, self_contained = TRUE, ...) {
   readChar(fileName, file.info(fileName)$size)
 }
 
+#' knit rmarkdown to markdown for formr
+#'
+#'
+#' Render text
+#'
+#' @param text rmarkdown that will be knit
+#' 
+#' @export
+
+formr_knit = function(text) {
+   knitr::knit(text = text, quiet = TRUE, encoding = "utf-8")
+}
+
 #' render inline text for formr
 #'
 #'
 #' Render text
 #'
-#' @param text that will be written to a tmp file and used as the input argument
-#' @param self_contained passed to \link{markdown_custom_options}
-#' @param ... all other arguments passed to \code{\link[rmarkdown:render]{render}}
+#' @param text that will be passed to knitr
 #' 
 #' @export
 
-formr_render_commonmark = function(text, self_contained = TRUE, 
-  ...) {
-  commonmark::markdown_html(text = knitr::knit(text = text, 
-    quiet = TRUE, encoding = "utf-8"), hardbreaks = TRUE, 
-    smart = TRUE)
+formr_render_commonmark = function(text) {
+	commonmark::markdown_html(text = knitr::knit(text = text, 
+																							 quiet = TRUE, encoding = "utf-8"), hardbreaks = TRUE, 
+														smart = TRUE)
 }
 
 #' render text for formr

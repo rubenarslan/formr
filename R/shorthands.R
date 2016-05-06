@@ -434,3 +434,36 @@ ifelsena = function(test, yes, no, missing = no) {
 	x[is.na(x)] = missing
 	x
 }
+
+#' This function makes sure you know what to expect when evaluating uncertain results in an
+#' if-clause. In most cases, you should not use this function, because it can lump a lot of very 
+#' different cases together, but it may have some use for fool-proofing
+#' certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have
+#' a value to check. 
+#' 
+#' @param test condition. can only have length 0 or length 1
+#' @param na returned if the condition has a missing value
+#' @param null passed to ifelse
+#' @export
+#' @examples
+#' testdf = data.frame(test1 = 1, test2 = NA)
+#' if ( if_na_null(testdf$test1 == 1) ) { print("go on") }
+#' if ( if_na_null(testdf$test2 == 1) ) { print("not shown") }
+#' if ( if_na_null(testdf$test3 == 1) ) { print("not shown") }
+#' tryCatch({ if ( if_na_null(testdf2$test1 == 1) ) { print("causes error") } }, 
+#'    error = function(e) { warning(e) }) 
+if_na_null = function(test, na = FALSE, null = FALSE) {
+	if (length(test) > 1) {
+		stop("test must have length 0 or 1, has length ", length(test))
+	} else if (length(test) != 0) {
+		if (!is.na(test)) {
+			return = test
+		} else {
+			return = na
+		}
+	} else {
+		return = null
+	}
+	return
+}
+

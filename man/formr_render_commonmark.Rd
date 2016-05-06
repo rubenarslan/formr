@@ -4,14 +4,10 @@
 \alias{formr_render_commonmark}
 \title{render inline text for formr}
 \usage{
-formr_render_commonmark(text, self_contained = TRUE, ...)
+formr_render_commonmark(text)
 }
 \arguments{
-\item{text}{that will be written to a tmp file and used as the input argument}
-
-\item{self_contained}{passed to \link{markdown_custom_options}}
-
-\item{...}{all other arguments passed to \code{\link[rmarkdown:render]{render}}}
+\item{text}{that will be passed to knitr}
 }
 \description{
 Render text
