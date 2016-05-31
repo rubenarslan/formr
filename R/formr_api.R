@@ -69,10 +69,10 @@ formr_api_session = function() {
 #'      # and for which user
 #'      session = 'joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46', 
 #'      surveys = list(
-#'      \tlist(
-#'      \tname = 'try_validation',
-#'      \titems = c('mc_religion', 'plz')
-#'      \t)
+#'      list(
+#'      name = 'try_validation',
+#'      items = c('mc_religion', 'plz')
+#'      )
 #'      )
 #'    )
 #'  ))
