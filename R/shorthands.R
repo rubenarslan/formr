@@ -53,6 +53,44 @@ current = function(x) {
 }
 
 
+#' How many surveys were finished?
+#'
+#' Just a simple to check how many times a survey (e.g. diary)
+#' was finished. It defaults to checking the "ended" variable for this.
+#'
+#' @param survey which survey are you asking about?
+#' @param variable which variable should be filled out, defaults to "ended"
+#' @export
+#' @examples
+#' survey = data.frame(ended = c("2016-05-28 10:11:00", NA, "2016-05-30 11:18:28"))
+#' finished(survey = survey)
+finished = function(survey, variable = 'ended') {
+	if (length(survey) > 0) {
+		if (length(survey[, variable]) > 0) {
+			sum(!is.na(survey[, variable]))
+		} else {
+			0
+		}
+	} else {
+		0
+	}
+}
+
+#' How many surveys were expired?
+#'
+#' Just a simple to check how many times a survey (e.g. diary)
+#' has expired (i.e. user missed it). It defaults to checking the "expired" variable for this.
+#'
+#' @param survey which survey are you asking about?
+#' @param variable which variable should be filled out, defaults to "ended"
+#' @export
+#' @examples
+#' survey = data.frame(expired = c(NA, "2016-05-29 10:11:00", NA))
+#' expired(survey = survey)
+expired = function(survey, variable = 'expired') {
+	finished(survey, variable)
+}
+
 #' check whether a character string contains another
 #'
 #' Just a simple shorthand so that inexperienced R users don't have
