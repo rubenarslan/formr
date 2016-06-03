@@ -232,7 +232,7 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
   st <- as.POSIXct(as.Date(lower))
   et <- as.POSIXct(as.Date(upper))
   dt <- as.numeric(difftime(et, st, units = "sec"))
-  ev <- sort(runif(N, 0, dt))
+  ev <- sort(stats::runif(N, 0, dt))
   rt <- st + ev
   rt
 }
@@ -263,31 +263,41 @@ formr_recognise = function(survey_name, item_list = formr_items(survey_name,
   host = "https://formr.org") {
   # results fields that appear in all formr_results but aren't
   # custom items
-  if (exists("created", where = results)) 
+  if (exists("created", where = results)) {
     results$created = as.POSIXct(results$created)
-  if (exists("modified", where = results)) 
-    results$modified = as.POSIXct(results$modified)
-  if (exists("ended", where = results)) 
-    results$ended = as.POSIXct(results$ended)
+  	attributes(results$created)$label = "user first opened survey"
+  }
   
-  results = tryCatch({
+  if (exists("modified", where = results)) {
+    results$modified = as.POSIXct(results$modified)
+    attributes(results$created)$modified = "user last edited survey"
+  }
+  if (exists("ended", where = results)) {
+    results$ended = as.POSIXct(results$ended)
+    attributes(results$ended)$modified = "user finished survey"
+  }
+  
     if (is.null(item_list)) {
       warning("No item list provided, using type.convert as a fallback.")
       char_vars = sapply(results, is.character)
       if (length(char_vars) > 0) {
         # for special case: no data
         results[, char_vars] = (plyr::colwise(function(x) {
-          type.convert(x, as.is = TRUE)
+          utils::type.convert(x, as.is = TRUE)
         }))(results[, char_vars, drop = F])
       }
     } else {
+    	items_with_result_columns = names(results)
       for (i in seq_along(item_list)) {
         item = item_list[[i]]
-        if (item$type %in% c("note", "mc_heading")) 
-          next
+        
+        if (! item$name %in% items_with_result_columns) {
+        	next
+        }
+        
         if (length(item$choices)) {
           # choice-based items
-          results[, item$name] = type.convert(as.character(results[, 
+          results[, item$name] = utils::type.convert(as.character(results[, 
           item$name]), as.is = T)
           # numeric choices should be typed correctly by default
           if (is.character(results[, item$name])) {
@@ -316,16 +326,69 @@ formr_recognise = function(survey_name, item_list = formr_items(survey_name,
           results[, item$name] = as.numeric(results[, 
           item$name])
         }
+        attributes(results[, item$name])$label = item$label
       }
     }
     results
-  }, error = function(e) {
-    warning(e)
-    results
-  })
-  
+
   results
 }
+
+
+
+#' Label values for SPSS and other software that supports value labels
+#'
+#' Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' function to label your values
+#'  
+#'
+#' @param results survey results
+#' @param item_list an item_list, will be auto-retrieved from results attributes if omitted
+#' @param item_types which item types should be given value labels (defaults to mc, select_one, mc_button)
+#' @param numeric_too whether numeric items should be given value labels
+#' @export
+#' @examples
+#' results = jsonlite::fromJSON(txt = 
+#' system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' class(results$created)
+#' items = formr_items(path = 
+#' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = formr_recognise(item_list = items, results = results)
+#' results = formr_label_values_for_spss(item_list = items, results = results)
+#' results$gods
+
+formr_label_values_for_spss = function(results, item_list = NULL, item_types = c("mc","select_one", "mc_button", "mc_multiple_button", "select_or_add_one", "select_or_add_multiple", "mc_multiple"), numeric_too = FALSE) {
+	if (is.null(item_list) && length(attributes(results)$item_list)) {
+		item_list = attributes(results)$item_list
+	} else if (is.null(item_list)) {
+		stop("Need to specify an item list.")
+	}
+			item_names = names(results)
+			for (i in seq_along(item_list)) {
+				item = item_list[[i]]
+				if (! item$name %in% item_names) {
+					next
+				} else if (length(item$choices) && item$type %in% item_types) {
+					# choice-based items
+					if (numeric_too || is.character(results[, item$name]) || is.factor(results[, item$name])) {
+						# save the factor with all possible levels e.g. mc, select
+						if (all(unique(results[, item$name]) %in% 
+										c(NA, names(item$choices)))) {
+								results[, item$name] = haven::labelled(
+									as.character(results[, item$name]), 
+									labels = unlist(item$choices)
+								)
+						}
+					}
+				}
+			}
+
+	results
+}
+
+
+
+
 #' Simulate data based on item table
 #'
 #' Once you've retrieved an item table using \code{\link{formr_items}} you can use this
@@ -354,16 +417,17 @@ formr_simulate_from_items = function(item_list, n = 300) {
   sim = data.frame(id = 1:n)
   sim$created = random_date_in_range(n, Sys.time() - 10000000, 
     Sys.time())
-  sim$modified = sim$ended = sim$created + lubridate::dseconds(rpois(n, 
+  sim$modified = sim$ended = sim$created + lubridate::dseconds(stats::rpois(n, 
     lambda = length(item_list) * 20)  # assume 20 seconds per item
 )
+
   for (i in seq_along(item_list)) {
     item = item_list[[i]]
-    if (item$type %in% c("note", "mc_heading")) {
+    if (item$type %in% c("note", "mc_heading", "submit", "block")) {
       next
     } else if (length(item$choices)) {
       # choice-based items
-      sample_from = type.convert(names(item$choices), as.is = F)
+      sample_from = utils::type.convert(names(item$choices), as.is = F)
       sim[, item$name] = sample(sample_from, size = n, 
         replace = T)
     } else if (length(item$type_options) && stringr::str_detect(item$type_options, 
@@ -408,7 +472,6 @@ formr_simulate_from_items = function(item_list, n = 300) {
 
 
 formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
-  dont_use = c()
   # reverse items first we're playing dumb and don't have the
   # item table to base our aggregation on?
   item_names = names(results)  # we use the item names of all items, including notes and text, hoping that there is no false positive
@@ -416,7 +479,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
   if (is.null(item_list)) {
     char_vars = sapply(results, is.character)
     results[, char_vars] = (plyr::colwise(function(x) {
-      type.convert(x, as.is = TRUE)
+      utils::type.convert(x, as.is = TRUE)
     }))(results[, char_vars, drop = F])
     # get reversed items
     reversed_items = item_names[stringr::str_detect(item_names, 
@@ -432,17 +495,15 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
     }
   } else {
     # if we have an item list we can do more
-    
+  	
     for (i in seq_along(item_list)) {
       item = item_list[[i]]
-      if (item$type %in% c("note", "mc_heading", "submit")) {
-        dont_use = c(dont_use, stringr::str_match(item$name, 
-          "(?i)^([a-z0-9_]+?)[0-9]+R?$")[, 2])
-      }
-      if (length(item$choices)) {
+      if (! item$name %in% item_names) {
+      	next
+      } else if (length(item$choices)) {
         # choice-based items with a number and an 'R' at the end
         if (stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {
-          possible_replies = type.convert(names(item$choices))
+          possible_replies = utils::type.convert(names(item$choices))
           
           if (!is.numeric(possible_replies)) {
           warning(item$name, " is not numeric and cannot be reversed.")
@@ -477,18 +538,6 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param ... passed to  \code{\link[psych:alpha]{alpha}}
 #' @export
 #' @examples
-#' \dontrun{
-#' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
-#' icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/')
-#' # get some simulated data and aggregate it
-#' sim_results = formr_simulate_from_items(icar_items)
-#' sim_agg = formr_aggregate(survey_name = 'ICAR',item_list = icar_items, results = sim_results)
-#' 
-#' # get actual data
-#' actual = formr_aggregate(survey_name='ICAR')
-#' summary(lm(ICAR_matrix ~ ICAR_verbal, data = sim_agg))
-#' summary(lm(ICAR_matrix ~ ICAR_verbal, data = actual))
-#' }
 #' results = jsonlite::fromJSON(txt = 
 #' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 #' items = formr_items(path = 
@@ -521,7 +570,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
   scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+$")[, 
     2]  # fit the pattern
   # if the scale name ends in an underscore, remove it
-  scales = unique(na.omit(scale_stubs[duplicated(scale_stubs)]))  # only those which occur more than once
+  scales = unique(stats::na.omit(scale_stubs[duplicated(scale_stubs)]))  # only those which occur more than once
   # todo: should check whether they all share the same reply
   # options (choices, type_options)
   for (i in seq_along(scales)) {
@@ -585,18 +634,18 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     if (plot_likert) {
       lik = formr_likert(choice_lists, results)
       if (!is.null(lik)) 
-        print(plot(lik))
+        print(graphics::plot(lik))
     }
     if (compute_alphas) {
       if (length(numbers) > 2) {
         rows_with_missings = nrow(results[, scale_item_names]) - 
-          nrow(na.omit(results[, scale_item_names]))
+          nrow(stats::na.omit(results[, scale_item_names]))
         if (rows_with_missings > 0) {
           warning("There were ", rows_with_missings, 
           " rows with missings in ", save_scale)
         }
         tryCatch({
-          psych::print.psych(psych::alpha(na.omit(results[, 
+          psych::print.psych(psych::alpha(stats::na.omit(results[, 
           scale_item_names]), title = save_scale, check.keys = F, 
           ...))
         }, error = function(e) {
@@ -608,7 +657,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
       } else {
         message("Just two items in scale ", save_scale, 
           " so we only calculated a correlation.")
-        print(cor(results[, scale_item_names[1]], results[, 
+        print(stats::cor(results[, scale_item_names[1]], results[, 
           scale_item_names[2]], use = "na.or.complete"))
       }
     }
@@ -617,7 +666,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     leftover_items = item_list[likert_scales[which(!likert_scales$scale %in% 
       scales), "index"]]
     for (i in seq_along(leftover_items)) {
-      print(plot(formr_likert(leftover_items[i], results), 
+      print(graphics::plot(formr_likert(leftover_items[i], results), 
         centered = F))
     }
   }
@@ -645,9 +694,11 @@ formr_results = function(survey_name, host = "https://formr.org",
   compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
   results = formr_raw_results(survey_name, host)
   item_list = formr_items(survey_name, host)
-  formr_post_process_results(results = results, item_list = item_list, 
+  results = formr_post_process_results(results = results, item_list = item_list, 
     compute_alphas = compute_alphas, fallback_max = fallback_max, 
     plot_likert = plot_likert)
+  attributes(results)$item_list = item_list
+  results
 }
 
 #' Processed, aggregated results
@@ -736,7 +787,7 @@ formr_likert = function(item_list, results) {
         item$name, "]"))  # seriously cumbersome way to rename single column
     }
   }
-  if (ncol(results[, item_numbers, drop = FALSE]) > 0 & nrow(na.omit(results[, 
+  if (ncol(results[, item_numbers, drop = FALSE]) > 0 & nrow(stats::na.omit(results[, 
     item_numbers, drop = FALSE]))) {
     likert::likert(results[, item_numbers, drop = FALSE])
   } else {

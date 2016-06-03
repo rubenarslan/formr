@@ -77,7 +77,7 @@ qplot_on_normal = function(normed_value,  ylab = "Percentage of other people wit
 													 xlab = '' , colour = "blue", x_ticks = c('--','-','0','+','++')) 
 {
 	ggplot()+
-  stat_function(aes(x=-3:3), fun = dnorm,size = I(1)) + 
+  stat_function(aes(x=-3:3), fun = stats::dnorm,size = I(1)) + 
   geom_vline(xintercept= normed_value, colour= colour,size = I(1)) +
 	scale_x_continuous(xlab, breaks = c(-2:2),labels = x_ticks) +
 	scale_y_continuous(ylab, labels = scales::percent_format())+
@@ -264,7 +264,7 @@ waffle_df = function(x, rows = NULL, cols = NULL) {
 qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h = -0.3, drop_shadow_v = 0.3) {
 	xdf = waffle_df(x, rows, cols)
 	total = length(x)
-	types = length(unique(na.omit(x)))
+	types = length(unique(stats::na.omit(x)))
 	
 	miss_value = is.na(levels(xdf$value)[xdf$value])
 	xdf$Var1_offset = xdf$Var1 + drop_shadow_h/sqrt(total)
@@ -330,7 +330,7 @@ fontawesome_square = '\uf0c8'
 qplot_waffle_text = function(x, symbol = fontawesome_square, rows = NULL, cols = NULL, drop_shadow_h = -0.9, drop_shadow_v = 0.9, font_family = "FontAwesome", font_face = "Regular",
   font_size = round(140/sqrt(length(x)))) {
   xdf = waffle_df(x, rows, cols)
-  types = length(unique(na.omit(x)))
+  types = length(unique(stats::na.omit(x)))
 
   miss_value = is.na(levels(xdf$value)[xdf$value])
   xdf$Var1_offset = xdf$Var1 + drop_shadow_h * font_size/140
@@ -389,7 +389,7 @@ qplot_waffle_text = function(x, symbol = fontawesome_square, rows = NULL, cols =
 qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
 	xdf = waffle_df(x, rows, cols)
 	total = length(x)
-	types = length(unique(na.omit(x)))
+	types = length(unique(stats::na.omit(x)))
 		
 	miss_value = is.na(levels(xdf$value)[xdf$value])
 	xdf$color = "white"
@@ -430,7 +430,7 @@ qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
 #    		if(standardize) {
 #        if(zvalue>3) zvalue=3
 #        if(zvalue<(-3)) zvalue=-3  
-#    		stand = stand + rnorm(length(stand),sd=0.2)
+	#    		stand = stand + rnorm(length(stand),sd=0.2)
 #    
 #        }
 #    	normal = data.frame(werte = seq(-3,3,length=2000),haeufigkeit = dnorm(seq(-3,3,length=2000),mean=0, sd=1))

@@ -17,7 +17,7 @@ shuffleWithBlocks = function(desired_order) {
   blocks = unique(desired_order[block_pos])  ## unique letters
   real_order = 1:length(desired_order)  ## determine the order they were in the item table
   
-  block_order = runif(length(blocks), head(block_pos, 1), (head(block_pos, 
+  block_order = stats::runif(length(blocks), utils::head(block_pos, 1), (utils::head(block_pos, 
     1) + 1))  ## get a uniform dist of random numbers from the first block position. this solution ignores multiple blocks.
   
   resulting_order = desired_order
@@ -28,7 +28,7 @@ shuffleWithBlocks = function(desired_order) {
   
   resulting_order = as.numeric(resulting_order)
   resulting_order[-block_pos] = resulting_order[-block_pos] + 
-    runif(length(resulting_order[-block_pos]), 0.01, 0.99)  ### now shuffle all elements which have an equal number
+    stats::runif(length(resulting_order[-block_pos]), 0.01, 0.99)  ### now shuffle all elements which have an equal number
   
   order(resulting_order, real_order)
 }

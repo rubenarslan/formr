@@ -16,7 +16,7 @@
 #' `Ach_self_report` = rnorm(200), `Pow_self_report` = rnorm(200), `Aff_self_report`= rnorm(200),
 #' `Ach_peer_report` = rnorm(200),`Pow_peer_report`= rnorm(200),`Aff_peer_report` = rnorm(200),
 #' `Ach_diary` = rnorm(200), `Pow_diary` = rnorm(200),`Aff_diary` = rnorm(200))
-#' reliabilities = data.frame(scale = names(data.mtmm), rel = runif(length(names(data.mtmm))))
+#' reliabilities = data.frame(scale = names(data.mtmm), rel = stats::runif(length(names(data.mtmm))))
 #' mtmm(data.mtmm, reliabilities = reliabilities)
 #' 
 mtmm = function(variables = NULL, reliabilities = NULL, split_regex = "_", 
@@ -25,7 +25,7 @@ mtmm = function(variables = NULL, reliabilities = NULL, split_regex = "_",
     stop("You have to provide either cors or variables.")
   }
   if (is.null(cors) & !is.null(variables)) 
-    cors = cor(variables, use = "pairwise.complete.obs")  # select variables
+    cors = stats::cor(variables, use = "pairwise.complete.obs")  # select variables
   
   var.names = colnames(cors)
   

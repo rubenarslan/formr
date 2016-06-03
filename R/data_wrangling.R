@@ -74,7 +74,7 @@ missingness_patterns = function(df, min_freq = ifelse(relative,
 		counted = dplyr::count_(ddf, vars = names(ddf))
 		names(counted) = c(cols, "Freq")
 	} else {
-		counted = as.data.frame(xtabs(data = df))
+		counted = as.data.frame(stats::xtabs(data = df))
 	}
 	if (relative) {
 		counted$Freq = counted$Freq/sum(counted$Freq)

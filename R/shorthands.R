@@ -14,8 +14,8 @@
 
 first = function(x, n = 1, na.rm = TRUE) {
   if (na.rm) 
-    x = na.omit(x)
-  head(x, n)
+    x = stats::na.omit(x)
+  utils::head(x, n)
 }
 
 #' Gives the last non-missing element
@@ -34,8 +34,8 @@ first = function(x, n = 1, na.rm = TRUE) {
 
 last = function(x, n = 1, na.rm = TRUE) {
   if (na.rm) 
-    x = na.omit(x)
-  tail(x, n)
+    x = stats::na.omit(x)
+  utils::tail(x, n)
 }
 
 #' Gives the last element, doesn't omit missings
@@ -49,7 +49,7 @@ last = function(x, n = 1, na.rm = TRUE) {
 #' current( c(1:10,NA) )
 #' current( 1:10 )
 current = function(x) {
-  tail(x, 1)
+  utils::tail(x, 1)
 }
 
 
@@ -344,8 +344,8 @@ in_time_window = function(min, max) {
 #' crosstabs(~ x)
 crosstabs = function(x, ..., exclude = NULL) {
   if (!inherits(x, "formula")) 
-    x = as.formula(paste("~", deparse(substitute(x))), env = parent.frame())
-  xtabs(formula = x, ..., na.action = na.pass, exclude = exclude)
+    x = stats::as.formula(paste("~", deparse(substitute(x))), env = parent.frame())
+  stats::xtabs(formula = x, ..., na.action = stats::na.pass, exclude = exclude)
 }
 
 #' proportions table

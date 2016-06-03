@@ -33,18 +33,6 @@ If you do not have a item table (e.g. your data was not collected using formr, y
 Example: If your data contains Extraversion_1, Extraversion_2R and Extraversion_3, there will be two new variables in the result: Extraversion_2 (reversed to align with _1 and _2) and Extraversion, the mean score of the three.
 }
 \examples{
-\dontrun{
-formr_connect(email = 'you@example.net', password = 'zebrafinch' )
-icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/')
-# get some simulated data and aggregate it
-sim_results = formr_simulate_from_items(icar_items)
-sim_agg = formr_aggregate(survey_name = 'ICAR',item_list = icar_items, results = sim_results)
-
-# get actual data
-actual = formr_aggregate(survey_name='ICAR')
-summary(lm(ICAR_matrix ~ ICAR_verbal, data = sim_agg))
-summary(lm(ICAR_matrix ~ ICAR_verbal, data = actual))
-}
 results = jsonlite::fromJSON(txt = 
 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 items = formr_items(path = 
