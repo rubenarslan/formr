@@ -4,7 +4,7 @@
 \alias{formr_render}
 \title{render text for formr}
 \usage{
-formr_render(text, self_contained = TRUE, ...)
+formr_render(text, self_contained = FALSE, ...)
 }
 \arguments{
 \item{text}{that will be written to a tmp file and used as the input argument}

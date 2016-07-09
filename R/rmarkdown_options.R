@@ -158,12 +158,14 @@ formr_render_commonmark = function(text) {
 #' 
 #' @export
 
-formr_render = function(text, self_contained = TRUE, ...) {
+formr_render = function(text, self_contained = FALSE, ...) {
   fileName = rmarkdown::render(input = write_to_file(text, 
     name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained, 
-    fragment.only = TRUE), ...)
-  readChar(fileName, file.info(fileName)$size)
+    fragment.only = FALSE), clean = T, quiet = T, ...,)
+  fileName
 }
+
+
 
 write_to_file <- function(..., name = NULL, ext = ".Rmd") {
   if (is.null(name)) {
