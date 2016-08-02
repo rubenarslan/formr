@@ -167,6 +167,8 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
       # in some cases the choices column is missing
       # item_list[[i]]['choices'] = list(NULL)
     }
+    item_list[[i]]$type_options = as.character(item_list[[i]]$type_options)
+    item_list[[i]]$choice_list = as.character(item_list[[i]]$choice_list)
   }
   # item_list = lapply(item_list, FUN = as.data.frame)
   item_list = data.frame(dplyr::bind_rows(item_list))

@@ -26,7 +26,6 @@ Imports:
     httr,
     jsonlite,
     psych,
-    Hmisc,
     rmarkdown,
     likert,
     knitr,

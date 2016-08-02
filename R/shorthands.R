@@ -109,6 +109,13 @@ expired = function(survey, variable = 'expired') {
   stringr::str_detect(haystack, stringr::fixed(as.character(needle)))
 }
 
+
+# from Hmisc to keep formr pkg small
+escapeRegex = function(string) 
+{
+	gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", string)
+}
+
 #' check whether a character string contains another as a word
 #'
 #' Looks for a string appearing on its own. This is needed e.g.
@@ -128,7 +135,7 @@ expired = function(survey, variable = 'expired') {
 #' '12, 14, 17' %contains_word% '1' # FALSE even though 12 contains 1
 
 "%contains_word%" = function(haystack, needle) {
-  stringr::str_detect(haystack, paste0("\\b", Hmisc::escapeRegex(as.character(needle)), 
+  stringr::str_detect(haystack, paste0("\\b", escapeRegex(as.character(needle)), 
     "\\b"))
 }
 
@@ -148,7 +155,7 @@ expired = function(survey, variable = 'expired') {
 #' '1, 3, 4' %begins_with% '.' # FALSE
 
 "%begins_with%" = function(haystack, needle) {
-  stringr::str_detect(haystack, paste0("^", Hmisc::escapeRegex(as.character(needle))))
+  stringr::str_detect(haystack, paste0("^", escapeRegex(as.character(needle))))
 }
 
 #' @export
@@ -169,7 +176,7 @@ expired = function(survey, variable = 'expired') {
 #' '1, 3, 4' %ends_with% '.' # FALSE
 
 "%ends_with%" = function(haystack, needle) {
-  stringr::str_detect(haystack, paste0(Hmisc::escapeRegex(as.character(needle)), 
+  stringr::str_detect(haystack, paste0(escapeRegex(as.character(needle)), 
     "$"))
 }
 
