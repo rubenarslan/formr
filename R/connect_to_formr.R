@@ -107,9 +107,10 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         to = 5
         by = 1
         if (!is.null(item_list[[i]]$type_options)) {
-          # has the format 1,6 or 1,6,1
-          sequence = stringr::str_split(item_list[[i]]$type_options, 
-          ",")[[1]]
+          # has the format 1,6 or 1,6,1 + possibly name of choice list
+        	sequence = stringr::str_split(item_list[[i]]$type_options, 
+        																"\\s")[[1]][1]
+        	sequence = stringr::str_split(sequence, ",")[[1]]
           if (length(sequence) == 3) {
           from = as.numeric(sequence[1])
           to = as.numeric(sequence[2])
@@ -123,11 +124,22 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         }
         sequence = seq(from, to, by)
         names(sequence) = sequence
-        sequence[1] = item_list[[i]]$choices[[1]]
-        sequence[length(sequence)] = item_list[[i]]$choices[[2]]
+        c1 = item_list[[i]]$choices$`1`
+        c2 = item_list[[i]]$choices$`2`
+        if (!is.null(c1)) {
+	        sequence[1] = c1
+        }
+        if (!is.null(c2)) {
+        	sequence[length(sequence)] = c2
+        }
         item_list[[i]]$choices = as.list(sequence)
       }
+    	# named array fails, if names go from 0 to len-1
+	  	if (!is.null(item_list[[i]]$choices) && is.null(names(item_list[[i]]$choices))) {
+	  		names(item_list[[i]]$choices) = 0:(length(item_list[[i]]$choices)-1)
+	  	}
     }
+  	names(item_list) = sapply(item_list, function(item) { item$name })
     class(item_list) = c("formr_item_list", class(item_list))
     item_list
   } else {
@@ -157,6 +169,7 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
 
 as.data.frame.formr_item_list = function(x, row.names, ...) {
   item_list = x
+  names(item_list) = NULL
   for (i in seq_along(item_list)) {
     item_list[[i]][sapply(item_list[[i]], is.null)] <- NA  # NULLs are annoying when wanting to transform into a df
     
@@ -260,7 +273,7 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' class(results$created)
 
 
-formr_recognise = function(survey_name, item_list = formr_items(survey_name, 
+formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
   host = "https://formr.org") {
   # results fields that appear in all formr_results but aren't
@@ -272,11 +285,11 @@ formr_recognise = function(survey_name, item_list = formr_items(survey_name,
   
   if (exists("modified", where = results)) {
     results$modified = as.POSIXct(results$modified)
-    attributes(results$created)$modified = "user last edited survey"
+    attributes(results$modified)$label = "user last edited survey"
   }
   if (exists("ended", where = results)) {
     results$ended = as.POSIXct(results$ended)
-    attributes(results$ended)$modified = "user finished survey"
+    attributes(results$ended)$label = "user finished survey"
   }
   
     if (is.null(item_list)) {
@@ -380,6 +393,7 @@ formr_label_values_for_spss = function(results, item_list = NULL, item_types = c
 									as.character(results[, item$name]), 
 									labels = unlist(item$choices)
 								)
+								attributes(results[, item$name])$label = item$label
 						}
 					}
 				}
@@ -639,7 +653,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
         print(graphics::plot(lik))
     }
     if (compute_alphas) {
-      if (length(numbers) > 2) {
+      if (length(numbers) > 1) {
         rows_with_missings = nrow(results[, scale_item_names]) - 
           nrow(stats::na.omit(results[, scale_item_names]))
         if (rows_with_missings > 0) {
@@ -656,11 +670,6 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
             collapse = " "), " while trying to compute internal consistencies. ", 
           e)
         })
-      } else {
-        message("Just two items in scale ", save_scale, 
-          " so we only calculated a correlation.")
-        print(stats::cor(results[, scale_item_names[1]], results[, 
-          scale_item_names[2]], use = "na.or.complete"))
       }
     }
   }
@@ -668,8 +677,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     leftover_items = item_list[likert_scales[which(!likert_scales$scale %in% 
       scales), "index"]]
     for (i in seq_along(leftover_items)) {
-      print(graphics::plot(formr_likert(leftover_items[i], results), 
-        centered = F))
+    	print(ggplot2::qplot(results[, leftover_items[[i]]$name ]))
     }
   }
   results
@@ -699,7 +707,6 @@ formr_results = function(survey_name, host = "https://formr.org",
   results = formr_post_process_results(results = results, item_list = item_list, 
     compute_alphas = compute_alphas, fallback_max = fallback_max, 
     plot_likert = plot_likert)
-  attributes(results)$item_list = item_list
   results
 }
 
@@ -726,9 +733,12 @@ formr_results = function(survey_name, host = "https://formr.org",
 formr_post_process_results = function(item_list = NULL, results, 
   compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE) {
   results = formr_recognise(item_list = item_list, results = results)
-  formr_aggregate(item_list = item_list, results = results, 
+  results = formr_aggregate(item_list = item_list, results = results, 
     compute_alphas = compute_alphas, fallback_max = fallback_max, 
     plot_likert = plot_likert)
+  attributes(results)$item_list = item_list
+  class(results) = c("formr_data.frame", class(results))
+  results
 }
 
 #' Get Likert scales
@@ -795,6 +805,19 @@ formr_likert = function(item_list, results) {
   } else {
     NULL
   }
+}
+
+#' get item list from survey data.frame attributes
+#'
+#' 
+#'
+#' @param survey survey with item_list attribute
+#' @export
+#' @examples
+#' example(formr_post_process_results)
+#' items(results)[[1]]
+items = function(survey) {
+	attributes(survey)$item_list
 }
 
 
