@@ -201,7 +201,7 @@ escapeRegex = function(string)
 miss_frac = function(df, vars = 1:NCOL(df)) {
   if (NCOL(df) == 1) 
     fracts = sum(is.na(df)) else if (NCOL(df[, vars]) == 1) 
-    fracts = sum(is.na(df[, vars])) else fracts = colSums((plyr::colwise(is.na))(df[, vars]))
+    fracts = sum(is.na(df[, vars])) else fracts = colSums(is.na(df[, vars]))
   fracts/NROW(df)
 }
 
@@ -511,4 +511,19 @@ if_na_null = function(test, na = FALSE, null = FALSE) {
 	}
 	return
 }
+
+# 
+# 
+# #' packages = c("pacman", "dplyr")
+# install_packages_in_parallel(packages, cores = 4, ...) {
+# 	installed_pkgs = installed.packages()
+# 	pkgs_with_deps = miniCRAN::pkgDep(packages)
+# 	outdated_pkgs = old.packages(instPkgs = installed_pkgs[installed_pkgs[,1] %in% pkgs_with_deps, ])
+# 	missing_pkgs_with_deps = setdiff(pkgs_with_deps, installed.packages()[, 1])
+# 	to_install = union(outdated_pkgs[,1], missing_pkgs_with_deps)
+# 		parallel::mclapply(pkgs_with_deps, FUN = function(x) { 
+# 		.libPaths()
+# 		# install.packages(pkgs = x, dependencies = FALSE, locking = "pkglog") }, mc.cores = cores)
+# 		})
+# }
 

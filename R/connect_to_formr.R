@@ -1,3 +1,5 @@
+if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, maggritr
+
 #' Connect to formr
 #'
 #' Connects to formr using your normal login and the httr library
@@ -295,11 +297,10 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
     if (is.null(item_list)) {
       warning("No item list provided, using type.convert as a fallback.")
       char_vars = sapply(results, is.character)
-      if (length(char_vars) > 0) {
-        # for special case: no data
-        results[, char_vars] = (plyr::colwise(function(x) {
-          utils::type.convert(x, as.is = TRUE)
-        }))(results[, char_vars, drop = F])
+      if (length(char_vars) > 0) { # for special case: no data
+	      type.convert = utils::type.convert
+        results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = F], 
+					dplyr::funs(type.convert(., as.is = TRUE)))
       }
     } else {
     	items_with_result_columns = names(results)
@@ -494,9 +495,10 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
   
   if (is.null(item_list)) {
     char_vars = sapply(results, is.character)
-    results[, char_vars] = (plyr::colwise(function(x) {
-      utils::type.convert(x, as.is = TRUE)
-    }))(results[, char_vars, drop = F])
+    type.convert = utils::type.convert
+    results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = F], 
+    																				 dplyr::funs(type.convert(., as.is = TRUE)))
+    
     # get reversed items
     reversed_items = item_names[stringr::str_detect(item_names, 
       "^(?i)[a-zA-Z0-9_]+?[0-9]+R$")]
@@ -677,7 +679,10 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     leftover_items = item_list[likert_scales[which(!likert_scales$scale %in% 
       scales), "index"]]
     for (i in seq_along(leftover_items)) {
-    	print(ggplot2::qplot(results[, leftover_items[[i]]$name ]))
+    	print(
+    		ggplot2::qplot(results[, leftover_items[[i]]$name ]) + 
+    			ggplot2::xlab(leftover_items[[i]]$name)
+    		)
     }
   }
   results
