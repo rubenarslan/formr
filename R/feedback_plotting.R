@@ -118,7 +118,7 @@ feedback_chunk = function(normed_value,  chunks)
 #'
 #' Pass in a data.frame with z-standardised values (x - Mean)/SD,
 #' and variable names, get a bar chart. Getting your data.frame into this shape
-#' probably will mean using reshape2 or dplyr + summarise.
+#' probably will mean using tidyr and dplyr
 #' If the data.frame has an se column or ymax/ymin columns, these will be displayed 
 #' on top of the bars and the bars will become transparent.
 #'
@@ -169,7 +169,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
 #'
 #' Pass in a data.frame with z-standardised values (x - Mean)/SD,
 #' and variable names, get a bar chart. Getting your data.frame into this shape
-#' probably will mean using reshape2 or dplyr + summarise.
+#' probably will mean using tidyr + dplyr.
 #' If the data.frame has an se column or ymax/ymin columns, these will be displayed on top of the bars and the bars will become transparent.
 #'
 #' @param normed_data a dataset with a value column containing z-standardised value and a variable column containing labels for those values
@@ -215,18 +215,18 @@ waffle_df = function(x, rows = NULL, cols = NULL) {
 	# x = sort(x)
 	total = length(x)
 	# Specify unique x and y coord for each case
-	if(is.null(rows) & is.null(cols)) {
+	if (is.null(rows) & is.null(cols)) {
 		rows = cols = ceiling(sqrt(total))
-		if((rows * cols - total) == cols) {
+		if ((rows * cols - total) == cols) {
 			cols = cols - 1 # if we have an empty column, remove it
 		}
-	} else if(is.numeric(cols) & is.numeric(rows)) {
-		if(total < rows * cols) {
+	} else if (is.numeric(cols) & is.numeric(rows)) {
+		if (total < rows * cols) {
 			warning(paste0("Total ",total," smaller than number of cells (",rows,"x",cols,")"))
 		}
-	} else if(is.numeric(rows)) {
+	} else if (is.numeric(rows)) {
 		cols = ceiling(total / rows)
-	} else if(is.numeric(cols)) {
+	} else if (is.numeric(cols)) {
 		rows = ceiling(total / cols)
 	}
 	x_pa = c(x, rep(NA, times = rows * cols - total))
@@ -274,11 +274,11 @@ qplot_waffle = function(x, shape = 15, rows = NULL, cols = NULL, drop_shadow_h =
 							 colour = ifelse(miss_value, NA, "black"),
 							 shape = shape,
 							 size = round(140/sqrt(total)),
-							 show_guide = F) +
+							 show_legend = F) +
 		geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"), 
 							 shape = shape,
 							 size = round(140/sqrt(total)),
-							 show_guide = ifelse(types>1,T,F)) +
+							 show_legend = ifelse(types>1,T,F)) +
 		coord_fixed() +
 		theme_minimal() +
 		guides(colour = guide_legend(override.aes = list(shape = 15, size = 12) ) ) +
@@ -337,12 +337,12 @@ qplot_waffle_text = function(x, symbol = fontawesome_square, rows = NULL, cols =
   xdf$Var2_offset = xdf$Var2 + drop_shadow_v * font_size/140
 
   ggplot(xdf) + 
-    geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_guide = ifelse(types>1,T,F)) +
+    geom_point(aes_string(x = "Var1", y = "Var2", colour = "value"),size = 0,show_legend = ifelse(types>1,T,F)) +
     geom_text(aes_string(x = "Var1_offset", y = "Var2_offset"), 
               colour = ifelse(miss_value, NA, "black"),
               size = font_size,label= symbol,
-              show_guide = F, alpha = .3, family = font_family, face = font_face) +
-    geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_guide = F,
+              show_legend = F, alpha = .3, family = font_family, face = font_face) +
+    geom_text(aes_string(x = "Var1", y = "Var2", colour = "value"), show_legend = F,
               size = font_size, label= symbol, family = font_family, face = font_face) +
     coord_fixed() +
     theme_minimal() +
@@ -395,7 +395,7 @@ qplot_waffle_tile = function(x, rows = NULL, cols = NULL) {
 	xdf$color = "white"
 	
 	ggplot(xdf) + 
-		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value", color = "color"), size = 25/sqrt(total),show_guide = ifelse(types > 1, T, F)) +
+		geom_tile(aes_string(x = "Var1", y = "Var2", fill = "value", color = "color"), size = 25/sqrt(total),show_legend = ifelse(types > 1, T, F)) +
 		scale_x_continuous(expand = c(0, 0)) +
 		scale_y_continuous(expand = c(0, 0), trans = "reverse") +
 		scale_color_manual(values = "white",guide = F)+
