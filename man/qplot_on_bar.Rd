@@ -23,7 +23,7 @@ minuses, pluses and the average sign}
 \description{
 Pass in a data.frame with z-standardised values (x - Mean)/SD,
 and variable names, get a bar chart. Getting your data.frame into this shape
-probably will mean using reshape2 or dplyr + summarise.
+probably will mean using tidyr and dplyr
 If the data.frame has an se column or ymax/ymin columns, these will be displayed 
 on top of the bars and the bars will become transparent.
 }
