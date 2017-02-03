@@ -64,7 +64,7 @@ current = function(x) {
 #' @examples
 #' survey = data.frame(ended = c("2016-05-28 10:11:00", NA, "2016-05-30 11:18:28"))
 #' finished(survey = survey)
-finished = function(survey, variable = 'ended') {
+finished = function(survey, variable = "ended") {
 	if (length(survey) > 0) {
 		if (length(survey[, variable]) > 0) {
 			sum(!is.na(survey[, variable]))
@@ -87,7 +87,7 @@ finished = function(survey, variable = 'ended') {
 #' @examples
 #' survey = data.frame(expired = c(NA, "2016-05-29 10:11:00", NA))
 #' expired(survey = survey)
-expired = function(survey, variable = 'expired') {
+expired = function(survey, variable = "expired") {
 	finished(survey, variable)
 }
 
@@ -101,9 +101,9 @@ expired = function(survey, variable = 'expired') {
 #' @param needle string to search for
 #' @export
 #' @examples
-#' '1, 2, 3, 4, you' %contains% 'you'
-#' '1, 2, 3, 4, you' %contains% 1 # unlike str_detect casts all needles as characters
-#' '1, 2, 3, 4, you' %contains% 343
+#' "1, 2, 3, 4, you" %contains% "you"
+#' "1, 2, 3, 4, you" %contains% 1 # unlike str_detect casts all needles as characters
+#' "1, 2, 3, 4, you" %contains% 343
 
 "%contains%" = function(haystack, needle) {
   stringr::str_detect(haystack, stringr::fixed(as.character(needle)))
@@ -130,9 +130,9 @@ escapeRegex = function(string)
 #' @param needle string to search for
 #' @export
 #' @examples
-#' '1, 3, 4' %contains_word% '1' # TRUE
-#' '1, 3, 4' %contains_word% 1 # TRUE unlike str_detect casts all needles as characters
-#' '12, 14, 17' %contains_word% '1' # FALSE even though 12 contains 1
+#' "1, 3, 4" %contains_word% "1" # TRUE
+#' "1, 3, 4" %contains_word% 1 # TRUE unlike str_detect casts all needles as characters
+#' "12, 14, 17" %contains_word% "1" # FALSE even though 12 contains 1
 
 "%contains_word%" = function(haystack, needle) {
   stringr::str_detect(haystack, paste0("\\b", escapeRegex(as.character(needle)), 
@@ -142,23 +142,21 @@ escapeRegex = function(string)
 #' check whether a character string begins with a string
 #'
 #' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the beginning.
-#' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]. You can also use `\%starts_with\%`.
+#' Just a simple shorthand so that inexperienced R users don't have to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]. You can also use `\%starts_with\%`.
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
 #' @aliases %starts_with%
 #' @export
 #' @examples
-#' '1, 3, 4' %begins_with% '1' # TRUE
-#' '1, 3, 4' %begins_with% 1 # unlike str_detect casts all needles as characters
-#' '1, 3, 4' %begins_with% '.' # FALSE
+#' "1, 3, 4" %begins_with% "1" # TRUE
+#' "1, 3, 4" %begins_with% 1 # unlike str_detect casts all needles as characters
+#' "1, 3, 4" %begins_with% "." # FALSE
 
 "%begins_with%" = function(haystack, needle) {
   stringr::str_detect(haystack, paste0("^", escapeRegex(as.character(needle))))
 }
 
-#' same as %begins_with%
 #' @export
 "%starts_with%" = `%begins_with%`
 
@@ -172,9 +170,9 @@ escapeRegex = function(string)
 #' @param needle string to search for
 #' @export
 #' @examples
-#' '1, 3, 4' %ends_with% '4' # TRUE
-#' '1, 3, 4' %ends_with% 4 # unlike str_detect casts all needles as characters
-#' '1, 3, 4' %ends_with% '.' # FALSE
+#' "1, 3, 4" %ends_with% "4" # TRUE
+#' "1, 3, 4" %ends_with% 4 # unlike str_detect casts all needles as characters
+#' "1, 3, 4" %ends_with% "." # FALSE
 
 "%ends_with%" = function(haystack, needle) {
   stringr::str_detect(haystack, paste0(escapeRegex(as.character(needle)), 
@@ -460,6 +458,8 @@ n_nonmissing = function(x, exclude = NA) {
 }
 
 #' Like [ifelse()], but allows you to assign a third value to missings.
+#' 
+#' Deprecated. Please use [dplyr::if_else()] in the future.
 #' Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
 #' some sort of meaning for the variable you're trying to define.
 #' 
@@ -469,12 +469,14 @@ n_nonmissing = function(x, exclude = NA) {
 #' @param missing defaults to the value for no
 #' @export
 #' @examples
+#' \dontrun{
 #' data(beavers)
 #' beaver1$activ[1:10] = NA
 #' beaver1$hyperactive = ifelse(beaver1$activ > 1, 1, 0)
 #' table(beaver1$hyperactive)
 #' beaver1$hyperactive = ifelsena(beaver1$activ > 1, 1, 0)
 #' table(beaver1$hyperactive)
+#' }
 ifelsena = function(test, yes, no, missing = no) {
 	.Deprecated("dplyr::if_else")
 	x = ifelse(test, yes, no)

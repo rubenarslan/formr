@@ -17,7 +17,7 @@ Just a simple shorthand so that inexperienced R users don't have
 to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect]{stringr::str_detect()}}.
 }
 \examples{
-'1, 3, 4' \%ends_with\% '4' # TRUE
-'1, 3, 4' \%ends_with\% 4 # unlike str_detect casts all needles as characters
-'1, 3, 4' \%ends_with\% '.' # FALSE
+"1, 3, 4" \%ends_with\% "4" # TRUE
+"1, 3, 4" \%ends_with\% 4 # unlike str_detect casts all needles as characters
+"1, 3, 4" \%ends_with\% "." # FALSE
 }

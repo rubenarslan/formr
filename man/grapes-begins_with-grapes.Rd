@@ -13,7 +13,7 @@ haystack \%begins_with\% needle
 \item{needle}{string to search for}
 }
 \examples{
-'1, 3, 4' \%begins_with\% '1' # TRUE
-'1, 3, 4' \%begins_with\% 1 # unlike str_detect casts all needles as characters
-'1, 3, 4' \%begins_with\% '.' # FALSE
+"1, 3, 4" \%begins_with\% "1" # TRUE
+"1, 3, 4" \%begins_with\% 1 # unlike str_detect casts all needles as characters
+"1, 3, 4" \%begins_with\% "." # FALSE
 }

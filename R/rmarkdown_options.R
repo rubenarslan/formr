@@ -211,3 +211,44 @@ word_document = function(..., break_on_error = FALSE) {
   output$knitr$opts_chunk$error = !break_on_error
   output
 }
+
+#' knit_child as is
+#' 
+#' This slightly modifies the [knitr::knit_child()] function to have different defaults.
+#' - the environment defaults to the calling environment.
+#' - the output receives the class knit_asis, so that the output will be rendered "as is" by knitr when calling inside a chunk (no need to set results='asis' as a chunk option).
+#' - defaults to quiet = TRUE
+#' 
+#' Why default to the calling environment? Typically this function defaults to the global environment. This makes sense if you want to use knit_children in the same context as the rest of the document.
+#' However, you may also want to use knit_children inside functions to e.g. summarise a regression using a set of commands (e.g. plot some diagnostic graphs and a summary for a regression nicely formatted).
+#' 
+#' Some caveats:
+#' - the function has to return to the top-level. There's no way to [cat()] this from loops or an if-condition without without setting results='asis'. You can however concatenate these objects with [paste.knit_asis()]
+#'
+#' 
+#' @param file passed to [knitr::knit_child()]
+#' @param quiet passed to [knitr::knit_child()]
+#' @param envir passed to [knitr::knit_child()]
+#'
+#' @export
+asis_knit_child = function(file, quiet = TRUE, envir = parent.frame()) {
+	knitr::asis_output(knitr::knit_child(file, quiet = quiet, envir = envir))
+}
+
+
+#' paste.knit_asis
+#' 
+#' Helper function for knit_asis objects, useful when e.g. [asis_knit_child()] was used in a loop.
+#'
+#' Works like [paste()] with both the sep and the collapse argument set to two empty lines
+#' 
+#' @param ... passed to [paste()]
+#' @param sep defaults to two empty lines, passed to [paste()]
+#' @param collapse defaults to two empty lines, passed to [paste()]
+#'
+#' @export
+#' @examples
+#' paste.knit_asis("# Headline 1", "## Headline 2")
+paste.knit_asis = function(..., sep = "\n\n\n", collapse = "\n\n\n") {
+	knitr::asis_output(paste(..., sep = sep, collapse = collapse))
+}
