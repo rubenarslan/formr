@@ -16,7 +16,7 @@ last(x, n = 1, na.rm = TRUE)
 \description{
 Just a simple shorthand to get the last, non-missing argument per default.
 Can give more than one element and can include missing elements.
-The inverse of \code{\link{first}}.
+The inverse of \code{\link[=first]{first()}}.
 }
 \examples{
 last( c(1:10,NA) )

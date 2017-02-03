@@ -18,7 +18,7 @@ formr_label_values_for_spss(results, item_list = NULL, item_types = c("mc",
 \item{numeric_too}{whether numeric items should be given value labels}
 }
 \description{
-Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to label your values
 }
 \examples{

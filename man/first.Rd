@@ -16,7 +16,7 @@ first(x, n = 1, na.rm = TRUE)
 \description{
 Just a simple shorthand to get the first, non-missing argument per default.
 Can give more than one element and can include missing elements.
-The inverse of \code{\link{last}}.
+The inverse of \code{\link[=last]{last()}}.
 }
 \examples{
 first( c(NA,1:10) )

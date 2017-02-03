@@ -11,8 +11,8 @@ markdown_github(fragment.only = FALSE, break_on_error = FALSE, ...)
 
 \item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 
-\item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{html_document}}}
+\item{...}{all other arguments passed to \code{\link[rmarkdown:html_document:html_document]{rmarkdown:html_document::html_document()}}}
 }
 \description{
-Custom template with github-flavoured markdown based on the standard \code{\link[rmarkdown:html_document]{html_document}}. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see \code{\link{markdown_custom_options}}), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
+Custom template with github-flavoured markdown based on the standard \code{\link[rmarkdown:html_document:html_document]{rmarkdown:html_document::html_document()}}. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see \code{\link[=markdown_custom_options]{markdown_custom_options()}}), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
 }

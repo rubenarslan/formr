@@ -2,8 +2,8 @@
 % Please edit documentation in R/data_wrangling.R
 \name{summarise_all_vars}
 \alias{summarise_all_vars}
-\title{Summarises a dataset 
-using \code{\link[tidyr]{gather}} and \code{\link[dplyr]{summarise}}.}
+\title{Summarises a dataset
+using \code{\link[tidyr:gather]{tidyr::gather()}} and \code{\link[dplyr:summarise]{dplyr::summarise()}}.}
 \usage{
 summarise_all_vars(data)
 }
@@ -14,8 +14,8 @@ summarise_all_vars(data)
 return a tbl_df with one var per row and one column for mean, sd, max, min (all with missings removed), the number of missings, the number of nonmissing values, and the number of distinct values
 }
 \description{
-Summarises a dataset 
-using \code{\link[tidyr]{gather}} and \code{\link[dplyr]{summarise}}.
+Summarises a dataset
+using \code{\link[tidyr:gather]{tidyr::gather()}} and \code{\link[dplyr:summarise]{dplyr::summarise()}}.
 }
 \examples{
 data(beavers)

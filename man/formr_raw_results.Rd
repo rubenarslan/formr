@@ -12,7 +12,7 @@ formr_raw_results(survey_name, host = "https://formr.org")
 \item{host}{defaults to https://formr.org}
 }
 \description{
-After connecting to formr using \code{\link{formr_connect}}
+After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download data using this command.
 }
 \examples{

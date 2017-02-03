@@ -2,7 +2,7 @@
 % Please edit documentation in R/shorthands.R
 \name{ifelsena}
 \alias{ifelsena}
-\title{Like \code{\link{ifelse}}, but allows you to assign a third value to missings.
+\title{Like \code{\link[=ifelse]{ifelse()}}, but allows you to assign a third value to missings.
 Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
 some sort of meaning for the variable you're trying to define.}
 \usage{
@@ -18,7 +18,7 @@ ifelsena(test, yes, no, missing = no)
 \item{missing}{defaults to the value for no}
 }
 \description{
-Like \code{\link{ifelse}}, but allows you to assign a third value to missings.
+Like \code{\link[=ifelse]{ifelse()}}, but allows you to assign a third value to missings.
 Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
 some sort of meaning for the variable you're trying to define.
 }

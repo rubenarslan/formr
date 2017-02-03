@@ -2,7 +2,7 @@
 % Please edit documentation in R/shorthands.R
 \name{n_missing}
 \alias{n_missing}
-\title{Returns the number of missings in a variable or dataset. 
+\title{Returns the number of missings in a variable or dataset.
 If missings are an explicit level in a factor variable, this
 function defaults to reporting them anyway.}
 \usage{
@@ -14,7 +14,7 @@ n_missing(x, exclude = NA)
 \item{exclude}{only needed for factors. defaults to NA (count level=missing as missing), setting to 0 allows you to count level=missing as nonmissing}
 }
 \description{
-Returns the number of missings in a variable or dataset. 
+Returns the number of missings in a variable or dataset.
 If missings are an explicit level in a factor variable, this
 function defaults to reporting them anyway.
 }

@@ -15,8 +15,8 @@ feedback_chunk(normed_value, chunks)
 If you pass in a z-standardised value (x - Mean)/SD,
 and a vector of feedback text chunks, that has either three
 or five elements, the text chunks will be used in this order
-[very low], low, average, high, [very high] corresponding to these
-intervals [low, -2], [-2, -1], [-1, 1], [1, 2], [2, high]
+\link{very low}, low, average, high, \link{very high} corresponding to these
+intervals \link{low, -2}, \link{-2, -1}, \link{-1, 1}, \link{1, 2}, \link{2, high}
 }
 \examples{
 feedback_chunk(normed_value = 0.7, chunks = c("You are rather introverted.",

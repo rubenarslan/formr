@@ -19,9 +19,9 @@ formr_results(survey_name, host = "https://formr.org",
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
 }
 \description{
-After connecting to formr using \code{\link{formr_connect}}
-you can download data, it basically just does \code{\link{formr_raw_results}} ,
-\code{\link{formr_recognise}} and \code{\link{formr_aggregate}} in sequence.
+After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
+you can download data, it basically just does \code{\link[=formr_raw_results]{formr_raw_results()}} ,
+\code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}} in sequence.
 }
 \examples{
 \dontrun{

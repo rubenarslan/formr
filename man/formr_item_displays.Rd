@@ -12,7 +12,7 @@ formr_item_displays(survey_name, host = "https://formr.org")
 \item{host}{defaults to https://formr.org}
 }
 \description{
-After connecting to formr using \code{\link{formr_connect}}
+After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download detailed times and display counts for each item using this command.
 }
 \examples{

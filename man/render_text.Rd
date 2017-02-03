@@ -9,7 +9,7 @@ render_text(text, ...)
 \arguments{
 \item{text}{that will be written to a tmp file and used as the input argument}
 
-\item{...}{all other arguments passed to \code{\link[rmarkdown:render]{render}}}
+\item{...}{all other arguments passed to \code{\link[rmarkdown:render:render]{rmarkdown:render::render()}}}
 }
 \description{
 Render text

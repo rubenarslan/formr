@@ -13,7 +13,7 @@ formr_shuffled(run_name, host = "https://formr.org")
 }
 \description{
 formr has a specific module for randomisation.
-After connecting using \code{\link{formr_connect}}
+After connecting using \code{\link[=formr_connect]{formr_connect()}}
 you can download the assigned random groups and merge them with your data.
 }
 \examples{

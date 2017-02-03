@@ -13,12 +13,12 @@ haystack \%contains_word\% needle
 }
 \description{
 Looks for a string appearing on its own. This is needed e.g.
-when checking whether the replies to a mmc item, stored as a 
+when checking whether the replies to a mmc item, stored as a
 comma-separated list from 1 to 12 contain option 1 - you wouldn't
 want to get a hit for 11 and 12.
 Only works for search terms containing alphanumeric characters.
 Just a simple shorthand so that inexperienced R users don't have
-to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect:str_detect]{stringr:str_detect::str_detect()}}.
 }
 \examples{
 '1, 3, 4' \%contains_word\% '1' # TRUE

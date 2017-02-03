@@ -19,7 +19,7 @@ formr_post_process_results(item_list = NULL, results,
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
 }
 \description{
-This function chains \code{\link{formr_recognise}} and \code{\link{formr_aggregate}} 
+This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}
 in sequence. Useful if you want to post-process raw results before aggregating etc.
 }
 \examples{

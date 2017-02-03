@@ -18,17 +18,17 @@ formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
 
 \item{host}{defaults to https://formr.org}
 
-\item{compute_alphas}{defaults to TRUE, whether to compute  \code{\link[psych:alpha]{alpha}}}
+\item{compute_alphas}{defaults to TRUE, whether to compute  \code{\link[psych:alpha:alpha]{psych:alpha::alpha()}}}
 
 \item{fallback_max}{defaults to 5 - if the item_list is set to null, we will use this to reverse}
 
-\item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert]{likert}} plots. Only possible if item_list is specified.}
+\item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert:likert]{likert:likert::likert()}} plots. Only possible if item_list is specified.}
 
-\item{...}{passed to  \code{\link[psych:alpha]{alpha}}}
+\item{...}{passed to  \code{\link[psych:alpha:alpha]{psych:alpha::alpha()}}}
 }
 \description{
-If you've retrieved an item table using \code{\link{formr_items}} you can use this
-function to aggregate your multiple choice items into mean scores. 
+If you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
+function to aggregate your multiple choice items into mean scores.
 If you do not have a item table (e.g. your data was not collected using formr, you don't want another HTTP request in a time-sensitive process).
 Example: If your data contains Extraversion_1, Extraversion_2R and Extraversion_3, there will be two new variables in the result: Extraversion_2 (reversed to align with _1 and _2) and Extraversion, the mean score of the three.
 }

@@ -25,9 +25,11 @@ missingness_patterns(df, min_freq = ifelse(relative, 1/nrow(df), 1),
 }
 \description{
 this function shows how common possible missingness patterns are. Emulates misschk in stata.
-1. excludes any variables that don't have any missings, so as not to clutter output. Disable using omit_complete
-2. sorts variables by number of missings, so that the usual suspects show up at the front.
-3. displays number of missings accounted for by each pattern
+\enumerate{
+\item excludes any variables that don't have any missings, so as not to clutter output. Disable using omit_complete
+\item sorts variables by number of missings, so that the usual suspects show up at the front.
+\item displays number of missings accounted for by each pattern
+}
 }
 \examples{
 data(ChickWeight)

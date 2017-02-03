@@ -8,7 +8,7 @@ qplot_on_bar(normed_data, ylab = "Your value", xlab = "Trait", title = "",
   y_ticks = c("--", "-", "0", "+", "++"))
 }
 \arguments{
-\item{normed_data}{a dataset with a value column containing z-standardised value 
+\item{normed_data}{a dataset with a value column containing z-standardised value
 and a variable column containing labels for those values}
 
 \item{ylab}{Y-axis label, defaults to "Percentage of other people with this value"}
@@ -17,14 +17,14 @@ and a variable column containing labels for those values}
 
 \item{title}{Plot title}
 
-\item{y_ticks}{the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to 
+\item{y_ticks}{the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to
 minuses, pluses and the average sign}
 }
 \description{
 Pass in a data.frame with z-standardised values (x - Mean)/SD,
 and variable names, get a bar chart. Getting your data.frame into this shape
 probably will mean using tidyr and dplyr
-If the data.frame has an se column or ymax/ymin columns, these will be displayed 
+If the data.frame has an se column or ymax/ymin columns, these will be displayed
 on top of the bars and the bars will become transparent.
 }
 \examples{

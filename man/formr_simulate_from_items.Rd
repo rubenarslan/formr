@@ -7,12 +7,12 @@
 formr_simulate_from_items(item_list, n = 300)
 }
 \arguments{
-\item{item_list}{the result of a call to \code{\link{formr_connect}}}
+\item{item_list}{the result of a call to \code{\link[=formr_connect]{formr_connect()}}}
 
 \item{n}{defaults to 300}
 }
 \description{
-Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to sample data from the possible choices.
 At the moment random data is only generated for choice-type
 items and numeric ones, as these are most likely to enter data analysis.

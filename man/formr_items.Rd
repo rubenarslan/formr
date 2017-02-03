@@ -14,7 +14,7 @@ formr_items(survey_name = NULL, host = "https://formr.org", path = NULL)
 \item{path}{path to local JSON copy of the item table}
 }
 \description{
-After connecting to formr using \code{\link{formr_connect}}
+After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 }
 \examples{

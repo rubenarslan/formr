@@ -18,7 +18,7 @@ formr_recognise(survey_name = NULL, item_list = formr_items(survey_name,
 \item{host}{defaults to https://formr.org}
 }
 \description{
-Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to correctly type your variables based on the item table (e.g. formr free text types will be character, but select_add_one will be factor, dates are also typed as Date, datetimes as POSIXct).
 }
 \examples{
