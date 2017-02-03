@@ -17,4 +17,3 @@ Disconnects from formr if connected.
 formr_disconnect()
 }
 }
-

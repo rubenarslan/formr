@@ -30,4 +30,3 @@ items = formr_items(path =
 results = formr_post_process_results(items, results, 
 compute_alphas = TRUE, plot_likert = TRUE)
 }
-

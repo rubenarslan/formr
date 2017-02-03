@@ -19,4 +19,3 @@ defaults to including missings
 x = NA
 props(~ x)
 }
-

@@ -23,4 +23,3 @@ items = formr_items(path =
 likert_items = formr_likert(item_list = items[2:5], results = results)
 plot(likert_items)
 }
-

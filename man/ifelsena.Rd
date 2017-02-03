@@ -30,4 +30,3 @@ table(beaver1$hyperactive)
 beaver1$hyperactive = ifelsena(beaver1$activ > 1, 1, 0)
 table(beaver1$hyperactive)
 }
-

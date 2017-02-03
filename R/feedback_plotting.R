@@ -5,7 +5,7 @@
 #' @param fill_gradient a vector of colors that has at least the same length as levels. Color each ribbon differently
 #' @param fill a single color for the ribbon
 #' @param stat defaults to smooth
-#' @param ... everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{geom_smooth}}
+#' @param ... everything else is passed to and documented in [ggplot2:geom_smooth::geom_smooth()]
 #' @inheritParams ggplot2::geom_smooth
 #' @export
 #' @examples

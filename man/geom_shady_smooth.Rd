@@ -83,4 +83,3 @@ plot + geom_shady_smooth(fill = 'blue', levels = seq(0.05,0.95,0.1))
 plot + geom_shady_smooth(size = 0.1, fill = '#49afcd', levels = seq(0.1,0.8,0.01))
 plot + geom_shady_smooth(fill_gradient = c('red', 'orange', 'yellow'), base_alpha = 3)
 }
-

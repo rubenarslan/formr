@@ -24,4 +24,3 @@ text_message_clickatell(
 	Body = 'Hello friend', 
 	Token = 'Tokentokentoken')
 }
-

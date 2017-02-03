@@ -28,4 +28,3 @@ you can download data, it basically just does \code{\link{formr_raw_results}} ,
 formr_results(survey_name = 'training_diary' )
 }
 }
-

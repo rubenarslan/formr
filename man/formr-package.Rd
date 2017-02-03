@@ -7,4 +7,3 @@
 \description{
 formr-package
 }
-

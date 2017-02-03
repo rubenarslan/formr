@@ -28,4 +28,3 @@ normed_data = data.frame(variable = factor(1:24,1:24),
 	value = 3+rnorm(24), se = rep(0.2,24)) # standardise value
 qplot_on_polar(normed_data, title = "Your mood around the clock")
 }
-

@@ -12,4 +12,3 @@ formr_render_commonmark(text)
 \description{
 Render text
 }
-

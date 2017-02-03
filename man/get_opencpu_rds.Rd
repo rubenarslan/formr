@@ -19,4 +19,3 @@ useful to programmatically access openCPU session object stored in character var
 get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
 }
 }
-

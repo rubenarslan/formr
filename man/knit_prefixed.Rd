@@ -14,4 +14,3 @@ knit_prefixed(input, ...)
 \description{
 Knit using knitr, but prefix file name to figure and cache folder (to knit in parallel on e.g. a cluster)
 }
-

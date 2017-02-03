@@ -41,4 +41,3 @@ agg = formr_aggregate(item_list = items, results = results,
 	compute_alphas = TRUE, plot_likert = TRUE)
 agg[, c('religiousness', 'prefer')]
 }
-

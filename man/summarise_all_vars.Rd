@@ -23,4 +23,3 @@ summarise_all_vars(beaver1)
 beaver1 = dplyr::group_by(beaver1, activ)
 summarise_all_vars(beaver1)
 }
-

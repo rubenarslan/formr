@@ -21,4 +21,3 @@ to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[st
 '1, 3, 4' \%ends_with\% 4 # unlike str_detect casts all needles as characters
 '1, 3, 4' \%ends_with\% '.' # FALSE
 }
-

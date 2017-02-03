@@ -30,4 +30,3 @@ data.frame(x,
 check.names = FALSE)
 
 }
-

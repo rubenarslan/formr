@@ -36,4 +36,3 @@ ChickWeight[3:5,'Diet'] = NA
 names(ChickWeight); nrow(ChickWeight)
 missingness_patterns(ChickWeight)
 }
-

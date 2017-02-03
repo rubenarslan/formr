@@ -14,4 +14,3 @@ word_document(..., break_on_error = FALSE)
 \description{
 Exactly like \code{\link[rmarkdown:word_document]{word_document}}, but with one added argument
 }
-

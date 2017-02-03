@@ -29,4 +29,3 @@ reliabilities = data.frame(scale = names(data.mtmm), rel = stats::runif(length(n
 mtmm(data.mtmm, reliabilities = reliabilities)
 
 }
-

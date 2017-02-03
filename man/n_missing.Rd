@@ -27,4 +27,3 @@ sum(is.na(beaver1$activ))
 n_missing(beaver1$activ)
 n_missing(beaver1$activ, exclude = NULL)
 }
-

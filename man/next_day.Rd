@@ -15,4 +15,3 @@ a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in 
 \examples{
 next_day(Sys.time()) # always false
 }
-

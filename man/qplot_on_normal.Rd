@@ -27,4 +27,3 @@ get a standard normal distribution.
 normed_value = scale(x = 20, center = 14, scale = 5) # standardise value
 qplot_on_normal(normed_value, xlab = "Extraversion")
 }
-

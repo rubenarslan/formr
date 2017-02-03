@@ -14,4 +14,3 @@ render_text(text, ...)
 \description{
 Render text
 }
-

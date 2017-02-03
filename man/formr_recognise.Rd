@@ -30,4 +30,3 @@ system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRU
 results = formr_recognise(item_list = items, results = results)
 class(results$created)
 }
-

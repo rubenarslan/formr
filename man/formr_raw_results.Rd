@@ -20,4 +20,3 @@ you can download data using this command.
 formr_raw_results(survey_name = 'training_diary' )
 }
 }
-

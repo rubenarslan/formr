@@ -20,4 +20,3 @@ xtabs requires two arguments (na.action and exclude) to show missing values alon
 x = NA
 crosstabs(~ x)
 }
-

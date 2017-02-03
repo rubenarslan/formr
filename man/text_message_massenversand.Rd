@@ -39,4 +39,3 @@ text_message_massenversand(
 	id = 'ID', 
 	pw = 'Tokentokentoken')
 }
-

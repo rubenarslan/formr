@@ -20,4 +20,3 @@ library(knitr); library(formr)
 opts_knit$set(upload.fun=formr::email_image)
 }
 }
-

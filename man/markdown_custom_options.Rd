@@ -26,4 +26,3 @@ The current default rmarkdown additions to Pandoc's enhanced markdown are: +auto
 \description{
 custom markdown options for rmarkdown's pandoc
 }
-

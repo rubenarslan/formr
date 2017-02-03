@@ -26,4 +26,3 @@ system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRU
 items_df = as.data.frame(items)
 items_df[1,]
 }
-

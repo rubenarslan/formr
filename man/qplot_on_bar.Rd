@@ -37,4 +37,3 @@ normed_data = data.frame(variable = c("Extraversion","Openness",
 value = c(-3,1,-1,0.5,2), se = c(0.2,0.3,0.2,0.25,0.4)) # standardise value
 qplot_on_bar(normed_data, title = "Your personality")
 }
-

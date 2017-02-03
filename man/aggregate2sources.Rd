@@ -31,4 +31,3 @@ cars$dist.x[10:15] = NA # sprinkle missings
 cars$dist = NULL # remove old variable
 cars = aggregate2sources(cars, 'dist')
 }
-

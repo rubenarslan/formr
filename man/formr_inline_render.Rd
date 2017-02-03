@@ -16,4 +16,3 @@ formr_inline_render(text, self_contained = TRUE, ...)
 \description{
 Render text
 }
-

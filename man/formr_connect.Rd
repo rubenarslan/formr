@@ -22,4 +22,3 @@ which supports persistent session cookies.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 }
 }
-

@@ -31,4 +31,3 @@ results = formr_recognise(item_list = items, results = results)
 results = formr_label_values_for_spss(item_list = items, results = results)
 results$gods
 }
-

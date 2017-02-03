@@ -21,4 +21,3 @@ with non-default arguments (e.g. fixed params).
 '1, 2, 3, 4, you' \%contains\% 1 # unlike str_detect casts all needles as characters
 '1, 2, 3, 4, you' \%contains\% 343
 }
-

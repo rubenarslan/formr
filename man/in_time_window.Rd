@@ -17,4 +17,3 @@ supply min,max as POSIXct
 \examples{
 in_time_window(Sys.time() - 1, Sys.time() + 1)
 }
-

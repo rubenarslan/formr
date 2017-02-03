@@ -22,4 +22,3 @@ intervals [low, -2], [-2, -1], [-1, 1], [1, 2], [2, high]
 feedback_chunk(normed_value = 0.7, chunks = c("You are rather introverted.",
 "You're approximately as extraverted as most people.","You are rather extraverted."))
 }
-

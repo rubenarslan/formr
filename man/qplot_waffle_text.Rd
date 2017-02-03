@@ -46,4 +46,3 @@ To avoid the Hermann grid illusion, don't use dark colours.
 qplot_waffle_text(rep(1:2,each=30), rows = 5)
 }
 }
-

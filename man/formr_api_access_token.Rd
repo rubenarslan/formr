@@ -22,4 +22,3 @@ Connects to formr using your client_id and client_secret (OAuth 2.0 grant type: 
 formr_api_access_token(client_id = 'your_id', client_secret = 'your_secret' )
 }
 }
-

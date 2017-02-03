@@ -48,7 +48,7 @@ formr_disconnect = function(host = "https://formr.org") {
 
 #' Download data from formr
 #'
-#' After connecting to formr using \code{\link{formr_connect}}
+#' After connecting to formr using [formr_connect()]
 #' you can download data using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
@@ -69,7 +69,7 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 
 #' Download items from formr
 #'
-#' After connecting to formr using \code{\link{formr_connect}}
+#' After connecting to formr using [formr_connect()]
 #' you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
@@ -194,7 +194,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 
 #' Download detailed result timings and display counts from formr
 #'
-#' After connecting to formr using \code{\link{formr_connect}}
+#' After connecting to formr using [formr_connect()]
 #' you can download detailed times and display counts for each item using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
@@ -217,7 +217,7 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
 #' Download random groups
 #'
 #' formr has a specific module for randomisation.
-#' After connecting using \code{\link{formr_connect}}
+#' After connecting using [formr_connect()]
 #' you can download the assigned random groups and merge them with your data.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
@@ -256,7 +256,7 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 
 #' Recognise data types based on item table
 #'
-#' Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' Once you've retrieved an item table using [formr_items()] you can use this
 #' function to correctly type your variables based on the item table (e.g. formr free text types will be character, but select_add_one will be factor, dates are also typed as Date, datetimes as POSIXct).
 #'  
 #'
@@ -354,7 +354,7 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
 
 #' Label values for SPSS and other software that supports value labels
 #'
-#' Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' Once you've retrieved an item table using [formr_items()] you can use this
 #' function to label your values
 #'  
 #'
@@ -408,14 +408,14 @@ formr_label_values_for_spss = function(results, item_list = NULL, item_types = c
 
 #' Simulate data based on item table
 #'
-#' Once you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' Once you've retrieved an item table using [formr_items()] you can use this
 #' function to sample data from the possible choices.
 #' At the moment random data is only generated for choice-type
 #' items and numeric ones, as these are most likely to enter data analysis.
 #' Does not yet handle dates, times, text, locations, colors
 #'  
 #'
-#' @param item_list the result of a call to \code{\link{formr_connect}}
+#' @param item_list the result of a call to [formr_connect()]
 #' @param n defaults to 300
 #' @export
 #' @examples
@@ -539,7 +539,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 
 #' Aggregate data based on item table
 #'
-#' If you've retrieved an item table using \code{\link{formr_items}} you can use this
+#' If you've retrieved an item table using [formr_items()] you can use this
 #' function to aggregate your multiple choice items into mean scores. 
 #' If you do not have a item table (e.g. your data was not collected using formr, you don't want another HTTP request in a time-sensitive process).
 #' Example: If your data contains Extraversion_1, Extraversion_2R and Extraversion_3, there will be two new variables in the result: Extraversion_2 (reversed to align with _1 and _2) and Extraversion, the mean score of the three.
@@ -549,11 +549,11 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to https://formr.org
-#' @param compute_alphas defaults to TRUE, whether to compute  \code{\link[psych:alpha]{alpha}}
+#' @param compute_alphas defaults to TRUE, whether to compute  [psych:alpha::alpha()]
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
-#' @param plot_likert defaults to TRUE - whether to make \code{\link[likert:likert]{likert}} plots. Only possible if item_list is specified.
+#' @param plot_likert defaults to TRUE - whether to make [likert:likert::likert()] plots. Only possible if item_list is specified.
 
-#' @param ... passed to  \code{\link[psych:alpha]{alpha}}
+#' @param ... passed to  [psych:alpha::alpha()]
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -690,9 +690,9 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
 
 #' Download processed, aggregated results from formr
 #'
-#' After connecting to formr using \code{\link{formr_connect}}
-#' you can download data, it basically just does \code{\link{formr_raw_results}} ,
-#' \code{\link{formr_recognise}} and \code{\link{formr_aggregate}} in sequence.
+#' After connecting to formr using [formr_connect()]
+#' you can download data, it basically just does [formr_raw_results()] ,
+#' [formr_recognise()] and [formr_aggregate()] in sequence.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
@@ -717,7 +717,7 @@ formr_results = function(survey_name, host = "https://formr.org",
 
 #' Processed, aggregated results
 #'
-#' This function chains \code{\link{formr_recognise}} and \code{\link{formr_aggregate}} 
+#' This function chains [formr_recognise()] and [formr_aggregate()] 
 #' in sequence. Useful if you want to post-process raw results before aggregating etc.
 #'
 #' @param item_list an item_list, defaults to NULL
@@ -748,8 +748,8 @@ formr_post_process_results = function(item_list = NULL, results,
 
 #' Get Likert scales
 #'
-#' If you've retrieved an item table using \code{\link{formr_items}} you can use this
-#' function to retrieve a \code{\link[likert:likert]{likert}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
+#' If you've retrieved an item table using [formr_items()] you can use this
+#' function to retrieve a [likert:likert::likert()] object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
 #'  
 #'
 #' @param item_list an item_list
@@ -828,7 +828,7 @@ items = function(survey) {
 
 #' generates valid email cids
 #'
-#' can be used as an argument to \code{\link[knitr:opts_knit]{opts_knit}}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
+#' can be used as an argument to [knitr:opts_knit::opts_knit()]. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
 #'
 #' @param x image ID
 #' @param ext extension, defaults to .png

@@ -25,4 +25,3 @@ package's) functions are 'on top' if you so desire.
 \examples{
 amigoingmad(fix = FALSE, package = 'formr')
 }
-

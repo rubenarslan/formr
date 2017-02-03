@@ -12,4 +12,3 @@ formr_knit(text)
 \description{
 Render text
 }
-

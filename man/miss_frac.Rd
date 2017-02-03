@@ -24,4 +24,3 @@ miss_frac(favorites)
 miss_frac(favorites$fruits)
 miss_frac(favorites, 2)
 }
-

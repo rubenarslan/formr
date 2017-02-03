@@ -29,4 +29,3 @@ system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRU
 fakedata = formr_simulate_from_items(items, n = 20)
 fakedata[1:2,]
 }
-

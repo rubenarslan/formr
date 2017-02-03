@@ -16,4 +16,3 @@ markdown_github(fragment.only = FALSE, break_on_error = FALSE, ...)
 \description{
 Custom template with github-flavoured markdown based on the standard \code{\link[rmarkdown:html_document]{html_document}}. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see \code{\link{markdown_custom_options}}), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
 }
-

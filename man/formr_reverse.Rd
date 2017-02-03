@@ -30,4 +30,3 @@ items = formr_items(path =
 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 formr_reverse(results, items)
 }
-

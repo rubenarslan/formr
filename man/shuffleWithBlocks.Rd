@@ -19,4 +19,3 @@ within the letter is preserved, but the letters are randomly ordered.
 desired_order = c(1,2,3,4,5,'A','A','B','B',10,11,11,11,11,15,16,17)
 shuffleWithBlocks(desired_order)
 }
-

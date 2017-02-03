@@ -16,4 +16,3 @@ get item list from survey data.frame attributes
 example(formr_post_process_results)
 items(results)[[1]]
 }
-

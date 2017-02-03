@@ -30,4 +30,3 @@ checks how much time has passed. You can choose the unit. Implemented via \code{
 \examples{
 time_passed(hours = 7, time = Sys.time())
 }
-

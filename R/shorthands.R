@@ -2,7 +2,7 @@
 #'
 #' Just a simple shorthand to get the first, non-missing argument per default.
 #' Can give more than one element and can include missing elements.
-#' The inverse of \code{\link{last}}.
+#' The inverse of [last()].
 #'
 #' @param x vector of which you want the first element
 #' @param n number of elements to take from the beginning
@@ -22,7 +22,7 @@ first = function(x, n = 1, na.rm = TRUE) {
 #'
 #' Just a simple shorthand to get the last, non-missing argument per default.
 #' Can give more than one element and can include missing elements.
-#' The inverse of \code{\link{first}}.
+#' The inverse of [first()].
 #'
 #' @param x vector of which you want the last element
 #' @param n number of elements to take from the end
@@ -94,7 +94,7 @@ expired = function(survey, variable = 'expired') {
 #' check whether a character string contains another
 #'
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}
+#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()]
 #' with non-default arguments (e.g. fixed params).
 #'
 #' @param haystack string in which you search
@@ -124,7 +124,7 @@ escapeRegex = function(string)
 #' want to get a hit for 11 and 12.
 #' Only works for search terms containing alphanumeric characters.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()].
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
@@ -143,7 +143,7 @@ escapeRegex = function(string)
 #'
 #' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the beginning.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr]{str_detect}}. You can also use \code{\%starts_with\%}.
+#' to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]. You can also use `\%starts_with\%`.
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
@@ -165,7 +165,7 @@ escapeRegex = function(string)
 #'
 #' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the ending.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as \code{\link{grepl}} and \code{\link[stringr:str_detect]{str_detect}}.
+#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()].
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
@@ -249,8 +249,8 @@ aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL,
 
 #' loads an RDS object, assigns it to an object of the base-filename
 #'
-#' \code{\link{saveRDS}} saves an object to a file, so unlike \code{\link{save}} and \code{\link{load}} you can assign the loaded object to a new variable using \code{\link{readRDS}}. 
-#' However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what \code{\link{loadRDS}} does. It extracts the filename using \code{\link{basename}} and \code{\link[tools:file_path_sans_ext]{file_path_sans_ext}}
+#' [saveRDS()] saves an object to a file, so unlike [save()] and [load()] you can assign the loaded object to a new variable using [readRDS()]. 
+#' However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what [loadRDS()] does. It extracts the filename using [basename()] and [tools:file_path_sans_ext::file_path_sans_ext()]
 #'
 #' @param file path to file
 #' @param refhook passed to readRDS
@@ -280,9 +280,9 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 #' checks how much time has passed relative to the user's last action
 #'
-#' checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{dseconds}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
+#' checks how much time has passed. You can choose the unit. Implemented via [lubridate:dseconds::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
 #'
-#' @param seconds argument to \code{\link[lubridate:dseconds]{dseconds}}
+#' @param seconds argument to [lubridate:dseconds::dseconds()]
 #' @param minutes 60 seconds
 #' @param hours 60 minutes
 #' @param days 24 hours
@@ -458,7 +458,7 @@ n_nonmissing = function(x, exclude = NA) {
 	sum(!is.na(x)) 
 }
 
-#' Like \code{\link{ifelse}}, but allows you to assign a third value to missings.
+#' Like [ifelse()], but allows you to assign a third value to missings.
 #' Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
 #' some sort of meaning for the variable you're trying to define.
 #' 

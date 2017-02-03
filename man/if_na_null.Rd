@@ -32,4 +32,3 @@ if ( if_na_null(testdf$test3 == 1) ) { print("not shown") }
 tryCatch({ if ( if_na_null(testdf2$test1 == 1) ) { print("causes error") } }, 
    error = function(e) { warning(e) }) 
 }
-

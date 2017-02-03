@@ -22,4 +22,3 @@ formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_shuffled(run_name = 'different_drills' )
 }
 }
-

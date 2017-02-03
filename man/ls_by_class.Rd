@@ -26,4 +26,3 @@ c('chickweight.m1') \%in\% ls_by_class('lm')
 c('chickweight.m1') \%in\% ls_by_class('lm', top_class_only = TRUE)
 
 }
-

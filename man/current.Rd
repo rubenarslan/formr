@@ -17,4 +17,3 @@ where the last element is always the one from the current session).
 current( c(1:10,NA) )
 current( 1:10 )
 }
-

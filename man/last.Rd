@@ -22,4 +22,3 @@ The inverse of \code{\link{first}}.
 last( c(1:10,NA) )
 last( c(1:10,NA), 2, TRUE )
 }
-

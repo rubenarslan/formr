@@ -32,4 +32,3 @@ To avoid the Hermann grid illusion, don't use dark colours.
 \examples{
 qplot_waffle(rep(1:2,each=200))
 }
-

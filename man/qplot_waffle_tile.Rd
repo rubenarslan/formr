@@ -31,4 +31,3 @@ who adapted it from http://ux.stackexchange.com/a/46543/56341
 \examples{
 qplot_waffle_tile(rep(1:2,each=500))
 }
-

@@ -26,4 +26,3 @@ names(ChickWeight); nrow(ChickWeight)
 ChickWeight2 = take_nonmissing(ChickWeight, keep = c('weight'))
 names(ChickWeight2); nrow(ChickWeight2)
 }
-
