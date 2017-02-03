@@ -94,7 +94,7 @@ expired = function(survey, variable = 'expired') {
 #' check whether a character string contains another
 #'
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()]
+#' to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]
 #' with non-default arguments (e.g. fixed params).
 #'
 #' @param haystack string in which you search
@@ -124,7 +124,7 @@ escapeRegex = function(string)
 #' want to get a hit for 11 and 12.
 #' Only works for search terms containing alphanumeric characters.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()].
+#' to use somewhat complex functions such as [grepl()] and [stringr::str_detect()].
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
@@ -158,6 +158,7 @@ escapeRegex = function(string)
   stringr::str_detect(haystack, paste0("^", escapeRegex(as.character(needle))))
 }
 
+#' same as %begins_with%
 #' @export
 "%starts_with%" = `%begins_with%`
 
@@ -165,7 +166,7 @@ escapeRegex = function(string)
 #'
 #' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the ending.
 #' Just a simple shorthand so that inexperienced R users don't have
-#' to use somewhat complex functions such as [grepl()] and [stringr:str_detect::str_detect()].
+#' to use somewhat complex functions such as [grepl()] and [stringr::str_detect()].
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
@@ -250,7 +251,7 @@ aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL,
 #' loads an RDS object, assigns it to an object of the base-filename
 #'
 #' [saveRDS()] saves an object to a file, so unlike [save()] and [load()] you can assign the loaded object to a new variable using [readRDS()]. 
-#' However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what [loadRDS()] does. It extracts the filename using [basename()] and [tools:file_path_sans_ext::file_path_sans_ext()]
+#' However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what [loadRDS()] does. It extracts the filename using [basename()] and [tools::file_path_sans_ext()]
 #'
 #' @param file path to file
 #' @param refhook passed to readRDS
@@ -280,7 +281,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 #' checks how much time has passed relative to the user's last action
 #'
-#' checks how much time has passed. You can choose the unit. Implemented via [lubridate:dseconds::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
+#' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
 #'
 #' @param seconds argument to [lubridate:dseconds::dseconds()]
 #' @param minutes 60 seconds
@@ -475,6 +476,7 @@ n_nonmissing = function(x, exclude = NA) {
 #' beaver1$hyperactive = ifelsena(beaver1$activ > 1, 1, 0)
 #' table(beaver1$hyperactive)
 ifelsena = function(test, yes, no, missing = no) {
+	.Deprecated("dplyr::if_else")
 	x = ifelse(test, yes, no)
 	x[is.na(x)] = missing
 	x

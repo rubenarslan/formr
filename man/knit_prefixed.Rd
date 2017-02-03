@@ -9,7 +9,7 @@ knit_prefixed(input, ...)
 \arguments{
 \item{input}{input document}
 
-\item{...}{all arguments passed to \code{\link[knitr:knit:render]{knitr:knit::render()}}}
+\item{...}{all arguments passed to \code{\link[knitr:knit]{knitr::knit()}}}
 }
 \description{
 Knit using knitr, but prefix file name to figure and cache folder (to knit in parallel on e.g. a cluster)

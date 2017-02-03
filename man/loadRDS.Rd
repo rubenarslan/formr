@@ -15,7 +15,7 @@ loadRDS(file, refhook = NULL, overwrite = FALSE)
 }
 \description{
 \code{\link[=saveRDS]{saveRDS()}} saves an object to a file, so unlike \code{\link[=save]{save()}} and \code{\link[=load]{load()}} you can assign the loaded object to a new variable using \code{\link[=readRDS]{readRDS()}}.
-However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what \code{\link[=loadRDS]{loadRDS()}} does. It extracts the filename using \code{\link[=basename]{basename()}} and \code{\link[tools:file_path_sans_ext:file_path_sans_ext]{tools:file_path_sans_ext::file_path_sans_ext()}}
+However, sometimes it may be more convenient to assign the object in the RDS file to an object of the same name as the file. This is what \code{\link[=loadRDS]{loadRDS()}} does. It extracts the filename using \code{\link[=basename]{basename()}} and \code{\link[tools:file_path_sans_ext]{tools::file_path_sans_ext()}}
 }
 \examples{
 \dontrun{

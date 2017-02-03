@@ -13,7 +13,7 @@ haystack \%contains\% needle
 }
 \description{
 Just a simple shorthand so that inexperienced R users don't have
-to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect:str_detect]{stringr:str_detect::str_detect()}}
+to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect]{stringr::str_detect()}}
 with non-default arguments (e.g. fixed params).
 }
 \examples{

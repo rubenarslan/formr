@@ -6,9 +6,9 @@
 #' @param fragment.only whether to get only a html fragment
 #' @param section_divs whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)
 #' @param break_on_error should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE
-#' @param ... all other arguments passed to [rmarkdown:html_document::html_document()]
+#' @param ... all other arguments passed to [rmarkdown::html_document()]
 #'
-#' Custom rmarkdown input format options based on the standard [rmarkdown:html_document::html_document()], but with options that you can specify. Find the format options here in the pandoc documentation: http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html
+#' Custom rmarkdown input format options based on the standard [rmarkdown::html_document()], but with options that you can specify. Find the format options here in the pandoc documentation: http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html
 #' Pandoc's enhanced version of markdown includes syntax for footnotes, tables, flexible ordered lists, definition lists, fenced code blocks, superscript, subscript, strikeout, title blocks, automatic tables of contents, embedded LaTeX math, citations, and markdown inside HTML block elements or spoken in options: +escaped_line_breaks, +header_attributes, +yaml_metadata_block, +auto_identifiers, +implicit_header_references, +blank_before_blockquote, +fenced_code_blocks, +fenced_code_attributes, +line_blocks, +definition_lists, +startnum, +fancy_lists, +pipe_tables, +pandoc_title_block, +intraword_underscores, +strikeout, +superscript, +subscript, +tex_math_dollars, +raw_html, +markdown_in_html_blocks, +implicit_figures, +footnotes, +inline_notes, +citations.
 #' The current default rmarkdown additions to Pandoc's enhanced markdown are: +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash, -implicit_figures. 
 #'
@@ -44,11 +44,11 @@ markdown_custom_options = function(add_to_format = c("+autolink_bare_uris",
 #' github_markdown for rmarkdown
 #'
 #'
-#' Custom template with github-flavoured markdown based on the standard [rmarkdown:html_document::html_document()]. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see [markdown_custom_options()]), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
+#' Custom template with github-flavoured markdown based on the standard [rmarkdown::html_document()]. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see [markdown_custom_options()]), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
 #' 
 #' @param fragment.only whether to get only a html fragment
 #' @param break_on_error should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE
-#' @param ... all other arguments passed to [rmarkdown:html_document::html_document()]
+#' @param ... all other arguments passed to [rmarkdown::html_document()]
 #'
 #' @export
 
@@ -72,9 +72,9 @@ markdown_github = function(fragment.only = FALSE, break_on_error = FALSE,
 #' hard line breaks
 #'
 #'
-#' Custom rmarkdown template based on the standard [rmarkdown:html_document::html_document()], but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
+#' Custom rmarkdown template based on the standard [rmarkdown::html_document()], but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
 #'
-#' @param ... all other arguments passed to [rmarkdown:html_document::html_document()]
+#' @param ... all other arguments passed to [rmarkdown::html_document()]
 #' 
 #' @export
 
@@ -90,7 +90,7 @@ markdown_hard_line_breaks = function(...) {
 #' Render text
 #'
 #' @param text that will be written to a tmp file and used as the input argument
-#' @param ... all other arguments passed to [rmarkdown:render::render()]
+#' @param ... all other arguments passed to [rmarkdown::render()]
 #' 
 #' @export
 
@@ -108,7 +108,7 @@ render_text = function(text, ...) {
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}
-#' @param ... all other arguments passed to [rmarkdown:render::render()]
+#' @param ... all other arguments passed to [rmarkdown::render()]
 #' 
 #' @export
 
@@ -154,7 +154,7 @@ formr_render_commonmark = function(text) {
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}
-#' @param ... all other arguments passed to [rmarkdown:render::render()]
+#' @param ... all other arguments passed to [rmarkdown::render()]
 #' 
 #' @export
 
@@ -184,7 +184,7 @@ write_to_file <- function(..., name = NULL, ext = ".Rmd") {
 #' Knit using knitr, but prefix file name to figure and cache folder (to knit in parallel on e.g. a cluster)
 #'
 #' @param input input document
-#' @param ... all arguments passed to [knitr:knit::render()]
+#' @param ... all arguments passed to [knitr::knit()]
 #' 
 #' @export
 #' @import knitr
@@ -199,9 +199,9 @@ knit_prefixed = function(input, ...) {
 #' word_document from rmarkdown, but has an added option not to break on error
 #'
 #'
-#' Exactly like [rmarkdown:word_document::word_document()], but with one added argument
+#' Exactly like [rmarkdown::word_document()], but with one added argument
 #' 
-#' @param ... all other arguments passed to [rmarkdown:word_document::word_document()]
+#' @param ... all other arguments passed to [rmarkdown::word_document()]
 #' @param break_on_error should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE
 #'
 #' @export

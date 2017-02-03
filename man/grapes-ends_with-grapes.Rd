@@ -14,7 +14,7 @@ haystack \%ends_with\% needle
 \description{
 Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the ending.
 Just a simple shorthand so that inexperienced R users don't have
-to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect:str_detect]{stringr:str_detect::str_detect()}}.
+to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect]{stringr::str_detect()}}.
 }
 \examples{
 '1, 3, 4' \%ends_with\% '4' # TRUE

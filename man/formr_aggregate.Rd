@@ -18,13 +18,13 @@ formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
 
 \item{host}{defaults to https://formr.org}
 
-\item{compute_alphas}{defaults to TRUE, whether to compute  \code{\link[psych:alpha:alpha]{psych:alpha::alpha()}}}
+\item{compute_alphas}{defaults to TRUE, whether to compute  \code{\link[psych:alpha]{psych::alpha()}}}
 
 \item{fallback_max}{defaults to 5 - if the item_list is set to null, we will use this to reverse}
 
-\item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert:likert]{likert:likert::likert()}} plots. Only possible if item_list is specified.}
+\item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert]{likert::likert()}} plots. Only possible if item_list is specified.}
 
-\item{...}{passed to  \code{\link[psych:alpha:alpha]{psych:alpha::alpha()}}}
+\item{...}{passed to  \code{\link[psych:alpha]{psych::alpha()}}}
 }
 \description{
 If you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this

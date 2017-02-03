@@ -549,11 +549,11 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to https://formr.org
-#' @param compute_alphas defaults to TRUE, whether to compute  [psych:alpha::alpha()]
+#' @param compute_alphas defaults to TRUE, whether to compute  [psych::alpha()]
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
-#' @param plot_likert defaults to TRUE - whether to make [likert:likert::likert()] plots. Only possible if item_list is specified.
+#' @param plot_likert defaults to TRUE - whether to make [likert::likert()] plots. Only possible if item_list is specified.
 
-#' @param ... passed to  [psych:alpha::alpha()]
+#' @param ... passed to  [psych::alpha()]
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -749,7 +749,7 @@ formr_post_process_results = function(item_list = NULL, results,
 #' Get Likert scales
 #'
 #' If you've retrieved an item table using [formr_items()] you can use this
-#' function to retrieve a [likert:likert::likert()] object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
+#' function to retrieve a [likert::likert()] object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
 #'  
 #'
 #' @param item_list an item_list
@@ -828,7 +828,7 @@ items = function(survey) {
 
 #' generates valid email cids
 #'
-#' can be used as an argument to [knitr:opts_knit::opts_knit()]. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
+#' can be used as an argument to [knitr::opts_knit]. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
 #'
 #' @param x image ID
 #' @param ext extension, defaults to .png

@@ -70,7 +70,7 @@ the default plot specification, e.g. \code{\link{borders}}.}
 
 \item{fill}{a single color for the ribbon}
 
-\item{...}{everything else is passed to and documented in \code{\link[ggplot2:geom_smooth:geom_smooth]{ggplot2:geom_smooth::geom_smooth()}}}
+\item{...}{everything else is passed to and documented in \code{\link[ggplot2:geom_smooth]{ggplot2::geom_smooth()}}}
 }
 \description{
 iterate adding ribbons to a ggplot2 plot at varying confidence levels to shade by confidence. Horribly inefficient, because smooth stat is computed every time, but flexible.

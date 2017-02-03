@@ -11,7 +11,7 @@ formr_render(text, self_contained = FALSE, ...)
 
 \item{self_contained}{passed to \link{markdown_custom_options}}
 
-\item{...}{all other arguments passed to \code{\link[rmarkdown:render:render]{rmarkdown:render::render()}}}
+\item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }
 \description{
 Render text

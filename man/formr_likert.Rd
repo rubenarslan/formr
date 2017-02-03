@@ -13,7 +13,7 @@ formr_likert(item_list, results)
 }
 \description{
 If you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
-function to retrieve a \code{\link[likert:likert:likert]{likert:likert::likert()}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
+function to retrieve a \code{\link[likert:likert]{likert::likert()}} object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
 }
 \examples{
 results = jsonlite::fromJSON(txt = 

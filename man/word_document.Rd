@@ -7,10 +7,10 @@
 word_document(..., break_on_error = FALSE)
 }
 \arguments{
-\item{...}{all other arguments passed to \code{\link[rmarkdown:word_document:word_document]{rmarkdown:word_document::word_document()}}}
+\item{...}{all other arguments passed to \code{\link[rmarkdown:word_document]{rmarkdown::word_document()}}}
 
 \item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 }
 \description{
-Exactly like \code{\link[rmarkdown:word_document:word_document]{rmarkdown:word_document::word_document()}}, but with one added argument
+Exactly like \code{\link[rmarkdown:word_document]{rmarkdown::word_document()}}, but with one added argument
 }
