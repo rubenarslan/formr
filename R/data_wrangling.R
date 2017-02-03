@@ -229,6 +229,7 @@ pander_handler = function(x, ..., row.names = FALSE, dont_transform = "knit_asis
 #' 
 #'
 #' @param overwrite_bib whether to overwrite an existing bibtex file of the same name
+#' @param silent defaults to false. whether to cat out a nocite string to use in your header
 #' @param cite_only_directly_called whether to call only the packages you called yourself (default) or also their dependencies
 #' @param lockfile_path path to the packrat lock file to use
 #' @param bibliography_path path to the bibtex file to generate
@@ -237,11 +238,16 @@ pander_handler = function(x, ..., row.names = FALSE, dont_transform = "knit_asis
 #' @export
 #' 
 packrat_bibliography = function(overwrite_bib = FALSE,
+																silent = FALSE,
 																cite_only_directly_called = TRUE,
 																lockfile_path = "packrat/packrat.lock",
 																bibliography_path = "packrat_bibliography.bibtex",
 																cite_R = TRUE,
 																cite_packrat = TRUE) {
+	
+	if(file.exists(bibliography_path) && ! overwrite_bib) {
+		stop("Bibliography file existed and wasn't overwritten, specify overwrite_bib = TRUE.")
+	}
 	# use internal function to read lockfile (uses readDcf)
 	stopifnot(file.exists(lockfile_path))
 	lockfile = packrat:::readLockFile(lockfile_path)
@@ -285,15 +291,13 @@ packrat_bibliography = function(overwrite_bib = FALSE,
 	}
 	
 	# write bibliography to file
-	if (!file.exists(bibliography_path) || overwrite_bib) {
-		cat(bibliography, file = bibliography_path)
+	cat(bibliography, file = bibliography_path)
 		# generate YAML reference with nocite
+	if (!silent) {
 		cat(paste0("
 bibliography: ", bibliography_path, "
 nocite: |
 ", paste0("@", c("R", package_names), collapse = " ")))
-		invisible(bibliography)
-	} else {
-		stop("Bibliography file not written, specify overwrite_bib = TRUE.")
 	}
+	invisible(bibliography)
 }

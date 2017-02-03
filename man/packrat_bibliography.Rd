@@ -4,13 +4,15 @@
 \alias{packrat_bibliography}
 \title{build a bibliography bibtex file from your packrat lockfile}
 \usage{
-packrat_bibliography(overwrite_bib = FALSE,
+packrat_bibliography(overwrite_bib = FALSE, silent = FALSE,
   cite_only_directly_called = TRUE, lockfile_path = "packrat/packrat.lock",
   bibliography_path = "packrat_bibliography.bibtex", cite_R = TRUE,
   cite_packrat = TRUE)
 }
 \arguments{
 \item{overwrite_bib}{whether to overwrite an existing bibtex file of the same name}
+
+\item{silent}{defaults to false. whether to cat out a nocite string to use in your header}
 
 \item{cite_only_directly_called}{whether to call only the packages you called yourself (default) or also their dependencies}
 
