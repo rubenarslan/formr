@@ -12,6 +12,12 @@ haystack \%begins_with\% needle
 
 \item{needle}{string to search for}
 }
+\description{
+Escapes any special RegExp characters in the search term. A way to check whether the search term
+(e.g. a variable name) is the beginning.
+Just a simple shorthand so that inexperienced R users won't have to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect]{stringr::str_detect()}}.
+You can also use \%starts_with\%.
+}
 \examples{
 "1, 3, 4" \%begins_with\% "1" # TRUE
 "1, 3, 4" \%begins_with\% 1 # unlike str_detect casts all needles as characters

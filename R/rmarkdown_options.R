@@ -354,9 +354,9 @@ packrat_bibliography = function(overwrite_bib = FALSE,
 		name = names(citation_objects)[i]
 		citation_obj = citation_objects[[i]]
 		# don't lowercase R
-		citation_obj$title = stringr::str_replace_all(citation_obj$title, "\\bR\\b", "{R}")
+		citation_obj[1]$title = stringr::str_replace_all(citation_obj[1]$title, "\\bR\\b", "{R}")
 		# don't uppercase the package title
-		citation_obj$title = stringr::str_replace_all(citation_obj$title, "^([a-zA-Z0-9.]+)+:", "{\\1}:")
+		citation_obj[1]$title = stringr::str_replace_all(citation_obj[1]$title, "^([a-zA-Z0-9.]+)+:", "{\\1}:")
 		class(citation_obj) = c("citation", "bibentry")
 		bibliography[[name]] = paste0(
 			as.character(utils::toBibtex(citation_obj)),

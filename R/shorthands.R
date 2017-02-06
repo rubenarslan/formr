@@ -141,13 +141,15 @@ escapeRegex = function(string)
 
 #' check whether a character string begins with a string
 #'
-#' Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the beginning.
-#' Just a simple shorthand so that inexperienced R users don't have to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]. You can also use `\%starts_with\%`.
+#' Escapes any special RegExp characters in the search term. A way to check whether the search term 
+#' (e.g. a variable name) is the beginning.
+#' Just a simple shorthand so that inexperienced R users won't have to use somewhat complex functions such as [grepl()] and [stringr::str_detect()]. 
+#' You can also use \\%starts_with\\%.
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
-#' @aliases %starts_with%
 #' @export
+#' @aliases %starts_with%
 #' @examples
 #' "1, 3, 4" %begins_with% "1" # TRUE
 #' "1, 3, 4" %begins_with% 1 # unlike str_detect casts all needles as characters
@@ -281,7 +283,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #'
 #' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
 #'
-#' @param seconds argument to [lubridate:dseconds::dseconds()]
+#' @param seconds argument to [lubridate::dseconds()]
 #' @param minutes 60 seconds
 #' @param hours 60 minutes
 #' @param days 24 hours

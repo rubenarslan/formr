@@ -20,7 +20,7 @@ time_passed(years = 0, months = 0, weeks = 0, days = 0, hours = 0,
 
 \item{minutes}{60 seconds}
 
-\item{seconds}{argument to \code{\link[lubridate:dseconds:dseconds]{lubridate:dseconds::dseconds()}}}
+\item{seconds}{argument to \code{\link[lubridate:dseconds]{lubridate::dseconds()}}}
 
 \item{time}{defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org}
 }
