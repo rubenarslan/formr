@@ -271,26 +271,18 @@ paste.knit_asis = function(..., sep = "\n\n\n", collapse = "\n\n\n") {
 #' pander_handler(xtabs(~ I(Time>10) + Diet, data = ChickWeight))
 #' pander_handler(table(I(ChickWeight$Time>10)))
 #' 
-pander_handler = function(x, ..., row.names = FALSE, dont_transform = c("knit_asis", "htmlwidget")) {
+
+pander_handler = function(x, ..., row.names = FALSE, dont_transform = c("knit_asis")) {
 	anyS3method = function(x) {
 		classes = class(x)
 		any(
-			sapply(classes, FUN = function(classes) { 
-				!is.null(utils::getS3method('pander',classes, TRUE, environment(pander::pander))) 
+			sapply(classes, FUN = function(classes) {
+				!is.null(utils::getS3method('pander',classes, TRUE, environment(pander::pander)))
 			})
 		)
 	}
-	if (length(intersect(dont_transform, class(x))) > 0) {
-		res = withVisible(knitr::knit_print(x, ...))
-		# indicate the htmlwidget result with a special class so we can attach
-		# the figure caption to it later in wrap.knit_asis
-		if (inherits(x, 'htmlwidget'))
-			class(res$value) = c(class(res$value), 'knit_asis_htmlwidget')
-		if (res$visible) res$value else invisible(res$value)
-	} else if (anyS3method(x)) {
+	if (length(intersect(dont_transform, class(x))) == 0 && anyS3method(x)) {
 		pander::pander(x, row.names = row.names, ...) # if pander has a method, we use it
-	} else if (isS4(x)) {
-		methods::show(x)
 	} else {
 		res = withVisible(knitr::knit_print(x, ...))
 		# indicate the htmlwidget result with a special class so we can attach
