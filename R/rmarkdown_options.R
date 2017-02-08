@@ -226,15 +226,27 @@ word_document = function(..., break_on_error = FALSE) {
 #' - the function has to return to the top-level. There's no way to [cat()] this from loops or an if-condition without without setting results='asis'. You can however concatenate these objects with [paste.knit_asis()]
 #'
 #' 
-#' @param file passed to [knitr::knit_child()]
+#' @param ... passed to [knitr::knit_child()]
 #' @param quiet passed to [knitr::knit_child()]
+#' @param options defaults to NULL.
 #' @param envir passed to [knitr::knit_child()]
 #'
 #' @export
-asis_knit_child = function(file, quiet = TRUE, envir = parent.frame()) {
-	knitr::asis_output(knitr::knit_child(file, quiet = quiet, envir = envir))
+#' @examples
+#' \dontrun{
+#' # an example of a wrapper function that calls asis_knit_child with an argument
+#' # ensures distinct paths for cache and figures, so that these calls can be looped in parallel
+#' regression_summary = function(model) {
+#'    child_hash = digest::digest(model)
+#'    options = list(
+#'        fig.path = paste0(knitr::opts_chunk$get("fig.path"), child_hash, "-"), 
+#'        cache.path = paste0(knitr::opts_chunk$get("cache.path"), child_hash, "-"))
+#'    asis_knit_child("_regression_summary.Rmd", options = options)
+#' }
+#' }
+asis_knit_child = function(..., quiet = TRUE, options = NULL, envir = parent.frame()) {
+	knitr::asis_output(knitr::knit_child(..., quiet = quiet, options = options, envir = envir))
 }
-
 
 #' paste.knit_asis
 #' 

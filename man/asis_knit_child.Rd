@@ -4,12 +4,14 @@
 \alias{asis_knit_child}
 \title{knit_child as is}
 \usage{
-asis_knit_child(file, quiet = TRUE, envir = parent.frame())
+asis_knit_child(..., quiet = TRUE, options = NULL, envir = parent.frame())
 }
 \arguments{
-\item{file}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}
+\item{...}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}
 
 \item{quiet}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}
+
+\item{options}{defaults to NULL.}
 
 \item{envir}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}
 }
@@ -28,5 +30,18 @@ However, you may also want to use knit_children inside functions to e.g. summari
 Some caveats:
 \itemize{
 \item the function has to return to the top-level. There's no way to \code{\link[=cat]{cat()}} this from loops or an if-condition without without setting results='asis'. You can however concatenate these objects with \code{\link[=paste.knit_asis]{paste.knit_asis()}}
+}
+}
+\examples{
+\dontrun{
+# an example of a wrapper function that calls asis_knit_child with an argument
+# ensures distinct paths for cache and figures, so that these calls can be looped in parallel
+regression_summary = function(model) {
+   child_hash = digest::digest(model)
+   options = list(
+       fig.path = paste0(knitr::opts_chunk$get("fig.path"), child_hash, "-"), 
+       cache.path = paste0(knitr::opts_chunk$get("cache.path"), child_hash, "-"))
+   asis_knit_child("_regression_summary.Rmd", options = options)
+}
 }
 }

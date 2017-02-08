@@ -4,8 +4,7 @@
 \alias{pander_handler}
 \title{pander_handler}
 \usage{
-pander_handler(x, ..., row.names = FALSE, dont_transform = c("knit_asis",
-  "htmlwidget"))
+pander_handler(x, ..., row.names = FALSE, dont_transform = c("knit_asis"))
 }
 \arguments{
 \item{x}{object to be printed}
