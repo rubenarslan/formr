@@ -377,7 +377,8 @@ packrat_bibliography = function(overwrite_bib = FALSE,
 	}
 	
 	# write bibliography to file
-	cat(iconv(bibliography, to = "UTF-8"), file = bibliography_path)
+	writeLines(iconv(bibliography, to = "UTF-8"), bibliography_path, useBytes = TRUE)
+	
 	# generate YAML reference with nocite
 	if (!silent) {
 		cat(paste0("
