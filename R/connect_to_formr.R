@@ -526,9 +526,12 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
           if (!is.numeric(possible_replies)) {
           warning(item$name, " is not numeric and cannot be reversed.")
           } else {
+          	possible_replies = sort(possible_replies)
+          	recode_replies = setNames(possible_replies, rev(possible_replies))
           results[, stringr::str_sub(item$name, 1, 
-            -2)] = max(possible_replies) + 1 - as.numeric(results[, 
-            item$name])  # reverse\t# save as item name with the R truncated
+            -2)] = as.numeric(recode_replies[
+            	as.character(results[, item$name])
+            	] )  # reverse\t# save as item name with the R truncated
           }
         }
       }
