@@ -7,7 +7,7 @@ if (exists("testing")) {
 	item_name = "yay"
 }
 att = attributes(item)
-item_label = ifelse(is.null(att) | is.null(att$label), "", item_info$label)
+item_label = ifelse(is.null(att) | is.null(att$label), "", att$label)
 ```
 
 `r indent` `r item_name` {#`r item_name` .tabset}
