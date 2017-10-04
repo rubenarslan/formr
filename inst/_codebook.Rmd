@@ -11,14 +11,12 @@ if (exists("testing")) {
 vars = names(results)
 for (i in seq_along(vars)) {
 	var = vars[i]
+	cat(var,"\n", file = "var.log")
 	att = attributes(results[[ var ]])
 	if ( !is.null(att)) {
-		print(1)
 		if (exists("part_of_scale", att)) {
-		print(2)
 			next
 		} else if (exists("scale", att)) {
-			print(3)
 		cat(codebook_component_scale( results[[ var ]] ))
 		} else if (exists("item", att)) {
 			cat(codebook_component_single_item( results[[ var ]]))

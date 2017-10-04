@@ -14,6 +14,8 @@ library(formr)
 source("/Volumes/jet/single_preferences/.passwords.R")
 formr_connect(credentials$email, credentials$password)
 formr_results("s2_initial", quiet = T) -> s2_initial
+library(dplyr)
+#s2_initial = s2_initial %>% select(created, bfi_extra, bfi_extra_1, partner_feel_safe)
 ```
 
 ## Scales {.tabset .tabset-sticky}

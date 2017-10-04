@@ -28,6 +28,8 @@ pander::pander(as.data.frame(t(item_info)))
 
 `r indent`## Choices {#`r item_name`_choices}
 ```{r}
-pander::pander(choices)
+if (!is.null(choices)) {
+	pander::pander(choices)
+}
 ```
 
