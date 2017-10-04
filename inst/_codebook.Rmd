@@ -1,0 +1,24 @@
+```{r setup,eval=TRUE}
+if (!exists("indent")) {
+	indent = '#' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
+}
+```
+
+`r indent`# Likert plot
+```{r}
+opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
+```
+```{r}
+graphics::plot(attributes(scale)$likert_plot)
+```
+
+`r indent`# Likert plot
+```{r}
+pander::pander(dplyr::bind_rows(
+	lapply(attributes(scale)$item, function(x) { 
+		x$label_parsed = x$choices = x$choice_list = NULL
+		as.data.frame(t(x)) })
+))
+
+```
+

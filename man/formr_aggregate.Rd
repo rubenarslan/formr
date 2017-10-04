@@ -7,7 +7,7 @@
 formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
   host), results = formr_raw_results(survey_name, host = host),
   host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5,
-  plot_likert = FALSE, ...)
+  plot_likert = FALSE, quiet = FALSE, ...)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
@@ -23,6 +23,8 @@ formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
 \item{fallback_max}{defaults to 5 - if the item_list is set to null, we will use this to reverse}
 
 \item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert]{likert::likert()}} plots. Only possible if item_list is specified.}
+
+\item{quiet}{defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.}
 
 \item{...}{passed to  \code{\link[psych:alpha]{psych::alpha()}}}
 }

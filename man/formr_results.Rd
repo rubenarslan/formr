@@ -5,7 +5,8 @@
 \title{Download processed, aggregated results from formr}
 \usage{
 formr_results(survey_name, host = "https://formr.org",
-  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE)
+  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE,
+  quiet = FALSE)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
@@ -17,6 +18,8 @@ formr_results(survey_name, host = "https://formr.org",
 \item{fallback_max}{passed to formr_reverse, defaults to 5}
 
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
+
+\item{quiet}{passed to formr_aggregate, defaults to FALSE}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

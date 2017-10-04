@@ -91,8 +91,8 @@ qplot_on_normal = function(normed_value,  ylab = "Percentage of other people wit
 #' If you pass in a z-standardised value (x - Mean)/SD,
 #' and a vector of feedback text chunks, that has either three
 #' or five elements, the text chunks will be used in this order
-#' [very low], low, average, high, [very high] corresponding to these
-#' intervals [low, -2], [-2, -1], [-1, 1], [1, 2], [2, high]
+#' \[very low\], low, average, high, \[very high\] corresponding to these
+#' intervals \[low, -2\], \[-2, -1\], \[-1, 1\], \[1, 2\], \[2, high\]
 #'
 #' @param normed_value a z-standardised value
 #' @param chunks a three or five element long character vector containing the text chunks for feedback

@@ -1,0 +1,21 @@
+---
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+# Codebook {.tabset}
+
+## Load
+```{r}
+library(formr)
+source("/Volumes/jet/single_preferences/.passwords.R")
+formr_connect(credentials$email, credentials$password)
+formr_results("s2_initial", quiet = T) -> s2_initial
+```
+
+## Scales {.tabset .tabset-sticky}
+```{r}
+codebook(s2_initial)
+```

@@ -53,18 +53,28 @@ formr_disconnect = function(host = "https://formr.org") {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
+#' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and empty session codes)
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_raw_results(survey_name = 'training_diary' )
 #' }
 
-formr_raw_results = function(survey_name, host = "https://formr.org") {
+formr_raw_results = function(survey_name, host = "https://formr.org", remove_test_sessions = TRUE) {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_results?format=json"))
-  if (resp$status_code == 200) 
-    jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+  if (resp$status_code == 200)
+    results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
       as = "text")) else stop("This survey does not exist or isn't yours.")
+  
+  if (remove_test_sessions) {
+  	if (exists("session", results)) {
+  		results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
+  	} else {
+  		warning("Cannot remove test sessions, because session variable is missing (potentially, this is an unlinked survey).")
+  	}
+  }
+  results
 }
 
 #' Download items from formr
@@ -126,13 +136,8 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         }
         sequence = seq(from, to, by)
         names(sequence) = sequence
-        c1 = item_list[[i]]$choices$`1`
-        c2 = item_list[[i]]$choices$`2`
-        if (!is.null(c1)) {
-	        sequence[1] = c1
-        }
-        if (!is.null(c2)) {
-        	sequence[length(sequence)] = c2
+        for(c in seq_along(item_list[[i]]$choices)) {
+        	sequence[ names(item_list[[i]]$choices)[c] ]    = item_list[[i]]$choices[[c]]
         }
         item_list[[i]]$choices = as.list(sequence)
       }
@@ -280,6 +285,7 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
   host = "https://formr.org") {
   # results fields that appear in all formr_results but aren't
   # custom items
+	
   if (exists("created", where = results)) {
     results$created = as.POSIXct(results$created)
   	attributes(results$created)$label = "user first opened survey"
@@ -342,7 +348,9 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
           results[, item$name] = as.numeric(results[, 
           item$name])
         }
-        attributes(results[, item$name])$label = item$label
+        
+        attributes(results[[ item$name ]])$label = item$label
+        attributes(results[[ item$name ]])$item = item
       }
     }
     results
@@ -527,7 +535,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
           warning(item$name, " is not numeric and cannot be reversed.")
           } else {
           	possible_replies = sort(possible_replies)
-          	recode_replies = setNames(possible_replies, rev(possible_replies))
+          	recode_replies = stats::setNames(possible_replies, rev(possible_replies))
           results[, stringr::str_sub(item$name, 1, 
             -2)] = as.numeric(recode_replies[
             	as.character(results[, item$name])
@@ -555,6 +563,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param compute_alphas defaults to TRUE, whether to compute  [psych::alpha()]
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
 #' @param plot_likert defaults to TRUE - whether to make [likert::likert()] plots. Only possible if item_list is specified.
+#' @param quiet defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.
 
 #' @param ... passed to  [psych::alpha()]
 #' @export
@@ -571,7 +580,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 formr_aggregate = function(survey_name, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
   host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5, 
-  plot_likert = FALSE, ...) {
+  plot_likert = FALSE, quiet = FALSE, ...) {
   results = formr_reverse(results, item_list, fallback_max = fallback_max)
   item_names = names(results)  # update after reversing
   
@@ -652,10 +661,18 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     # actually aggregate scale
     results[, save_scale] = rowMeans(results[, scale_item_names])
     
+    attributes(results[[ save_scale ]])$item = choice_lists
+    attributes(results[[ save_scale ]])$scale = save_scale
+    attributes(results[[ save_scale ]])$label = paste0(save_scale, " items averaged")
+    
     if (plot_likert) {
       lik = formr_likert(choice_lists, results)
-      if (!is.null(lik)) 
-        print(graphics::plot(lik))
+      if (!is.null(lik)) {
+      	if ( !quiet ) {
+	        print(graphics::plot(lik))
+      	}
+      	attributes(results[[ save_scale]])$likert_plot = lik
+      }
     }
     if (compute_alphas) {
       if (length(numbers) > 1) {
@@ -666,9 +683,11 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
           " rows with missings in ", save_scale)
         }
         tryCatch({
-          psych::print.psych(psych::alpha(stats::na.omit(results[, 
-          scale_item_names]), title = save_scale, check.keys = F, 
-          ...))
+        	reliability = psych::alpha(results[, scale_item_names], title = save_scale, check.keys = FALSE, ...)
+        	if ( !quiet ) {
+        	  psych::print.psych(reliability)
+        	}
+        	attributes(results[[ save_scale]])$reliability = reliability
         }, error = function(e) {
           warning("There were problems with ", save_scale, 
           " or its items ", paste(scale_item_names, 
@@ -682,10 +701,14 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     leftover_items = item_list[likert_scales[which(!likert_scales$scale %in% 
       scales), "index"]]
     for (i in seq_along(leftover_items)) {
-    	print(
-    		ggplot2::qplot(results[, leftover_items[[i]]$name ]) + 
-    			ggplot2::xlab(leftover_items[[i]]$name)
-    		)
+  		distribution = ggplot2::qplot(results[, leftover_items[[i]]$name ]) + 
+  			ggplot2::xlab(leftover_items[[i]]$name)
+  		attributes(results[[ leftover_items[[i]]$name ]])$distribution = distribution
+  		if ( !quiet ) {
+	    	print(
+	    		distribution
+	    		)
+    	}
     }
   }
   results
@@ -702,6 +725,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
 #' @param compute_alphas passed to formr_aggregate, defaults to TRUE
 #' @param fallback_max passed to formr_reverse, defaults to 5
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
+#' @param quiet passed to formr_aggregate, defaults to FALSE
 #' @export
 #' @examples
 #' \dontrun{
@@ -709,12 +733,12 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
 #' }
 
 formr_results = function(survey_name, host = "https://formr.org", 
-  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE) {
+  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE) {
   results = formr_raw_results(survey_name, host)
   item_list = formr_items(survey_name, host)
   results = formr_post_process_results(results = results, item_list = item_list, 
     compute_alphas = compute_alphas, fallback_max = fallback_max, 
-    plot_likert = plot_likert)
+    plot_likert = plot_likert, quiet = quiet)
   results
 }
 
@@ -728,6 +752,7 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' @param compute_alphas passed to formr_aggregate, defaults to TRUE
 #' @param fallback_max passed to formr_reverse, defaults to 5
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
+#' @param quiet passed to formr_aggregate, defaults to FALSE
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -739,13 +764,11 @@ formr_results = function(survey_name, host = "https://formr.org",
 
 
 formr_post_process_results = function(item_list = NULL, results, 
-  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE) {
+  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE) {
   results = formr_recognise(item_list = item_list, results = results)
   results = formr_aggregate(item_list = item_list, results = results, 
     compute_alphas = compute_alphas, fallback_max = fallback_max, 
-    plot_likert = plot_likert)
-  attributes(results)$item_list = item_list
-  class(results) = c("formr_data.frame", class(results))
+    plot_likert = plot_likert, quiet = quiet)
   results
 }
 
@@ -815,7 +838,7 @@ formr_likert = function(item_list, results) {
   }
 }
 
-#' get item list from survey data.frame attributes
+#' get item list from survey attributes
 #'
 #' 
 #'
@@ -825,7 +848,49 @@ formr_likert = function(item_list, results) {
 #' example(formr_post_process_results)
 #' items(results)[[1]]
 items = function(survey) {
-	attributes(survey)$item_list
+	vars = names(survey)
+	item_list = list()
+	for (i in 1:length(vars)) {
+		att = attributes(survey[[ vars[i] ]])
+		if (!is.null(att) && exists("item", att)) {
+			item_list[[ vars[i] ]] = att$item
+		}
+	}
+}
+
+#' get item from survey attribute
+#'
+#' Shortcut for attributes(survey$item_name)$item. Fails with a warning.
+#'
+#' @param survey survey with item_list attribute
+#' @param item_name item name
+#' @export
+#' @examples
+#' example(formr_post_process_results)
+#' item(results, "gods")
+item = function(survey, item_name) {
+	att = attributes(survey[[ item_name ]])
+	if (exists("item", att)) {
+		att$item
+	} else {
+		warning("No item information found for this one.")
+	}
+}
+
+#' switch choice values with labels
+#'
+#' formr display labels for multiple choice items, but stores their values. We assume you prefer to analyse the values (e.g. numeric values for Likert-type items, or English values for international surveys), but sometimes you may wish to switch this around.
+#'
+#' @param survey survey with item_list attribute
+#' @param item_name item name
+#' @export
+#' @examples
+#' example(formr_post_process_results)
+#' table(results$gods)
+#' table(choice_labels_for_values(results, "gods"))
+choice_labels_for_values = function(survey, item_name) {
+	choices = item(survey, item_name)$choices
+	unname( unlist(choices)[ survey[[ item_name ]] ])
 }
 
 
