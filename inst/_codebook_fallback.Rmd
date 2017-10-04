@@ -1,0 +1,26 @@
+```{r eval=TRUE,echo=FALSE}
+if (!exists("indent")) {
+	indent = '###' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
+}
+if (exists("testing")) {
+	item = 1:10
+	item_name = "yay"
+}
+att = attributes(item)
+item_label = ifelse(is.null(att) | is.null(att$label), "", item_info$label)
+```
+
+`r indent` `r item_name` {#`r item_name` .tabset}
+
+`r indent`# Distribution {#`r item_name`_distribution}
+```{r}
+ggplot2::qplot(item) + 
+	ggplot2::ggtitle(item_name, subtitle = item_label) + 
+	ggplot2::xlab("Choices")
+```
+
+`r indent`# Attributes {#`r item_name`_attributes}
+```{r}
+pander::pander(att)
+```
+

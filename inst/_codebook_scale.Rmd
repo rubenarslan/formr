@@ -1,13 +1,16 @@
-```{r setup,eval=TRUE}
+```{r eval=TRUE,echo=FALSE}
 if (!exists("indent")) {
-	indent = '##' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
+	indent = '###' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
+}
+if (exists("testing")) {
+	scale = 1:10
 }
 ```
 
 `r indent` `r attributes(scale)$scale` {#`r attributes(scale)$scale` .tabset}
 
 `r indent`# Reliability {#`r attributes(scale)$scale`_reliability}
-```{r summary}
+```{r}
 attributes(scale)$reliability
 ```
 
@@ -28,4 +31,3 @@ pander::pander(dplyr::bind_rows(
 ))
 
 ```
-

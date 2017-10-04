@@ -1,24 +1,31 @@
-```{r setup,eval=TRUE}
+```{r eval=TRUE,echo=FALSE}
 if (!exists("indent")) {
 	indent = '#' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
 }
+if (exists("testing")) {
+	results = data.frame()
+}
 ```
 
-`r indent`# Likert plot
-```{r}
-opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
-```
-```{r}
-graphics::plot(attributes(scale)$likert_plot)
-```
-
-`r indent`# Likert plot
-```{r}
-pander::pander(dplyr::bind_rows(
-	lapply(attributes(scale)$item, function(x) { 
-		x$label_parsed = x$choices = x$choice_list = NULL
-		as.data.frame(t(x)) })
-))
-
+```{r results='asis'}
+vars = names(results)
+for (i in seq_along(vars)) {
+	var = vars[i]
+	att = attributes(results[[ var ]])
+	if ( !is.null(att)) {
+		print(1)
+		if (exists("part_of_scale", att)) {
+		print(2)
+			next
+		} else if (exists("scale", att)) {
+			print(3)
+		cat(codebook_component_scale( results[[ var ]] ))
+		} else if (exists("item", att)) {
+			cat(codebook_component_single_item( results[[ var ]]))
+		} else {
+			cat(codebook_component_fallback( results[[ var ]], var))
+		}
+	}
+}
 ```
 
