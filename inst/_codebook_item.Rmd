@@ -8,20 +8,29 @@ if (exists("testing")) {
 item_info = attributes(item)$item
 item_name = item_info$name
 item_label = ifelse(is.null(item_info$label), "", item_info$label)
+choices = item_info$choices
 ```
 
 `r indent` `r item_name` {#`r item_name` .tabset}
 
 `r indent`# Distribution {#`r item_name`_distribution}
 ```{r}
-ggplot2::qplot(item) + 
+dist_plot = ggplot2::qplot(item) + 
 	ggplot2::ggtitle(item_name, subtitle = item_label) + 
 	ggplot2::xlab("Choices")
+
+if (dplyr::n_distinct(item) < 13 && 
+		is.numeric(names(choices)) && 
+		any(names(choices) != unlist(choices))) {
+	dist_plot = dist_plot + ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = unlist(choices))
+}
+
+dist_plot
 ```
 
 `r indent`# Item {#`r item_name`_item}
+
 ```{r}
-choices = item_info$choices
 item_info$label_parsed = item_info$choices = item_info$choice_list = NULL
 pander::pander(as.data.frame(t(item_info)))
 ```

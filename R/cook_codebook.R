@@ -7,28 +7,24 @@
 #' @export
 #' @examples
 #' 
-codebook = function(results) {
-	indent = '#'
+codebook = function(results, indent = '#') {
 	asis_knit_child(system.file("_codebook.Rmd", package = 'formr', mustWork = TRUE))
 }
 
 
 #' @export
-codebook_component_scale = function(scale) {
+codebook_component_scale = function(scale, indent = '###') {
 	stopifnot( exists("reliability", attributes(scale)))
-	indent = '###'
 	asis_knit_child(system.file("_codebook_scale.Rmd", package = 'formr', mustWork = TRUE))
 }
 
 #' @export
-codebook_component_single_item = function(item) {
+codebook_component_single_item = function(item, indent = '###') {
 	stopifnot( exists("item", attributes(item)))
-	indent = '###'
 	asis_knit_child(system.file("_codebook_item.Rmd", package = 'formr', mustWork = TRUE))
 }
 
 #' @export
-codebook_component_fallback = function(item, item_name) {
-	indent = '###'
+codebook_component_fallback = function(item, item_name, indent = '###') {
 	asis_knit_child(system.file("_codebook_fallback.Rmd", package = 'formr', mustWork = TRUE))
 }

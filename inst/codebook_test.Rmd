@@ -6,7 +6,13 @@ output:
     toc_float: true
 ---
 
-# Codebook {.tabset}
+# Codebook {.tabset2}
+
+```{r}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+pander::panderOptions("table.split.table", Inf)
+```
+
 
 ## Load
 ```{r}
@@ -15,10 +21,9 @@ source("/Volumes/jet/single_preferences/.passwords.R")
 formr_connect(credentials$email, credentials$password)
 formr_results("s2_initial", quiet = T) -> s2_initial
 library(dplyr)
-#s2_initial = s2_initial %>% select(created, bfi_extra, bfi_extra_1, partner_feel_safe)
+s2_initial = s2_initial %>% select(session, created, expired, ended, bfi_extra,bfi_agree, bfi_extra_1, partner_feel_safe, partner_height)
 ```
 
-## Scales {.tabset .tabset-sticky}
 ```{r}
 codebook(s2_initial)
 ```

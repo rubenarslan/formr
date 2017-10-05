@@ -15,19 +15,23 @@ attributes(scale)$reliability
 ```
 
 `r indent`# Likert plot {#`r attributes(scale)$scale`_likert}
+
 ```{r}
+old_height = opts_chunk$get(fig.height)
 opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
 ```
 ```{r}
 graphics::plot(attributes(scale)$likert_plot)
+opts_chunk$set(fig.height = old_height)
 ```
 
 `r indent`# Items {#`r attributes(scale)$scale`_items}
-```{r}
+
+```{r results='asis'}
 pander::pander(dplyr::bind_rows(
 	lapply(attributes(scale)$item, function(x) { 
 		x$label_parsed = x$choices = x$choice_list = NULL
 		as.data.frame(t(x)) })
 ))
-
 ```
+

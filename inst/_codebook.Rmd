@@ -5,20 +5,61 @@ if (!exists("indent")) {
 if (exists("testing")) {
 	results = data.frame()
 }
+
+rows_per_user = nrow(results)/dplyr::n_distinct(results$session)
+repeated_survey = rows_per_user > 1
 ```
+
+`r indent`# Survey overview
+
+`r finished(results)` completed rows, `r expired(results)` expired rows, a total of `r nrow(results)` including unfinished and non-expired rows.
+
+`r round(rows_per_user,2)` rows per user code. `r ifelse(repeated_survey, "A repeated survey")`. `r ifelse(repeated_survey & round(rows_per_user) == 1, "Oddly there seem to be almost no users with several rows. Maybe something went wrong and a few rows are duplicated by accident?", "")`
+
+```{r}
+if (repeated_survey) {
+	overview = results %>% dplyr::group_by(session) %>% 
+		dplyr::summarise(
+			n = sum(!is.na(session)),
+			expired = sum(!is.na(expired)),
+			ended = sum(!is.na(ended))
+		) %>% 
+		tidyr::gather(key, value, -session)
+	print(
+		ggplot2::ggplot(overview, ggplot2::aes(value, ..count..)) + ggplot2::geom_bar() + ggplot2::facet_wrap(~ key, nrow = 1)
+	)
+}
+```
+
+
+
+`r indent`# Scales
 
 ```{r results='asis'}
 vars = names(results)
 for (i in seq_along(vars)) {
 	var = vars[i]
-	cat(var,"\n", file = "var.log")
+	# cat(var,"\n", file = "var.log")
+	att = attributes(results[[ var ]])
+	if ( !is.null(att)) {
+		if (exists("scale", att)) {
+		cat(codebook_component_scale( results[[ var ]] ))
+		}
+	}
+}
+```
+
+`r indent`# Single items
+
+```{r results='asis'}
+for (i in seq_along(vars)) {
+	var = vars[i]
+	# cat(var,"\n", file = "var.log")
 	att = attributes(results[[ var ]])
 	if ( !is.null(att)) {
 		if (exists("part_of_scale", att)) {
 			next
-		} else if (exists("scale", att)) {
-		cat(codebook_component_scale( results[[ var ]] ))
-		} else if (exists("item", att)) {
+		} else if (exists("item", att) & !exists("scale", att)) {
 			cat(codebook_component_single_item( results[[ var ]]))
 		} else {
 			cat(codebook_component_fallback( results[[ var ]], var))
