@@ -19,6 +19,11 @@ ggplot2::qplot(item) +
 	ggplot2::xlab("Choices")
 ```
 
+`r indent`## Summary statistics {#`r item_name`_summary}
+```{r}
+pander::pander(skimr::skim_v(scale))
+```
+
 `r indent`# Attributes {#`r item_name`_attributes}
 ```{r}
 pander::pander(att)

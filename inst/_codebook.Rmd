@@ -19,10 +19,12 @@ only_viewed = sum(is.na(results$ended) & is.na(results$modified))
 
 `r indent`# Survey overview
 
-`r finished(results)` completed rows, `r started` who entered any information, `r only_viewed` only viewed the first page. There are `r expired(results)` expired rows (people who did not finish filling out in the requested time frame). In total, there are `r nrow(results)` rows including unfinished and expired rows. There were `r users` unique participants, of which `r finished_users` finished filling out at least one survey.
-The first session started on `r min(results$created)`, the last session on `r max(results$created)`. People took on average `r mean(duration$duration)` minutes (median `r median(duration$duration)`) to answer the survey.
+`r finished(results)` completed rows, `r started` who entered any information, `r only_viewed` only viewed the first page. There are `r expired(results)` expired rows (people who did not finish filling out in the requested time frame). In total, there are `r nrow(results)` rows including unfinished and expired rows. 
+
+There were `r users` unique participants, of which `r finished_users` finished filling out at least one survey.
 
 `r round(rows_per_user,2)` rows per user code. `r ifelse(repeated_survey, "A repeated survey")`. `r ifelse(repeated_survey & round(rows_per_user) == 1, "Oddly there seem to be almost no users with several rows. Maybe something went wrong and a few rows are duplicated by accident?", "")`
+
 
 ```{r}
 if (repeated_survey) {
@@ -37,6 +39,11 @@ if (repeated_survey) {
 		ggplot2::ggplot(overview, ggplot2::aes(value, ..count..)) + ggplot2::geom_bar() + ggplot2::facet_wrap(~ key, nrow = 1)
 	)
 }
+```
+
+The first session started on `r min(results$created)`, the last session on `r max(results$created)`. People took on average `r mean(duration$duration)` minutes (median `r median(duration$duration)`) to answer the survey.
+
+```{r}
 high_vals = sum(median(duration$duration) + 4*mad(duration$duration) < duration$duration)
 ggplot2::qplot(duration$duration, binwidth = 0.5) + ggplot2::scale_x_continuous(paste("Duration (in minutes), excluding", high_vals, "values above median + 4*MAD"), limits = c(NA, median(duration$duration) + 4*mad(duration$duration)))
 ```
@@ -50,10 +57,11 @@ vars = names(results)
 for (i in seq_along(vars)) {
 	var = vars[i]
 	# cat(var,"\n", file = "var.log")
-	att = attributes(results[[ var ]])
-	if ( !is.null(att)) {
-		if (exists("scale", att)) {
-		cat(codebook_component_scale( results[[ var ]] ))
+	scale = results[[ var ]]
+	scale_info = attributes(item)
+		if ( !is.null(scale_info)) {
+		if (exists("scale", scale_info)) {
+		cat(codebook_component_scale( scale ))
 		}
 	}
 }
@@ -65,14 +73,15 @@ for (i in seq_along(vars)) {
 for (i in seq_along(vars)) {
 	var = vars[i]
 	# cat(var,"\n", file = "var.log")
-	att = attributes(results[[ var ]])
-	if ( !is.null(att)) {
-		if (exists("part_of_scale", att)) {
+	item = results[[ var ]]
+	item_info = attributes(item)
+	if ( !is.null(item_info)) {
+		if (exists("part_of_scale", item_info) || exists("scale", item_info)) {
 			next
-		} else if (exists("item", att) & !exists("scale", att)) {
-			cat(codebook_component_single_item( results[[ var ]]))
+		} else if (exists("item", item_info)) {
+			cat(codebook_component_single_item( item ))
 		} else {
-			cat(codebook_component_fallback( results[[ var ]], var))
+			cat(codebook_component_fallback( item, var))
 		}
 	}
 }
@@ -86,14 +95,23 @@ There were `r finished(results)` rows completed, `r started` who entered any inf
 ## Missingness finishers
 
 among those who finished the survey
+
 ```{r}
-pander::pander(missingness_patterns(results[!is.na(results$ended), ] ))
+missingness = pander::pander(missingness_patterns(results[!is.na(results$ended), ] ))
 ```
+```{r}
+missingness
+```
+
 
 
 ## Missingness starters
-among those who started the survey
-```{r}
-pander::pander(missingness_patterns(results[!is.na(results$modified), ] ))
-```
 
+among those who started the survey
+
+```{r}
+missingness = pander::pander(missingness_patterns(results[!is.na(results$modified), ] ))
+```
+```{r}
+missingness
+```

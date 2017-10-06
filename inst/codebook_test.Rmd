@@ -1,12 +1,11 @@
 ---
+title: "Codebook example diary"
 output:
   html_document:
     toc: true
     toc_depth: 4
     toc_float: true
 ---
-
-# Codebook {.tabset2}
 
 ```{r}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
@@ -15,15 +14,19 @@ pander::panderOptions("table.split.table", Inf)
 
 
 ## Load
+```{r echo=FALSE}
+source("/Volumes/jet/Beziehungsdynamiken/.password.R")
+```
 ```{r}
 library(formr)
-source("/Volumes/jet/Beziehungsdynamiken/.password.R")
+library(dplyr)
 formr_connect(email = credentials$user, password = credentials$password, host = credentials$host)
 formr_results("Taeglicher_Fragebogen_1", host = credentials$host, quiet = T) -> diary
 formr_items("Taeglicher_Fragebogen_1", host = credentials$host) -> diary_items
-library(dplyr)
+diary = diary %>% select(session, session_id, modified, created, ended, menstruation_1, menstruation_2, menstruation_3, desirability_partner, NARQ_admiration_1, NARQ_admiration_2, NARQ_admiration_3, NARQ_rivalry_1, NARQ_rivalry_2, NARQ_rivalry_3, NARQ_admiration, NARQ_rivalry)
 diary$expired = NA
 rm(credentials)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}

@@ -5,13 +5,15 @@ if (!exists("indent")) {
 if (exists("testing")) {
 	scale = 1:10
 }
+
+scale_info = attributes(scale)
 ```
 
-`r indent` `r attributes(scale)$scale` {#`r attributes(scale)$scale` .tabset}
+`r indent` `r scale_info$scale` {#`r scale_info$scale` .tabset}
 
 `r indent`# Reliability {#`r attributes(scale)$scale`_reliability}
 ```{r}
-attributes(scale)$reliability
+scale_info$reliability
 ```
 
 `r indent`# Likert plot {#`r attributes(scale)$scale`_likert}
@@ -21,15 +23,20 @@ old_height = knitr::opts_chunk$get("fig.height")
 knitr::opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
 ```
 ```{r}
-graphics::plot(attributes(scale)$likert_plot)
+graphics::plot(scale_info$likert_plot)
 knitr::opts_chunk$set(fig.height = old_height)
 ```
 
-`r indent`# Items {#`r attributes(scale)$scale`_items}
+`r indent`## Summary statistics {#`r item_name`_summary}
+```{r}
+pander::pander(skimr::skim_v(scale))
+```
+
+`r indent`# Items {#`r scale_info$scale`_items}
 
 ```{r results='asis'}
 pander::pander(dplyr::bind_rows(
-	lapply(attributes(scale)$item, function(x) { 
+	lapply(scale_info$item, function(x) { 
 		x$label_parsed = x$choices = x$choice_list = NULL
 		as.data.frame(t(x)) })
 ))
