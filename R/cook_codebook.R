@@ -28,3 +28,9 @@ codebook_component_single_item = function(item, indent = '###') {
 codebook_component_fallback = function(item, item_name, indent = '###') {
 	asis_knit_child(system.file("_codebook_fallback.Rmd", package = 'formr', mustWork = TRUE))
 }
+
+
+# todo:
+# differentiate automagically between structural missings (didn't do this part because of showif), unfinished missings (didn't get this far), missings were people did not reply to optional items, and (later) missings where people said 'do not want to respond'
+# visdat, vismiss
+# skimr?

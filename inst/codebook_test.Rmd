@@ -17,13 +17,26 @@ pander::panderOptions("table.split.table", Inf)
 ## Load
 ```{r}
 library(formr)
-source("/Volumes/jet/single_preferences/.passwords.R")
-formr_connect(credentials$email, credentials$password)
-formr_results("s2_initial", quiet = T) -> s2_initial
+source("/Volumes/jet/Beziehungsdynamiken/.password.R")
+formr_connect(email = credentials$user, password = credentials$password, host = credentials$host)
+formr_results("Taeglicher_Fragebogen_1", host = credentials$host, quiet = T) -> diary
+formr_items("Taeglicher_Fragebogen_1", host = credentials$host) -> diary_items
 library(dplyr)
+rm(credentials)
 s2_initial = s2_initial %>% select(session, created, expired, ended, bfi_extra,bfi_agree, bfi_extra_1, partner_feel_safe, partner_height)
 ```
 
 ```{r}
 codebook(s2_initial)
 ```
+
+
+## Items
+```{r}
+DT::datatable(dplyr::select(as.data.frame(diary_items), -choice_list, -id, -study_id, -index), rownames = FALSE, filter = "top", extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+    pageLength = 200
+  )) 
+```
+

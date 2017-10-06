@@ -6,13 +6,21 @@ if (exists("testing")) {
 	results = data.frame()
 }
 
-rows_per_user = nrow(results)/dplyr::n_distinct(results$session)
+users = dplyr::n_distinct(results$session)
+finished_users = dplyr::n_distinct(results[!is.na(results$ended),]$session)
+rows_per_user = nrow(results)/users
 repeated_survey = rows_per_user > 1
+duration = results %>% filter(!is.na(ended)) %>% 
+	dplyr::mutate(duration = as.double(ended - created, unit = "mins"))
+
+started = sum(!is.na(results$modified))
+only_viewed = sum(is.na(results$ended) & is.na(results$modified))
 ```
 
 `r indent`# Survey overview
 
-`r finished(results)` completed rows, `r expired(results)` expired rows, a total of `r nrow(results)` including unfinished and non-expired rows.
+`r finished(results)` completed rows, `r started` who entered any information, `r only_viewed` only viewed the first page. There are `r expired(results)` expired rows (people who did not finish filling out in the requested time frame). In total, there are `r nrow(results)` rows including unfinished and expired rows. There were `r users` unique participants, of which `r finished_users` finished filling out at least one survey.
+The first session started on `r min(results$created)`, the last session on `r max(results$created)`. People took on average `r mean(duration$duration)` minutes (median `r median(duration$duration)`) to answer the survey.
 
 `r round(rows_per_user,2)` rows per user code. `r ifelse(repeated_survey, "A repeated survey")`. `r ifelse(repeated_survey & round(rows_per_user) == 1, "Oddly there seem to be almost no users with several rows. Maybe something went wrong and a few rows are duplicated by accident?", "")`
 
@@ -29,6 +37,8 @@ if (repeated_survey) {
 		ggplot2::ggplot(overview, ggplot2::aes(value, ..count..)) + ggplot2::geom_bar() + ggplot2::facet_wrap(~ key, nrow = 1)
 	)
 }
+high_vals = sum(median(duration$duration) + 4*mad(duration$duration) < duration$duration)
+ggplot2::qplot(duration$duration, binwidth = 0.5) + ggplot2::scale_x_continuous(paste("Duration (in minutes), excluding", high_vals, "values above median + 4*MAD"), limits = c(NA, median(duration$duration) + 4*mad(duration$duration)))
 ```
 
 
@@ -66,5 +76,24 @@ for (i in seq_along(vars)) {
 		}
 	}
 }
+```
+
+
+`r indent`# Missingness report {.tabset .tabset-sticky}
+
+There were `r finished(results)` rows completed, `r started` who entered any information, `r only_viewed` only viewed the first page. There are `r expired(results)` expired rows (people who did not finish filling out in the requested time frame). 
+
+## Missingness finishers
+
+among those who finished the survey
+```{r}
+pander::pander(missingness_patterns(results[!is.na(results$ended), ] ))
+```
+
+
+## Missingness starters
+among those who started the survey
+```{r}
+pander::pander(missingness_patterns(results[!is.na(results$modified), ] ))
 ```
 
