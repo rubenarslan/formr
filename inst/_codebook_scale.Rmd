@@ -17,12 +17,12 @@ attributes(scale)$reliability
 `r indent`# Likert plot {#`r attributes(scale)$scale`_likert}
 
 ```{r}
-old_height = opts_chunk$get(fig.height)
-opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
+old_height = knitr::opts_chunk$get("fig.height")
+knitr::opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
 ```
 ```{r}
 graphics::plot(attributes(scale)$likert_plot)
-opts_chunk$set(fig.height = old_height)
+knitr::opts_chunk$set(fig.height = old_height)
 ```
 
 `r indent`# Items {#`r attributes(scale)$scale`_items}

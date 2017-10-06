@@ -4,7 +4,7 @@
 \alias{codebook}
 \title{Generate rmarkdown codebook}
 \usage{
-codebook(results)
+codebook(results, indent = "#")
 }
 \arguments{
 \item{results}{a formr results table with attributes set on items and scales}

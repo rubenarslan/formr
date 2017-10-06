@@ -22,12 +22,12 @@ formr_connect(email = credentials$user, password = credentials$password, host = 
 formr_results("Taeglicher_Fragebogen_1", host = credentials$host, quiet = T) -> diary
 formr_items("Taeglicher_Fragebogen_1", host = credentials$host) -> diary_items
 library(dplyr)
+diary$expired = NA
 rm(credentials)
-s2_initial = s2_initial %>% select(session, created, expired, ended, bfi_extra,bfi_agree, bfi_extra_1, partner_feel_safe, partner_height)
 ```
 
 ```{r}
-codebook(s2_initial)
+codebook(diary)
 ```
 
 

@@ -34,3 +34,4 @@ codebook_component_fallback = function(item, item_name, indent = '###') {
 # differentiate automagically between structural missings (didn't do this part because of showif), unfinished missings (didn't get this far), missings were people did not reply to optional items, and (later) missings where people said 'do not want to respond'
 # visdat, vismiss
 # skimr?
+# scale/item sources, refs, with DOIs/links?
