@@ -20,6 +20,8 @@ source("/Volumes/jet/Beziehungsdynamiken/.password.R")
 ```{r}
 library(formr)
 library(dplyr)
+```
+```{r cache=TRUE}
 formr_connect(email = credentials$user, password = credentials$password, host = credentials$host)
 formr_results("Taeglicher_Fragebogen_1", host = credentials$host, quiet = T) -> diary
 formr_items("Taeglicher_Fragebogen_1", host = credentials$host) -> diary_items
