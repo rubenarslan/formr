@@ -663,7 +663,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     
     attributes(results[[ save_scale ]])$item = choice_lists
     attributes(results[[ save_scale ]])$scale = save_scale
-    attributes(results[[ save_scale ]])$label = paste0(save_scale, " items averaged")
+    attributes(results[[ save_scale ]])$label = paste(length(scale_item_names), save_scale, "items averaged")
     for (i in seq_along(choice_lists)) {
     	attributes(results[[ choice_lists[[i]]$name ]])$part_of_scale = TRUE
     }

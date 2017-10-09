@@ -29,6 +29,8 @@ diary = diary %>% select(session, session_id, modified, created, ended, menstrua
 diary$expired = NA
 rm(credentials)
 knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+theme_set(theme_bw())
 ```
 
 ```{r}

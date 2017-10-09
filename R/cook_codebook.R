@@ -8,6 +8,12 @@
 #' @examples
 #' 
 codebook = function(results, indent = '#') {
+	stopifnot(exists("session", results))
+	stopifnot(exists("created", results))
+	stopifnot(exists("modified", results))
+	stopifnot(exists("expired", results))
+	stopifnot(exists("ended", results))
+	
 	asis_knit_child(system.file("_codebook.Rmd", package = 'formr', mustWork = TRUE))
 }
 
@@ -15,6 +21,8 @@ codebook = function(results, indent = '#') {
 #' @export
 codebook_component_scale = function(scale, indent = '###') {
 	stopifnot( exists("reliability", attributes(scale)))
+	stopifnot( exists("likert_plot", attributes(scale)))
+	stopifnot( exists("item", attributes(scale)))
 	asis_knit_child(system.file("_codebook_scale.Rmd", package = 'formr', mustWork = TRUE))
 }
 

@@ -7,37 +7,58 @@ if (exists("testing")) {
 }
 
 scale_info = attributes(scale)
+scale_name = scale_info$scale
 ```
 
-`r indent` `r scale_info$scale` {#`r scale_info$scale` .tabset}
+`r indent` `r scale_info$scale` {#`r scale_name` .tabset}
 
-`r indent`# Reliability {#`r attributes(scale)$scale`_reliability}
+`r indent`# Reliability {#`r scale_name`_reliability}
 ```{r}
-scale_info$reliability
+psych::print.psych(scale_info$reliability)
 ```
 
-`r indent`# Likert plot {#`r attributes(scale)$scale`_likert}
+`r indent`# Likert plot {#`r scale_name`_likert}
 
 ```{r}
 old_height = knitr::opts_chunk$get("fig.height")
 knitr::opts_chunk$set(fig.height = ncol(attributes(scale)$likert_plot$items))
 ```
 ```{r}
-graphics::plot(scale_info$likert_plot)
+likert:::plot.likert(scale_info$likert_plot)
 knitr::opts_chunk$set(fig.height = old_height)
 ```
 
-`r indent`## Summary statistics {#`r item_name`_summary}
+
+`r indent`# Distribution {#`r scale_name`_distribution}
+```{r}
+binwidth = mean(diff(sort(unique(scale))))
+choices = scale_info$item[[1]]$choices
+old_width = knitr::opts_chunk$get("fig.width")
+knitr::opts_chunk$set(fig.width = 1.5 * length(choices))
+```
+```{r}
+dist_plot = ggplot2::ggplot() +
+	ggplot2::geom_bar(aes(x = scale)) +
+	ggplot2::stat_bin(binwidth = binwidth) + 
+	ggplot2::ggtitle(scale_name, subtitle = paste("aggregated over", length(scale_info$item), "items")) + 
+	ggplot2::xlab("Choices") + 
+	ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = unlist(choices))
+
+dist_plot
+knitr::opts_chunk$set(fig.width = old_width)
+```
+
+`r indent`# Summary statistics {#`r scale_name`_summary}
 ```{r}
 pander::pander(skimr::skim_v(scale))
 ```
 
-`r indent`# Items {#`r scale_info$scale`_items}
+`r indent`# Items {#`r scale_name`_items}
 
 ```{r results='asis'}
 pander::pander(dplyr::bind_rows(
 	lapply(scale_info$item, function(x) { 
-		x$label_parsed = x$choices = x$choice_list = NULL
+		x$label_parsed = x$choices = x$choice_list = x$study_id = x$id = NULL
 		as.data.frame(t(x)) })
 ))
 ```

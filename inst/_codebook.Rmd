@@ -35,6 +35,9 @@ if (repeated_survey) {
 			ended = sum(!is.na(ended))
 		) %>% 
 		tidyr::gather(key, value, -session)
+	if (length(unique(dplyr::filter(overview, key == "expired")$value)) == 1) {
+		overview = dplyr::filter(overview, key != "expired")
+	}
 	print(
 		ggplot2::ggplot(overview, ggplot2::aes(value, ..count..)) + ggplot2::geom_bar() + ggplot2::facet_wrap(~ key, nrow = 1)
 	)
@@ -56,9 +59,9 @@ ggplot2::qplot(duration$duration, binwidth = 0.5) + ggplot2::scale_x_continuous(
 vars = names(results)
 for (i in seq_along(vars)) {
 	var = vars[i]
-	# cat(var,"\n", file = "var.log")
+	cat(var,"\n", file = "~/Downloads/var.log", append = T)
 	scale = results[[ var ]]
-	scale_info = attributes(item)
+	scale_info = attributes(scale)
 		if ( !is.null(scale_info)) {
 		if (exists("scale", scale_info)) {
 		cat(codebook_component_scale( scale ))
@@ -72,7 +75,7 @@ for (i in seq_along(vars)) {
 ```{r results='asis'}
 for (i in seq_along(vars)) {
 	var = vars[i]
-	# cat(var,"\n", file = "var.log")
+	cat(var,"\n", file = "~/Downloads/var.log", append = TRUE)
 	item = results[[ var ]]
 	item_info = attributes(item)
 	if ( !is.null(item_info)) {
@@ -92,26 +95,28 @@ for (i in seq_along(vars)) {
 
 There were `r finished(results)` rows completed, `r started` who entered any information, `r only_viewed` only viewed the first page. There are `r expired(results)` expired rows (people who did not finish filling out in the requested time frame). 
 
-## Missingness finishers
+### Missingness finishers
 
 among those who finished the survey
 
 ```{r}
-missingness = pander::pander(missingness_patterns(results[!is.na(results$ended), ] ))
+missingness = missingness_patterns(
+	dplyr::select(dplyr::filter(results, !is.na(ended)), -expired, -ended) )
 ```
 ```{r}
-missingness
+pander::pander(missingness)
 ```
 
 
 
-## Missingness starters
+### Missingness starters
 
 among those who started the survey
 
-```{r}
-missingness = pander::pander(missingness_patterns(results[!is.na(results$modified), ] ))
+```{r results='markup'}
+missingness = missingness_patterns(
+	dplyr::filter(results, !is.na(modified)) )
 ```
 ```{r}
-missingness
+pander::pander(missingness)
 ```

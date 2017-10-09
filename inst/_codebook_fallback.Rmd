@@ -6,26 +6,28 @@ if (exists("testing")) {
 	item = 1:10
 	item_name = "yay"
 }
-att = attributes(item)
-item_label = ifelse(is.null(att) | is.null(att$label), "", att$label)
+item_info = attributes(item)
+item_label = ifelse(is.null(item_info) | is.null(item_info$label), "", item_info$label)
 ```
 
 `r indent` `r item_name` {#`r item_name` .tabset}
 
 `r indent`# Distribution {#`r item_name`_distribution}
 ```{r}
-ggplot2::qplot(item) + 
+dist_plot = ggplot2::ggplot() +
+	ggplot2::geom_bar(aes(x = item)) +
+	ggplot2::stat_bin() + 
 	ggplot2::ggtitle(item_name, subtitle = item_label) + 
 	ggplot2::xlab("Choices")
 ```
 
-`r indent`## Summary statistics {#`r item_name`_summary}
+`r indent`# Summary statistics {#`r item_name`_summary}
 ```{r}
-pander::pander(skimr::skim_v(scale))
+pander::pander(skimr::skim_v(item))
 ```
 
 `r indent`# Attributes {#`r item_name`_attributes}
 ```{r}
-pander::pander(att)
+pander::pander(item_info)
 ```
 
