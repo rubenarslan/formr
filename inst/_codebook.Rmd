@@ -23,7 +23,7 @@ only_viewed = sum(is.na(results$ended) & is.na(results$modified))
 
 There were `r users` unique participants, of which `r finished_users` finished filling out at least one survey.
 
-`r round(rows_per_user,2)` rows per user code. `r ifelse(repeated_survey, "A repeated survey")`. `r ifelse(repeated_survey & round(rows_per_user) == 1, "Oddly there seem to be almost no users with several rows. Maybe something went wrong and a few rows are duplicated by accident?", "")`
+`r round(rows_per_user,2)` rows per user code. `r ifelse(repeated_survey, "A repeated survey", "")`. `r ifelse(repeated_survey & round(rows_per_user) == 1, "Oddly there seem to be almost no users with several rows. Maybe something went wrong and a few rows are duplicated by accident?", "")`
 
 
 ```{r}
@@ -64,7 +64,7 @@ for (i in seq_along(vars)) {
 	scale_info = attributes(scale)
 		if ( !is.null(scale_info)) {
 		if (exists("scale", scale_info)) {
-		cat(codebook_component_scale( scale ))
+		cat(codebook_component_scale( scale, indent ))
 		}
 	}
 }
@@ -82,9 +82,9 @@ for (i in seq_along(vars)) {
 		if (exists("part_of_scale", item_info) || exists("scale", item_info)) {
 			next
 		} else if (exists("item", item_info)) {
-			cat(codebook_component_single_item( item ))
+			cat(codebook_component_single_item( item, indent ))
 		} else {
-			cat(codebook_component_fallback( item, var))
+			cat(codebook_component_fallback( item, var, indent))
 		}
 	}
 }
