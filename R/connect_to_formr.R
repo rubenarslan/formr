@@ -855,7 +855,7 @@ items = function(survey) {
 	item_list = list()
 	for (i in 1:length(vars)) {
 		att = attributes(survey[[ vars[i] ]])
-		if (!is.null(att) && exists("item", att)) {
+		if (!is.null(att) && exists("item", att)  && !exists("scale", att)) {
 			item_list[[ vars[i] ]] = att$item
 		}
 	}

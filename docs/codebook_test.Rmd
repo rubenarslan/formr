@@ -40,12 +40,4 @@ codebook(diary)
 ```
 
 
-## Items
-```{r}
-DT::datatable(dplyr::select(as.data.frame(diary_items), -choice_list, -id, -study_id, -index), rownames = FALSE, filter = "top", extensions = 'Buttons', options = list(
-    dom = 'Bfrtip',
-    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-    pageLength = 200
-  ))
-```
 

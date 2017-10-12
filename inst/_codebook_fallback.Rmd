@@ -1,4 +1,4 @@
-```{r eval=TRUE,echo=FALSE}
+```{r setup,eval=TRUE,echo=FALSE}
 if (!exists("indent")) {
 	indent = '#' # ugly hack so _regression_summary can be "spun" (variables included via `r ` have to be available)
 }
@@ -13,21 +13,22 @@ item_label = ifelse(is.null(item_info) | is.null(item_info$label), "", item_info
 `r indent`## `r item_name` {#`r item_name` .tabset}
 
 `r indent`### Distribution {#`r item_name`_distribution}
-```{r}
+```{r distribution}
 dist_plot = ggplot2::ggplot() +
 	ggplot2::geom_bar(ggplot2::aes(x = item)) +
 	ggplot2::stat_bin() + 
 	ggplot2::ggtitle(item_name, subtitle = item_label) + 
 	ggplot2::xlab("Choices")
+dist_plot
 ```
 
 `r indent`### Summary statistics {#`r item_name`_summary}
-```{r}
+```{r summary}
 pander::pander(skimr::skim_v(item))
 ```
 
 `r indent`### Attributes {#`r item_name`_attributes}
-```{r}
+```{r attributes}
 pander::pander(item_info)
 ```
 
