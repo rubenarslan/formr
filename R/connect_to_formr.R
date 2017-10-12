@@ -190,7 +190,8 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
     item_list[[i]]$type_options = as.character(item_list[[i]]$type_options)
     item_list[[i]]$choice_list = as.character(item_list[[i]]$choice_list)
   }
-  # item_list = lapply(item_list, FUN = as.data.frame)
+  class(item_list) = setdiff(class(item_list), "formr_item_list")
+  
   item_list = data.frame(dplyr::bind_rows(item_list))
   item_list$index = 1:nrow(item_list)
   item_list
