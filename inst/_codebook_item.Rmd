@@ -24,17 +24,18 @@ new_width = ifelse(new_width > 20, 20, new_width)
 knitr::opts_chunk$set(fig.width = new_width)
 ```
 ```{r}
+wrap_at = new_width * 10
 if (dplyr::n_distinct(item) < 20) { 
 	dist_plot = ggplot2::ggplot() +
 		ggplot2::geom_bar(ggplot2::aes(x = item)) +
 		ggplot2::stat_bin(breaks = names(choices)) + 
-		ggplot2::ggtitle(item_name, subtitle = item_label) + 
+		ggplot2::ggtitle(item_name, subtitle = stringr::str_wrap(item_label, width = wrap_at)) + 
 		ggplot2::xlab("Choices")
 	
 	if (dplyr::n_distinct(item) < 13 && 
 			is.numeric(type.convert(names(choices), as.is = T)) && 
 			any(names(choices) != unlist(choices))) {
-		dist_plot = dist_plot + ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = unlist(choices))
+		dist_plot = dist_plot + ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = stringr::str_wrap(unlist(choices), 15))
 	}
 
 	dist_plot

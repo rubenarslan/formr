@@ -16,7 +16,11 @@ codebook = function(results, indent = '#') {
 	stopifnot(exists("ended", results))
 	old_opt = options('knitr.duplicate.label')$knitr.duplicate.label
 	options(knitr.duplicate.label = 'allow')
-	res = asis_knit_child(system.file("_codebook.Rmd", package = 'formr', mustWork = TRUE))
+	options = list(
+		fig.path = paste0(knitr::opts_chunk$get("fig.path"), "cb_"), 
+		cache.path = paste0(knitr::opts_chunk$get("cache.path"), "cb_")
+	)
+	res = asis_knit_child(system.file("_codebook.Rmd", package = 'formr', mustWork = TRUE), options = options)
 	options(knitr.duplicate.label = old_opt)
 	res
 }
@@ -49,7 +53,11 @@ codebook_component_scale = function(scale, indent = '###') {
 #' @export
 codebook_component_single_item = function(item, indent = '###') {
 	stopifnot( exists("item", attributes(item)))
-	asis_knit_child(system.file("_codebook_item.Rmd", package = 'formr', mustWork = TRUE))
+	options = list(
+		fig.path = paste0(knitr::opts_chunk$get("fig.path"), attributes(item)$item$name, "_"), 
+		cache.path = paste0(knitr::opts_chunk$get("cache.path"), attributes(item)$item$name, "_")
+	)
+	asis_knit_child(system.file("_codebook_item.Rmd", package = 'formr', mustWork = TRUE), options = options)
 }
 
 #' codebook component for scales
@@ -61,7 +69,11 @@ codebook_component_single_item = function(item, indent = '###') {
 #' 
 #' @export
 codebook_component_fallback = function(item, item_name, indent = '###') {
-	asis_knit_child(system.file("_codebook_fallback.Rmd", package = 'formr', mustWork = TRUE))
+	options = list(
+		fig.path = paste0(knitr::opts_chunk$get("fig.path"), item_name, "_"), 
+		cache.path = paste0(knitr::opts_chunk$get("cache.path"), item_name, "_")
+	)
+	asis_knit_child(system.file("_codebook_fallback.Rmd", package = 'formr', mustWork = TRUE), options = options)
 }
 
 

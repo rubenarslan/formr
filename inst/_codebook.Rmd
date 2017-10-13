@@ -135,7 +135,11 @@ pander::pander(missingness)
 
 ## Items
 ```{r}
-DT::datatable(dplyr::select(as.data.frame(items(results)), -choice_list, -id, -study_id, -index), rownames = FALSE, filter = "top", extensions = 'Buttons', options = list(
+item_index = dplyr::select(as.data.frame(items(results)), -choice_list, -id, -study_id, -index)
+item_index = dplyr::mutate(item_index, name = paste0('<a href="#', name, '">', name, '</a>'))
+DT::datatable(item_index, rownames = FALSE, filter = "top", extensions = 'Buttons', 
+escape = setdiff(names(item_index), 'name'),
+options = list(
     dom = 'Bfrtip',
     buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
     pageLength = 200

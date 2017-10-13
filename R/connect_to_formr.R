@@ -860,6 +860,8 @@ items = function(survey) {
 			item_list[[ vars[i] ]] = att$item
 		}
 	}
+	class(item_list) = c("formr_item_list", class(item_list))
+	item_list
 }
 
 #' get item from survey attribute

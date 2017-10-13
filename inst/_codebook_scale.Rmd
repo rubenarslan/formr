@@ -43,12 +43,13 @@ if (!is.null(choices)) {
 }
 ```
 ```{r distribution}
+wrap_at = new_width * 10
 dist_plot = ggplot2::ggplot() +
 	ggplot2::geom_bar(ggplot2::aes(x = scale)) +
 	ggplot2::stat_bin(binwidth = binwidth) + 
-	ggplot2::ggtitle(scale_name, subtitle = paste("aggregated over", length(scale_info$item), "items")) + 
+	ggplot2::ggtitle(scale_name, subtitle = stringr::str_wrap(paste("aggregated over", length(scale_info$item), "items"), wrap_at)) + 
 	ggplot2::xlab("Choices") + 
-	ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = unlist(choices))
+	ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = stringr::str_wrap(unlist(choices), 15))
 
 dist_plot
 knitr::opts_chunk$set(fig.width = old_width)

@@ -4,7 +4,8 @@
 \alias{asis_knit_child}
 \title{knit_child as is}
 \usage{
-asis_knit_child(..., quiet = TRUE, options = NULL, envir = parent.frame())
+asis_knit_child(input = NULL, text = NULL, ..., quiet = TRUE,
+  options = NULL, envir = parent.frame())
 }
 \arguments{
 \item{...}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}

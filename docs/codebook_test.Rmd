@@ -6,6 +6,7 @@ output:
     toc_depth: 4
     toc_float: true
     code_folding: 'hide'
+    self_contained: false
 ---
 
 ```{r}
@@ -38,6 +39,4 @@ knitr::opts_chunk$set(error = TRUE)
 ```{r}
 codebook(diary)
 ```
-
-
 

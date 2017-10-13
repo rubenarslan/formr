@@ -18,7 +18,7 @@ dist_plot = ggplot2::ggplot() +
 	ggplot2::geom_bar(ggplot2::aes(x = item)) +
 	ggplot2::stat_bin() + 
 	ggplot2::ggtitle(item_name, subtitle = item_label) + 
-	ggplot2::xlab("Choices")
+	ggplot2::xlab("Values")
 dist_plot
 ```
 

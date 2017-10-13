@@ -38,7 +38,8 @@ Imports:
     haven,
     pander,
     packrat,
-    skimr
+    skimr,
+    DT
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
