@@ -226,6 +226,8 @@ word_document = function(..., break_on_error = FALSE) {
 #' - the function has to return to the top-level. There's no way to [cat()] this from loops or an if-condition without without setting results='asis'. You can however concatenate these objects with [paste.knit_asis()]
 #'
 #' 
+#' @param input if you specify a file path here, it will be read in before being passed to knitr (to avoid a working directory mess)
+#' @param text passed to [knitr::knit_child()]
 #' @param ... passed to [knitr::knit_child()]
 #' @param quiet passed to [knitr::knit_child()]
 #' @param options defaults to NULL.
@@ -246,7 +248,9 @@ word_document = function(..., break_on_error = FALSE) {
 #' }
 asis_knit_child = function(input = NULL, text = NULL, ..., quiet = TRUE, options = NULL, envir = parent.frame()) {
 	stopifnot( xor(is.null(text), is.null(input)))
-	text = paste0(readLines(input), collapse = "\n")
+	if (!is.null(input)) {
+		text = paste0(readLines(input), collapse = "\n")
+	}
 	if (interactive()) {
 		if (!is.null(options)) {
 			warning("options ignored in interactive mode")

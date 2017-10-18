@@ -14,6 +14,10 @@ codebook = function(results, indent = '#') {
 	stopifnot(exists("modified", results))
 	stopifnot(exists("expired", results))
 	stopifnot(exists("ended", results))
+	if (sum(duplicated(dplyr::select(results, session, created))) > 0) {
+		stop("There seem to be duplicated rows in this survey (duplicate session-created variables)")		
+	}
+
 	old_opt = options('knitr.duplicate.label')$knitr.duplicate.label
 	options(knitr.duplicate.label = 'allow')
 	options = list(
@@ -30,13 +34,14 @@ codebook = function(results, indent = '#') {
 #'
 #'
 #' @param scale a scale with attributes set
+#' @param results a formr results table with attributes set on items and scales
 #' @param indent add # to this to make the headings in the components lower-level. defaults to beginning at h2
 #' 
 #' @export
-codebook_component_scale = function(scale, indent = '###') {
-	stopifnot( exists("reliability", attributes(scale)))
-	stopifnot( exists("likert_plot", attributes(scale)))
+codebook_component_scale = function(scale, results, indent = '###') {
 	stopifnot( exists("item", attributes(scale)))
+	stopifnot( exists("scale", attributes(scale)))
+	stopifnot( exists("scale_item_names", attributes(scale)))
 	options = list(
 		fig.path = paste0(knitr::opts_chunk$get("fig.path"), attributes(scale)$scale, "_"), 
 		cache.path = paste0(knitr::opts_chunk$get("cache.path"), attributes(scale)$scale, "_")
@@ -48,10 +53,11 @@ codebook_component_scale = function(scale, indent = '###') {
 #'
 #'
 #' @param item an item with attributes set
+#' @param results a formr results table with attributes set on items and scales
 #' @param indent add # to this to make the headings in the components lower-level. defaults to beginning at h2
 #' 
 #' @export
-codebook_component_single_item = function(item, indent = '###') {
+codebook_component_single_item = function(item, results, indent = '###') {
 	stopifnot( exists("item", attributes(item)))
 	options = list(
 		fig.path = paste0(knitr::opts_chunk$get("fig.path"), attributes(item)$item$name, "_"), 
@@ -64,11 +70,12 @@ codebook_component_single_item = function(item, indent = '###') {
 #'
 #'
 #' @param item an item without attributes set
+#' @param results a formr results table with attributes set on items and scales
 #' @param item_name the item name
 #' @param indent add # to this to make the headings in the components lower-level. defaults to beginning at h2
 #' 
 #' @export
-codebook_component_fallback = function(item, item_name, indent = '###') {
+codebook_component_fallback = function(item, results, item_name, indent = '###') {
 	options = list(
 		fig.path = paste0(knitr::opts_chunk$get("fig.path"), item_name, "_"), 
 		cache.path = paste0(knitr::opts_chunk$get("cache.path"), item_name, "_")

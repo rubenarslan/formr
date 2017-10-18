@@ -15,34 +15,49 @@ choices = item_info$choices
 
 `r indent`### Distribution {#`r item_name`_distribution}
 ```{r distribution}
-old_width = knitr::opts_chunk$get("fig.width")
-if (is.null(choices) || dplyr::n_distinct(na.omit(item)) > length(choices)) {
-	choices = unique(item)
+old_height = knitr::opts_chunk$get("fig.height")
+if ( !is.numeric(item) ) {
+	if (is.null(choices) || dplyr::n_distinct(na.omit(item)) > length(choices)) {
+		choices = unique(item)
+		names(choices) = choices
+	}
+	new_height = 1.5 * length(choices)
+	new_height = ifelse(new_height > 20, 20, new_height)
+	new_height = ifelse(new_height < 1, 1, new_height)
+	knitr::opts_chunk$set(fig.height = new_height)
 }
-new_width = 1.5 * length(choices)
-new_width = ifelse(new_width > 20, 20, new_width)
-knitr::opts_chunk$set(fig.width = new_width)
+
+wrap_at = knitr::opts_chunk$get("fig.width") * 10
 ```
 ```{r}
-wrap_at = new_width * 10
-if (dplyr::n_distinct(item) < 20) { 
+# numeric items are plotted horizontally (because that's what usually expected)
+# categorical items are plotted vertically because we can use the screen real estate better this way
+if (is.numeric(item) || dplyr::n_distinct(item) < 20) {
 	dist_plot = ggplot2::ggplot() +
 		ggplot2::geom_bar(ggplot2::aes(x = item)) +
-		ggplot2::stat_bin(breaks = names(choices)) + 
-		ggplot2::ggtitle(item_name, subtitle = stringr::str_wrap(item_label, width = wrap_at)) + 
-		ggplot2::xlab("Choices")
-	
-	if (dplyr::n_distinct(item) < 13 && 
-			is.numeric(type.convert(names(choices), as.is = T)) && 
+		ggplot2::stat_bin() + 
+		ggplot2::ggtitle(item_name, subtitle = stringr::str_wrap(item_label, width = wrap_at))
+
+	if (!is.null(choices) &&
+			dplyr::n_distinct(item) < 13 && 
+			is.numeric(type.convert(as.character(names(choices)), as.is = T)) && 
 			any(names(choices) != unlist(choices))) {
-		dist_plot = dist_plot + ggplot2::scale_x_continuous("Choices", breaks = as.numeric(names(choices)), labels = stringr::str_wrap(unlist(choices), 15))
+		breaks = as.numeric(names(choices))
+		dist_plot = dist_plot + ggplot2::scale_x_discrete("Choices", labels = stringr::str_wrap(unlist(choices), 15), limits = breaks)
+	} else if (!is.null(choices)) {
+		dist_plot = dist_plot + ggplot2::scale_x_discrete("Choices", limits = names(choices), labels = stringr::str_wrap(names(choices), 20))
 	}
+
+	if ( !is.numeric(item) ) {
+		dist_plot = dist_plot + ggplot2::coord_flip()
+	}
+	
 
 	dist_plot
 } else {
-	cat("More than ", dplyr::n_distinct(item), " unique values, so not shown.")
+	cat(dplyr::n_distinct(item), " unique, categorical values, so not shown.")
 }
-knitr::opts_chunk$set(fig.width = old_width)
+knitr::opts_chunk$set(fig.height = old_height)
 ```
 
 `r indent`### Summary statistics {#`r item_name`_summary}

@@ -136,8 +136,14 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         }
         sequence = seq(from, to, by)
         names(sequence) = sequence
-        for(c in seq_along(item_list[[i]]$choices)) {
-        	sequence[ names(item_list[[i]]$choices)[c] ]    = item_list[[i]]$choices[[c]]
+        if (length(item_list[[i]]$choices) == 2) {
+        	choices = item_list[[i]]$choices
+        	sequence[ 1 ] = paste0(names(choices)[1], ": ", choices[[2]])
+        	sequence[ which.max(sequence) ] = paste0(names(choices)[length(choices)], ": ", choices[[length(choices)]])
+        } else {
+        	for (c in seq_along(item_list[[i]]$choices)) {
+        		sequence[ names(item_list[[i]]$choices)[c] == sequence ]    = paste0(names(item_list[[i]]$choices)[c], ": ", item_list[[i]]$choices[[c]])
+        	}
         }
         item_list[[i]]$choices = as.list(sequence)
       }
@@ -664,6 +670,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     
     attributes(results[[ save_scale ]])$item = choice_lists
     attributes(results[[ save_scale ]])$scale = save_scale
+    attributes(results[[ save_scale ]])$scale_item_names = scale_item_names
     attributes(results[[ save_scale ]])$label = paste(length(scale_item_names), save_scale, "items averaged")
     for (i in seq_along(choice_lists)) {
     	attributes(results[[ choice_lists[[i]]$name ]])$part_of_scale = TRUE
@@ -802,7 +809,7 @@ formr_likert = function(item_list, results) {
   item_numbers = c()
   choice_lists = item_list
   choice_labels = unique(lapply(choice_lists, FUN = function(x) {
-    x$choices
+    stringr::str_wrap(x$choices, width = 15)
   }))
   choice_values = unique(lapply(choice_lists, FUN = function(x) {
     names(x$choices)
@@ -829,7 +836,7 @@ formr_likert = function(item_list, results) {
       "mc", "rating_button")) {
       item_numbers = c(item_numbers, item_number)
       results[, item_number] = factor(results[, item$name], 
-        levels = names(item$choices), labels = item$choices)
+        levels = names(item$choices), labels = stringr::str_wrap(item$choices, 15))
       names(results)[item_number] = paste(item$label, paste0("[", 
         item$name, "]"))  # seriously cumbersome way to rename single column
     }
@@ -857,6 +864,9 @@ items = function(survey) {
 	for (i in 1:length(vars)) {
 		att = attributes(survey[[ vars[i] ]])
 		if (!is.null(att) && exists("item", att)  && !exists("scale", att)) {
+			if (att$item$name != vars[i]) {
+				att$item$name = vars[i]
+			}
 			item_list[[ vars[i] ]] = att$item
 		}
 	}
@@ -877,6 +887,9 @@ items = function(survey) {
 item = function(survey, item_name) {
 	att = attributes(survey[[ item_name ]])
 	if (exists("item", att)) {
+		if (att$item$name != item_name) {
+			att$item$name = item_name
+		}
 		att$item
 	} else {
 		warning("No item information found for this one.")
