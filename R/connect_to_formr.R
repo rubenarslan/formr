@@ -136,10 +136,10 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         }
         sequence = seq(from, to, by)
         names(sequence) = sequence
-        if (length(item_list[[i]]$choices) == 2) {
+        if (length(item_list[[i]]$choices) <= 2) {
         	choices = item_list[[i]]$choices
-        	sequence[ 1 ] = paste0(names(choices)[1], ": ", choices[[2]])
-        	sequence[ which.max(sequence) ] = paste0(names(choices)[length(choices)], ": ", choices[[length(choices)]])
+        	sequence[ 1 ] = paste0(sequence[ 1 ], ": ", choices[[1]])
+        	sequence[ which.max(sequence) ] = paste0(sequence[ which.max(sequence) ], ": ", choices[[length(choices)]])
         } else {
         	for (c in seq_along(item_list[[i]]$choices)) {
         		sequence[ names(item_list[[i]]$choices)[c] == sequence ]    = paste0(names(item_list[[i]]$choices)[c], ": ", item_list[[i]]$choices[[c]])
