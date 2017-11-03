@@ -5,7 +5,8 @@
 \title{Processed, aggregated results}
 \usage{
 formr_post_process_results(item_list = NULL, results,
-  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE)
+  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
+  quiet = FALSE)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}
@@ -17,6 +18,8 @@ formr_post_process_results(item_list = NULL, results,
 \item{fallback_max}{passed to formr_reverse, defaults to 5}
 
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
+
+\item{quiet}{passed to formr_aggregate, defaults to FALSE}
 }
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}

@@ -226,6 +226,8 @@ word_document = function(..., break_on_error = FALSE) {
 #' - the function has to return to the top-level. There's no way to [cat()] this from loops or an if-condition without without setting results='asis'. You can however concatenate these objects with [paste.knit_asis()]
 #'
 #' 
+#' @param input if you specify a file path here, it will be read in before being passed to knitr (to avoid a working directory mess)
+#' @param text passed to [knitr::knit_child()]
 #' @param ... passed to [knitr::knit_child()]
 #' @param quiet passed to [knitr::knit_child()]
 #' @param options defaults to NULL.
@@ -244,9 +246,22 @@ word_document = function(..., break_on_error = FALSE) {
 #'    asis_knit_child("_regression_summary.Rmd", options = options)
 #' }
 #' }
-asis_knit_child = function(..., quiet = TRUE, options = NULL, envir = parent.frame()) {
-	knitr::asis_output(knitr::knit_child(..., quiet = quiet, options = options, envir = envir))
+asis_knit_child = function(input = NULL, text = NULL, ..., quiet = TRUE, options = NULL, envir = parent.frame()) {
+	stopifnot( xor(is.null(text), is.null(input)))
+	if (!is.null(input)) {
+		text = paste0(readLines(input), collapse = "\n")
+	}
+	if (interactive()) {
+		if (!is.null(options)) {
+			warning("options ignored in interactive mode")
+		}
+		output = knitr::knit(text = text, ..., quiet = quiet, envir = envir)
+	} else {
+		output = knitr::knit_child(text = text, ..., quiet = quiet, options = options, envir = envir)
+	}
+	knitr::asis_output(output)
 }
+
 
 #' paste.knit_asis
 #' 
@@ -265,6 +280,15 @@ paste.knit_asis = function(..., sep = "\n\n\n", collapse = "\n\n\n") {
 	knitr::asis_output(paste(..., sep = sep, collapse = collapse))
 }
 
+#' Print new lines in knit_asis outputs
+#' 
+#' @param x the knit_asis object
+#' @param ... ignored
+#' 
+#' @export
+print.knit_asis = function(x, ...) {
+	cat(x, sep = '\n')
+}
 
 #' pander_handler
 #' 
