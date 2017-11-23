@@ -39,6 +39,7 @@ results = jsonlite::fromJSON(txt =
 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 items = formr_items(path = 
 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = formr_recognise(item_list = items, results = results)
 agg = formr_aggregate(item_list = items, results = results, 
 	compute_alphas = TRUE, plot_likert = TRUE)
 agg[, c('religiousness', 'prefer')]

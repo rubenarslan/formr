@@ -46,6 +46,64 @@ formr_disconnect = function(host = "https://formr.org") {
     invisible(TRUE) else warning("You weren't logged in.")
 }
 
+#' Download processed, aggregated results from formr
+#'
+#' After connecting to formr using [formr_connect()]
+#' you can download data, it basically just does [formr_raw_results()] ,
+#' [formr_recognise()] and [formr_aggregate()] in sequence.
+#'
+#' @param survey_name case-sensitive name of a survey your account owns
+#' @param host defaults to https://formr.org
+#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
+#' @param fallback_max passed to formr_reverse, defaults to 5
+#' @param plot_likert passed to formr_aggregate, defaults to TRUE
+#' @param quiet passed to formr_aggregate, defaults to FALSE
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_results(survey_name = 'training_diary' )
+#' }
+
+formr_results = function(survey_name, host = "https://formr.org", 
+												 compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE) {
+	results = formr_raw_results(survey_name, host)
+	item_list = formr_items(survey_name, host)
+	results = formr_post_process_results(results = results, item_list = item_list, 
+																			 compute_alphas = compute_alphas, fallback_max = fallback_max, 
+																			 plot_likert = plot_likert, quiet = quiet)
+	results
+}
+
+#' Processed, aggregated results
+#'
+#' This function chains [formr_recognise()] and [formr_aggregate()] 
+#' in sequence. Useful if you want to post-process raw results before aggregating etc.
+#'
+#' @param item_list an item_list, defaults to NULL
+#' @param results survey results
+#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
+#' @param fallback_max passed to formr_reverse, defaults to 5
+#' @param plot_likert passed to formr_aggregate, defaults to TRUE
+#' @param quiet passed to formr_aggregate, defaults to FALSE
+#' @export
+#' @examples
+#' results = jsonlite::fromJSON(txt = 
+#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' items = formr_items(path = 
+#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = formr_post_process_results(items, results, 
+#' compute_alphas = FALSE, plot_likert = FALSE)
+
+
+formr_post_process_results = function(item_list = NULL, results, 
+																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE) {
+	results = formr_recognise(item_list = item_list, results = results)
+	results = formr_aggregate(item_list = item_list, results = results, 
+														compute_alphas = compute_alphas, fallback_max = fallback_max, 
+														plot_likert = plot_likert, quiet = quiet)
+	results
+}
+
 #' Download data from formr
 #'
 #' After connecting to formr using [formr_connect()]
@@ -290,9 +348,14 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
   host = "https://formr.org") {
-  # results fields that appear in all formr_results but aren't
-  # custom items
+	# from https://stackoverflow.com/questions/17397340/type-conversion-in-r-based-on-type-of-another-variable
+	as_same_type_as <- function(instance_of_target_class, object_to_convert) {
+		return(methods::as(object_to_convert, 
+							class(instance_of_target_class)[1]))
+	}
 	
+	# results fields that appear in all formr_results but aren't
+  # custom items
   if (exists("created", where = results)) {
     results$created = as.POSIXct(results$created)
   	attributes(results$created)$label = "user first opened survey"
@@ -328,16 +391,15 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
           # choice-based items
           results[, item$name] = utils::type.convert(as.character(results[, 
           item$name]), as.is = T)
-          # numeric choices should be typed correctly by default
-          if (is.character(results[, item$name])) {
-          # save the factor with all possible levels e.g. mc, select
-          if (all(unique(results[, item$name]) %in% 
-            c(NA, names(item$choices)))) {
-            results[, item$name] = factor(results[, 
-            item$name], levels = names(item$choices))
+          if (all(is.na(results[, item$name]))) {
+          	# prevent logical types, for which labelled doesn't work
+          	results[, item$name] = as.numeric(results[, item$name])
           }
-          # e.g. select_or_add_one stay character
-          }
+          
+          choice_values = as_same_type_as(results[, item$name], names(item$choices))
+          choice_labels = item$choices
+          names(choice_values) = choice_labels
+          results[, item$name] = haven::labelled(results[, item$name], choice_values)
         } else if (item$type %in% c("text", "textarea", 
           "email", "letters")) {
           results[, item$name] = as.character(results[, 
@@ -364,60 +426,6 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
 
   results
 }
-
-
-
-#' Label values for SPSS and other software that supports value labels
-#'
-#' Once you've retrieved an item table using [formr_items()] you can use this
-#' function to label your values
-#'  
-#'
-#' @param results survey results
-#' @param item_list an item_list, will be auto-retrieved from results attributes if omitted
-#' @param item_types which item types should be given value labels (defaults to mc, select_one, mc_button)
-#' @param numeric_too whether numeric items should be given value labels
-#' @export
-#' @examples
-#' results = jsonlite::fromJSON(txt = 
-#' system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' class(results$created)
-#' items = formr_items(path = 
-#' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' results = formr_recognise(item_list = items, results = results)
-#' results = formr_label_values_for_spss(item_list = items, results = results)
-#' results$gods
-
-formr_label_values_for_spss = function(results, item_list = NULL, item_types = c("mc","select_one", "mc_button", "mc_multiple_button", "select_or_add_one", "select_or_add_multiple", "mc_multiple"), numeric_too = FALSE) {
-	if (is.null(item_list) && length(attributes(results)$item_list)) {
-		item_list = attributes(results)$item_list
-	} else if (is.null(item_list)) {
-		stop("Need to specify an item list.")
-	}
-			item_names = names(results)
-			for (i in seq_along(item_list)) {
-				item = item_list[[i]]
-				if (! item$name %in% item_names) {
-					next
-				} else if (length(item$choices) && item$type %in% item_types) {
-					# choice-based items
-					if (numeric_too || is.character(results[, item$name]) || is.factor(results[, item$name])) {
-						# save the factor with all possible levels e.g. mc, select
-						if (all(unique(results[, item$name]) %in% 
-										c(NA, names(item$choices)))) {
-								results[, item$name] = haven::labelled(
-									as.character(results[, item$name]), 
-									labels = unlist(item$choices)
-								)
-								attributes(results[, item$name])$label = item$label
-						}
-					}
-				}
-			}
-
-	results
-}
-
 
 
 
@@ -500,13 +508,10 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #' items = formr_items(path = 
 #' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' formr_reverse(results, items)
-
-
-
 formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
   # reverse items first we're playing dumb and don't have the
   # item table to base our aggregation on?
-  item_names = names(results)  # we use the item names of all items, including notes and text, hoping that there is no false positive
+  item_names = names(results)  # we use the item names of all items, including text, hoping that there is no false positive
   
   if (is.null(item_list)) {
     char_vars = sapply(results, is.character)
@@ -531,23 +536,15 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
   	
     for (i in seq_along(item_list)) {
       item = item_list[[i]]
-      if (! item$name %in% item_names) {
+      if (!item$name %in% item_names) {
       	next
-      } else if (length(item$choices)) {
-        # choice-based items with a number and an 'R' at the end
-        if (stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {
-          possible_replies = utils::type.convert(names(item$choices))
-          
-          if (!is.numeric(possible_replies)) {
-          warning(item$name, " is not numeric and cannot be reversed.")
-          } else {
-          	possible_replies = sort(possible_replies)
-          	recode_replies = stats::setNames(possible_replies, rev(possible_replies))
-          results[, stringr::str_sub(item$name, 1, 
-            -2)] = as.numeric(recode_replies[
-            	as.character(results[, item$name])
-            	] )  # reverse\t# save as item name with the R truncated
-          }
+      } else if (length(item$choices) && stringr::str_detect(item$name, "(?i)^([a-z0-9_]+?)[0-9]+R$")) {
+        if ( !is.numeric(results[[item$name]])) {
+        	warning(item$name, " is not numeric and cannot be reversed.")
+        } else if (!haven::is.labelled(results[[ item$name ]])) {
+        	warning(item$name, " is not of type labelled and cannot be reversed")
+        } else {
+        	results[[item$name]] = reverse_labelled_values(results[[item$name]])
         }
       }
     }
@@ -579,6 +576,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 #' items = formr_items(path = 
 #' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+#' results = formr_recognise(item_list = items, results = results)
 #' agg = formr_aggregate(item_list = items, results = results, 
 #' 	compute_alphas = TRUE, plot_likert = TRUE)
 #' agg[, c('religiousness', 'prefer')]
@@ -604,7 +602,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     plot_likert = FALSE
   }
   
-  scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+$")[, 
+  scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+R?$")[, 
     2]  # fit the pattern
   # if the scale name ends in an underscore, remove it
   scales = unique(stats::na.omit(scale_stubs[duplicated(scale_stubs)]))  # only those which occur more than once
@@ -619,7 +617,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     }
     scale_item_names = item_names[which(scale_stubs == save_scale)]
     numbers = as.numeric(stringr::str_match(scale_item_names, 
-      "(?i)^[a-z0-9_]+?([0-9])+$")[, 2])
+      "(?i)^[a-z0-9_]+?([0-9])+R?$")[, 2])
     if (!setequal(intersect(scale_item_names, names(results)), 
       scale_item_names)) {
       warning(save_scale, ": Some items were missing. ", 
@@ -708,80 +706,9 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
       }
     }
   }
-  if (plot_likert) {
-    leftover_items = item_list[likert_scales[which(!likert_scales$scale %in% 
-      scales), "index"]]
-    for (i in seq_along(leftover_items)) {
-  		distribution = ggplot2::qplot(results[, leftover_items[[i]]$name ]) + 
-  			ggplot2::xlab(leftover_items[[i]]$name)
-  		attributes(results[[ leftover_items[[i]]$name ]])$distribution = distribution
-  		if ( !quiet ) {
-	    	print(
-	    		distribution
-	    		)
-    	}
-    }
-  }
   results
 }
 
-#' Download processed, aggregated results from formr
-#'
-#' After connecting to formr using [formr_connect()]
-#' you can download data, it basically just does [formr_raw_results()] ,
-#' [formr_recognise()] and [formr_aggregate()] in sequence.
-#'
-#' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to https://formr.org
-#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
-#' @param fallback_max passed to formr_reverse, defaults to 5
-#' @param plot_likert passed to formr_aggregate, defaults to TRUE
-#' @param quiet passed to formr_aggregate, defaults to FALSE
-#' @export
-#' @examples
-#' \dontrun{
-#' formr_results(survey_name = 'training_diary' )
-#' }
-
-formr_results = function(survey_name, host = "https://formr.org", 
-  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE) {
-  results = formr_raw_results(survey_name, host)
-  item_list = formr_items(survey_name, host)
-  results = formr_post_process_results(results = results, item_list = item_list, 
-    compute_alphas = compute_alphas, fallback_max = fallback_max, 
-    plot_likert = plot_likert, quiet = quiet)
-  results
-}
-
-#' Processed, aggregated results
-#'
-#' This function chains [formr_recognise()] and [formr_aggregate()] 
-#' in sequence. Useful if you want to post-process raw results before aggregating etc.
-#'
-#' @param item_list an item_list, defaults to NULL
-#' @param results survey results
-#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
-#' @param fallback_max passed to formr_reverse, defaults to 5
-#' @param plot_likert passed to formr_aggregate, defaults to TRUE
-#' @param quiet passed to formr_aggregate, defaults to FALSE
-#' @export
-#' @examples
-#' results = jsonlite::fromJSON(txt = 
-#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = 
-#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' results = formr_post_process_results(items, results, 
-#' compute_alphas = TRUE, plot_likert = TRUE)
-
-
-formr_post_process_results = function(item_list = NULL, results, 
-  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE) {
-  results = formr_recognise(item_list = item_list, results = results)
-  results = formr_aggregate(item_list = item_list, results = results, 
-    compute_alphas = compute_alphas, fallback_max = fallback_max, 
-    plot_likert = plot_likert, quiet = quiet)
-  results
-}
 
 #' Get Likert scales
 #'

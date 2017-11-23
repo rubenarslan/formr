@@ -1,3 +1,42 @@
+#' Reverse labelled values
+#' reverse the underlying valus for a numeric [haven::labelled()] vector while keeping the labels correct
+#' 
+#' @param x a labelled vector
+#' @return return the labelled vector with the underlying values having been reversed
+#' @export
+#' @examples
+#' x <- haven::labelled(rep(1:3, each = 3), c(Bad = 1, Good = 5))
+#' x
+#' reverse_labelled_values(x)
+reverse_labelled_values = function(x) {
+	labels = attributes(x)$labels
+	values = unname(labels)
+	labels = names(labels)
+	if (length(values) < length(unique(x)) ) {
+		# if only some values have labels (e.g. the extremes), make sure we include all
+		possible_replies = union(values, unique(x))
+	} else {
+		possible_replies = values
+	}
+	if (length(possible_replies) < length(min(possible_replies):max(possible_replies))) {
+		possible_replies = min(possible_replies):max(possible_replies)
+	}
+
+	if (!is.numeric(possible_replies)) {
+		warning(item$name, " is not numeric and cannot be reversed.")
+	} else {
+		possible_replies = sort(possible_replies)
+		recode_replies = stats::setNames(as.list(possible_replies), rev(possible_replies))
+		new_x = dplyr::recode(as.numeric(x), rlang::UQS(recode_replies))
+		# cbind(new_x,x)
+		attributes(new_x) = attributes(x)
+		attributes(new_x)$labels = stats::setNames(rev(values), labels)
+		new_x
+	}
+}
+
+
+
 #' Summarises a dataset 
 #' using [tidyr::gather()] and [dplyr::summarise()].
 #' 
