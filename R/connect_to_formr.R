@@ -103,7 +103,7 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' compute_alphas = TRUE, plot_likert = TRUE)
 
 formr_post_process_results = function(item_list = NULL, results, 
-																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, tag_missings = TRUE, item_displays) {
+																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, tag_missings = TRUE, item_displays = NULL) {
 	results = formr_recognise(item_list = item_list, results = results)
 	results = formr_aggregate(item_list = item_list, results = results, 
 														compute_alphas = compute_alphas, fallback_max = fallback_max, 
@@ -114,19 +114,16 @@ formr_post_process_results = function(item_list = NULL, results,
 																							!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))),
 																.data$item_name, .data$hidden, fill = -1)
 		
-		missing_map$created = missing_map$modified = missing_map$ended = missing_map$expired = NA
-		missing_map = dplyr::select(missing_map, .data$created, .data$modified, .data$ended, .data$expired, dplyr::everything())
-		missing_map = missing_map[, names(results)]
-		
-		stopifnot(dim(missing_map) == dim(results))
-		
 		# make tagged NAs (works only for numeric variables)
 		for (i in seq_along(names(results))) {
-			if ( is.numeric(results[[i]]) || is.factor(results[[i]])) {
-				results[[i]][is.na(results[[i]])] = haven::tagged_na("o")
-				results[[i]][is.na(results[[i]]) & missing_map[[i]] == 1] = haven::tagged_na("h")
-				results[[i]][is.na(results[[i]]) & missing_map[[i]] == 0] = haven::tagged_na("i")
-				results[[i]][is.na(results[[i]]) & missing_map[[i]] == -1] = haven::tagged_na("s")
+			var = names(results)[i]
+			if (var %in% names(missing_map)) {
+				if ( is.numeric(results[[var]]) || is.factor(results[[i]])) {
+					results[[var]][is.na(results[[var]])] = haven::tagged_na("o")
+					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 1] = haven::tagged_na("h")
+					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 0] = haven::tagged_na("i")
+					results[[var]][is.na(results[[var]]) & missing_map[[var]] == -1] = haven::tagged_na("s")
+				}
 			}
 		}
 		
@@ -226,8 +223,9 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         names(sequence) = sequence
         if (length(item_list[[i]]$choices) <= 2) {
         	choices = item_list[[i]]$choices
+        	max_seq = which.max(sequence)
         	sequence[ 1 ] = paste0(sequence[ 1 ], ": ", choices[[1]])
-        	sequence[ which.max(sequence) ] = paste0(sequence[ which.max(sequence) ], ": ", choices[[length(choices)]])
+        	sequence[ max_seq ] = paste0(sequence[ max_seq ], ": ", choices[[length(choices)]])
         } else {
         	for (c in seq_along(item_list[[i]]$choices)) {
         		sequence[ names(item_list[[i]]$choices)[c] == sequence ]    = paste0(names(item_list[[i]]$choices)[c], ": ", item_list[[i]]$choices[[c]])
@@ -390,10 +388,6 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
   host = host), results = formr_raw_results(survey_name, host = host), 
   host = "https://formr.org") {
 	# from https://stackoverflow.com/questions/17397340/type-conversion-in-r-based-on-type-of-another-variable
-	as_same_type_as <- function(instance_of_target_class, object_to_convert) {
-		return(methods::as(object_to_convert, 
-							class(instance_of_target_class)[1]))
-	}
 	
 	# results fields that appear in all formr_results but aren't
   # custom items
@@ -432,14 +426,16 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
           # choice-based items
           results[, item$name] = utils::type.convert(as.character(results[, 
           item$name]), as.is = T)
-          if (all(is.na(results[, item$name]))) {
-          	# prevent logical types, for which labelled doesn't work
+          if (all(is.na(results[[ item$name ]])) || is.integer(results[[ item$name ]])) {
+          	# prevent logical types, for which labelled doesn't work,
+          	# and prevent integers for which we can't have tagged NAs
           	results[, item$name] = as.numeric(results[, item$name])
           }
-          
+
           choice_values = as_same_type_as(results[, item$name], names(item$choices))
           choice_labels = item$choices
           names(choice_values) = choice_labels
+          stopifnot(class(choice_values) == class(results[[ item$name ]]))
           results[, item$name] = haven::labelled(results[, item$name], choice_values)
         } else if (item$type %in% c("text", "textarea", 
           "email", "letters")) {

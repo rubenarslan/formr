@@ -6,7 +6,7 @@
 \usage{
 formr_post_process_results(item_list = NULL, results,
   compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
-  quiet = FALSE, tag_missings = TRUE, item_displays)
+  quiet = FALSE, tag_missings = TRUE, item_displays = NULL)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}

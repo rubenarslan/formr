@@ -18,7 +18,7 @@ reverse_labelled_values = function(x) {
 	} else {
 		possible_replies = values
 	}
-	if (length(possible_replies) < length(min(possible_replies):max(possible_replies))) {
+	if (length(possible_replies) < length(range(possible_replies, na.rm = TRUE, finite = TRUE))) {
 		possible_replies = min(possible_replies):max(possible_replies)
 	}
 
@@ -223,3 +223,12 @@ repeat_last = function(x, forward = TRUE, maxgap = Inf, na.rm = FALSE) {   # rep
 	x
 }
 
+
+as_same_type_as <- function(instance_of_target_class, object_to_convert) {
+	target_class = class(instance_of_target_class)[1]
+	if (target_class == 'numeric') {
+		as.numeric(object_to_convert)
+	} else {
+		methods::as(object_to_convert, target_class)
+	}
+}
