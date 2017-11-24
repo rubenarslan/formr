@@ -6,7 +6,7 @@
 \usage{
 formr_results(survey_name, host = "https://formr.org",
   compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE,
-  quiet = FALSE)
+  quiet = FALSE, tag_missings = TRUE)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
@@ -20,6 +20,8 @@ formr_results(survey_name, host = "https://formr.org",
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
 
 \item{quiet}{passed to formr_aggregate, defaults to FALSE}
+
+\item{tag_missings}{should missings that result from an item not being shown be distinguished from missings due to skipped questions?}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

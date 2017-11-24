@@ -4,12 +4,15 @@
 \alias{formr_item_displays}
 \title{Download detailed result timings and display counts from formr}
 \usage{
-formr_item_displays(survey_name, host = "https://formr.org")
+formr_item_displays(survey_name, host = "https://formr.org",
+  remove_test_sessions = TRUE)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
 \item{host}{defaults to https://formr.org}
+
+\item{remove_test_sessions}{by default, formr removes results resulting from test session (animal names and empty session codes)}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

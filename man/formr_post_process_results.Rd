@@ -6,7 +6,7 @@
 \usage{
 formr_post_process_results(item_list = NULL, results,
   compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
-  quiet = FALSE)
+  quiet = FALSE, tag_missings = TRUE, item_displays)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}
@@ -20,6 +20,10 @@ formr_post_process_results(item_list = NULL, results,
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
 
 \item{quiet}{passed to formr_aggregate, defaults to FALSE}
+
+\item{tag_missings}{should missings that result from an item not being shown be distinguished from missings due to skipped questions?}
+
+\item{item_display}{an item display table, necessary to tag missings}
 }
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}
@@ -31,5 +35,5 @@ results = jsonlite::fromJSON(txt =
 items = formr_items(path = 
 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 results = formr_post_process_results(items, results, 
-compute_alphas = FALSE, plot_likert = FALSE)
+compute_alphas = TRUE, plot_likert = TRUE)
 }
