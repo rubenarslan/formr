@@ -1,4 +1,5 @@
 if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, maggritr
+.data = rlang::.data
 
 #' Connect to formr
 #'
@@ -46,6 +47,7 @@ formr_disconnect = function(host = "https://formr.org") {
     invisible(TRUE) else warning("You weren't logged in.")
 }
 
+
 #' Download processed, aggregated results from formr
 #'
 #' After connecting to formr using [formr_connect()]
@@ -58,6 +60,7 @@ formr_disconnect = function(host = "https://formr.org") {
 #' @param fallback_max passed to formr_reverse, defaults to 5
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @param quiet passed to formr_aggregate, defaults to FALSE
+#' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
 #' @export
 #' @examples
 #' \dontrun{
@@ -65,14 +68,17 @@ formr_disconnect = function(host = "https://formr.org") {
 #' }
 
 formr_results = function(survey_name, host = "https://formr.org", 
-												 compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE) {
+												 compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE, tag_missings = TRUE) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
-	results = formr_post_process_results(results = results, item_list = item_list, 
+	item_displays = formr_item_displays(survey_name, host)
+	formr_post_process_results(results = results, item_list = item_list, 
 																			 compute_alphas = compute_alphas, fallback_max = fallback_max, 
-																			 plot_likert = plot_likert, quiet = quiet)
-	results
+																			 plot_likert = plot_likert, quiet = quiet, tag_missings = tag_missings,
+														 item_displays = item_displays)
 }
+
+
 
 #' Processed, aggregated results
 #'
@@ -85,6 +91,8 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' @param fallback_max passed to formr_reverse, defaults to 5
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @param quiet passed to formr_aggregate, defaults to FALSE
+#' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
+#' @param item_display an item display table, necessary to tag missings
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -92,15 +100,37 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' items = formr_items(path = 
 #' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' results = formr_post_process_results(items, results, 
-#' compute_alphas = FALSE, plot_likert = FALSE)
-
+#' compute_alphas = TRUE, plot_likert = TRUE)
 
 formr_post_process_results = function(item_list = NULL, results, 
-																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE) {
+																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, tag_missings = TRUE, item_displays) {
 	results = formr_recognise(item_list = item_list, results = results)
 	results = formr_aggregate(item_list = item_list, results = results, 
 														compute_alphas = compute_alphas, fallback_max = fallback_max, 
 														plot_likert = plot_likert, quiet = quiet)
+
+	if (tag_missings & !is.null(item_displays)) {
+		missing_map = tidyr::spread(dplyr::filter(dplyr::select(item_displays, .data$item_name, .data$hidden, .data$unit_session_id, .data$session), 
+																							!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))),
+																.data$item_name, .data$hidden, fill = -1)
+		
+		missing_map$created = missing_map$modified = missing_map$ended = missing_map$expired = NA
+		missing_map = dplyr::select(missing_map, .data$created, .data$modified, .data$ended, .data$expired, dplyr::everything())
+		missing_map = missing_map[, names(results)]
+		
+		stopifnot(dim(missing_map) == dim(results))
+		
+		# make tagged NAs (works only for numeric variables)
+		for (i in seq_along(names(results))) {
+			if ( is.numeric(results[[i]]) || is.factor(results[[i]])) {
+				results[[i]][is.na(results[[i]])] = haven::tagged_na("o")
+				results[[i]][is.na(results[[i]]) & missing_map[[i]] == 1] = haven::tagged_na("h")
+				results[[i]][is.na(results[[i]]) & missing_map[[i]] == 0] = haven::tagged_na("i")
+				results[[i]][is.na(results[[i]]) & missing_map[[i]] == -1] = haven::tagged_na("s")
+			}
+		}
+		
+	}
 	results
 }
 
@@ -269,6 +299,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
+#' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and empty session codes)
 #' @export
 #' @examples
 #' \dontrun{
@@ -276,12 +307,22 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #' formr_item_displays(survey_name = 'training_diary' )
 #' }
 
-formr_item_displays = function(survey_name, host = "https://formr.org") {
+formr_item_displays = function(survey_name, host = "https://formr.org", remove_test_sessions = TRUE) {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_itemdisplay?format=json"))
-  if (resp$status_code == 200) 
-    jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
-      as = "text")) else stop("This survey does not exist.")
+
+  if (resp$status_code == 200)
+  	results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+  		as = "text")) else stop("This survey does not exist or isn't yours.")
+  
+  if (remove_test_sessions) {
+  	if (exists("session", results)) {
+  		results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
+  	} else {
+  		warning("Cannot remove test sessions, because session variable is missing (potentially, this is an unlinked survey).")
+  	}
+  }
+  results
 }
 
 #' Download random groups
