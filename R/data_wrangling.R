@@ -232,3 +232,27 @@ as_same_type_as <- function(instance_of_target_class, object_to_convert) {
 		methods::as(object_to_convert, target_class)
 	}
 }
+
+
+#' Aggregate a scale of e.g. Likert items and store the information which items were the basis in the attributes
+#' label and scale_item_names.
+#' 
+#' @param items data.frame of the items that should be aggregated
+#' @param fun aggregation function, defaults to rowMeans with na.rm = FALSE
+#' @export
+#' @examples
+#' testdf = data.frame(bfi_neuro_1 = rnorm(20), bfi_neuro_2 = rnorm(20), 
+#'                     bfi_neuro_3 = rnorm(20), age = rpois(20, 30))
+#' scale_items = c('bfi_neuro_1', 'bfi_neuro_2', 'bfi_neuro_3')
+#' testdf$bfi_neuro = aggregate_and_document_scale(testdf[, scale_items])
+#' testdf$bfi_neuro
+aggregate_and_document_scale = function(items, fun = rowMeans) {
+	new_scale = fun(items)
+	item_names = names(items)
+	attributes(new_scale)$scale_item_names = item_names
+	scale_stubs = stringr::str_match(item_names, "(?i)^([a-z0-9_]+?)_?[0-9]+R?$")[, 2]  # fit the pattern
+	stem = names(sort(table(scale_stubs), decreasing = T))[1]
+	attributes(new_scale)$label = paste(ncol(items), stem, "items averaged with", deparse(substitute(fun)))
+	new_scale
+}
+

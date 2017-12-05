@@ -23,7 +23,7 @@ formr_post_process_results(item_list = NULL, results,
 
 \item{tag_missings}{should missings that result from an item not being shown be distinguished from missings due to skipped questions?}
 
-\item{item_display}{an item display table, necessary to tag missings}
+\item{item_displays}{an item display table, necessary to tag missings}
 }
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}

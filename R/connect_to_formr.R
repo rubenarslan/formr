@@ -92,7 +92,7 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @param quiet passed to formr_aggregate, defaults to FALSE
 #' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
-#' @param item_display an item display table, necessary to tag missings
+#' @param item_displays an item display table, necessary to tag missings
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -108,7 +108,7 @@ formr_post_process_results = function(item_list = NULL, results,
 	results = formr_aggregate(item_list = item_list, results = results, 
 														compute_alphas = compute_alphas, fallback_max = fallback_max, 
 														plot_likert = plot_likert, quiet = quiet)
-
+# todo: do this before formr_recognise?
 	if (tag_missings & !is.null(item_displays)) {
 		missing_map = tidyr::spread(dplyr::filter(dplyr::select(item_displays, .data$item_name, .data$hidden, .data$unit_session_id, .data$session), 
 																							!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))),
@@ -605,6 +605,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
 #' @param plot_likert defaults to TRUE - whether to make [likert::likert()] plots. Only possible if item_list is specified.
 #' @param quiet defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.
+#' @param aggregation_function defaults to rowMeans with na.rm = FALSE
 
 #' @param ... passed to  [psych::alpha()]
 #' @export
@@ -622,7 +623,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 formr_aggregate = function(survey_name, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
   host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5, 
-  plot_likert = FALSE, quiet = FALSE, ...) {
+  plot_likert = FALSE, quiet = FALSE, aggregation_function = rowMeans, ...) {
   results = formr_reverse(results, item_list, fallback_max = fallback_max)
   item_names = names(results)  # update after reversing
   
@@ -701,15 +702,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
       }
     }
     # actually aggregate scale
-    results[, save_scale] = rowMeans(results[, scale_item_names])
-    
-    attributes(results[[ save_scale ]])$item = choice_lists
-    attributes(results[[ save_scale ]])$scale = save_scale
-    attributes(results[[ save_scale ]])$scale_item_names = scale_item_names
-    attributes(results[[ save_scale ]])$label = paste(length(scale_item_names), save_scale, "items averaged")
-    for (i in seq_along(choice_lists)) {
-    	attributes(results[[ choice_lists[[i]]$name ]])$part_of_scale = TRUE
-    }
+    results[, save_scale] = aggregate_and_document_scale(results[, scale_item_names], fun = aggregation_function)
     
     if (plot_likert) {
       lik = formr_likert(choice_lists, results)
