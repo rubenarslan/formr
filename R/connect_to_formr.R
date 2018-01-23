@@ -23,10 +23,17 @@ formr_connect = function(email, password = NULL, host = "https://formr.org") {
   resp = httr::POST(paste0(host, "/public/login"), body = list(email = email, 
     password = password))
   text = httr::content(resp, encoding = "utf8", as = "text")
-  if (resp$status_code == 200 && grepl("Success!", text, fixed = T)) 
-    invisible(TRUE) else if (grepl("Error.", text, fixed = T)) 
-    stop("Incorrect credentials.") else warning("Already logged in.")
+	if (resp$status_code == 200 && grepl("Success!",text,fixed = T)) { 
+		invisible(TRUE)
+	} else if (grepl("alert-danger",text,fixed = T)) { 
+		stop("Incorrect credentials.") 
+	} else if (grepl("Logout",text,fixed = T)) { 
+		warning("Already logged in.")
+	} else { 
+		stop("Could not login for unknown reason.") 
+	}
 }
+
 
 #' Disconnect from formr
 #'
@@ -52,30 +59,22 @@ formr_disconnect = function(host = "https://formr.org") {
 #'
 #' After connecting to formr using [formr_connect()]
 #' you can download data, it basically just does [formr_raw_results()] ,
-#' [formr_recognise()] and [formr_aggregate()] in sequence.
+#' [formr_items()] and [formr_post_process_results()] in sequence.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
-#' @param compute_alphas passed to formr_aggregate, defaults to TRUE
-#' @param fallback_max passed to formr_reverse, defaults to 5
-#' @param plot_likert passed to formr_aggregate, defaults to TRUE
-#' @param quiet passed to formr_aggregate, defaults to FALSE
-#' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
+#' @param ... passed to [formr_post_process_results()]
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_results(survey_name = 'training_diary' )
 #' }
 
-formr_results = function(survey_name, host = "https://formr.org", 
-												 compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE, quiet = FALSE, tag_missings = TRUE) {
+formr_results = function(survey_name, host = "https://formr.org", ...) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
 	item_displays = formr_item_displays(survey_name, host)
-	formr_post_process_results(results = results, item_list = item_list, 
-																			 compute_alphas = compute_alphas, fallback_max = fallback_max, 
-																			 plot_likert = plot_likert, quiet = quiet, tag_missings = tag_missings,
-														 item_displays = item_displays)
+	formr_post_process_results(results = results, item_list = item_list, item_displays = item_displays, ...)
 }
 
 
@@ -91,8 +90,9 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' @param fallback_max passed to formr_reverse, defaults to 5
 #' @param plot_likert passed to formr_aggregate, defaults to TRUE
 #' @param quiet passed to formr_aggregate, defaults to FALSE
-#' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
 #' @param item_displays an item display table, necessary to tag missings
+#' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
+#' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and null session codes)
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -103,7 +103,23 @@ formr_results = function(survey_name, host = "https://formr.org",
 #' compute_alphas = TRUE, plot_likert = TRUE)
 
 formr_post_process_results = function(item_list = NULL, results, 
-																			compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, tag_missings = TRUE, item_displays = NULL) {
+	compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, item_displays = NULL, tag_missings = !is.null(item_displays),  remove_test_sessions = TRUE) {
+	
+	if (remove_test_sessions) {
+		if (exists("session", results)) {
+			results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
+			
+		} else {
+			warning("Cannot remove test sessions in results table, because session variable is missing (potentially, this is an unlinked survey).")
+		}
+		
+		if (!is.null(item_displays) && exists("session", item_displays)) {
+			item_displays = item_displays[ !is.na(item_displays$session) & !stringr::str_detect(item_displays$session, "XXX"),  ]
+		} else if (!is.null(item_displays) ) {
+			warning("Cannot remove test sessions from item display table, because session variable is missing (potentially, this is an unlinked survey).")
+		}
+	}
+	
 	results = formr_recognise(item_list = item_list, results = results)
 	results = formr_aggregate(item_list = item_list, results = results, 
 														compute_alphas = compute_alphas, fallback_max = fallback_max, 
@@ -138,27 +154,19 @@ formr_post_process_results = function(item_list = NULL, results,
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
-#' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and empty session codes)
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_raw_results(survey_name = 'training_diary' )
 #' }
 
-formr_raw_results = function(survey_name, host = "https://formr.org", remove_test_sessions = TRUE) {
+formr_raw_results = function(survey_name, host = "https://formr.org") {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_results?format=json"))
   if (resp$status_code == 200)
     results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
       as = "text")) else stop("This survey does not exist or isn't yours.")
   
-  if (remove_test_sessions) {
-  	if (exists("session", results)) {
-  		results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
-  	} else {
-  		warning("Cannot remove test sessions, because session variable is missing (potentially, this is an unlinked survey).")
-  	}
-  }
   results
 }
 
@@ -297,7 +305,6 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org
-#' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and empty session codes)
 #' @export
 #' @examples
 #' \dontrun{
@@ -305,7 +312,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #' formr_item_displays(survey_name = 'training_diary' )
 #' }
 
-formr_item_displays = function(survey_name, host = "https://formr.org", remove_test_sessions = TRUE) {
+formr_item_displays = function(survey_name, host = "https://formr.org") {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_itemdisplay?format=json"))
 
@@ -313,13 +320,6 @@ formr_item_displays = function(survey_name, host = "https://formr.org", remove_t
   	results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
   		as = "text")) else stop("This survey does not exist or isn't yours.")
   
-  if (remove_test_sessions) {
-  	if (exists("session", results)) {
-  		results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
-  	} else {
-  		warning("Cannot remove test sessions, because session variable is missing (potentially, this is an unlinked survey).")
-  	}
-  }
   results
 }
 

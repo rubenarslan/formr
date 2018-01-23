@@ -6,7 +6,8 @@
 \usage{
 formr_post_process_results(item_list = NULL, results,
   compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
-  quiet = FALSE, tag_missings = TRUE, item_displays = NULL)
+  quiet = FALSE, item_displays = NULL,
+  tag_missings = !is.null(item_displays), remove_test_sessions = TRUE)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}
@@ -21,9 +22,11 @@ formr_post_process_results(item_list = NULL, results,
 
 \item{quiet}{passed to formr_aggregate, defaults to FALSE}
 
+\item{item_displays}{an item display table, necessary to tag missings}
+
 \item{tag_missings}{should missings that result from an item not being shown be distinguished from missings due to skipped questions?}
 
-\item{item_displays}{an item display table, necessary to tag missings}
+\item{remove_test_sessions}{by default, formr removes results resulting from test session (animal names and null session codes)}
 }
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}

@@ -6,8 +6,8 @@
 \usage{
 packrat_bibliography(overwrite_bib = FALSE, silent = FALSE,
   cite_only_directly_called = TRUE, lockfile_path = "packrat/packrat.lock",
-  bibliography_path = "packrat_bibliography.bibtex", cite_R = TRUE,
-  cite_packrat = TRUE)
+  bibliography_path = "packrat_bibliography.bibtex",
+  cite_packrat = !cite_only_directly_called)
 }
 \arguments{
 \item{overwrite_bib}{whether to overwrite an existing bibtex file of the same name}
@@ -20,9 +20,7 @@ packrat_bibliography(overwrite_bib = FALSE, silent = FALSE,
 
 \item{bibliography_path}{path to the bibtex file to generate}
 
-\item{cite_R}{whether to cite R, defaults to true}
-
-\item{cite_packrat}{whether to cite packrat even if it's not loaded explicitly, defaults to true}
+\item{cite_packrat}{whether to cite packrat even if it's not loaded explicitly, defaults to the reverse of cite_only_directly_called}
 }
 \description{
 Packrat helps you maintain consistent package versions for a project. To be able to give due credit in a way that academics understand, it's helpful to be able to generate citations.
