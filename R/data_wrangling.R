@@ -256,3 +256,62 @@ aggregate_and_document_scale = function(items, fun = rowMeans) {
 	new_scale
 }
 
+
+#' aggregates two variables from two sources into one
+#'
+#' Takes two variables with different missings
+#' and gives one variable with values of the second
+#' variable substituted where the first had missings.
+#'
+#' @param df data.frame or variable
+#' @param new_var new variable name
+#' @param var1 first source. Assumed to be new_var.x (default suffixes after merging)
+#' @param var2 second source. Assumed to be new_var.y (default suffixes after merging)
+#' @param remove_old_variables Defaults to not keeping var1 and var2 in the resulting df.
+#' @param overwrite Whether to overwrite a new_var that already exists. Defaults to false.
+#' @export
+#' @examples
+#' cars$dist.x = cars$dist
+#' cars$dist.y = cars$dist
+#' cars$dist.y[2:5] = NA
+#' cars$dist.x[10:15] = NA # sprinkle missings
+#' cars$dist = NULL # remove old variable
+#' cars = aggregate2sources(cars, 'dist')
+
+aggregate2sources = function(df, new_var = NULL, var1 = NULL, var2 = NULL, 
+														 remove_old_variables = TRUE, overwrite = FALSE) {
+	if (is.null(new_var)) {
+		stopifnot(ncol(df) == 2)
+		var1 = colnames(df)[1]
+		var2 = colnames(df)[2]
+		new_var = "new_var_returned_on_its_own" # lol bad programming
+	}
+	if (is.null(var1) && is.null(var2)) {
+		var1 = paste0(new_var, ".x")
+		var2 = paste0(new_var, ".y")
+	}
+	if (overwrite == FALSE && exists(new_var, where = df)) {
+		stop(paste(new_var, "already exists. Maybe delete it or choose a different name, if you're saving over your original dataframe."))
+	}
+	if (!all(df[[var1]] == df[[var2]], na.rm = TRUE)) {
+		warning(paste(var1, "and", var2, "do not have identical values in cases where they don't both have missings. Values of",var1,"will be used in those cases, but you might consider averaging them as well."))
+	}
+	df[[ new_var ]] = df[[ var1]]
+	oldmiss = sum(is.na(df[, new_var]))
+	df[is.na(df[, var1]), new_var] = df[is.na(df[, var1]), var2]
+	attributes(df[[new_var]]) = attributes(df[[ var1 ]])
+	
+	if (remove_old_variables) {
+		df[[ var1 ]] = NULL
+		df[[ var2 ]] = NULL
+	}
+	
+	message(paste(oldmiss - sum(is.na(df[[ new_var ]])), " fewer missings"))
+	if (new_var == "new_var_returned_on_its_own") {
+		df[[ new_var ]]
+	} else {
+		df
+	}
+}
+
+
