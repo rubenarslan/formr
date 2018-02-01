@@ -96,10 +96,12 @@ formr_results = function(survey_name, host = "https://formr.org", ...) {
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
-#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+#' 	system.file('extdata/BFI_post.json', package = 'formr', mustWork = TRUE))
 #' items = formr_items(path = 
-#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' results = formr_post_process_results(items, results, 
+#' 	system.file('extdata/BFI_post_items.json', package = 'formr', mustWork = TRUE))
+#' item_displays = jsonlite::fromJSON(
+#' 	system.file('extdata/BFI_post_itemdisplay.json', package = 'formr', mustWork = TRUE))
+#' results = formr_post_process_results(items, results, item_displays = item_displays,
 #' compute_alphas = TRUE, plot_likert = TRUE)
 
 formr_post_process_results = function(item_list = NULL, results, 
@@ -126,19 +128,36 @@ formr_post_process_results = function(item_list = NULL, results,
 														plot_likert = plot_likert, quiet = quiet)
 # todo: do this before formr_recognise?
 	if (tag_missings & !is.null(item_displays)) {
-		missing_map = tidyr::spread(dplyr::filter(dplyr::select(item_displays, .data$item_name, .data$hidden, .data$unit_session_id, .data$session), 
+		missing_labels = c("Missing for unknown reason" = haven::tagged_na("o"), 
+											 "Item was not shown to this user." = haven::tagged_na("h"), 
+											 "User skipped this item." = haven::tagged_na("i"),
+											 "Item was never rendered for this user." = haven::tagged_na("s"),
+											 "Weird missing." = haven::tagged_na("w"))
+		missing_map = dplyr::arrange(tidyr::spread(dplyr::filter(dplyr::select(
+			dplyr::mutate(item_displays, hidden = dplyr::if_else(.data$hidden == 1, 1, dplyr::if_else(is.na(.data$shown), -1, 0), -1)), 
+										.data$item_name, .data$hidden, .data$unit_session_id, .data$session), 
 																							!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))),
-																.data$item_name, .data$hidden, fill = -1)
+																.data$item_name, .data$hidden, fill = -2), .data$session, .data$unit_session_id)
+		results = dplyr::arrange(results, .data$session, .data$created) # sort in the same manner
 		
+		stopifnot(nrow(missing_map) == nrow(results))
 		# make tagged NAs (works only for numeric variables)
 		for (i in seq_along(names(results))) {
 			var = names(results)[i]
 			if (var %in% names(missing_map)) {
-				if ( is.numeric(results[[var]]) || is.factor(results[[i]])) {
+				if (is.numeric(results[[var]]) || is.factor(results[[i]])) {
 					results[[var]][is.na(results[[var]])] = haven::tagged_na("o")
 					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 1] = haven::tagged_na("h")
 					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 0] = haven::tagged_na("i")
 					results[[var]][is.na(results[[var]]) & missing_map[[var]] == -1] = haven::tagged_na("s")
+					results[[var]][is.na(results[[var]]) & missing_map[[var]] == -2] = haven::tagged_na("w")
+					
+					value_labels = attributes(results[[var]])$labels
+					missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
+					
+					results[[var]] = haven::labelled(results[[var]], labels = 
+							c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
+					)
 				}
 			}
 		}
