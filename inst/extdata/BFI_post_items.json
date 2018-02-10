@@ -1,0 +1,400 @@
+{
+    "name": "BFI_post",
+    "items": [
+        {
+            "type": "note",
+            "choice_list": null,
+            "type_options": null,
+            "name": "welcome",
+            "label": "Liebe Teilnehmer der Persönlichkeitsentwicklungsseminare,\nwillkommen zur Studie.\nBitte beantworten Sie die untenstehenden Fragen, daraufhin werden Sie zum Feedback weitergeleitet (das kann einen Moment dauern).",
+            "label_parsed": "<p>Liebe Teilnehmer der Persönlichkeitsentwicklungsseminare,<br \/>\nwillkommen zur Studie.<br \/>\nBitte beantworten Sie die untenstehenden Fragen, daraufhin werden Sie zum Feedback weitergeleitet (das kann einen Moment dauern).<\/p>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 1
+        },
+        {
+            "type": "note",
+            "choice_list": null,
+            "type_options": null,
+            "name": "instruction_personality",
+            "label": "###Wir möchten Sie zunächst bitten anzugeben, wie sehr die folgenden Aussagen auf Sie zutreffen. Es gibt dabei keine richtige oder falsche Antwort, allein Ihre persönliche Einschätzung zählt.\n\nBitte wählen Sie für jede Aussage zwischen folgenden Antwortalternativen: \n__(1) trifft überhaupt nicht zu, (2) trifft kaum zu, (3) weder zutreffend noch unzutreffend, (4) trifft etwas zu, (5) trifft voll und ganz zu__",
+            "label_parsed": "<h3>Wir möchten Sie zunächst bitten anzugeben, wie sehr die folgenden Aussagen auf Sie zutreffen. Es gibt dabei keine richtige oder falsche Antwort, allein Ihre persönliche Einschätzung zählt.<\/h3>\n<p>Bitte wählen Sie für jede Aussage zwischen folgenden Antwortalternativen:<br \/>\n<strong>(1) trifft überhaupt nicht zu, (2) trifft kaum zu, (3) weder zutreffend noch unzutreffend, (4) trifft etwas zu, (5) trifft voll und ganz zu<\/strong><\/p>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 3
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_open_2",
+            "type_options": 5,
+            "name": "BFIK_open_2",
+            "label": "__Ich bin tiefsinnig, denke gerne über Sachen nach.__",
+            "label_parsed": "<strong>Ich bin tiefsinnig, denke gerne über Sachen nach.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 4,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_agree_4",
+            "type_options": 5,
+            "name": "BFIK_agree_4",
+            "label": "__Ich kann mich schroff und abweisend anderen gegenüber verhalten.__",
+            "label_parsed": "<strong>Ich kann mich schroff und abweisend anderen gegenüber verhalten.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 5,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_extra_2",
+            "type_options": 5,
+            "name": "BFIK_extra_2",
+            "label": "__Ich bin begeisterungsfähig und kann andere leicht mitreißen.__",
+            "label_parsed": "<strong>Ich bin begeisterungsfähig und kann andere leicht mitreißen.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 6,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_agree_1R",
+            "type_options": 5,
+            "name": "BFIK_agree_1R",
+            "label": "__Ich neige dazu, andere zu kritisieren.__",
+            "label_parsed": "<strong>Ich neige dazu, andere zu kritisieren.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 7,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_open_1",
+            "type_options": 5,
+            "name": "BFIK_open_1",
+            "label": "__Ich bin vielseitig interessiert.__",
+            "label_parsed": "<strong>Ich bin vielseitig interessiert.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 8,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_neuro_2R",
+            "type_options": 5,
+            "name": "BFIK_neuro_2R",
+            "label": "__Ich bin entspannt, lasse mich durch Stress nicht aus der Ruhe bringen.__",
+            "label_parsed": "<strong>Ich bin entspannt, lasse mich durch Stress nicht aus der Ruhe bringen.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 9,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_consc_3",
+            "type_options": 5,
+            "name": "BFIK_consc_3",
+            "label": "__Ich bin tüchtig und arbeite flott.__",
+            "label_parsed": "<strong>Ich bin tüchtig und arbeite flott.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 10,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_consc_4",
+            "type_options": 5,
+            "name": "BFIK_consc_4",
+            "label": "__Ich mache Pläne und führe sie auch durch.__",
+            "label_parsed": "<strong>Ich mache Pläne und führe sie auch durch.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 11,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_consc_2R",
+            "type_options": 5,
+            "name": "BFIK_consc_2R",
+            "label": "__Ich bin bequem, neige zur Faulheit.__",
+            "label_parsed": "<strong>Ich bin bequem, neige zur Faulheit.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 12,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_agree_3R",
+            "type_options": 5,
+            "name": "BFIK_agree_3R",
+            "label": "__Ich kann mich kalt und distanziert verhalten.__",
+            "label_parsed": "<strong>Ich kann mich kalt und distanziert verhalten.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 13,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_extra_3R",
+            "type_options": 5,
+            "name": "BFIK_extra_3R",
+            "label": "__Ich bin eher der \"stille Typ\", wortkarg.__",
+            "label_parsed": "<strong>Ich bin eher der &quot;stille Typ&quot;, wortkarg.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 14,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_neuro_3",
+            "type_options": 5,
+            "name": "BFIK_neuro_3",
+            "label": "__Ich mache mir viele Sorgen.__",
+            "label_parsed": "<strong>Ich mache mir viele Sorgen.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 15,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_neuro_4",
+            "type_options": 5,
+            "name": "BFIK_neuro_4",
+            "label": "__Ich werde leicht nervös und unsicher.__",
+            "label_parsed": "<strong>Ich werde leicht nervös und unsicher.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 16,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_agree_2",
+            "type_options": 5,
+            "name": "BFIK_agree_2",
+            "label": "__Ich schenke anderen leicht Vertrauen, glaube an das Gute im Menschen.__",
+            "label_parsed": "<strong>Ich schenke anderen leicht Vertrauen, glaube an das Gute im Menschen.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 17,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_consc_1",
+            "type_options": 5,
+            "name": "BFIK_consc_1",
+            "label": "__Ich erledige Aufgaben gründlich.__",
+            "label_parsed": "<strong>Ich erledige Aufgaben gründlich.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 18,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_open_4",
+            "type_options": 5,
+            "name": "BFIK_open_4",
+            "label": "__Ich schätze künstlerische und ästhetische Eindrücke.__",
+            "label_parsed": "<strong>Ich schätze künstlerische und ästhetische Eindrücke.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 19,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_extra_4",
+            "type_options": 5,
+            "name": "BFIK_extra_4",
+            "label": "__Ich gehe aus mir heraus, bin gesellig.__",
+            "label_parsed": "<strong>Ich gehe aus mir heraus, bin gesellig.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 20,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_extra_1R",
+            "type_options": 5,
+            "name": "BFIK_extra_1R",
+            "label": "__Ich bin eher zurückhaltend, reserviert.__",
+            "label_parsed": "<strong>Ich bin eher zurückhaltend, reserviert.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 21,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "rating_button",
+            "choice_list": "BFIK_open_3",
+            "type_options": 5,
+            "name": "BFIK_open_3",
+            "label": "__Ich habe eine aktive Vorstellungskraft, bin phantasievoll.__",
+            "label_parsed": "<strong>Ich habe eine aktive Vorstellungskraft, bin phantasievoll.<\/strong>",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 22,
+            "choices": {
+                "1": "Trifft überhaupt nicht zu",
+                "2": "Trifft voll und ganz zu"
+            }
+        },
+        {
+            "type": "submit",
+            "choice_list": null,
+            "type_options": null,
+            "name": "submit_ende",
+            "label": "Weiter zum Feedback",
+            "label_parsed": "Weiter zum Feedback",
+            "optional": 0,
+            "class": null,
+            "showif": null,
+            "value": null,
+            "block_order": null,
+            "item_order": 23
+        }
+    ],
+    "settings": {
+        "maximum_number_displayed": 0,
+        "displayed_percentage_maximum": 100,
+        "add_percentage_points": 0,
+        "enable_instant_validation": 0,
+        "expire_after": 0,
+        "google_file_id": null,
+        "unlinked": 0,
+        "expire_invitation_after": 0,
+        "expire_invitation_grace": 0
+    }
+}

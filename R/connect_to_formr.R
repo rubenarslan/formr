@@ -140,24 +140,28 @@ formr_post_process_results = function(item_list = NULL, results,
 																.data$item_name, .data$hidden, fill = -2), .data$session, .data$unit_session_id)
 		results = dplyr::arrange(results, .data$session, .data$created) # sort in the same manner
 		
-		stopifnot(nrow(missing_map) == nrow(results))
-		# make tagged NAs (works only for numeric variables)
-		for (i in seq_along(names(results))) {
-			var = names(results)[i]
-			if (var %in% names(missing_map)) {
-				if (is.numeric(results[[var]]) || is.factor(results[[i]])) {
-					results[[var]][is.na(results[[var]])] = haven::tagged_na("o")
-					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 1] = haven::tagged_na("h")
-					results[[var]][is.na(results[[var]]) & missing_map[[var]] == 0] = haven::tagged_na("i")
-					results[[var]][is.na(results[[var]]) & missing_map[[var]] == -1] = haven::tagged_na("s")
-					results[[var]][is.na(results[[var]]) & missing_map[[var]] == -2] = haven::tagged_na("w")
-					
-					value_labels = attributes(results[[var]])$labels
-					missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
-					
-					results[[var]] = haven::labelled(results[[var]], labels = 
-							c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
-					)
+		if (nrow(missing_map) != nrow(results)) {
+			warning("Unequal number of rows between item display and results.",
+							" Missings not labelled.")
+		} else {
+			# make tagged NAs (works only for numeric variables)
+			for (i in seq_along(names(results))) {
+				var = names(results)[i]
+				if (var %in% names(missing_map)) {
+					if (is.numeric(results[[var]]) || is.factor(results[[i]])) {
+						results[[var]][is.na(results[[var]])] = haven::tagged_na("o")
+						results[[var]][is.na(results[[var]]) & missing_map[[var]] == 1] = haven::tagged_na("h")
+						results[[var]][is.na(results[[var]]) & missing_map[[var]] == 0] = haven::tagged_na("i")
+						results[[var]][is.na(results[[var]]) & missing_map[[var]] == -1] = haven::tagged_na("s")
+						results[[var]][is.na(results[[var]]) & missing_map[[var]] == -2] = haven::tagged_na("w")
+						
+						value_labels = attributes(results[[var]])$labels
+						missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
+						
+						results[[var]] = haven::labelled(results[[var]], labels = 
+								c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
+						)
+					}
 				}
 			}
 		}
