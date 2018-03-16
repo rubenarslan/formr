@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.7.2
+Version: 0.7.3
 Depends:
     R (>= 3.0.2)
 Imports:

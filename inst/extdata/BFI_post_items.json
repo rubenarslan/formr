@@ -49,9 +49,9 @@
         },
         {
             "type": "rating_button",
-            "choice_list": "BFIK_agree_4",
+            "choice_list": "BFIK_agree_4R",
             "type_options": 5,
-            "name": "BFIK_agree_4",
+            "name": "BFIK_agree_4R",
             "label": "__Ich kann mich schroff und abweisend anderen gegenüber verhalten.__",
             "label_parsed": "<strong>Ich kann mich schroff und abweisend anderen gegenüber verhalten.<\/strong>",
             "optional": 0,

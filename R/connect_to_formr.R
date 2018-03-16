@@ -250,13 +250,13 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
           to = as.numeric(sequence[1])
           }
         }
-        sequence = seq(from, to, by)
+        sequence = seq(from, to, ifelse(to >= from, by, 
+        																ifelse( by > 0, -1 * by, by)))
         names(sequence) = sequence
         if (length(item_list[[i]]$choices) <= 2) {
         	choices = item_list[[i]]$choices
-        	max_seq = which.max(sequence)
-        	sequence[ 1 ] = paste0(sequence[ 1 ], ": ", choices[[1]])
-        	sequence[ max_seq ] = paste0(sequence[ max_seq ], ": ", choices[[length(choices)]])
+        	sequence[ from ] = paste0(sequence[ from ], ": ", choices[[1]])
+        	sequence[ to ] = paste0(sequence[ to ], ": ", choices[[length(choices)]])
         } else {
         	for (c in seq_along(item_list[[i]]$choices)) {
         		sequence[ names(item_list[[i]]$choices)[c] == sequence ]    = paste0(names(item_list[[i]]$choices)[c], ": ", item_list[[i]]$choices[[c]])
@@ -535,8 +535,11 @@ formr_simulate_from_items = function(item_list, n = 300) {
       limits = as.numeric(stringr::str_split(item$type_options, 
         pattern = stringr::fixed(","))[[1]])
       if (length(limits) == 3) {
+      	by = limits[3]
         sample_from = seq(from = limits[1], to = limits[2], 
-          by = limits[3])
+          by = by, 
+          ifelse( by > 0, -1 * by, by))
+
         sim[, item$name] = sample(sample_from, size = n, 
           replace = T)
       }
@@ -863,7 +866,7 @@ items = function(survey) {
 #' @export
 #' @examples
 #' example(formr_post_process_results)
-#' item(results, "gods")
+#' item(results, "BFIK_extra_4")
 item = function(survey, item_name) {
 	att = attributes(survey[[ item_name ]])
 	if (exists("item", att)) {
@@ -886,8 +889,8 @@ item = function(survey, item_name) {
 #' @export
 #' @examples
 #' example(formr_post_process_results)
-#' table(results$gods)
-#' table(choice_labels_for_values(results, "gods"))
+#' table(results$BFIK_extra_4)
+#' table(choice_labels_for_values(results, "BFIK_extra_4"))
 choice_labels_for_values = function(survey, item_name) {
 	choices = item(survey, item_name)$choices
 	unname( unlist(choices)[ survey[[ item_name ]] ])
