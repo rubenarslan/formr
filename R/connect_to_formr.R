@@ -480,8 +480,8 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
           item$name])
         }
         
-        attributes(results[[ item$name ]])[["label"]] = item$label
-        attributes(results[[ item$name ]])[["item"]] = item
+        attributes(results[[ item$name ]])$label = item$label
+        attributes(results[[ item$name ]])$item = item
       }
     }
     results
