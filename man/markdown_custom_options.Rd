@@ -6,7 +6,8 @@
 \usage{
 markdown_custom_options(add_to_format = c("+autolink_bare_uris",
   "+ascii_identifiers", "+tex_math_single_backslash", "-implicit_figures"),
-  fragment.only = FALSE, section_divs = TRUE, break_on_error = FALSE, ...)
+  fragment.only = FALSE, section_divs = TRUE, break_on_error = FALSE,
+  ...)
 }
 \arguments{
 \item{add_to_format}{add these arguments to the default specification}

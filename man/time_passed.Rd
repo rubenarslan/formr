@@ -4,8 +4,8 @@
 \alias{time_passed}
 \title{checks how much time has passed relative to the user's last action}
 \usage{
-time_passed(years = 0, months = 0, weeks = 0, days = 0, hours = 0,
-  minutes = 0, seconds = 0, time = NULL)
+time_passed(years = 0, months = 0, weeks = 0, days = 0,
+  hours = 0, minutes = 0, seconds = 0, time = NULL)
 }
 \arguments{
 \item{years}{365 days}

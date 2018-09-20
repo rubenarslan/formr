@@ -17,14 +17,6 @@ and a vector of feedback text chunks, that has either three
 or five elements, the text chunks will be used in this order
 [very low], low, average, high, [very high] corresponding to these
 intervals [low, -2], [-2, -1], [-1, 1], [1, 2], [2, high]
-
-[very low]: R:very%20low%5C
-[very high]: R:very%20high%5C
-[low, -2]: R:low,%20-2%5C
-[-2, -1]: R:-2,%20-1%5C
-[-1, 1]: R:-1,%201%5C
-[1, 2]: R:1,%202%5C
-[2, high]: R:2,%20high%5C
 }
 \examples{
 feedback_chunk(normed_value = 0.7, chunks = c("You are rather introverted.",

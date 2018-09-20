@@ -5,8 +5,8 @@
 \title{missingness patterns}
 \usage{
 missingness_patterns(df, min_freq = ifelse(relative, 1/nrow(df), 1),
-  long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE, TRUE),
-  show_culprit = TRUE, relative = FALSE, omit_complete = TRUE)
+  long_pattern = FALSE, print_legend = ifelse(long_pattern, FALSE,
+  TRUE), show_culprit = TRUE, relative = FALSE, omit_complete = TRUE)
 }
 \arguments{
 \item{df}{dataset}

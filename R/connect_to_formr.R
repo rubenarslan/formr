@@ -158,7 +158,9 @@ formr_post_process_results = function(item_list = NULL, results,
 						value_labels = attributes(results[[var]])$labels
 						missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
 						
-						results[[var]] = haven::labelled(results[[var]], labels = 
+						results[[var]] = haven::labelled(results[[var]], 
+																						 label = attributes(results[[var]])[["label"]],
+																						 labels = 
 								c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
 						)
 					}
@@ -478,8 +480,8 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
           item$name])
         }
         
-        attributes(results[[ item$name ]])$label = item$label
-        attributes(results[[ item$name ]])$item = item
+        attributes(results[[ item$name ]])[["label"]] = item$label
+        attributes(results[[ item$name ]])[["item"]] = item
       }
     }
     results

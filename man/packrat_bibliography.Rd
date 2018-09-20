@@ -5,7 +5,8 @@
 \title{build a bibliography bibtex file from your packrat lockfile}
 \usage{
 packrat_bibliography(overwrite_bib = FALSE, silent = FALSE,
-  cite_only_directly_called = TRUE, lockfile_path = "packrat/packrat.lock",
+  cite_only_directly_called = TRUE,
+  lockfile_path = "packrat/packrat.lock",
   bibliography_path = "packrat_bibliography.bibtex",
   cite_packrat = !cite_only_directly_called)
 }

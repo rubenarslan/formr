@@ -38,10 +38,11 @@ Imports:
     tidyr,
     haven,
     pander,
-    packrat
+    packrat,
+    codebook
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE) 
 Encoding: UTF-8

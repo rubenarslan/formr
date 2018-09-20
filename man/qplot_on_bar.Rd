@@ -4,8 +4,8 @@
 \alias{qplot_on_bar}
 \title{Plot normed values as a barchart}
 \usage{
-qplot_on_bar(normed_data, ylab = "Your value", xlab = "Trait", title = "",
-  y_ticks = c("--", "-", "0", "+", "++"))
+qplot_on_bar(normed_data, ylab = "Your value", xlab = "Trait",
+  title = "", y_ticks = c("--", "-", "0", "+", "++"))
 }
 \arguments{
 \item{normed_data}{a dataset with a value column containing z-standardised value
