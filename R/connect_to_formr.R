@@ -312,7 +312,12 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
       # in some cases the choices column is missing
       # item_list[[i]]['choices'] = list(NULL)
     }
-    item_list[[i]] <- lapply(item_list[[i]], as.character)
+    item_list[[i]]$type_options = as.character(item_list[[i]]$type_options)
+    item_list[[i]]$choice_list = as.character(item_list[[i]]$choice_list)
+    item_list[[i]]$value = as.character(item_list[[i]]$value)
+    item_list[[i]]$block_order = as.character(item_list[[i]]$block_order)
+    item_list[[i]]$showif = as.character(item_list[[i]]$showif)
+    item_list[[i]]$class = as.character(item_list[[i]]$class)
   }
   class(item_list) = setdiff(class(item_list), "formr_item_list")
   
