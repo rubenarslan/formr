@@ -158,11 +158,12 @@ formr_post_process_results = function(item_list = NULL, results,
 						value_labels = attributes(results[[var]])$labels
 						missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
 						
-						results[[var]] = haven::labelled(results[[var]], 
-																						 label = attributes(results[[var]])[["label"]],
-																						 labels = 
-								c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
-						)
+						value_labels <- c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
+						if( length(value_labels) && !is.null(names(value_labels))) {
+							results[[var]] = haven::labelled(results[[var]], 
+																							 label = attributes(results[[var]])[["label"]],
+																							 labels = value_labels)
+						}
 					}
 				}
 			}
@@ -238,8 +239,13 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         by = 1
         if (!is.null(item_list[[i]]$type_options)) {
           # has the format 1,6 or 1,6,1 + possibly name of choice list
+        	# allow for 1, 6, 1 and 1,6,1
+        	item_list[[i]]$type_options <- 
+        		stringr::str_replace_all(item_list[[i]]$type_options,
+        														 ",\\s+", ",")
+        	# truncate choice list
         	sequence = stringr::str_split(item_list[[i]]$type_options, 
-        																"\\s")[[1]][1]
+        																"\\s", n = 2)[[1]][1]
         	sequence = stringr::str_split(sequence, ",")[[1]]
           if (length(sequence) == 3) {
           from = as.numeric(sequence[1])
