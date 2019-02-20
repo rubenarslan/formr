@@ -61,31 +61,25 @@ formr_api_session = function() {
 #' @export
 #' @examples
 #' \dontrun{
-#' formr_api_results(
-#' list(
-#'   run = list(
-#'   		# for which run do you want results
-#'      name = 'validation',  
-#'      # and for which user
-#'      session = 'joyousCoyoteXXXLk5ByctNPryS4k-5JqZJYE19HwFhPu4FFk8beIHoBtyWniv46', 
-#'      surveys = list(
-#'      list(
-#'      name = 'try_validation',
-#'      items = c('mc_religion', 'plz')
-#'      )
-#'      )
-#'    )
-#'  ))
+#' request <- 
+#' 	list(
+#' 		"run[name]" = 'widgets',
+#' 		"run[sessions]" = 'PJ_nACjFQDEBhx7pMUfZQz3mV-OtetnpEdqT88aiY8eXE4-HegFI7Sri4yifxPXO',
+#' 		"surveys[all_widgets]" = "abode, yourstory, mc_god"
+#' )
+#' formr_api_results(request)
 #' }
+
 formr_api_results = function(request = NULL, token = NULL) {
   stopifnot(!is.null(request))
   get_url = formr_api_session()
-  if (!is.null(token)) 
+  if (!is.null(token)) {
     get_url = token
+  }
   
   get_url$path = paste0(get_url$path, "get/results")
-  get_url$query$request = jsonlite::toJSON(request, auto_unbox = T)
-  result = httr::GET(get_url)
+  result = httr::GET(get_url, query = request)
   res = httr::content(result)
   res
 }
+

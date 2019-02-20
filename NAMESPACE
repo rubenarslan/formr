@@ -2,6 +2,7 @@
 
 S3method(as.data.frame,formr_item_list)
 S3method(print,knit_asis)
+export("%>%")
 export("%begins_with%")
 export("%contains%")
 export("%contains_word%")
@@ -85,3 +86,4 @@ export(word_document)
 import(ggplot2)
 import(knitr)
 importFrom(codebook,reverse_labelled_values)
+importFrom(dplyr,"%>%")

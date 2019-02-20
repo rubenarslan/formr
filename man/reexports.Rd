@@ -3,6 +3,7 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
+\alias{\%>\%}
 \alias{reverse_labelled_values}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -12,5 +13,7 @@ below to see their documentation.
 
 \describe{
   \item{codebook}{\code{\link[codebook]{reverse_labelled_values}}}
+
+  \item{dplyr}{\code{\link[dplyr]{\%>\%}}}
 }}
 

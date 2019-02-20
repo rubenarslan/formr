@@ -1,3 +1,7 @@
+#' @importFrom dplyr "%>%"
+#' @export
+dplyr::`%>%`
+
 #' @importFrom codebook reverse_labelled_values
 #' @export
 codebook::reverse_labelled_values

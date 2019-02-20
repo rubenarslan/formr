@@ -44,6 +44,6 @@ items = formr_items(path =
 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 results = formr_recognise(item_list = items, results = results)
 agg = formr_aggregate(item_list = items, results = results, 
-	compute_alphas = TRUE, plot_likert = TRUE)
+	compute_alphas = FALSE, plot_likert = FALSE)
 agg[, c('religiousness', 'prefer')]
 }

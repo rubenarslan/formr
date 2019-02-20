@@ -43,6 +43,6 @@ Imports:
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE) 
 Encoding: UTF-8

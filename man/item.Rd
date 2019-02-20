@@ -16,5 +16,5 @@ Shortcut for attributes(survey$item_name)$item. Fails with a warning.
 }
 \examples{
 example(formr_post_process_results)
-item(results, "BFIK_extra_4")
+item(processed_results, "BFIK_extra_4")
 }

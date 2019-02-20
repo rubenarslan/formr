@@ -101,8 +101,8 @@ formr_results = function(survey_name, host = "https://formr.org", ...) {
 #' 	system.file('extdata/BFI_post_items.json', package = 'formr', mustWork = TRUE))
 #' item_displays = jsonlite::fromJSON(
 #' 	system.file('extdata/BFI_post_itemdisplay.json', package = 'formr', mustWork = TRUE))
-#' results = formr_post_process_results(items, results, item_displays = item_displays,
-#' compute_alphas = TRUE, plot_likert = TRUE)
+#' processed_results = formr_post_process_results(items, results, item_displays = item_displays,
+#' compute_alphas = FALSE, plot_likert = FALSE)
 
 formr_post_process_results = function(item_list = NULL, results, 
 	compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE, quiet = FALSE, item_displays = NULL, tag_missings = !is.null(item_displays),  remove_test_sessions = TRUE) {
@@ -127,18 +127,31 @@ formr_post_process_results = function(item_list = NULL, results,
 														compute_alphas = compute_alphas, fallback_max = fallback_max, 
 														plot_likert = plot_likert, quiet = quiet)
 # todo: do this before formr_recognise?
+	results <- formr_label_missings(results, item_displays, 
+																	tag_missings = tag_missings)
+	
+	results
+}
+
+formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 	if (tag_missings & !is.null(item_displays)) {
 		missing_labels = c("Missing for unknown reason" = haven::tagged_na("o"), 
 											 "Item was not shown to this user." = haven::tagged_na("h"), 
 											 "User skipped this item." = haven::tagged_na("i"),
 											 "Item was never rendered for this user." = haven::tagged_na("s"),
 											 "Weird missing." = haven::tagged_na("w"))
-		missing_map = dplyr::arrange(tidyr::spread(dplyr::filter(dplyr::select(
-			dplyr::mutate(item_displays, hidden = dplyr::if_else(.data$hidden == 1, 1, dplyr::if_else(is.na(.data$shown), -1, 0), -1)), 
-										.data$item_name, .data$hidden, .data$unit_session_id, .data$session), 
-																							!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))),
-																.data$item_name, .data$hidden, fill = -2), .data$session, .data$unit_session_id)
-		results = dplyr::arrange(results, .data$session, .data$created) # sort in the same manner
+		
+		missing_map <- item_displays %>% 
+			dplyr::mutate(hidden = dplyr::if_else(.data$hidden == 1, 1, 
+																						dplyr::if_else(is.na(.data$shown), -1, 0), -1)) %>% 
+			dplyr::select(.data$item_name, .data$hidden, .data$unit_session_id, .data$session) %>% 
+			dplyr::filter(!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))) %>% 
+			tidyr::spread(.data$item_name, .data$hidden, fill = -2) %>% 
+			dplyr::arrange(.data$session, .data$unit_session_id)
+	
+		results_with_attrs <- results
+		results <- results %>% 
+			dplyr::arrange(.data$session, .data$created) # sort in the same manner
 		
 		if (nrow(missing_map) != nrow(results)) {
 			warning("Unequal number of rows between item display and results.",
@@ -148,6 +161,8 @@ formr_post_process_results = function(item_list = NULL, results,
 			for (i in seq_along(names(results))) {
 				var = names(results)[i]
 				if (var %in% names(missing_map)) {
+					attrs <- attributes(results[[var]])
+					
 					if (is.numeric(results[[var]]) || is.factor(results[[i]])) {
 						results[[var]][is.na(results[[var]])] = haven::tagged_na("o")
 						results[[var]][is.na(results[[var]]) & missing_map[[var]] == 1] = haven::tagged_na("h")
@@ -159,17 +174,19 @@ formr_post_process_results = function(item_list = NULL, results,
 						missing_kinds = stats::na.omit(unique(haven::na_tag(results[[var]])))
 						
 						value_labels <- c(value_labels, missing_labels[ haven::na_tag(missing_labels) %in% missing_kinds])
-						if( length(value_labels) && !is.null(names(value_labels))) {
+						if (length(value_labels) && !is.null(names(value_labels))) {
 							results[[var]] = haven::labelled(results[[var]], 
 																							 label = attributes(results[[var]])[["label"]],
 																							 labels = value_labels)
+							attrs$labels <- value_labels
 						}
 					}
 				}
 			}
 		}
-		
+		results <- codebook::rescue_attributes(results, results_with_attrs)
 	}
+	
 	results
 }
 
@@ -263,8 +280,10 @@ formr_items = function(survey_name = NULL, host = "https://formr.org",
         names(sequence) = sequence
         if (length(item_list[[i]]$choices) <= 2) {
         	choices = item_list[[i]]$choices
-        	sequence[ from ] = paste0(sequence[ from ], ": ", choices[[1]])
-        	sequence[ to ] = paste0(sequence[ to ], ": ", choices[[length(choices)]])
+        	from_pos <- which(sequence == from)
+        	to_pos <- which(sequence == to)
+        	sequence[ from_pos ] = paste0(sequence[ from_pos ], ": ", choices[[1]])
+        	sequence[ to_pos ] = paste0(sequence[ to_pos ], ": ", choices[[length(choices)]])
         } else {
         	for (c in seq_along(item_list[[i]]$choices)) {
         		sequence[ names(item_list[[i]]$choices)[c] == sequence ]    = paste0(names(item_list[[i]]$choices)[c], ": ", item_list[[i]]$choices[[c]])
@@ -654,7 +673,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' results = formr_recognise(item_list = items, results = results)
 #' agg = formr_aggregate(item_list = items, results = results, 
-#' 	compute_alphas = TRUE, plot_likert = TRUE)
+#' 	compute_alphas = FALSE, plot_likert = FALSE)
 #' agg[, c('religiousness', 'prefer')]
 
 
@@ -852,7 +871,7 @@ formr_likert = function(item_list, results) {
 #' @export
 #' @examples
 #' example(formr_post_process_results)
-#' items(results)[[1]]
+#' items(processed_results)[[1]]
 items = function(survey) {
 	vars = names(survey)
 	item_list = list()
@@ -878,7 +897,7 @@ items = function(survey) {
 #' @export
 #' @examples
 #' example(formr_post_process_results)
-#' item(results, "BFIK_extra_4")
+#' item(processed_results, "BFIK_extra_4")
 item = function(survey, item_name) {
 	att = attributes(survey[[ item_name ]])
 	if (exists("item", att)) {
@@ -901,8 +920,8 @@ item = function(survey, item_name) {
 #' @export
 #' @examples
 #' example(formr_post_process_results)
-#' table(results$BFIK_extra_4)
-#' table(choice_labels_for_values(results, "BFIK_extra_4"))
+#' table(processed_results$BFIK_extra_4)
+#' table(choice_labels_for_values(processed_results, "BFIK_extra_4"))
 choice_labels_for_values = function(survey, item_name) {
 	choices = item(survey, item_name)$choices
 	unname( unlist(choices)[ survey[[ item_name ]] ])
