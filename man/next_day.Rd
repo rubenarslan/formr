@@ -13,5 +13,5 @@ next_day(date = NULL)
 a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 }
 \examples{
-next_day(Sys.time()) # always false
+next_day(Sys.time())
 }

@@ -184,7 +184,7 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 				}
 			}
 		}
-		results <- codebook::rescue_attributes(results, results_with_attrs)
+		results <- rescue_attributes(results, results_with_attrs)
 	}
 	
 	results
@@ -762,106 +762,17 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
     results[, save_scale] = aggregate_and_document_scale(results[, scale_item_names], fun = aggregation_function)
     
     if (plot_likert) {
-      lik = formr_likert(choice_lists, results)
-      if (!is.null(lik)) {
-      	if ( !quiet ) {
-	        print(graphics::plot(lik))
-      	}
-      	attributes(results[[ save_scale]])$likert_plot = lik
-      }
+    	warning("The plot_likert functionality was moved to the ",
+    					"codebook package.")
     }
     if (compute_alphas) {
-      if (length(numbers) > 1) {
-        rows_with_missings = nrow(results[, scale_item_names]) - 
-          nrow(stats::na.omit(results[, scale_item_names]))
-        if (rows_with_missings > 0) {
-          warning("There were ", rows_with_missings, 
-          " rows with missings in ", save_scale)
-        }
-        tryCatch({
-        	reliability = psych::alpha(results[, scale_item_names], title = save_scale, check.keys = FALSE, ...)
-        	if ( !quiet ) {
-        	  psych::print.psych(reliability)
-        	}
-        	attributes(results[[ save_scale]])$reliability = reliability
-        }, error = function(e) {
-          warning("There were problems with ", save_scale, 
-          " or its items ", paste(scale_item_names, 
-            collapse = " "), " while trying to compute internal consistencies. ", 
-          e)
-        })
-      }
+    	warning("The compute_alphas functionality was moved to the ",
+    					"codebook package.")
     }
   }
   results
 }
 
-
-#' Get Likert scales
-#'
-#' If you've retrieved an item table using [formr_items()] you can use this
-#' function to retrieve a [likert::likert()] object that can be used with the likert package functions (which makes nice plots). You can and should subset the results table to focus on items by scale or response format. The aggregator will interrupt if the response format changes.
-#'  
-#'
-#' @param item_list an item_list
-#' @param results survey results
-#' @export
-#' @examples
-#' results = jsonlite::fromJSON(txt = 
-#' 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
-#' items = formr_items(path = 
-#' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-#' likert_items = formr_likert(item_list = items[2:5], results = results)
-#' plot(likert_items)
-
-
-
-formr_likert = function(item_list, results) {
-  if (!inherits(item_list, "list")) {
-    stop("The item_list has to be a list.")
-  }
-  item_numbers = c()
-  choice_lists = item_list
-  choice_labels = unique(lapply(choice_lists, FUN = function(x) {
-    stringr::str_wrap(x$choices, width = 15)
-  }))
-  choice_values = unique(lapply(choice_lists, FUN = function(x) {
-    names(x$choices)
-  }))
-  if (length(choice_values) != 1) {
-    warning("Likert plot not possible, their were multiple response values. We saw ", 
-      paste(sapply(choice_values, FUN = paste, collapse = ";"), 
-        collapse = " & "))
-    return(NULL)
-  }
-  if (length(choice_labels) != 1) {
-    warning("Likert plot not possible, their were multiple response labels. We saw ", 
-      paste(sapply(choice_labels, FUN = paste, collapse = ";"), 
-        collapse = " & "))
-    return(NULL)
-  }
-  
-  for (i in seq_along(item_list)) {
-    item = item_list[[i]]
-    item_number = which(names(results) == item$name)
-    
-    
-    if (length(item_number) > 0 & item$type %in% c("mc_button", 
-      "mc", "rating_button")) {
-      item_numbers = c(item_numbers, item_number)
-      results[, item_number] = factor(results[, item$name], 
-        levels = names(item$choices), labels = stringr::str_wrap(item$choices, 15))
-      names(results)[item_number] = paste(item$label, paste0("[", 
-        item$name, "]"))  # seriously cumbersome way to rename single column
-    }
-  }
-  if (ncol(results[, item_numbers, drop = FALSE]) > 0 & nrow(stats::na.omit(results[, 
-    item_numbers, drop = FALSE]))) {
-    likert::likert(results[, item_numbers, drop = FALSE])
-  } else {
-    NULL
-  }
-}
 
 #' get item list from survey attributes
 #'

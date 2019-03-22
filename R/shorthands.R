@@ -255,14 +255,16 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 time_passed = function(years = 0, months = 0, weeks = 0, days = 0, 
   hours = 0, minutes = 0, seconds = 0, time = NULL) {
-  if (is.null(time) & !is.null(.formr$last_action_time)) 
+  if (is.null(time) & !is.null(.formr$last_action_time)) {
     time = .formr$last_action_time
+  }
   time = as.POSIXct(time)
   stopifnot(!is.null(time))
-  (time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
+  
+  time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
     60 * hours + 60 * 60 * 24 * days + 60 * 60 * 24 * 7 * 
     weeks + 60 * 60 * 24 * 30 * months + 60 * 60 * 24 * 365 * 
-    years)) < lubridate::here()  # local time
+    years) # local time
 }
 
 #' checks whether a new day has broken (date has increased by at least one day)
@@ -272,14 +274,14 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
 #' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.
 #' @export
 #' @examples
-#' next_day(Sys.time()) # always false
+#' next_day(Sys.time())
 
 next_day = function(date = NULL) {
   if (is.null(date) & !is.null(.formr$last_action_date)) 
     date = .formr$last_action_date
   stopifnot(!is.null(date))
-  date = lubridate::floor_date(as.POSIXct(date))
-  date < lubridate::floor_date(lubridate::now(), "day")
+  date = lubridate::floor_date(as.POSIXct(date), unit = 'days')
+  date + lubridate::ddays(1)
 }
 
 #' checks whether the current time is in a certain time window

@@ -11,35 +11,25 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.7.6
+Version: 0.8.0
 Depends:
     R (>= 3.0.2)
 Imports:
 		stats,
-		graphics,
-		utils,
 		methods,
-    ggplot2,
-    scales,
-    stringr,
-    lubridate,
-    httr,
-    jsonlite,
-    psych,
-    rmarkdown,
-    likert,
-    knitr,
-    curl,
-    rlang,
-    reshape2,
-    dplyr,
-    commonmark,
-    pryr,
-    tidyr,
-    haven,
-    pander,
-    packrat,
-    codebook
+		dplyr,
+		ggplot2,
+		scales,
+		haven,
+		stringr,
+		tidyr,
+		knitr,
+		httr,
+		curl,
+		jsonlite,
+		lubridate,
+		commonmark,
+		rmarkdown
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
