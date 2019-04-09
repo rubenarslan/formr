@@ -478,6 +478,26 @@ if_na_null = function(test, na = FALSE, null = FALSE) {
 	return
 }
 
+
+#' Replace NA values with something else
+#' 
+#' Often, you want to substitute missing values with some implicit known value (e.g. if the question on number of sexual partners was skipped for sexually inactive people, you know the missing should turn into zero)
+#' 
+#' @param x the variable
+#' @param missing What to replace missing values with
+#' @export
+#' @examples
+#' number_of_sex_partners <- c(1, 3, 5, 10, NA, 29)
+#' if_na(number_of_sex_partners, 0)
+
+if_na <- function(x, missing) {
+	if (length(missing) > 1) {
+		missing <- missing[is.na(x)]
+	}
+	x[is.na(x)] <- missing
+	x
+}
+
 # 
 # 
 # #' packages = c("pacman", "dplyr")

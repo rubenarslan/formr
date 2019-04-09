@@ -6,9 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Returns the number of missings in a variable or dataset.
-If missings are an explicit level in a factor variable, this
-function defaults to reporting them anyway. — n_missing • formr</title>
+<title>Objects exported from other packages — reexports • formr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,13 +30,13 @@ function defaults to reporting them anyway. — n_missing • formr</title>
 
 
 
-<meta property="og:title" content="Returns the number of missings in a variable or dataset.
-If missings are an explicit level in a factor variable, this
-function defaults to reporting them anyway. — n_missing" />
+<meta property="og:title" content="Objects exported from other packages — reexports" />
 
-<meta property="og:description" content="Returns the number of missings in a variable or dataset.
-If missings are an explicit level in a factor variable, this
-function defaults to reporting them anyway." />
+<meta property="og:description" content="These objects are imported from other packages. Follow the links
+below to see their documentation.
+
+  dplyr%&amp;gt;%
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,50 +98,28 @@ function defaults to reporting them anyway." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Returns the number of missings in a variable or dataset.
-If missings are an explicit level in a factor variable, this
-function defaults to reporting them anyway.</h1>
+    <h1>Objects exported from other packages</h1>
     
-    <div class="hidden name"><code>n_missing.Rd</code></div>
+    <div class="hidden name"><code>reexports.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Returns the number of missings in a variable or dataset.
-If missings are an explicit level in a factor variable, this
-function defaults to reporting them anyway.</p>
+    <p>These objects are imported from other packages. Follow the links
+below to see their documentation.</p>
+<dl class='dl-horizontal'>
+  <dt>dplyr</dt><dd><p><code>%&gt;%</code></p></dd>
+</dl>
     
     </div>
 
-    <pre class="usage"><span class='fu'>n_missing</span>(<span class='no'>x</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>variable</p></td>
-    </tr>
-    <tr>
-      <th>exclude</th>
-      <td><p>only needed for factors. defaults to NA (count level=missing as missing), setting to 0 allows you to count level=missing as nonmissing</p></td>
-    </tr>
-    </table>
-    
+        
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>beavers</span>)
-<span class='no'>beaver1</span>$<span class='no'>activ</span>[<span class='fl'>1</span>:<span class='fl'>10</span>] <span class='kw'>=</span> <span class='fl'>NA</span>
-<span class='fu'>n_missing</span>(<span class='no'>beaver1</span>$<span class='no'>activ</span>)</div><div class='output co'>#&gt; [1] 10</div><div class='input'><span class='no'>beaver1</span>$<span class='no'>activ</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/factor'>factor</a></span>(<span class='no'>beaver1</span>$<span class='no'>activ</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sum'>sum</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na</a></span>(<span class='no'>beaver1</span>$<span class='no'>activ</span>))</div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='fu'>n_missing</span>(<span class='no'>beaver1</span>$<span class='no'>activ</span>)</div><div class='output co'>#&gt; [1] 10</div><div class='input'><span class='fu'>n_missing</span>(<span class='no'>beaver1</span>$<span class='no'>activ</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</div><div class='output co'>#&gt; [1] 0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>
