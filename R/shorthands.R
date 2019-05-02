@@ -239,7 +239,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 #' checks how much time has passed relative to the user's last action
 #'
-#' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
+#' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience.  Returns true or false.
 #'
 #' @param seconds argument to [lubridate::dseconds()]
 #' @param minutes 60 seconds
@@ -251,6 +251,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org
 #' @export
 #' @examples
+#' 
 #' time_passed(hours = 7, time = Sys.time())
 
 time_passed = function(years = 0, months = 0, weeks = 0, days = 0, 
@@ -261,10 +262,10 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
   time = as.POSIXct(time)
   stopifnot(!is.null(time))
   
-  time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
+  (time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
     60 * hours + 60 * 60 * 24 * days + 60 * 60 * 24 * 7 * 
     weeks + 60 * 60 * 24 * 30 * months + 60 * 60 * 24 * 365 * 
-    years) # local time
+    years)) < lubridate::here() # local time
 }
 
 #' checks whether a new day has broken (date has increased by at least one day)
