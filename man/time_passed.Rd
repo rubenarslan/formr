@@ -25,8 +25,9 @@ time_passed(years = 0, months = 0, weeks = 0, days = 0,
 \item{time}{defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org}
 }
 \description{
-checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{lubridate::dseconds()}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience.
+checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{lubridate::dseconds()}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience.  Returns true or false.
 }
 \examples{
+
 time_passed(hours = 7, time = Sys.time())
 }
