@@ -6,7 +6,8 @@
 \usage{
 formr_post_process_results(item_list = NULL, results,
   compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
-  quiet = FALSE)
+  quiet = FALSE, item_displays = NULL,
+  tag_missings = !is.null(item_displays), remove_test_sessions = TRUE)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}
@@ -20,6 +21,12 @@ formr_post_process_results(item_list = NULL, results,
 \item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
 
 \item{quiet}{passed to formr_aggregate, defaults to FALSE}
+
+\item{item_displays}{an item display table, necessary to tag missings}
+
+\item{tag_missings}{should missings that result from an item not being shown be distinguished from missings due to skipped questions?}
+
+\item{remove_test_sessions}{by default, formr removes results resulting from test session (animal names and null session codes)}
 }
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}
@@ -27,9 +34,11 @@ in sequence. Useful if you want to post-process raw results before aggregating e
 }
 \examples{
 results = jsonlite::fromJSON(txt = 
-	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
+	system.file('extdata/BFI_post.json', package = 'formr', mustWork = TRUE))
 items = formr_items(path = 
-	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
-results = formr_post_process_results(items, results, 
-compute_alphas = TRUE, plot_likert = TRUE)
+	system.file('extdata/BFI_post_items.json', package = 'formr', mustWork = TRUE))
+item_displays = jsonlite::fromJSON(
+	system.file('extdata/BFI_post_itemdisplay.json', package = 'formr', mustWork = TRUE))
+processed_results = formr_post_process_results(items, results, item_displays = item_displays,
+compute_alphas = FALSE, plot_likert = FALSE)
 }

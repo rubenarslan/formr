@@ -6,8 +6,9 @@
 \usage{
 formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
   host), results = formr_raw_results(survey_name, host = host),
-  host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5,
-  plot_likert = FALSE, quiet = FALSE, ...)
+  host = "https://formr.org", compute_alphas = FALSE,
+  fallback_max = 5, plot_likert = FALSE, quiet = FALSE,
+  aggregation_function = rowMeans, ...)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
@@ -26,6 +27,8 @@ formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
 
 \item{quiet}{defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.}
 
+\item{aggregation_function}{defaults to rowMeans with na.rm = FALSE}
+
 \item{...}{passed to  \code{\link[psych:alpha]{psych::alpha()}}}
 }
 \description{
@@ -39,7 +42,8 @@ results = jsonlite::fromJSON(txt =
 	system.file('extdata/gods_example_results.json', package = 'formr', mustWork = TRUE))
 items = formr_items(path = 
 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
+results = formr_recognise(item_list = items, results = results)
 agg = formr_aggregate(item_list = items, results = results, 
-	compute_alphas = TRUE, plot_likert = TRUE)
+	compute_alphas = FALSE, plot_likert = FALSE)
 agg[, c('religiousness', 'prefer')]
 }

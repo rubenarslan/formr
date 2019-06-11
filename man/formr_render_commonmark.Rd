@@ -12,3 +12,6 @@ formr_render_commonmark(text)
 \description{
 Render text
 }
+\examples{
+formr_render_commonmark("There are only `r sample(2:3, 1)` types of people.")
+}

@@ -206,48 +206,6 @@ miss_frac = function(df, vars = 1:NCOL(df)) {
   fracts/NROW(df)
 }
 
-#' aggregates two variables from two sources into one
-#'
-#' Takes two variables with different missings
-#' and gives one variable with values of the second
-#' variable substituted where the first had missings.
-#'
-#' @param df data.frame or variable
-#' @param new_var new variable name
-#' @param var1 first source. Assumed to be new_var.x (default suffixes after merging)
-#' @param var2 second source. Assumed to be new_var.y (default suffixes after merging)
-#' @param remove_old_variables Defaults to not keeping var1 and var2 in the resulting df.
-#' @export
-#' @examples
-#' cars$dist.x = cars$dist
-#' cars$dist.y = cars$dist
-#' cars$dist.y[2:5] = NA
-#' cars$dist.x[10:15] = NA # sprinkle missings
-#' cars$dist = NULL # remove old variable
-#' cars = aggregate2sources(cars, 'dist')
-
-aggregate2sources = function(df, new_var, var1 = NULL, var2 = NULL, 
-  remove_old_variables = TRUE) {
-  if (is.null(var1) && is.null(var2)) {
-    var1 = paste0(new_var, ".x")
-    var2 = paste0(new_var, ".y")
-  }
-  if (exists(new_var, where = df)) {
-    warning(paste(new_var, "already exists. Maybe delete it or choose a different name, if you're saving over your original dataframe."))
-  }
-  df[, new_var] = df[, var1]
-  oldmiss = sum(is.na(df[, new_var]))
-  df[is.na(df[, var1]), new_var] = df[is.na(df[, var1]), var2]
-  
-  if (remove_old_variables) {
-    df[, var1] = NULL
-    df[, var2] = NULL
-  }
-  
-  message(paste(oldmiss - sum(is.na(df[, new_var])), " fewer missings"))
-  df
-}
-
 #' loads an RDS object, assigns it to an object of the base-filename
 #'
 #' [saveRDS()] saves an object to a file, so unlike [save()] and [load()] you can assign the loaded object to a new variable using [readRDS()]. 
@@ -281,7 +239,7 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 
 #' checks how much time has passed relative to the user's last action
 #'
-#' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience. 
+#' checks how much time has passed. You can choose the unit. Implemented via [lubridate::dseconds()], not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience.  Returns true or false.
 #'
 #' @param seconds argument to [lubridate::dseconds()]
 #' @param minutes 60 seconds
@@ -293,18 +251,21 @@ loadRDS = function(file, refhook = NULL, overwrite = FALSE) {
 #' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org
 #' @export
 #' @examples
+#' 
 #' time_passed(hours = 7, time = Sys.time())
 
 time_passed = function(years = 0, months = 0, weeks = 0, days = 0, 
   hours = 0, minutes = 0, seconds = 0, time = NULL) {
-  if (is.null(time) & !is.null(.formr$last_action_time)) 
+  if (is.null(time) & !is.null(.formr$last_action_time)) {
     time = .formr$last_action_time
+  }
   time = as.POSIXct(time)
   stopifnot(!is.null(time))
+  
   (time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
     60 * hours + 60 * 60 * 24 * days + 60 * 60 * 24 * 7 * 
     weeks + 60 * 60 * 24 * 30 * months + 60 * 60 * 24 * 365 * 
-    years)) < lubridate::here()  # local time
+    years)) < lubridate::here() # local time
 }
 
 #' checks whether a new day has broken (date has increased by at least one day)
@@ -314,14 +275,14 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
 #' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.
 #' @export
 #' @examples
-#' next_day(Sys.time()) # always false
+#' next_day(Sys.time())
 
 next_day = function(date = NULL) {
   if (is.null(date) & !is.null(.formr$last_action_date)) 
     date = .formr$last_action_date
   stopifnot(!is.null(date))
-  date = lubridate::floor_date(as.POSIXct(date))
-  date < lubridate::floor_date(lubridate::now(), "day")
+  date = lubridate::floor_date(as.POSIXct(date), unit = 'days')
+  date + lubridate::ddays(1)
 }
 
 #' checks whether the current time is in a certain time window
@@ -516,6 +477,26 @@ if_na_null = function(test, na = FALSE, null = FALSE) {
 		return = null
 	}
 	return
+}
+
+
+#' Replace NA values with something else
+#' 
+#' Often, you want to substitute missing values with some implicit known value (e.g. if the question on number of sexual partners was skipped for sexually inactive people, you know the missing should turn into zero)
+#' 
+#' @param x the variable
+#' @param missing What to replace missing values with
+#' @export
+#' @examples
+#' number_of_sex_partners <- c(1, 3, 5, 10, NA, 29)
+#' if_na(number_of_sex_partners, 0)
+
+if_na <- function(x, missing) {
+	if (length(missing) > 1) {
+		missing <- missing[is.na(x)]
+	}
+	x[is.na(x)] <- missing
+	x
 }
 
 # 

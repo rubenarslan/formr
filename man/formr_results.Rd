@@ -4,27 +4,19 @@
 \alias{formr_results}
 \title{Download processed, aggregated results from formr}
 \usage{
-formr_results(survey_name, host = "https://formr.org",
-  compute_alphas = TRUE, fallback_max = 5, plot_likert = TRUE,
-  quiet = FALSE)
+formr_results(survey_name, host = "https://formr.org", ...)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
 \item{host}{defaults to https://formr.org}
 
-\item{compute_alphas}{passed to formr_aggregate, defaults to TRUE}
-
-\item{fallback_max}{passed to formr_reverse, defaults to 5}
-
-\item{plot_likert}{passed to formr_aggregate, defaults to TRUE}
-
-\item{quiet}{passed to formr_aggregate, defaults to FALSE}
+\item{...}{passed to \code{\link[=formr_post_process_results]{formr_post_process_results()}}}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download data, it basically just does \code{\link[=formr_raw_results]{formr_raw_results()}} ,
-\code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}} in sequence.
+\code{\link[=formr_items]{formr_items()}} and \code{\link[=formr_post_process_results]{formr_post_process_results()}} in sequence.
 }
 \examples{
 \dontrun{

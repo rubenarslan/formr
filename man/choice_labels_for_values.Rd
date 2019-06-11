@@ -16,6 +16,6 @@ formr display labels for multiple choice items, but stores their values. We assu
 }
 \examples{
 example(formr_post_process_results)
-table(results$gods)
-table(choice_labels_for_values(results, "gods"))
+table(processed_results$BFIK_extra_4)
+table(choice_labels_for_values(processed_results, "BFIK_extra_4"))
 }

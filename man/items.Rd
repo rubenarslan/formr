@@ -14,5 +14,5 @@ get item list from survey attributes
 }
 \examples{
 example(formr_post_process_results)
-items(results)[[1]]
+items(processed_results)[[1]]
 }
