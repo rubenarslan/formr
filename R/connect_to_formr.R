@@ -58,8 +58,10 @@ formr_disconnect = function(host = "https://formr.org") {
 #' Download processed, aggregated results from formr
 #'
 #' After connecting to formr using [formr_connect()]
-#' you can download data, it basically just does [formr_raw_results()] ,
-#' [formr_items()] and [formr_post_process_results()] in sequence.
+#' you can download data and process it. This approach calls the following functions in the right sequence: [formr_raw_results()]
+#' [formr_items()], [formr_item_displays()] and [formr_post_process_results()]. So, results are downloaded, metadata on items (labels etc.) is
+#' added, normal and missing values are labelled. In the end, items like bfi_extra_3R are reversed in place (maintaining labels but changing underlying numbers),
+#' and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_extra)
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to https://formr.org

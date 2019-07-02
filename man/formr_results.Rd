@@ -15,8 +15,10 @@ formr_results(survey_name, host = "https://formr.org", ...)
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
-you can download data, it basically just does \code{\link[=formr_raw_results]{formr_raw_results()}} ,
-\code{\link[=formr_items]{formr_items()}} and \code{\link[=formr_post_process_results]{formr_post_process_results()}} in sequence.
+you can download data and process it. This approach calls the following functions in the right sequence: \code{\link[=formr_raw_results]{formr_raw_results()}}
+\code{\link[=formr_items]{formr_items()}}, \code{\link[=formr_item_displays]{formr_item_displays()}} and \code{\link[=formr_post_process_results]{formr_post_process_results()}}. So, results are downloaded, metadata on items (labels etc.) is
+added, normal and missing values are labelled. In the end, items like bfi_extra_3R are reversed in place (maintaining labels but changing underlying numbers),
+and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_extra)
 }
 \examples{
 \dontrun{
