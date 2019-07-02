@@ -370,10 +370,13 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_itemdisplay?format=json"))
 
-  if (resp$status_code == 200)
+  if (resp$status_code == 200) {
   	results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
-  		as = "text")) else stop("This survey does not exist or isn't yours.")
-  
+  		as = "text")) 
+  } else	{
+  		warning("This item display table for this survey could not be accessed.")
+	}
+  		  
   results
 }
 
