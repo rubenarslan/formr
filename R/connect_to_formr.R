@@ -664,9 +664,9 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to https://formr.org
-#' @param compute_alphas defaults to TRUE, whether to compute  [psych::alpha()]
+#' @param compute_alphas deprecated, functionality migrated to codebook package
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
-#' @param plot_likert defaults to TRUE - whether to make [likert::likert()] plots. Only possible if item_list is specified.
+#' @param plot_likert deprecated, functionality migrated to codebook package
 #' @param quiet defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.
 #' @param aggregation_function defaults to rowMeans with na.rm = FALSE
 

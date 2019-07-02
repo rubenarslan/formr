@@ -125,7 +125,7 @@ aggregate_and_document_scale <- function(items, fun = rowMeans, stem = NULL) {
 #' Taken from codebook
 #' You can use this function if some of your items have lost their attributes during wrangling
 #' Variables have to have the same name (Duh) and no attributes should be overwritten.
-#' But use with care. Similar to [labelled::copy_labels()].
+#' But use with care. Similar to `labelled::copy_labels()`.
 #'
 #'
 #' @param df_no_attributes the data frame with missing attributes

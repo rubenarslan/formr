@@ -19,11 +19,11 @@ formr_aggregate(survey_name, item_list = formr_items(survey_name, host =
 
 \item{host}{defaults to https://formr.org}
 
-\item{compute_alphas}{defaults to TRUE, whether to compute  \code{\link[psych:alpha]{psych::alpha()}}}
+\item{compute_alphas}{deprecated, functionality migrated to codebook package}
 
 \item{fallback_max}{defaults to 5 - if the item_list is set to null, we will use this to reverse}
 
-\item{plot_likert}{defaults to TRUE - whether to make \code{\link[likert:likert]{likert::likert()}} plots. Only possible if item_list is specified.}
+\item{plot_likert}{deprecated, functionality migrated to codebook package}
 
 \item{quiet}{defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.}
 
