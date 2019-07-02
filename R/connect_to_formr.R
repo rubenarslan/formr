@@ -620,9 +620,10 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
       for (i in seq_along(reversed_items)) {
         # reverse these items based on fallback_max, or if higher the
         # item's own maximum
-        results[, stringr::str_sub(reversed_items[i], 
-          1, -2)] = (max(results[, reversed_items[i]], 
-          fallback_max, na.rm = T) + 1) - results[, reversed_items[i]]
+      	item_max <- max(results[, reversed_items[i]], 
+      									fallback_max, na.rm = T)
+      	warning(reversed_items[i], " was reversed in place without value labels. You will need to keep track of its reversion status manually.")
+      	results[[ reversed_items[i] ]] <- item_max + 1 - results[[ reversed_items[i] ]]
       }
     }
   } else {
