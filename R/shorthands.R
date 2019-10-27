@@ -282,7 +282,7 @@ next_day = function(date = NULL) {
     date = .formr$last_action_date
   stopifnot(!is.null(date))
   date = lubridate::floor_date(as.POSIXct(date), unit = 'days')
-  date + lubridate::ddays(1)
+  date + lubridate::days(1)
 }
 
 #' checks whether the current time is in a certain time window
