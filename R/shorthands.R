@@ -265,7 +265,7 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
   (time + lubridate::dseconds(seconds + 60 * minutes + 60 * 
     60 * hours + 60 * 60 * 24 * days + 60 * 60 * 24 * 7 * 
     weeks + 60 * 60 * 24 * 30 * months + 60 * 60 * 24 * 365 * 
-    years)) < lubridate::here() # local time
+    years)) < lubridate::now() # local time
 }
 
 #' checks whether a new day has broken (date has increased by at least one day)
@@ -296,7 +296,7 @@ next_day = function(date = NULL) {
 #' in_time_window(Sys.time() - 1, Sys.time() + 1)
 
 in_time_window = function(min, max) {
-  min < lubridate::here() && max > lubridate::here()
+  min < lubridate::now() && max > lubridate::now()
 }
 
 

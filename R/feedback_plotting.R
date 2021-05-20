@@ -18,9 +18,9 @@ qplot_on_normal = function(normed_value,  ylab = "Percentage of other people wit
 													 xlab = '' , colour = "blue", x_ticks = c('--','-','0','+','++')) 
 {
 	ggplot()+
-  stat_function(aes(x=-3:3), fun = stats::dnorm,size = I(1)) + 
-  geom_vline(xintercept= normed_value, colour= colour,size = I(1)) +
-	scale_x_continuous(xlab, breaks = c(-2:2),labels = x_ticks) +
+	stat_function(aes_string(x="x"), fun = stats::dnorm, size = 1, data = data.frame(x = -3:3)) +
+	geom_vline(xintercept= normed_value, colour = colour,size = 1) +
+	scale_x_continuous(xlab, breaks = c(-2:2), labels = x_ticks) +
 	scale_y_continuous(ylab, labels = scales::percent_format())+
 	theme_minimal() + 
 	theme(text = element_text(size = 18))

@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.8.5
+Version: 0.8.6
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -33,6 +33,6 @@ Imports:
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE) 
 Encoding: UTF-8

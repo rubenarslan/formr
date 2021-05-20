@@ -4,6 +4,3 @@
 \name{formr-package}
 \alias{formr-package}
 \title{formr-package}
-\description{
-formr-package
-}

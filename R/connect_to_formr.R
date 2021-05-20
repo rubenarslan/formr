@@ -111,8 +111,13 @@ formr_post_process_results = function(item_list = NULL, results,
 	
 	if (remove_test_sessions) {
 		if (exists("session", results)) {
+			sessions_before <- unique(results$session[!is.na(results$session)])
 			results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
-			
+			sessions_after <- unique(results$session)
+			message("These users were dropped as likely test users. This is a heuristic. ",
+							"If tbey don't have an animal name in their ID, they might not be test users.",
+							paste(setdiff(sessions_before, sessions_after), collapse = ", "))
+	
 		} else {
 			warning("Cannot remove test sessions in results table, because session variable is missing (potentially, this is an unlinked survey).")
 		}

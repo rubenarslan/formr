@@ -4,8 +4,18 @@
 \alias{text_message_massenversand}
 \title{Send text message via Massenversand.de}
 \usage{
-text_message_massenversand(To, From, Body, id, pw, time = "0",
-  msgtype = "t", tarif = "OA", test = "0", return_result = F)
+text_message_massenversand(
+  To,
+  From,
+  Body,
+  id,
+  pw,
+  time = "0",
+  msgtype = "t",
+  tarif = "OA",
+  test = "0",
+  return_result = F
+)
 }
 \arguments{
 \item{To}{the number you're texting to (usually without zeroes at the beginning)}

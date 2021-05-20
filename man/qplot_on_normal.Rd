@@ -4,9 +4,13 @@
 \alias{qplot_on_normal}
 \title{Plot a normed value on the standard normal}
 \usage{
-qplot_on_normal(normed_value,
-  ylab = "Percentage of other people with this value", xlab = "",
-  colour = "blue", x_ticks = c("--", "-", "0", "+", "++"))
+qplot_on_normal(
+  normed_value,
+  ylab = "Percentage of other people with this value",
+  xlab = "",
+  colour = "blue",
+  x_ticks = c("--", "-", "0", "+", "++")
+)
 }
 \arguments{
 \item{normed_value}{a z-standardised value}

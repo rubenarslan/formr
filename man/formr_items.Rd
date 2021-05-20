@@ -4,8 +4,7 @@
 \alias{formr_items}
 \title{Download items from formr}
 \usage{
-formr_items(survey_name = NULL, host = "https://formr.org",
-  path = NULL)
+formr_items(survey_name = NULL, host = "https://formr.org", path = NULL)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}

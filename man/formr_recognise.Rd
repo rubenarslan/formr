@@ -4,10 +4,12 @@
 \alias{formr_recognise}
 \title{Recognise data types based on item table}
 \usage{
-formr_recognise(survey_name = NULL,
+formr_recognise(
+  survey_name = NULL,
   item_list = formr_items(survey_name, host = host),
   results = formr_raw_results(survey_name, host = host),
-  host = "https://formr.org")
+  host = "https://formr.org"
+)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}

@@ -4,8 +4,7 @@
 \alias{ls_by_class}
 \title{get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.}
 \usage{
-ls_by_class(classes, envir = parent.frame(), top_class_only = FALSE,
-  ...)
+ls_by_class(classes, envir = parent.frame(), top_class_only = FALSE, ...)
 }
 \arguments{
 \item{classes}{objects should have one of these classes}

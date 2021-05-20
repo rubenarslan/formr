@@ -4,10 +4,17 @@
 \alias{formr_post_process_results}
 \title{Processed, aggregated results}
 \usage{
-formr_post_process_results(item_list = NULL, results,
-  compute_alphas = FALSE, fallback_max = 5, plot_likert = FALSE,
-  quiet = FALSE, item_displays = NULL,
-  tag_missings = !is.null(item_displays), remove_test_sessions = TRUE)
+formr_post_process_results(
+  item_list = NULL,
+  results,
+  compute_alphas = FALSE,
+  fallback_max = 5,
+  plot_likert = FALSE,
+  quiet = FALSE,
+  item_displays = NULL,
+  tag_missings = !is.null(item_displays),
+  remove_test_sessions = TRUE
+)
 }
 \arguments{
 \item{item_list}{an item_list, defaults to NULL}
