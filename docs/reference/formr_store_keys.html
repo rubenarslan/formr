@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>xtabs with sensible defaults — crosstabs • formr</title>
+<title>Store keys in keyring — formr_store_keys • formr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="xtabs with sensible defaults — crosstabs" />
-<meta property="og:description" content="xtabs requires two arguments (na.action and exclude) to show missing values along with other values. This function defaults to including missings and has only one argument" />
+<meta property="og:title" content="Store keys in keyring — formr_store_keys" />
+<meta property="og:description" content="Store keys in the system keyring/keychain instead of plaintext." />
 
 
 
@@ -103,41 +103,32 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>xtabs with sensible defaults</h1>
+    <h1>Store keys in keyring</h1>
     
-    <div class="hidden name"><code>crosstabs.Rd</code></div>
+    <div class="hidden name"><code>formr_store_keys.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>xtabs requires two arguments (na.action and exclude) to show missing values along with other values. This function defaults to including missings and has only one argument</p>
+    <p>Store keys in the system keyring/keychain instead of plaintext.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>crosstabs</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, exclude <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>formr_store_keys</span><span class='op'>(</span><span class='va'>account_name</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>passed to xtabs if it is a formula, transformed into a formula if it's a single object</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>passed to xtabs</p></td>
-    </tr>
-    <tr>
-      <th>exclude</th>
-      <td><p>defaults to NULL (i.e. includes NA)</p></td>
+      <th>account_name</th>
+      <td><p>a shorthand for the account you're using</p></td>
     </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='cn'>NA</span>
-<span class='fu'>crosstabs</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; x
-#&gt; &lt;NA&gt; 
-#&gt;    1 </div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>formr_store_keys</span><span class='op'>(</span><span class='st'>"formr_diary_study_account"</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
