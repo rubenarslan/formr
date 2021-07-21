@@ -9,18 +9,27 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' @param email your registered email address
 #' @param password your password
 #' @param host defaults to https://formr.org
+#' @param keyring a shorthand for the account you're using
 #' @export
 #' @examples
 #' \dontrun{
-#' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
+#' formr_connect(keyring = "formr_diary_study_account" )
 #' }
 
-formr_connect = function(email, password = NULL, host = "https://formr.org") {
-  if (missing(email) || is.null(email)) 
-    email = readline("Enter your email: ")
-  if (missing(password) || is.null(password)) 
-    password = readline("Enter your password: ")
-  resp = httr::POST(paste0(host, "/public/login"), body = list(email = email, 
+formr_connect = function(email = NULL, password = NULL, host = "https://formr.org", keyring = NULL) {
+	if (!missing(keyring)) {
+		password <- keyring::key_get(keyring)
+		if (length(keyring::key_list(keyring)[["username"]]) ==  1) {
+			email <- keyring::key_list(keyring)[["username"]]
+		}
+	} else {
+		warning("Please use the keyring package via the formr_store_keys() function instead of specifying email and password in plaintext.")
+	  if (missing(email) || is.null(email)) 
+	    email = readline("Enter your email: ")
+	  if (missing(password) || is.null(password)) 
+	    password = readline("Enter your password: ")
+	}
+  resp = httr::POST(paste0(host, "/admin/account/login"), body = list(email = email, 
     password = password))
   text = httr::content(resp, encoding = "utf8", as = "text")
 	if (resp$status_code == 200 && grepl("Success!",text,fixed = T)) { 
@@ -32,6 +41,22 @@ formr_connect = function(email, password = NULL, host = "https://formr.org") {
 	} else { 
 		stop("Could not login for unknown reason.") 
 	}
+}
+
+#' Store keys in keyring
+#'
+#' Store keys in the system keyring/keychain instead of plaintext.
+#' @param account_name a shorthand for the account you're using
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_store_keys("formr_diary_study_account")
+#' }
+
+formr_store_keys = function(account_name) {
+	email = readline("Enter your email: ")
+	keyring::key_set(service = account_name,
+									 username = email)
 }
 
 

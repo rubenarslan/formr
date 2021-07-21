@@ -4,7 +4,12 @@
 \alias{formr_connect}
 \title{Connect to formr}
 \usage{
-formr_connect(email, password = NULL, host = "https://formr.org")
+formr_connect(
+  email = NULL,
+  password = NULL,
+  host = "https://formr.org",
+  keyring = NULL
+)
 }
 \arguments{
 \item{email}{your registered email address}
@@ -12,6 +17,8 @@ formr_connect(email, password = NULL, host = "https://formr.org")
 \item{password}{your password}
 
 \item{host}{defaults to https://formr.org}
+
+\item{keyring}{a shorthand for the account you're using}
 }
 \description{
 Connects to formr using your normal login and the httr library
@@ -19,6 +26,6 @@ which supports persistent session cookies.
 }
 \examples{
 \dontrun{
-formr_connect(email = 'you@example.net', password = 'zebrafinch' )
+formr_connect(keyring = "formr_diary_study_account" )
 }
 }

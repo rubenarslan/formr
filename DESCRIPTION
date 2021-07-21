@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.8.6
+Version: 0.9.0
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -29,7 +29,8 @@ Imports:
 		jsonlite,
 		lubridate,
 		commonmark,
-		rmarkdown
+		rmarkdown,
+		keyring
 License: BSD_2_clause + file LICENSE
 LazyData: true
 Date: 2014-12-09 12:06:54
