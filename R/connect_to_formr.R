@@ -18,10 +18,11 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 
 formr_connect = function(email = NULL, password = NULL, host = "https://formr.org", keyring = NULL) {
 	if (!missing(keyring)) {
-		password <- keyring::key_get(keyring)
-		if (length(keyring::key_list(keyring)[["username"]]) ==  1) {
+		if (is.null(email) && 
+				length(keyring::key_list(keyring)[["username"]]) ==  1) {
 			email <- keyring::key_list(keyring)[["username"]]
 		}
+		password <- keyring::key_get(keyring, username = email)
 	} else {
 		warning("Please use the keyring package via the formr_store_keys() function instead of specifying email and password in plaintext.")
 	  if (missing(email) || is.null(email)) 
@@ -72,9 +73,9 @@ formr_store_keys = function(account_name) {
 #' }
 
 formr_disconnect = function(host = "https://formr.org") {
-  resp = httr::GET(paste0(host, "/public/logout"))
+  resp = httr::GET(paste0(host, "/admin/account/logout"))
   text = httr::content(resp, encoding = "utf8", as = "text")
-  if (resp$status_code == 200 && grepl("Logged out", text, 
+  if (resp$status_code == 200 && grepl("logged out", text, 
     fixed = T)) 
     invisible(TRUE) else warning("You weren't logged in.")
 }
