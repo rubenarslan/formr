@@ -604,8 +604,7 @@ formr_simulate_from_items = function(item_list, n = 300) {
       if (length(limits) == 3) {
       	by = limits[3]
         sample_from = seq(from = limits[1], to = limits[2], 
-          by = by, 
-          ifelse( by > 0, -1 * by, by))
+          by = ifelse( by < 0, -1 * by, by))
 
         sim[, item$name] = sample(sample_from, size = n, 
           replace = T)
