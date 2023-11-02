@@ -140,12 +140,16 @@ formr_post_process_results = function(item_list = NULL, results,
 			sessions_before <- unique(results$session[!is.na(results$session)])
 			results = results[ !is.na(results$session) & !stringr::str_detect(results$session, "XXX"),  ]
 			sessions_after <- unique(results$session)
-			message("These users were dropped as likely test users. This is a heuristic. ",
-							"If tbey don't have an animal name in their ID, they might not be test users.",
-							paste(setdiff(sessions_before, sessions_after), collapse = ", "))
+			if(length(sessions_after) < length(sessions_before)) {
+				message("These users were dropped as likely test users. This is a heuristic. ",
+								"If they don't have an animal name in their ID, they might not be test users.",
+								paste(setdiff(sessions_before, sessions_after), collapse = ", "))
+			} else {
+				message("No test users detected.")
+			}
 	
 		} else {
-			warning("Cannot remove test sessions in results table, because session variable is missing (potentially, this is an unlinked survey).")
+			warning("Cannot remove test sessions in results table, because session variable is missing (potentially this is an unlinked survey).")
 		}
 		
 		if (!is.null(item_displays) && exists("session", item_displays)) {
@@ -613,6 +617,46 @@ formr_simulate_from_items = function(item_list, n = 300) {
     }
   }
   sim
+}
+
+#' Upload new item table
+#'
+#' To automatically create surveys using formr, you can upload survey item
+#' tables from R. Only file uploads are available. The file name determines
+#' the survey name. Updating existing surveys is not implemented and not
+#' recommended (because of the sanity checks we require to prevent data 
+#' deletion).
+#'  
+#'
+#' @param survey_file_path the path to an item table in csv/json/xlsx etc. 
+#' @param host defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
+#' items <- system.file('extdata/gods_example_items.json', package = 'formr', 
+#' mustWork = TRUE)
+#' formr_upload_items(items)
+#' }
+
+
+formr_upload_items = function(survey_file_path, host = "https://formr.org") {
+	resp <- httr::POST(
+		url = paste0(host, "/admin/survey/add_survey"),
+		body = list(uploaded = httr::upload_file(survey_file_path))
+	)
+	text = httr::content(resp, encoding = "utf8", as = "text")
+	if (resp$status_code == 200 && grepl("Success!",text,fixed = T)) { 
+		invisible(TRUE)
+	} else if (grepl("You have to select an item table file",text,fixed = T)) { 
+		stop("You have to select an item table file here.") 
+	} else if (grepl("You need to login",text,fixed = T)) { 
+		stop("You need to login to access the admin section.")
+	} else if (grepl("is already taken",text,fixed = T)) { 
+		stop("The survey name is already taken.", survey_file_path)
+	} else { 
+		stop("Could not upload for unknown reasons. Try manually.") 
+	}
 }
 
 

@@ -42,10 +42,12 @@ text_message_massenversand(
 Connects to Massenversand.de using your token and sends a text message.
 }
 \examples{
+\dontrun{
 text_message_massenversand(
 	To = '492222', 
 	From = '15005000', 
 	Body = 'Hello friend',
 	id = 'ID', 
 	pw = 'Tokentokentoken')
+	}
 }

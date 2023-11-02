@@ -43,10 +43,12 @@ text_message_twilio = function(To, From, Body, Account, Token,
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
 #' @export
 #' @examples
+#' \dontrun{
 #' text_message_clickatell(
 #' 	To = '492222', 
 #' 	Body = 'Hello friend', 
 #' 	Token = 'Tokentokentoken')
+#' 	}
 
 text_message_clickatell = function(To, Body, Token, return_result = F) {
   result = httr::POST("https://api.clickatell.com/rest/message", 
@@ -85,12 +87,14 @@ text_message_clickatell = function(To, Body, Token, return_result = F) {
 #' 
 #' @export
 #' @examples
+#' \dontrun{
 #' text_message_massenversand(
 #' 	To = '492222', 
 #' 	From = '15005000', 
 #' 	Body = 'Hello friend',
 #' 	id = 'ID', 
 #' 	pw = 'Tokentokentoken')
+#' 	}
 
 text_message_massenversand = function(To, From, Body, id, pw, 
   time = "0", msgtype = "t", tarif = "OA", test = "0", return_result = F) {

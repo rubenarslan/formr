@@ -19,8 +19,10 @@ text_message_clickatell(To, Body, Token, return_result = F)
 Connects to Clickatell using your token and sends a text message.
 }
 \examples{
+\dontrun{
 text_message_clickatell(
 	To = '492222', 
 	Body = 'Hello friend', 
 	Token = 'Tokentokentoken')
+	}
 }
