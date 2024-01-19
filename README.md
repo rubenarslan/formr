@@ -14,5 +14,5 @@ https://rubenarslan.github.io/formr
 
 If you want to install the R package locally (e.g. to connect to formr and fetch the data in a nice format for you), run:
 
-    install.packages("devtools")
-    devtools::install_github("rubenarslan/formr")
+    install.packages("remotes")
+    remotes::install_github("rubenarslan/formr")
