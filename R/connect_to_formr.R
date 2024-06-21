@@ -439,6 +439,51 @@ formr_shuffled = function(run_name, host = "https://formr.org") {
       as = "text")) else stop("This run does not exist.")
 }
 
+#' Download random groups
+#'
+#' formr collects information about users' progression through the run
+#' After connecting using [formr_connect()]
+#' you can download a table showing where they are in the run.
+#'
+#' @param run_name case-sensitive name of the run in which you randomised participants
+#' @param host defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
+#' formr_user_overview(run_name = 'different_drills' )
+#' }
+
+formr_user_overview = function(run_name, host = "https://formr.org") {
+	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_user_overview?format=json"))
+	if (resp$status_code == 200) 
+		jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+																		 as = "text")) else stop("This run does not exist.")
+}
+
+
+#' Download random groups
+#'
+#' formr collects information about users' progression through the run
+#' After connecting using [formr_connect()]
+#' you can download a table showing their progression through the run.
+#'
+#' @param run_name case-sensitive name of the run in which you randomised participants
+#' @param host defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
+#' formr_user_detail(run_name = 'different_drills' )
+#' }
+
+formr_user_detail = function(run_name, host = "https://formr.org") {
+	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_user_detail?format=json"))
+	if (resp$status_code == 200) 
+		jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+																		 as = "text")) else stop("This run does not exist.")
+}
+
 #' Random date in range
 #' 
 #' taken from Dirk Eddelbuettel's answer
