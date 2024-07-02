@@ -4,10 +4,10 @@
 \alias{formr_disconnect}
 \title{Disconnect from formr}
 \usage{
-formr_disconnect(host = "https://formr.org")
+formr_disconnect(host = formr_last_host())
 }
 \arguments{
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 }
 \description{
 Disconnects from formr if connected.

@@ -4,12 +4,12 @@
 \alias{formr_user_detail}
 \title{Download random groups}
 \usage{
-formr_user_detail(run_name, host = "https://formr.org")
+formr_user_detail(run_name, host = formr_last_host())
 }
 \arguments{
 \item{run_name}{case-sensitive name of the run in which you randomised participants}
 
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 }
 \description{
 formr collects information about users' progression through the run

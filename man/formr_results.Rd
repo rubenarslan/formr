@@ -4,12 +4,12 @@
 \alias{formr_results}
 \title{Download processed, aggregated results from formr}
 \usage{
-formr_results(survey_name, host = "https://formr.org", ...)
+formr_results(survey_name, host = formr_last_host(), ...)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 
 \item{...}{passed to \code{\link[=formr_post_process_results]{formr_post_process_results()}}}
 }

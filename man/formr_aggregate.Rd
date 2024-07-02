@@ -8,7 +8,7 @@ formr_aggregate(
   survey_name,
   item_list = formr_items(survey_name, host = host),
   results = formr_raw_results(survey_name, host = host),
-  host = "https://formr.org",
+  host = formr_last_host(),
   compute_alphas = FALSE,
   fallback_max = 5,
   plot_likert = FALSE,
@@ -24,7 +24,7 @@ formr_aggregate(
 
 \item{results}{survey results, will be auto-retrieved based on survey_name if omitted}
 
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 
 \item{compute_alphas}{deprecated, functionality migrated to codebook package}
 

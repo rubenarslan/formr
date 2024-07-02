@@ -4,20 +4,22 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' Connect to formr
 #'
 #' Connects to formr using your normal login and the httr library
-#' which supports persistent session cookies.
+#' which supports persistent session cookies. Calling this function will persist
+#' the specified host (by default https://formr.org) in further formr_ function
+#' calls. You can change this by calling [formr_last_host()]
 #'
 #' @param email your registered email address
 #' @param password your password
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @param keyring a shorthand for the account you're using
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_connect(keyring = "formr_diary_study_account" )
 #' }
-
-formr_connect = function(email = NULL, password = NULL, host = "https://formr.org", keyring = NULL) {
-	if (!missing(keyring)) {
+formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(), keyring = NULL) {
+	formr_last_host(host)  # Store the host
+	if (!missing(keyring) || is.null(keyring)) {
 		if (is.null(email) && 
 				length(keyring::key_list(keyring)[["username"]]) ==  1) {
 			email <- keyring::key_list(keyring)[["username"]]
@@ -25,24 +27,53 @@ formr_connect = function(email = NULL, password = NULL, host = "https://formr.or
 		password <- keyring::key_get(keyring, username = email)
 	} else {
 		warning("Please use the keyring package via the formr_store_keys() function instead of specifying email and password in plaintext.")
-	  if (missing(email) || is.null(email)) 
-	    email = readline("Enter your email: ")
-	  if (missing(password) || is.null(password)) 
-	    password = readline("Enter your password: ")
+		if (missing(email) || is.null(email)) 
+			email <- readline("Enter your email: ")
+		if (missing(password) || is.null(password)) 
+			password <- readline("Enter your password: ")
 	}
-  resp = httr::POST(paste0(host, "/admin/account/login"), body = list(email = email, 
-    password = password))
-  text = httr::content(resp, encoding = "utf8", as = "text")
-	if (resp$status_code == 200 && grepl("Success!",text,fixed = T)) { 
+	resp <- httr::POST(paste0(host, "/admin/account/login"), body = list(email = email, 
+																																			 password = password))
+	text <- httr::content(resp, encoding = "utf8", as = "text")
+	if (resp$status_code == 200 && grepl("Success!", text, fixed = TRUE)) { 
 		invisible(TRUE)
-	} else if (grepl("alert-danger",text,fixed = T)) { 
+	} else if (grepl("alert-danger", text, fixed = TRUE)) { 
 		stop("Incorrect credentials.") 
-	} else if (grepl("Logout",text,fixed = T)) { 
+	} else if (grepl("Logout", text, fixed = TRUE)) { 
 		warning("Already logged in.")
 	} else { 
 		stop("Could not login for unknown reason.") 
 	}
 }
+
+
+#' Get the last specified host
+#'
+#' This function returns the default or the last specified host if called without an argument.
+#' It changes the host when called with an argument.
+#' 
+#' @param host defaults to https://formr.org
+#'
+#' @return the last specified host
+#' @export
+#' @examples
+#' formr_last_host("https://formr.org")
+#' formr_last_host()
+formr_last_host <- local({
+	last_host <- "https://formr.org"
+	function(host = NULL) {
+		if (!is.null(host)) {
+			if (!grepl("^https?://", host)) {
+				stop("Host must start with 'https://' or 'http://'.")
+			}
+			if (grepl("/$", host)) {
+				host <- sub("/$", "", host)
+			}
+			last_host <<- host
+		}
+		return(last_host)
+	}
+})
 
 #' Store keys in keyring
 #'
@@ -65,14 +96,14 @@ formr_store_keys = function(account_name) {
 #'
 #' Disconnects from formr if connected.
 #'
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_disconnect()
 #' }
 
-formr_disconnect = function(host = "https://formr.org") {
+formr_disconnect = function(host = formr_last_host()) {
   resp = httr::GET(paste0(host, "/admin/account/logout"))
   text = httr::content(resp, encoding = "utf8", as = "text")
   if (resp$status_code == 200 && grepl("logged out", text, 
@@ -90,7 +121,7 @@ formr_disconnect = function(host = "https://formr.org") {
 #' and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_extra)
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @param ... passed to [formr_post_process_results()]
 #' @export
 #' @examples
@@ -98,7 +129,7 @@ formr_disconnect = function(host = "https://formr.org") {
 #' formr_results(survey_name = 'training_diary' )
 #' }
 
-formr_results = function(survey_name, host = "https://formr.org", ...) {
+formr_results = function(survey_name, host = formr_last_host(), ...) {
 	results = formr_raw_results(survey_name, host)
 	item_list = formr_items(survey_name, host)
 	item_displays = formr_item_displays(survey_name, host)
@@ -233,14 +264,14 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 #' you can download data using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_raw_results(survey_name = 'training_diary' )
 #' }
 
-formr_raw_results = function(survey_name, host = "https://formr.org") {
+formr_raw_results = function(survey_name, host = formr_last_host()) {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_results?format=json"))
   if (resp$status_code == 200)
@@ -256,7 +287,7 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 #' you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @param path path to local JSON copy of the item table
 #' @export
 #' @examples
@@ -267,7 +298,7 @@ formr_raw_results = function(survey_name, host = "https://formr.org") {
 #' formr_items(path = 
 #' 	system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))[1:2]
 
-formr_items = function(survey_name = NULL, host = "https://formr.org", 
+formr_items = function(survey_name = NULL, host = formr_last_host(), 
   path = NULL) {
   item_list = NULL
   if (!is.null(survey_name)) {
@@ -395,7 +426,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #' you can download detailed times and display counts for each item using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -403,7 +434,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #' formr_item_displays(survey_name = 'training_diary' )
 #' }
 
-formr_item_displays = function(survey_name, host = "https://formr.org") {
+formr_item_displays = function(survey_name, host = formr_last_host()) {
   resp = httr::GET(paste0(host, "/admin/survey/", survey_name, 
     "/export_itemdisplay?format=json"))
 
@@ -424,7 +455,7 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
 #' you can download the assigned random groups and merge them with your data.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -432,7 +463,7 @@ formr_item_displays = function(survey_name, host = "https://formr.org") {
 #' formr_shuffled(run_name = 'different_drills' )
 #' }
 
-formr_shuffled = function(run_name, host = "https://formr.org") {
+formr_shuffled = function(run_name, host = formr_last_host()) {
   resp = httr::GET(paste0(host, "/admin/run/", run_name, "/random_groups_export?format=json"))
   if (resp$status_code == 200) 
     jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
@@ -446,7 +477,7 @@ formr_shuffled = function(run_name, host = "https://formr.org") {
 #' you can download a table showing where they are in the run.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -454,7 +485,7 @@ formr_shuffled = function(run_name, host = "https://formr.org") {
 #' formr_user_overview(run_name = 'different_drills' )
 #' }
 
-formr_user_overview = function(run_name, host = "https://formr.org") {
+formr_user_overview = function(run_name, host = formr_last_host()) {
 	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_user_overview?format=json"))
 	if (resp$status_code == 200) 
 		jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
@@ -469,7 +500,7 @@ formr_user_overview = function(run_name, host = "https://formr.org") {
 #' you can download a table showing their progression through the run.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -477,7 +508,7 @@ formr_user_overview = function(run_name, host = "https://formr.org") {
 #' formr_user_detail(run_name = 'different_drills' )
 #' }
 
-formr_user_detail = function(run_name, host = "https://formr.org") {
+formr_user_detail = function(run_name, host = formr_last_host()) {
 	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_user_detail?format=json"))
 	if (resp$status_code == 200) 
 		jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
@@ -511,7 +542,7 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -521,11 +552,9 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRUE))
 #' results = formr_recognise(item_list = items, results = results)
 #' class(results$created)
-
-
 formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
-  host = "https://formr.org") {
+  host = formr_last_host()) {
 	# from https://stackoverflow.com/questions/17397340/type-conversion-in-r-based-on-type-of-another-variable
 	
 	# results fields that appear in all formr_results but aren't
@@ -673,7 +702,7 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #'  
 #'
 #' @param survey_file_path the path to an item table in csv/json/xlsx etc. 
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -684,7 +713,7 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #' }
 
 
-formr_upload_items = function(survey_file_path, host = "https://formr.org") {
+formr_upload_items = function(survey_file_path, host = formr_last_host()) {
 	resp <- httr::POST(
 		url = paste0(host, "/admin/survey/add_survey"),
 		body = list(uploaded = httr::upload_file(survey_file_path))
@@ -782,7 +811,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
-#' @param host defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @param compute_alphas deprecated, functionality migrated to codebook package
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
 #' @param plot_likert deprecated, functionality migrated to codebook package
@@ -804,7 +833,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 
 formr_aggregate = function(survey_name, item_list = formr_items(survey_name, 
   host = host), results = formr_raw_results(survey_name, host = host), 
-  host = "https://formr.org", compute_alphas = FALSE, fallback_max = 5, 
+  host = formr_last_host(), compute_alphas = FALSE, fallback_max = 5, 
   plot_likert = FALSE, quiet = FALSE, aggregation_function = rowMeans, ...) {
   results = formr_reverse(results, item_list, fallback_max = fallback_max)
   item_names = names(results)  # update after reversing

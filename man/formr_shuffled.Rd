@@ -4,12 +4,12 @@
 \alias{formr_shuffled}
 \title{Download random groups}
 \usage{
-formr_shuffled(run_name, host = "https://formr.org")
+formr_shuffled(run_name, host = formr_last_host())
 }
 \arguments{
 \item{run_name}{case-sensitive name of the run in which you randomised participants}
 
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 }
 \description{
 formr has a specific module for randomisation.

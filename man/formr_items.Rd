@@ -4,12 +4,12 @@
 \alias{formr_items}
 \title{Download items from formr}
 \usage{
-formr_items(survey_name = NULL, host = "https://formr.org", path = NULL)
+formr_items(survey_name = NULL, host = formr_last_host(), path = NULL)
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 
 \item{path}{path to local JSON copy of the item table}
 }
