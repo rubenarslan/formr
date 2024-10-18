@@ -19,7 +19,7 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' }
 formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(), keyring = NULL) {
 	formr_last_host(host)  # Store the host
-	if (!missing(keyring) || is.null(keyring)) {
+	if (!missing(keyring) && !is.null(keyring)) {
 		if (is.null(email) && 
 				length(keyring::key_list(keyring)[["username"]]) ==  1) {
 			email <- keyring::key_list(keyring)[["username"]]
