@@ -5,3 +5,7 @@
 .credentials.R
 graph_run
 ^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
