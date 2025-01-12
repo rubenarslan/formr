@@ -1,5 +1,5 @@
 Package: formr
-Title: formr survey framework
+Title: formr survey framework accompanying R package
 Description: The formr R package provides a few convenience functions
     that may be useful to the users of formr (formr.org), an online
     survey framework which heavily relies on R via openCPU.
@@ -11,7 +11,7 @@ Authors@R: c(
     email = "rubenarslan@gmail.com",
     role = c("aut","cre"))
     )
-Version: 0.10.2
+Version: 0.11.0
 Depends:
     R (>= 3.0.2)
 Imports:

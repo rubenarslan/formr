@@ -1,4 +1,9 @@
 # formr
+ <!-- badges: start -->
+ [![CRAN status](https://www.r-pkg.org/badges/version/formr)](https://CRAN.R-project.org/package=formr)
+  [![Codecov test coverage](https://codecov.io/gh/rubenarslan/formr/graph/badge.svg)](https://app.codecov.io/gh/rubenarslan/formr)
+  <!-- badges: end -->
+
 ## The accompanying R package for the study framework [formr](https://github.com/rubenarslan/formr.org) 
 
 The formr R package provides a few convenience functions that may be useful to the users of formr ([formr.org](https://formr.org)), an online survey framework which heavily relies on R via [openCPU](https://github.com/jeroenooms/opencpu). Some functions may be useful to others too.

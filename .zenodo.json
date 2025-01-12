@@ -1,9 +1,9 @@
 {
-	"title": "formr.org survey framework utility R package",
+    "title": "formr survey framework accompanying R package",
     "upload_type": "software",
     "creators": [
         {
-            "affiliation": "Center for Adaptive Rationality, Max Planck Institute for Human Development",
+            "affiliation": "University of Leipzig",
             "name": "Ruben C. Arslan",
             "orcid": "0000-0002-6670-5658"
         }
