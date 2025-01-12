@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,9 +30,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="formr-api-and-connection">formr API and Connection<a class="anchor" aria-label="anchor" href="#formr-api-and-connection"></a></h2>
 
-
+      <div class="section-desc"><p>Functions for API access and connection management</p></div>
 
 
     </div><div class="section level2">
@@ -41,78 +41,6 @@
 
 
       <dl><dt>
-
-          <code><a href="aggregate_and_document_scale.html">aggregate_and_document_scale()</a></code>
-
-        </dt>
-        <dd>Aggregate variables and remember which variables this were</dd>
-      </dl><dl><dt>
-
-          <code><a href="as.data.frame.formr_item_list.html">as.data.frame(<i>&lt;formr_item_list&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Transform formr_item_list into a data.frame for ease of use</dd>
-      </dl><dl><dt>
-
-          <code><a href="asis_knit_child.html">asis_knit_child()</a></code>
-
-        </dt>
-        <dd>knit_child as is</dd>
-      </dl><dl><dt>
-
-          <code><a href="choice_labels_for_values.html">choice_labels_for_values()</a></code>
-
-        </dt>
-        <dd>switch choice values with labels</dd>
-      </dl><dl><dt>
-
-          <code><a href="crosstabs.html">crosstabs()</a></code>
-
-        </dt>
-        <dd>xtabs with sensible defaults</dd>
-      </dl><dl><dt>
-
-          <code><a href="current.html">current()</a></code>
-
-        </dt>
-        <dd>Gives the last element, doesn't omit missings</dd>
-      </dl><dl><dt>
-
-          <code><a href="email_image.html">email_image()</a></code>
-
-        </dt>
-        <dd>generates valid email cids</dd>
-      </dl><dl><dt>
-
-          <code><a href="expired.html">expired()</a></code>
-
-        </dt>
-        <dd>How many surveys were expired?</dd>
-      </dl><dl><dt>
-
-          <code><a href="feedback_chunk.html">feedback_chunk()</a></code>
-
-        </dt>
-        <dd>Text feedback based on groups</dd>
-      </dl><dl><dt>
-
-          <code><a href="finished.html">finished()</a></code>
-
-        </dt>
-        <dd>How many surveys were finished?</dd>
-      </dl><dl><dt>
-
-          <code><a href="first.html">first()</a></code>
-
-        </dt>
-        <dd>Gives the first non-missing element</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_aggregate.html">formr_aggregate()</a></code>
-
-        </dt>
-        <dd>Aggregate data based on item table</dd>
-      </dl><dl><dt>
 
           <code><a href="formr_api_access_token.html">formr_api_access_token()</a></code>
 
@@ -144,40 +72,33 @@
         <dd>Disconnect from formr</dd>
       </dl><dl><dt>
 
-          <code><a href="formr_inline_render.html">formr_inline_render()</a></code>
-
-        </dt>
-        <dd>render inline text for formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_item_displays.html">formr_item_displays()</a></code>
-
-        </dt>
-        <dd>Download detailed result timings and display counts from formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_items.html">formr_items()</a></code>
-
-        </dt>
-        <dd>Download items from formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_knit.html">formr_knit()</a></code>
-
-        </dt>
-        <dd>knit rmarkdown to markdown for formr</dd>
-      </dl><dl><dt>
-
           <code><a href="formr_last_host.html">formr_last_host()</a></code>
 
         </dt>
         <dd>Get the last specified host</dd>
       </dl><dl><dt>
 
-          <code><a href="formr_post_process_results.html">formr_post_process_results()</a></code>
+          <code><a href="formr_store_keys.html">formr_store_keys()</a></code>
 
         </dt>
-        <dd>Processed, aggregated results</dd>
+        <dd>Store keys in keyring</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data-processing-and-results">Data Processing and Results<a class="anchor" aria-label="anchor" href="#data-processing-and-results"></a></h2>
+
+      <div class="section-desc"><p>Functions for handling survey results and data processing</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="formr_results.html">formr_results()</a></code>
+
+        </dt>
+        <dd>Download processed, aggregated results from formr</dd>
       </dl><dl><dt>
 
           <code><a href="formr_raw_results.html">formr_raw_results()</a></code>
@@ -186,58 +107,28 @@
         <dd>Download data from formr</dd>
       </dl><dl><dt>
 
+          <code><a href="formr_post_process_results.html">formr_post_process_results()</a></code>
+
+        </dt>
+        <dd>Processed, aggregated results</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_aggregate.html">formr_aggregate()</a></code>
+
+        </dt>
+        <dd>Aggregate data based on item table</dd>
+      </dl><dl><dt>
+
           <code><a href="formr_recognise.html">formr_recognise()</a></code>
 
         </dt>
         <dd>Recognise data types based on item table</dd>
       </dl><dl><dt>
 
-          <code><a href="formr_render.html">formr_render()</a></code>
-
-        </dt>
-        <dd>render text for formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_render_commonmark.html">formr_render_commonmark()</a></code>
-
-        </dt>
-        <dd>render inline text for formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_results.html">formr_results()</a></code>
-
-        </dt>
-        <dd>Download processed, aggregated results from formr</dd>
-      </dl><dl><dt>
-
           <code><a href="formr_reverse.html">formr_reverse()</a></code>
 
         </dt>
         <dd>Reverse items based on item table or a fallback_max</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_shuffled.html">formr_shuffled()</a></code>
-
-        </dt>
-        <dd>Download random groups</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_simulate_from_items.html">formr_simulate_from_items()</a></code>
-
-        </dt>
-        <dd>Simulate data based on item table</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_store_keys.html">formr_store_keys()</a></code>
-
-        </dt>
-        <dd>Store keys in keyring</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_upload_items.html">formr_upload_items()</a></code>
-
-        </dt>
-        <dd>Upload new item table</dd>
       </dl><dl><dt>
 
           <code><a href="formr_user_detail.html">formr_user_detail()</a></code>
@@ -258,52 +149,51 @@
         <dd>pass in the url to the RDS representation of a openCPU session object, get the object</dd>
       </dl><dl><dt>
 
-          <code><a href="grapes-begins_with-grapes.html">`%begins_with%`</a></code>
+          <code><a href="as.data.frame.formr_item_list.html">as.data.frame(<i>&lt;formr_item_list&gt;</i>)</a></code>
 
         </dt>
-        <dd>check whether a character string begins with a string</dd>
+        <dd>Transform formr_item_list into a data.frame for ease of use</dd>
+      </dl></div><div class="section level2">
+      <h2 id="item-management">Item Management<a class="anchor" aria-label="anchor" href="#item-management"></a></h2>
+
+      <div class="section-desc"><p>Functions for managing survey items, scales, and related operations</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="formr_items.html">formr_items()</a></code>
+
+        </dt>
+        <dd>Download items from formr</dd>
       </dl><dl><dt>
 
-          <code><a href="grapes-contains-grapes.html">`%contains%`</a></code>
+          <code><a href="formr_item_displays.html">formr_item_displays()</a></code>
 
         </dt>
-        <dd>check whether a character string contains another</dd>
+        <dd>Download detailed result timings and display counts from formr</dd>
       </dl><dl><dt>
 
-          <code><a href="grapes-contains_word-grapes.html">`%contains_word%`</a></code>
+          <code><a href="formr_upload_items.html">formr_upload_items()</a></code>
 
         </dt>
-        <dd>check whether a character string contains another as a word</dd>
+        <dd>Upload new item table</dd>
       </dl><dl><dt>
 
-          <code><a href="grapes-ends_with-grapes.html">`%ends_with%`</a></code>
+          <code><a href="formr_simulate_from_items.html">formr_simulate_from_items()</a></code>
 
         </dt>
-        <dd>check whether a character string ends with a string</dd>
+        <dd>Simulate data based on item table</dd>
       </dl><dl><dt>
 
-          <code><a href="if_na.html">if_na()</a></code>
+          <code><a href="formr_shuffled.html">formr_shuffled()</a></code>
 
         </dt>
-        <dd>Replace NA values with something else</dd>
-      </dl><dl><dt>
-
-          <code><a href="if_na_null.html">if_na_null()</a></code>
-
-        </dt>
-        <dd>This function makes sure you know what to expect when evaluating uncertain results in an if-clause. In most cases, you should not use this function, because it can lump a lot of very different cases together, but it may have some use for fool-proofing certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have a value to check.</dd>
-      </dl><dl><dt>
-
-          <code><a href="ifelsena.html">ifelsena()</a></code>
-
-        </dt>
-        <dd>Like <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code>, but allows you to assign a third value to missings.</dd>
-      </dl><dl><dt>
-
-          <code><a href="in_time_window.html">in_time_window()</a></code>
-
-        </dt>
-        <dd>checks whether the current time is in a certain time window</dd>
+        <dd>Download random groups</dd>
       </dl><dl><dt>
 
           <code><a href="item.html">item()</a></code>
@@ -318,28 +208,104 @@
         <dd>get item list from survey attributes</dd>
       </dl><dl><dt>
 
+          <code><a href="aggregate_and_document_scale.html">aggregate_and_document_scale()</a></code>
+
+        </dt>
+        <dd>Aggregate variables and remember which variables this were</dd>
+      </dl><dl><dt>
+
+          <code><a href="choice_labels_for_values.html">choice_labels_for_values()</a></code>
+
+        </dt>
+        <dd>switch choice values with labels</dd>
+      </dl><dl><dt>
+
+          <code><a href="reverse_labelled_values.html">reverse_labelled_values()</a></code>
+
+        </dt>
+        <dd>Reverse labelled values</dd>
+      </dl></div><div class="section level2">
+      <h2 id="feedback-and-plotting">Feedback and Plotting<a class="anchor" aria-label="anchor" href="#feedback-and-plotting"></a></h2>
+
+      <div class="section-desc"><p>Functions for visualization and feedback generation</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="qplot_on_normal.html">qplot_on_normal()</a></code>
+
+        </dt>
+        <dd>Plot a normed value on the standard normal</dd>
+      </dl><dl><dt>
+
+          <code><a href="qplot_on_bar.html">qplot_on_bar()</a></code>
+
+        </dt>
+        <dd>Plot normed values as a barchart</dd>
+      </dl><dl><dt>
+
+          <code><a href="qplot_on_polar.html">qplot_on_polar()</a></code>
+
+        </dt>
+        <dd>Time-polar plot</dd>
+      </dl><dl><dt>
+
+          <code><a href="feedback_chunk.html">feedback_chunk()</a></code>
+
+        </dt>
+        <dd>Text feedback based on groups</dd>
+      </dl></div><div class="section level2">
+      <h2 id="rendering-and-markdown">Rendering and Markdown<a class="anchor" aria-label="anchor" href="#rendering-and-markdown"></a></h2>
+
+      <div class="section-desc"><p>Functions for rendering and markdown processing</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="formr_render.html">formr_render()</a></code>
+
+        </dt>
+        <dd>render text for formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_render_commonmark.html">formr_render_commonmark()</a></code>
+
+        </dt>
+        <dd>render inline text for formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_inline_render.html">formr_inline_render()</a></code>
+
+        </dt>
+        <dd>render inline text for formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_knit.html">formr_knit()</a></code>
+
+        </dt>
+        <dd>knit rmarkdown to markdown for formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="asis_knit_child.html">asis_knit_child()</a></code>
+
+        </dt>
+        <dd>knit_child as is</dd>
+      </dl><dl><dt>
+
           <code><a href="knit_prefixed.html">knit_prefixed()</a></code>
 
         </dt>
         <dd>knit prefixed</dd>
-      </dl><dl><dt>
-
-          <code><a href="last.html">last()</a></code>
-
-        </dt>
-        <dd>Gives the last non-missing element</dd>
-      </dl><dl><dt>
-
-          <code><a href="loadRDS.html">loadRDS()</a></code>
-
-        </dt>
-        <dd>loads an RDS object, assigns it to an object of the base-filename</dd>
-      </dl><dl><dt>
-
-          <code><a href="ls_by_class.html">ls_by_class()</a></code>
-
-        </dt>
-        <dd>get functions in the environment by their class. Useful to find e.g. all regression models you've stored in interactive programming.</dd>
       </dl><dl><dt>
 
           <code><a href="markdown_custom_options.html">markdown_custom_options()</a></code>
@@ -360,28 +326,16 @@
         <dd>hard line breaks</dd>
       </dl><dl><dt>
 
-          <code><a href="miss_frac.html">miss_frac()</a></code>
+          <code><a href="render_text.html">render_text()</a></code>
 
         </dt>
-        <dd>percentage of missings for each variable in a data.frame</dd>
+        <dd>render text</dd>
       </dl><dl><dt>
 
-          <code><a href="n_missing.html">n_missing()</a></code>
+          <code><a href="word_document.html">word_document()</a></code>
 
         </dt>
-        <dd>Returns the number of missings in a variable or dataset. If missings are an explicit level in a factor variable, this function defaults to reporting them anyway.</dd>
-      </dl><dl><dt>
-
-          <code><a href="n_nonmissing.html">n_nonmissing()</a></code>
-
-        </dt>
-        <dd>Returns the number of nonmissings in a variable or dataset. If missings are an explicit level in a factor variable, this function defaults to excluding them anyway.</dd>
-      </dl><dl><dt>
-
-          <code><a href="next_day.html">next_day()</a></code>
-
-        </dt>
-        <dd>checks whether a new day has broken (date has increased by at least one day)</dd>
+        <dd>word_document from rmarkdown, but has an added option not to break on error</dd>
       </dl><dl><dt>
 
           <code><a href="paste.knit_asis.html">paste.knit_asis()</a></code>
@@ -394,54 +348,35 @@
 
         </dt>
         <dd>Print new lines in knit_asis outputs</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="time-and-messaging">Time and Messaging<a class="anchor" aria-label="anchor" href="#time-and-messaging"></a></h2>
 
-          <code><a href="props.html">props()</a></code>
+      <div class="section-desc"><p>Functions for time-related operations and messaging</p></div>
 
-        </dt>
-        <dd>proportions table</dd>
-      </dl><dl><dt>
 
-          <code><a href="qplot_on_bar.html">qplot_on_bar()</a></code>
+    </div><div class="section level2">
 
-        </dt>
-        <dd>Plot normed values as a barchart</dd>
-      </dl><dl><dt>
 
-          <code><a href="qplot_on_normal.html">qplot_on_normal()</a></code>
 
-        </dt>
-        <dd>Plot a normed value on the standard normal</dd>
-      </dl><dl><dt>
 
-          <code><a href="qplot_on_polar.html">qplot_on_polar()</a></code>
+      <dl><dt>
+
+          <code><a href="in_time_window.html">in_time_window()</a></code>
 
         </dt>
-        <dd>Time-polar plot</dd>
+        <dd>checks whether the current time is in a certain time window</dd>
       </dl><dl><dt>
 
-          <code><a href="random_date_in_range.html">random_date_in_range()</a></code>
+          <code><a href="next_day.html">next_day()</a></code>
 
         </dt>
-        <dd>Random date in range</dd>
+        <dd>checks whether a new day has broken (date has increased by at least one day)</dd>
       </dl><dl><dt>
 
-          <code><a href="render_text.html">render_text()</a></code>
+          <code><a href="time_passed.html">time_passed()</a></code>
 
         </dt>
-        <dd>render text</dd>
-      </dl><dl><dt>
-
-          <code><a href="rescue_attributes.html">rescue_attributes()</a></code>
-
-        </dt>
-        <dd>Rescue lost attributes</dd>
-      </dl><dl><dt>
-
-          <code><a href="reverse_labelled_values.html">reverse_labelled_values()</a></code>
-
-        </dt>
-        <dd>Reverse labelled values</dd>
+        <dd>checks how much time has passed relative to the user's last action</dd>
       </dl><dl><dt>
 
           <code><a href="text_message_clickatell.html">text_message_clickatell()</a></code>
@@ -462,18 +397,108 @@
         <dd>Send text message via Twilio</dd>
       </dl><dl><dt>
 
-          <code><a href="time_passed.html">time_passed()</a></code>
+          <code><a href="email_image.html">email_image()</a></code>
 
         </dt>
-        <dd>checks how much time has passed relative to the user's last action</dd>
+        <dd>generates valid email cids</dd>
+      </dl></div><div class="section level2">
+      <h2 id="helper-functions">Helper Functions<a class="anchor" aria-label="anchor" href="#helper-functions"></a></h2>
+
+      <div class="section-desc"><p>Utility functions and operators for common operations</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="first.html">first()</a></code>
+
+        </dt>
+        <dd>Gives the first non-missing element</dd>
       </dl><dl><dt>
 
-          <code><a href="word_document.html">word_document()</a></code>
+          <code><a href="last.html">last()</a></code>
 
         </dt>
-        <dd>word_document from rmarkdown, but has an added option not to break on error</dd>
+        <dd>Gives the last non-missing element</dd>
+      </dl><dl><dt>
+
+          <code><a href="current.html">current()</a></code>
+
+        </dt>
+        <dd>Gives the last element, doesn't omit missings</dd>
+      </dl><dl><dt>
+
+          <code><a href="finished.html">finished()</a></code>
+
+        </dt>
+        <dd>How many surveys were finished?</dd>
+      </dl><dl><dt>
+
+          <code><a href="expired.html">expired()</a></code>
+
+        </dt>
+        <dd>How many surveys were expired?</dd>
+      </dl><dl><dt>
+
+          <code><a href="if_na.html">if_na()</a></code>
+
+        </dt>
+        <dd>Replace NA values with something else</dd>
+      </dl><dl><dt>
+
+          <code><a href="if_na_null.html">if_na_null()</a></code>
+
+        </dt>
+        <dd>This function makes sure you know what to expect when evaluating uncertain results in an if-clause. In most cases, you should not use this function, because it can lump a lot of very different cases together, but it may have some use for fool-proofing certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have a value to check.</dd>
+      </dl><dl><dt>
+
+          <code><a href="ifelsena.html">ifelsena()</a></code>
+
+        </dt>
+        <dd>Like <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code>, but allows you to assign a third value to missings.</dd>
+      </dl><dl><dt>
+
+          <code><a href="rescue_attributes.html">rescue_attributes()</a></code>
+
+        </dt>
+        <dd>Rescue lost attributes</dd>
+      </dl><dl><dt>
+
+          <code><a href="grapes-contains-grapes.html">`%contains%`</a></code>
+
+        </dt>
+        <dd>check whether a character string contains another</dd>
+      </dl><dl><dt>
+
+          <code><a href="grapes-contains_word-grapes.html">`%contains_word%`</a></code>
+
+        </dt>
+        <dd>check whether a character string contains another as a word</dd>
+      </dl><dl><dt>
+
+          <code><a href="grapes-begins_with-grapes.html">`%begins_with%`</a></code>
+
+        </dt>
+        <dd>check whether a character string begins with a string</dd>
+      </dl><dl><dt>
+
+          <code><a href="grapes-ends_with-grapes.html">`%ends_with%`</a></code>
+
+        </dt>
+        <dd>check whether a character string ends with a string</dd>
+      </dl><dl><dt>
+
+          <code><a href="random_date_in_range.html">random_date_in_range()</a></code>
+
+        </dt>
+        <dd>Random date in range</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

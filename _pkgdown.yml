@@ -2,3 +2,98 @@ url: http://rubenarslan.github.io/formr/
 template:
   bootstrap: 5
 
+reference:
+- title: formr API and Connection
+  desc: Functions for API access and connection management
+  contents:
+  - '`formr_api_access_token`'
+  - '`formr_api_results`'
+  - '`formr_api_session`'
+  - '`formr_connect`'
+  - '`formr_disconnect`'
+  - '`formr_last_host`'
+  - '`formr_store_keys`'
+
+- title: Data Processing and Results
+  desc: Functions for handling survey results and data processing
+  contents:
+  - '`formr_results`'
+  - '`formr_raw_results`'
+  - '`formr_post_process_results`'
+  - '`formr_aggregate`'
+  - '`formr_recognise`'
+  - '`formr_reverse`'
+  - '`formr_user_detail`'
+  - '`formr_user_overview`'
+  - '`get_opencpu_rds`'
+  - '`as.data.frame.formr_item_list`'
+
+- title: Item Management
+  desc: Functions for managing survey items, scales, and related operations
+  contents:
+  - '`formr_items`'
+  - '`formr_item_displays`'
+  - '`formr_upload_items`'
+  - '`formr_simulate_from_items`'
+  - '`formr_shuffled`'
+  - '`item`'
+  - '`items`'
+  - '`aggregate_and_document_scale`'
+  - '`choice_labels_for_values`'
+  - '`reverse_labelled_values`'
+
+- title: Feedback and Plotting
+  desc: Functions for visualization and feedback generation
+  contents:
+  - '`qplot_on_normal`'
+  - '`qplot_on_bar`'
+  - '`qplot_on_polar`'
+  - '`feedback_chunk`'
+
+- title: Rendering and Markdown
+  desc: Functions for rendering and markdown processing
+  contents:
+  - '`formr_render`'
+  - '`formr_render_commonmark`'
+  - '`formr_inline_render`'
+  - '`formr_knit`'
+  - '`asis_knit_child`'
+  - '`knit_prefixed`'
+  - '`markdown_custom_options`'
+  - '`markdown_github`'
+  - '`markdown_hard_line_breaks`'
+  - '`render_text`'
+  - '`word_document`'
+  - '`paste.knit_asis`'
+  - '`print.knit_asis`'
+
+- title: Time and Messaging
+  desc: Functions for time-related operations and messaging
+  contents:
+  - '`in_time_window`'
+  - '`next_day`'
+  - '`time_passed`'
+  - '`text_message_clickatell`'
+  - '`text_message_massenversand`'
+  - '`text_message_twilio`'
+  - '`email_image`'
+
+- title: Helper Functions
+  desc: Utility functions and operators for common operations
+  contents:
+  - '`first`'
+  - '`last`'
+  - '`current`'
+  - '`finished`'
+  - '`expired`'
+  - '`if_na`'
+  - '`if_na_null`'
+  - '`ifelsena`'
+  - '`rescue_attributes`'
+  - '`%contains%`'
+  - '`%contains_word%`'
+  - '`%begins_with%`'
+  - '`%ends_with%`'
+  - '`%starts_with%`'
+  - '`random_date_in_range`'
+
