@@ -15,6 +15,7 @@
 first = function(x, n = 1, na.rm = TRUE) {
   if (na.rm) 
     x = stats::na.omit(x)
+  if (length(x) == 0) return(x)  # preserve type for empty vector
   utils::head(x, n)
 }
 
@@ -35,6 +36,7 @@ first = function(x, n = 1, na.rm = TRUE) {
 last = function(x, n = 1, na.rm = TRUE) {
   if (na.rm) 
     x = stats::na.omit(x)
+  if (length(x) == 0) return(x)  # preserve type for empty vector
   utils::tail(x, n)
 }
 
@@ -49,7 +51,7 @@ last = function(x, n = 1, na.rm = TRUE) {
 #' current( c(1:10,NA) )
 #' current( 1:10 )
 current = function(x) {
-  utils::tail(x, 1)
+  utils::tail(x, 1)  # preserve type of input
 }
 
 
@@ -322,12 +324,16 @@ if_na_null = function(test, na = FALSE, null = FALSE) {
 #' number_of_sex_partners <- c(1, 3, 5, 10, NA, 29)
 #' if_na(number_of_sex_partners, 0)
 
-if_na <- function(x, missing) {
-	if (length(missing) > 1) {
-		missing <- missing[is.na(x)]
-	}
-	x[is.na(x)] <- missing
-	x
+if_na = function(x, missing) {
+  if (length(missing) > 1) {
+    na_positions <- which(is.na(x))
+    if (length(na_positions) > 0) {
+      x[na_positions] <- missing[1:length(na_positions)]
+    }
+  } else {
+    x[is.na(x)] <- missing
+  }
+  x
 }
 
 

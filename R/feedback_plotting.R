@@ -14,16 +14,18 @@
 #' normed_value = scale(x = 20, center = 14, scale = 5) # standardise value
 #' qplot_on_normal(normed_value, xlab = "Extraversion")
 
-qplot_on_normal = function(normed_value,  ylab = "Percentage of other people with this value", 
-													 xlab = '' , colour = "blue", x_ticks = c('--','-','0','+','++')) 
+qplot_on_normal = function(normed_value, ylab = "Percentage of other people with this value", 
+                          xlab = '', colour = "blue", x_ticks = c('--','-','0','+','++')) 
 {
-	ggplot()+
-	stat_function(aes_string(x="x"), fun = stats::dnorm, size = 1, data = data.frame(x = -3:3)) +
-	geom_vline(xintercept= normed_value, colour = colour,size = 1) +
-	scale_x_continuous(xlab, breaks = c(-2:2), labels = x_ticks) +
-	scale_y_continuous(ylab, labels = scales::percent_format())+
-	theme_minimal() + 
-	theme(text = element_text(size = 18))
+  # Create base plot with proper labels
+  ggplot(data.frame(x = -3:3), aes(x = x)) +
+    stat_function(fun = stats::dnorm, linewidth = 1) +
+    geom_vline(xintercept = normed_value, colour = colour, linewidth = 1) +
+    scale_x_continuous(breaks = c(-2:2), labels = x_ticks) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    labs(x = xlab, y = ylab) +  # Use labs() to set labels properly
+    theme_minimal() + 
+    theme(text = element_text(size = 18))
 }
 
 
@@ -82,27 +84,32 @@ feedback_chunk = function(normed_value,  chunks)
 #' value = c(-3,1,-1,0.5,2), se = c(0.2,0.3,0.2,0.25,0.4)) # standardise value
 #' qplot_on_bar(normed_data, title = "Your personality")
 
-qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title = '', y_ticks = c('--','-','0','+','++'))
+qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title = '', 
+                       y_ticks = c('--','-','0','+','++'))
 {
-	if(! all(c("value","variable") %in% names(normed_data))) stop("Malformed file, check help.")
-	if(exists("se",where = normed_data))
-	{
-		normed_data$ymin = normed_data$value - normed_data$se
-		normed_data$ymax = normed_data$value + normed_data$se
-	}
-	plot = 
-	ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "variable")) +
-		ggtitle(title)+
-		scale_fill_brewer("",palette="Set1")+
-		scale_y_continuous(ylab, breaks=c(-2,-1,0,1,2),labels= y_ticks) +
-		scale_x_discrete(xlab) +
-		theme_minimal() + 
-		theme(text= element_text(size = 18)) +
-		expand_limits(y=c(-2.5,2.5))
-	if(exists("ymin",where=normed_data)) {
-		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "variable"), size = 1) + scale_colour_brewer("",palette="Set1") + geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)
-
-	} else plot + geom_bar(stat="identity",position=position_dodge())
+  if(!all(c("value","variable") %in% names(normed_data))) stop("Malformed file, check help.")
+  if(exists("se", where = normed_data))
+  {
+    normed_data$ymin = normed_data$value - normed_data$se
+    normed_data$ymax = normed_data$value + normed_data$se
+  }
+  plot = 
+    ggplot(normed_data, aes(x = variable, y = value, fill = variable)) +
+    labs(x = xlab, y = ylab, title = title) +  # Use labs() to set labels properly
+    scale_fill_brewer("", palette = "Set1") +
+    scale_y_continuous(breaks = c(-2,-1,0,1,2), labels = y_ticks) +
+    theme_minimal() + 
+    theme(text = element_text(size = 18)) +
+    expand_limits(y = c(-2.5,2.5))
+  
+  if(exists("ymin", where = normed_data)) {
+    plot + 
+      geom_linerange(aes(ymin = ymin, ymax = ymax, colour = variable), linewidth = 1) + 
+      scale_colour_brewer("", palette = "Set1") + 
+      geom_bar(stat = "identity", position = position_dodge(), alpha = 0.7)
+  } else {
+    plot + geom_bar(stat = "identity", position = position_dodge())
+  }
 }
 
 
@@ -129,25 +136,29 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
 
 qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
 {
-	if(! all(c("value","variable") %in% names(normed_data)) ) stop("Malformed file, check help.")
-
-	if(exists("se",where = normed_data))
-	{
-		normed_data$ymin = normed_data$value - normed_data$se
-		normed_data$ymax = normed_data$value + normed_data$se
-	}
-	plot = 
-		ggplot(normed_data, aes_string(x = "variable", y = "value", fill = "value")) +
-		ggtitle(title)+
-		scale_y_continuous("",breaks=c()) +
-		xlab("") +
-		scale_fill_continuous(ylab) +
-		theme_minimal() + 
-		theme(text= element_text(size = 18)) +
-		coord_polar()
-	if(exists("ymin",where=normed_data)) {
-		plot + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax", colour = "value"), size = 1) + 
-			geom_bar(stat="identity",position=position_dodge(), alpha = 0.7)	+ scale_colour_continuous(ylab)
-		
-	} else plot + geom_bar(stat="identity",position=position_dodge())
+  if(!all(c("value","variable") %in% names(normed_data))) stop("Malformed file, check help.")
+  
+  if(exists("se", where = normed_data))
+  {
+    normed_data$ymin = normed_data$value - normed_data$se
+    normed_data$ymax = normed_data$value + normed_data$se
+  }
+  plot = 
+    ggplot(normed_data, aes(x = variable, y = value, fill = value)) +
+    ggtitle(title) +
+    scale_y_continuous("", breaks = c()) +
+    xlab("") +
+    scale_fill_continuous(name = ylab) +
+    theme_minimal() + 
+    theme(text = element_text(size = 18)) +
+    coord_polar()
+  
+  if(exists("ymin", where = normed_data)) {
+    plot + 
+      geom_linerange(aes(ymin = ymin, ymax = ymax, colour = value), linewidth = 1) + 
+      geom_bar(stat = "identity", position = position_dodge(), alpha = 0.7) + 
+      scale_colour_continuous(name = ylab)
+  } else {
+    plot + geom_bar(stat = "identity", position = position_dodge())
+  }
 }
