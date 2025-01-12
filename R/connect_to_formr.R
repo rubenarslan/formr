@@ -210,16 +210,16 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 											 "Weird missing." = haven::tagged_na("w"))
 		
 		missing_map <- item_displays %>% 
-			dplyr::mutate(hidden = dplyr::if_else(.data$hidden == 1, 1, 
-																						dplyr::if_else(is.na(.data$shown), -1, 0), -1)) %>% 
-			dplyr::select(.data$item_name, .data$hidden, .data$unit_session_id, .data$session) %>% 
-			dplyr::filter(!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))) %>% 
-			tidyr::spread(.data$item_name, .data$hidden, fill = -2) %>% 
-			dplyr::arrange(.data$session, .data$unit_session_id)
+			dplyr::mutate(hidden = dplyr::if_else(hidden == 1, 1, 
+																						dplyr::if_else(is.na(shown), -1, 0), -1)) %>% 
+			dplyr::select("item_name", "hidden", "unit_session_id", "session") %>% 
+			dplyr::filter(!duplicated(cbind(session, unit_session_id, item_name))) %>% 
+			tidyr::spread("item_name", "hidden", fill = -2) %>% 
+			dplyr::arrange("session", "unit_session_id")
 	
 		results_with_attrs <- results
 		results <- results %>% 
-			dplyr::arrange(.data$session, .data$created) # sort in the same manner
+			dplyr::arrange("session", "created") # sort in the same manner
 		
 		if (nrow(missing_map) != nrow(results)) {
 			warning("Unequal number of rows between item display and results.",
@@ -965,7 +965,7 @@ items = function(survey) {
 #' item(processed_results, "BFIK_extra_4")
 item = function(survey, item_name) {
 	att = attributes(survey[[ item_name ]])
-	if (exists("item", att)) {
+	if (!is.null(att) && exists("item", att)) {
 		if (att$item$name != item_name) {
 			att$item$name = item_name
 		}
