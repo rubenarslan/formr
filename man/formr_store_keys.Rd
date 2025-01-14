@@ -4,7 +4,7 @@
 \alias{formr_store_keys}
 \title{Store keys in keyring}
 \usage{
-formr_store_keys(account_name)
+formr_store_keys(account_name, secret_2fa = NULL)
 }
 \arguments{
 \item{account_name}{a shorthand for the account you're using}

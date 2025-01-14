@@ -21,8 +21,9 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 	formr_last_host(host)  # Store the host
 	if (!missing(keyring) && !is.null(keyring)) {
 		if (is.null(email) && 
-				length(keyring::key_list(keyring)[["username"]]) ==  1) {
-			email <- keyring::key_list(keyring)[["username"]]
+				length(keyring::key_list(keyring)[["username"]]) %in% 1:2) {
+			usernames <- keyring::key_list(keyring)[["username"]]
+			email <- usernames[!grepl("2FA", usernames)][[1]]
 		}
 		password <- keyring::key_get(keyring, username = email)
 	} else {
@@ -35,6 +36,30 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 	resp <- httr::POST(paste0(host, "/admin/account/login"), body = list(email = email, 
 																																			 password = password))
 	text <- httr::content(resp, encoding = "utf8", as = "text")
+	
+	if (grepl("Verify your identity via 2FA", text)) {
+		# Try to get 2FA secret from keyring if available
+		twofa_secret <- NULL
+		if (!is.null(keyring)) {
+			tryCatch({
+				twofa_secret <- keyring::key_get(keyring, username = paste0(email, " 2FA"))
+			}, error = function(e) {
+				# Key not found, will prompt for code instead
+			})
+		}
+		
+		if (!is.null(twofa_secret) && twofa_secret != "") {
+			code <- otp::TOTP$new(twofa_secret)$now()
+		} else {
+			code <- readline("Enter 2FA code: ")
+		}
+		resp <- httr::POST(paste0(host, "/admin/account/twoFactor"), 
+											body = list(email = email,
+																 password = password,
+																 "2facode" = code))
+		text <- httr::content(resp, encoding = "utf8", as = "text")
+	}
+	
 	if (resp$status_code == 200 && grepl("Success!", text, fixed = TRUE)) { 
 		invisible(TRUE)
 	} else if (grepl("alert-danger", text, fixed = TRUE)) { 
@@ -85,10 +110,18 @@ formr_last_host <- local({
 #' formr_store_keys("formr_diary_study_account")
 #' }
 
-formr_store_keys = function(account_name) {
+formr_store_keys = function(account_name, secret_2fa = NULL) {
 	email = readline("Enter your email: ")
 	keyring::key_set(service = account_name,
 									 username = email)
+	if(!is.null(secret_2fa)) {
+		keyring::key_set(service = account_name, username = paste(email, "2FA"),
+										 value = secret_2fa)
+	}	else { 
+		keyring::key_set(service = account_name,
+										 username = paste(email, "2FA"),
+										 prompt = "2FA secret if applicable")
+	}
 }
 
 
@@ -1038,6 +1071,29 @@ get_opencpu_rds = function(session_url, local = TRUE) {
 		readRDS(gzcon(curl::curl(session_url)))
 	}
 }
+
+# #' Export the study/run specification from formr
+# #'
+# #' After connecting to formr using [formr_connect()]
+# #' you can download the study structure (or run). It is a JSON file.
+# #' 
+# #' @param run_name case-sensitive name of a run your account owns
+# #' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+# #' @param ... passed to [formr_post_process_results()]
+# #' @export
+# #' @examples
+# #' \dontrun{
+# #' formr_results(survey_name = 'training_diary' )
+# #' }
+# 
+# formr_run = function(run_name, host = formr_last_host(), ...) {
+# 	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_run?format=json"))
+# 	if (resp$status_code == 200) 
+# 		jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+# 																		 as = "text")) else stop("This run does not exist.")
+# 
+# }
+
 
 # # # # # ## testing with credentials formr_connect('', '')
 # vorab = formr_raw_results('Vorab_Fragebogen1') vorab_items
