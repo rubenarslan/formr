@@ -30,9 +30,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="formr-api-and-connection">formr API and Connection<a class="anchor" aria-label="anchor" href="#formr-api-and-connection"></a></h2>
+      <h2 id="data-processing-and-results">Data Processing and Results<a class="anchor" aria-label="anchor" href="#data-processing-and-results"></a></h2>
 
-      <div class="section-desc"><p>Functions for API access and connection management</p></div>
+      <div class="section-desc"><p>Functions for handling survey results and data processing</p></div>
 
 
     </div><div class="section level2">
@@ -41,24 +41,6 @@
 
 
       <dl><dt>
-
-          <code><a href="formr_api_access_token.html">formr_api_access_token()</a></code>
-
-        </dt>
-        <dd>Connect to formr API</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_api_results.html">formr_api_results()</a></code>
-
-        </dt>
-        <dd>Get result from formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_api_session.html">formr_api_session()</a></code>
-
-        </dt>
-        <dd>Get current API session Return or set URL in list form for formr API (if available)</dd>
-      </dl><dl><dt>
 
           <code><a href="formr_connect.html">formr_connect()</a></code>
 
@@ -82,18 +64,31 @@
 
         </dt>
         <dd>Store keys in keyring</dd>
-      </dl></div><div class="section level2">
-      <h2 id="data-processing-and-results">Data Processing and Results<a class="anchor" aria-label="anchor" href="#data-processing-and-results"></a></h2>
+      </dl><dl><dt>
 
-      <div class="section-desc"><p>Functions for handling survey results and data processing</p></div>
+          <code><a href="formr_items.html">formr_items()</a></code>
 
+        </dt>
+        <dd>Download items from formr</dd>
+      </dl><dl><dt>
 
-    </div><div class="section level2">
+          <code><a href="formr_item_displays.html">formr_item_displays()</a></code>
 
+        </dt>
+        <dd>Download detailed result timings and display counts from formr</dd>
+      </dl><dl><dt>
 
+          <code><a href="formr_upload_items.html">formr_upload_items()</a></code>
 
+        </dt>
+        <dd>Upload new item table</dd>
+      </dl><dl><dt>
 
-      <dl><dt>
+          <code><a href="formr_simulate_from_items.html">formr_simulate_from_items()</a></code>
+
+        </dt>
+        <dd>Simulate data based on item table</dd>
+      </dl><dl><dt>
 
           <code><a href="formr_results.html">formr_results()</a></code>
 
@@ -105,6 +100,18 @@
 
         </dt>
         <dd>Download data from formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_uploaded_files.html">formr_uploaded_files()</a></code>
+
+        </dt>
+        <dd>Download uploaded files from formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_backup_files.html">formr_backup_files()</a></code>
+
+        </dt>
+        <dd>Backup uploaded files from formr</dd>
       </dl><dl><dt>
 
           <code><a href="formr_post_process_results.html">formr_post_process_results()</a></code>
@@ -131,6 +138,12 @@
         <dd>Reverse items based on item table or a fallback_max</dd>
       </dl><dl><dt>
 
+          <code><a href="formr_run_structure.html">formr_run_structure()</a></code>
+
+        </dt>
+        <dd>Download run structure from formr</dd>
+      </dl><dl><dt>
+
           <code><a href="formr_user_detail.html">formr_user_detail()</a></code>
 
         </dt>
@@ -143,16 +156,45 @@
         <dd>Download random groups</dd>
       </dl><dl><dt>
 
-          <code><a href="get_opencpu_rds.html">get_opencpu_rds()</a></code>
+          <code><a href="formr_shuffled.html">formr_shuffled()</a></code>
 
         </dt>
-        <dd>pass in the url to the RDS representation of a openCPU session object, get the object</dd>
+        <dd>Download random groups</dd>
       </dl><dl><dt>
 
-          <code><a href="as.data.frame.formr_item_list.html">as.data.frame(<i>&lt;formr_item_list&gt;</i>)</a></code>
+          <code><a href="formr_backup_study.html">formr_backup_study()</a></code>
 
         </dt>
-        <dd>Transform formr_item_list into a data.frame for ease of use</dd>
+        <dd>Backup a study</dd>
+      </dl></div><div class="section level2">
+      <h2 id="formr-oauth-api-and-connection">formr OAuth API and Connection<a class="anchor" aria-label="anchor" href="#formr-oauth-api-and-connection"></a></h2>
+
+      <div class="section-desc"><p>Functions for OAuth API access and connection management</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="formr_api_access_token.html">formr_api_access_token()</a></code>
+
+        </dt>
+        <dd>Connect to formr API</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_api_results.html">formr_api_results()</a></code>
+
+        </dt>
+        <dd>Get result from formr</dd>
+      </dl><dl><dt>
+
+          <code><a href="formr_api_session.html">formr_api_session()</a></code>
+
+        </dt>
+        <dd>Get current API session Return or set URL in list form for formr API (if available)</dd>
       </dl></div><div class="section level2">
       <h2 id="item-management">Item Management<a class="anchor" aria-label="anchor" href="#item-management"></a></h2>
 
@@ -165,36 +207,6 @@
 
 
       <dl><dt>
-
-          <code><a href="formr_items.html">formr_items()</a></code>
-
-        </dt>
-        <dd>Download items from formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_item_displays.html">formr_item_displays()</a></code>
-
-        </dt>
-        <dd>Download detailed result timings and display counts from formr</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_upload_items.html">formr_upload_items()</a></code>
-
-        </dt>
-        <dd>Upload new item table</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_simulate_from_items.html">formr_simulate_from_items()</a></code>
-
-        </dt>
-        <dd>Simulate data based on item table</dd>
-      </dl><dl><dt>
-
-          <code><a href="formr_shuffled.html">formr_shuffled()</a></code>
-
-        </dt>
-        <dd>Download random groups</dd>
-      </dl><dl><dt>
 
           <code><a href="item.html">item()</a></code>
 
@@ -224,6 +236,12 @@
 
         </dt>
         <dd>Reverse labelled values</dd>
+      </dl><dl><dt>
+
+          <code><a href="as.data.frame.formr_item_list.html">as.data.frame(<i>&lt;formr_item_list&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Transform formr_item_list into a data.frame for ease of use</dd>
       </dl></div><div class="section level2">
       <h2 id="feedback-and-plotting">Feedback and Plotting<a class="anchor" aria-label="anchor" href="#feedback-and-plotting"></a></h2>
 
@@ -496,6 +514,12 @@
 
         </dt>
         <dd>Random date in range</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_opencpu_rds.html">get_opencpu_rds()</a></code>
+
+        </dt>
+        <dd>pass in the url to the RDS representation of a openCPU session object, get the object</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

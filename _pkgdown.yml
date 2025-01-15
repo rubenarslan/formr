@@ -3,44 +3,49 @@ template:
   bootstrap: 5
 
 reference:
-- title: formr API and Connection
-  desc: Functions for API access and connection management
-  contents:
-  - '`formr_api_access_token`'
-  - '`formr_api_results`'
-  - '`formr_api_session`'
-  - '`formr_connect`'
-  - '`formr_disconnect`'
-  - '`formr_last_host`'
-  - '`formr_store_keys`'
 
 - title: Data Processing and Results
   desc: Functions for handling survey results and data processing
   contents:
-  - '`formr_results`'
-  - '`formr_raw_results`'
-  - '`formr_post_process_results`'
-  - '`formr_aggregate`'
-  - '`formr_recognise`'
-  - '`formr_reverse`'
-  - '`formr_user_detail`'
-  - '`formr_user_overview`'
-  - '`get_opencpu_rds`'
-  - '`as.data.frame.formr_item_list`'
-
-- title: Item Management
-  desc: Functions for managing survey items, scales, and related operations
-  contents:
+  - '`formr_connect`'
+  - '`formr_disconnect`'
+  - '`formr_last_host`'
+  - '`formr_store_keys`'
   - '`formr_items`'
   - '`formr_item_displays`'
   - '`formr_upload_items`'
   - '`formr_simulate_from_items`'
+  - '`formr_results`'
+  - '`formr_raw_results`'
+  - '`formr_uploaded_files`'
+  - '`formr_backup_files`'
+  - '`formr_post_process_results`'
+  - '`formr_aggregate`'
+  - '`formr_recognise`'
+  - '`formr_reverse`'
+  - '`formr_run_structure`'
+  - '`formr_user_detail`'
+  - '`formr_user_overview`'
   - '`formr_shuffled`'
+  - '`formr_backup_study`'
+
+
+- title: formr OAuth API and Connection
+  desc: Functions for OAuth API access and connection management
+  contents:
+  - '`formr_api_access_token`'
+  - '`formr_api_results`'
+  - '`formr_api_session`'
+
+- title: Item Management
+  desc: Functions for managing survey items, scales, and related operations
+  contents:
   - '`item`'
   - '`items`'
   - '`aggregate_and_document_scale`'
   - '`choice_labels_for_values`'
   - '`reverse_labelled_values`'
+  - '`as.data.frame.formr_item_list`'
 
 - title: Feedback and Plotting
   desc: Functions for visualization and feedback generation
@@ -96,4 +101,5 @@ reference:
   - '`%ends_with%`'
   - '`%starts_with%`'
   - '`random_date_in_range`'
+  - '`get_opencpu_rds`'
 

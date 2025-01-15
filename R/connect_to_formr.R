@@ -23,7 +23,7 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 		if (is.null(email) && 
 				length(keyring::key_list(keyring)[["username"]]) %in% 1:2) {
 			usernames <- keyring::key_list(keyring)[["username"]]
-			email <- usernames[!grepl("2FA", usernames)][[1]]
+			email <- usernames[!grepl(" 2FA", usernames)][[1]]
 		}
 		password <- keyring::key_get(keyring, username = email)
 	} else {
@@ -144,6 +144,106 @@ formr_disconnect = function(host = formr_last_host()) {
     invisible(TRUE) else warning("You weren't logged in.")
 }
 
+#' Download run structure from formr
+#'
+#' After connecting to formr using [formr_connect()]
+#' you can download the study/run structure using this command.
+#'
+#' @param run_name case-sensitive name of a run your account owns
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_run_structure(run_name = 'training_diary' )
+#' }
+formr_run_structure = function(run_name, host = formr_last_host()) {
+	resp = httr::GET(paste0(host, "/admin/run/", run_name, "/export_run_structure?format=json"))
+  if (resp$status_code == 200)
+    results = jsonlite::fromJSON(httr::content(resp, encoding = "utf8", 
+      as = "text"), simplifyVector = FALSE) else stop("This run does not exist or isn't yours.")
+  
+  results
+}
+
+#' Backup a study
+#'
+#' Backup a study by downloading all surveys, results, item displays, run shuffle, user overview and user details. This function will save the data in a folder named after the study.
+#'
+#' @param study_name case-sensitive name of a study your account owns
+#' @param save_path path to save the study data, defaults to the study name
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param overwrite should existing files be overwritten?
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_backup_study(study_name = 'training_diary' )
+#' }
+formr_backup_study = function(study_name, save_path = study_name, host = formr_last_host(), overwrite = FALSE) {
+  run_structure = formr_run_structure(study_name, host)
+
+  if(file.exists(save_path) && !overwrite) {
+    stop("Save path already exists. Set overwrite = TRUE to overwrite.")
+  }
+  # create a folder for the study
+  dir.create(save_path, showWarnings = FALSE)
+  # save JSON copy of run structure
+  jsonlite::write_json(run_structure, 
+                        path = paste0(save_path, "/run_structure.json"), 
+                        pretty = TRUE)
+
+  # Loop through run structure to find all surveys
+  surveys = list()
+  for (unit in run_structure$units) {
+    if (unit$type == "Survey") {
+      surveys[[unit$survey_data$name]] = unit
+    }
+  }
+
+  # Store all survey item lists/settings
+  for (survey_name in names(surveys)) {
+    dir.create(paste0(save_path, "/", survey_name), showWarnings = FALSE)
+    item_list = surveys[[survey_name]]
+    jsonlite::write_json(item_list, 
+                         path = paste0(save_path, "/", survey_name, "/item_list.json"), 
+                         pretty = TRUE)
+
+    results = formr_raw_results(survey_name, host)
+    jsonlite::write_json(results, 
+                         path = paste0(save_path, "/", survey_name, "/results.json"), 
+                         pretty = TRUE)
+
+    item_displays = formr_item_displays(survey_name, host)
+    jsonlite::write_json(item_displays, 
+                         path = paste0(save_path, "/", survey_name, "/item_displays.json"), 
+                         pretty = TRUE)
+
+    file_list = formr_backup_files(survey_name, host, paste0(save_path, "/", survey_name))
+    jsonlite::write_json(file_list, 
+                         path = paste0(save_path, "/", survey_name, "/file_list.json"), 
+                         pretty = TRUE)
+  }
+
+  # Download run shuffle, if exists
+  if ("shuffle" %in% names(run_structure)) {
+    shuffle = formr_shuffled(study_name, host)
+    jsonlite::write_json(shuffle, 
+                         path = paste0(save_path, "/run_shuffle.json"), 
+                         pretty = TRUE)
+  }
+
+  # Download run user overview
+  user_overview = formr_user_overview(study_name, host)
+  jsonlite::write_json(user_overview, 
+                        path = paste0(save_path, "/run_user_overview.json"), 
+                        pretty = TRUE)
+
+  # Download run user details
+  user_detail = formr_user_detail(study_name, host)
+  jsonlite::write_json(user_detail, 
+                        path = paste0(save_path, "/run_user_detail.json"), 
+                        pretty = TRUE)
+
+}
 
 #' Download processed, aggregated results from formr
 #'
@@ -480,6 +580,61 @@ formr_item_displays = function(survey_name, host = formr_last_host()) {
   		  
   results
 }
+
+#' Download uploaded files from formr
+#'
+#' After connecting to formr using [formr_connect()]
+#' you can download uploaded files using this command.
+#'
+#' @param survey_name case-sensitive name of a survey your account owns
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_uploaded_files(survey_name = 'training_diary' )
+#' }
+
+formr_uploaded_files = function(survey_name, host = formr_last_host()) {
+  resp = httr::GET(paste0(host, "/admin/survey/", survey_name, "/export_uploaded_files?format=json"))
+  if (resp$status_code == 200) {
+    jsonlite::fromJSON(httr::content(resp, encoding = "utf8", as = "text"), 
+    									 simplifyVector = FALSE)
+  } else {
+    warning("This survey does not exist or isn't yours.")
+  }
+}
+
+#' Backup uploaded files from formr
+#'
+#' After connecting to formr using [formr_connect()]
+#' you can backup uploaded files using this command.
+#'
+#' @param survey_name case-sensitive name of a survey your account owns
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param save_path defaults to the survey name
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_backup_files(survey_name = 'training_diary' )
+#' }
+
+formr_backup_files = function(survey_name, host = formr_last_host(), 
+    save_path = survey_name) {
+  file_list = formr_uploaded_files(survey_name, host)
+  if(length(file_list) > 0) {
+    dir.create(save_path, showWarnings = FALSE)
+    message("Downloading ", length(file_list), " user-uploaded files...")
+    for (file in file_list) {
+      file_path = paste0(host, "/", file$stored_path)
+      file_name = basename(file$stored_path)
+      file_name = paste0(save_path, "/", file_name)
+      httr::GET(file_path, httr::write_disk(file_name, overwrite = TRUE))
+    }
+  }
+  invisible(file_list)
+}
+
+
 
 #' Download random groups
 #'
