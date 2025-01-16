@@ -6,16 +6,19 @@
 \usage{
 formr_backup_files(
   survey_name,
-  host = formr_last_host(),
-  save_path = survey_name
+  overwrite = FALSE,
+  save_path = survey_name,
+  host = formr_last_host()
 )
 }
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{overwrite}{should existing files be overwritten? defaults to FALSE}
 
 \item{save_path}{defaults to the survey name}
+
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

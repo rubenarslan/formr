@@ -199,29 +199,9 @@ formr_backup_study = function(study_name, save_path = study_name, host = formr_l
     }
   }
 
-  # Store all survey item lists/settings
-  for (survey_name in names(surveys)) {
-    dir.create(paste0(save_path, "/", survey_name), showWarnings = FALSE)
-    item_list = surveys[[survey_name]]
-    jsonlite::write_json(item_list, 
-                         path = paste0(save_path, "/", survey_name, "/item_list.json"), 
-                         pretty = TRUE)
+  survey_names = names(surveys)
 
-    results = formr_raw_results(survey_name, host)
-    jsonlite::write_json(results, 
-                         path = paste0(save_path, "/", survey_name, "/results.json"), 
-                         pretty = TRUE)
-
-    item_displays = formr_item_displays(survey_name, host)
-    jsonlite::write_json(item_displays, 
-                         path = paste0(save_path, "/", survey_name, "/item_displays.json"), 
-                         pretty = TRUE)
-
-    file_list = formr_backup_files(survey_name, host, paste0(save_path, "/", survey_name))
-    jsonlite::write_json(file_list, 
-                         path = paste0(save_path, "/", survey_name, "/file_list.json"), 
-                         pretty = TRUE)
-  }
+  formr_backup_surveys(survey_names, surveys, save_path, overwrite, host)
 
   # Download run shuffle, if exists
   if ("shuffle" %in% names(run_structure)) {
@@ -244,6 +224,57 @@ formr_backup_study = function(study_name, save_path = study_name, host = formr_l
                         pretty = TRUE)
 
 }
+
+#' Backup surveys
+#'
+#' Backup surveys by downloading item lists, results, item displays and file lists.
+#'
+#' @param survey_names case-sensitive names of surveys your account owns
+#' @param surveys a list of survey data (from a run structure), optional
+#' @param overwrite should existing files be overwritten?
+#' @param save_path path to save the study data, defaults to the study name 
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @export
+#' @examples
+#' \dontrun{
+#' formr_backup_surveys(survey_names = 'training_diary', save_path = 'surveys')
+#' }
+formr_backup_surveys = function(survey_names, surveys = list(), save_path = "./", overwrite = FALSE, host = formr_last_host()) {
+  # Store all survey item lists/settings
+  for (survey_name in survey_names) {
+    dir.create(paste0(save_path, "/", survey_name), showWarnings = FALSE)
+    item_list = surveys[[survey_name]]
+    if(is.null(item_list)) {
+      item_list = formr_items(survey_name, host)
+    }
+    jsonlite::write_json(item_list, 
+                         path = paste0(save_path, "/", survey_name, "/item_list.json"), 
+                         pretty = TRUE)
+
+    google_sheet_link = surveys[[survey_name]]$survey_data$google_sheet
+    if(!is.null(google_sheet_link)) {
+      google_sheet_download_link = paste0(gsub("/edit", "", google_sheet_link), "/export?format=xlsx")
+      httr::GET(google_sheet_download_link, 
+        httr::write_disk(paste0(save_path, "/", survey_name, "/google_sheet.xlsx"), overwrite = overwrite))
+    }
+
+    results = formr_raw_results(survey_name, host)
+    jsonlite::write_json(results, 
+                         path = paste0(save_path, "/", survey_name, "/results.json"), 
+                         pretty = TRUE)
+
+    item_displays = formr_item_displays(survey_name, host)
+    jsonlite::write_json(item_displays, 
+                         path = paste0(save_path, "/", survey_name, "/item_displays.json"), 
+                         pretty = TRUE)
+
+    file_list = formr_backup_files(survey_name, overwrite, paste0(save_path, "/", survey_name), host)
+    jsonlite::write_json(file_list, 
+                         path = paste0(save_path, "/", survey_name, "/file_list.json"), 
+                         pretty = TRUE)
+  }
+}
+
 
 #' Download processed, aggregated results from formr
 #'
@@ -610,16 +641,19 @@ formr_uploaded_files = function(survey_name, host = formr_last_host()) {
 #' you can backup uploaded files using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param overwrite should existing files be overwritten? defaults to FALSE
 #' @param save_path defaults to the survey name
+#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
 #' @export
 #' @examples
 #' \dontrun{
 #' formr_backup_files(survey_name = 'training_diary' )
 #' }
 
-formr_backup_files = function(survey_name, host = formr_last_host(), 
-    save_path = survey_name) {
+formr_backup_files = function(survey_name, 
+    overwrite = FALSE, 
+    save_path = survey_name,
+    host = formr_last_host()) {
   file_list = formr_uploaded_files(survey_name, host)
   if(length(file_list) > 0) {
     dir.create(save_path, showWarnings = FALSE)
@@ -628,7 +662,7 @@ formr_backup_files = function(survey_name, host = formr_last_host(),
       file_path = paste0(host, "/", file$stored_path)
       file_name = basename(file$stored_path)
       file_name = paste0(save_path, "/", file_name)
-      httr::GET(file_path, httr::write_disk(file_name, overwrite = TRUE))
+      httr::GET(file_path, httr::write_disk(file_name, overwrite = overwrite))
     }
   }
   invisible(file_list)

@@ -28,6 +28,7 @@ reference:
   - '`formr_user_overview`'
   - '`formr_shuffled`'
   - '`formr_backup_study`'
+  - '`formr_backup_surveys`'
 
 
 - title: formr OAuth API and Connection
