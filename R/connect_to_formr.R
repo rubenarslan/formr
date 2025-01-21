@@ -376,10 +376,10 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 											 "Weird missing." = haven::tagged_na("w"))
 		
 		missing_map <- item_displays %>% 
-			dplyr::mutate(hidden = dplyr::if_else(hidden == 1, 1, 
-																						dplyr::if_else(is.na(shown), -1, 0), -1)) %>% 
+			dplyr::mutate(hidden = dplyr::if_else(.data$hidden == 1, 1, 
+																						dplyr::if_else(is.na(.data$shown), -1, 0), -1)) %>% 
 			dplyr::select("item_name", "hidden", "unit_session_id", "session") %>% 
-			dplyr::filter(!duplicated(cbind(session, unit_session_id, item_name))) %>% 
+			dplyr::filter(!duplicated(cbind(.data$session, .data$unit_session_id, .data$item_name))) %>% 
 			tidyr::spread("item_name", "hidden", fill = -2) %>% 
 			dplyr::arrange("session", "unit_session_id")
 	

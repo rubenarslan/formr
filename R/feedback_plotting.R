@@ -18,7 +18,7 @@ qplot_on_normal = function(normed_value, ylab = "Percentage of other people with
                           xlab = '', colour = "blue", x_ticks = c('--','-','0','+','++')) 
 {
   # Create base plot with proper labels
-  ggplot(data.frame(x = -3:3), aes(x = x)) +
+  ggplot(data.frame(x = -3:3), aes(x = .data$x)) +
     stat_function(fun = stats::dnorm, linewidth = 1) +
     geom_vline(xintercept = normed_value, colour = colour, linewidth = 1) +
     scale_x_continuous(breaks = c(-2:2), labels = x_ticks) +
@@ -94,7 +94,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
     normed_data$ymax = normed_data$value + normed_data$se
   }
   plot = 
-    ggplot(normed_data, aes(x = variable, y = value, fill = variable)) +
+    ggplot(normed_data, aes(x = .data$variable, y = .data$value, fill = .data$variable)) +
     labs(x = xlab, y = ylab, title = title) +  # Use labs() to set labels properly
     scale_fill_brewer("", palette = "Set1") +
     scale_y_continuous(breaks = c(-2,-1,0,1,2), labels = y_ticks) +
@@ -104,7 +104,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
   
   if(exists("ymin", where = normed_data)) {
     plot + 
-      geom_linerange(aes(ymin = ymin, ymax = ymax, colour = variable), linewidth = 1) + 
+      geom_linerange(aes(ymin = .data$ymin, ymax = .data$ymax, colour = .data$variable), linewidth = 1) + 
       scale_colour_brewer("", palette = "Set1") + 
       geom_bar(stat = "identity", position = position_dodge(), alpha = 0.7)
   } else {
@@ -144,7 +144,7 @@ qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
     normed_data$ymax = normed_data$value + normed_data$se
   }
   plot = 
-    ggplot(normed_data, aes(x = variable, y = value, fill = value)) +
+    ggplot(normed_data, aes(x = .data$variable, y = .data$value, fill = .data$value)) +
     ggtitle(title) +
     scale_y_continuous("", breaks = c()) +
     xlab("") +
@@ -155,7 +155,7 @@ qplot_on_polar = function(normed_data, ylab = "Your value", title = '')
   
   if(exists("ymin", where = normed_data)) {
     plot + 
-      geom_linerange(aes(ymin = ymin, ymax = ymax, colour = value), linewidth = 1) + 
+      geom_linerange(aes(ymin = .data$ymin, ymax = .data$ymax, colour = .data$value), linewidth = 1) + 
       geom_bar(stat = "identity", position = position_dodge(), alpha = 0.7) + 
       scale_colour_continuous(name = ylab)
   } else {
