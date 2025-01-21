@@ -8,6 +8,9 @@ formr_store_keys(account_name, secret_2fa = NULL)
 }
 \arguments{
 \item{account_name}{a shorthand for the account you're using}
+
+\item{secret_2fa}{a 2FA secret, optional, set to NULL if you want to
+be prompted for it when logging in, set to "" if you don't have 2FA}
 }
 \description{
 Store keys in the system keyring/keychain instead of plaintext.

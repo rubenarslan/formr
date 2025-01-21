@@ -10,3 +10,5 @@ graph_run
 ^pkgdown$
 ^\.github$
 ^codecov\.yml$
+.lintr
+.DS_Store
