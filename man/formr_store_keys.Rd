@@ -4,10 +4,12 @@
 \alias{formr_store_keys}
 \title{Store keys in keyring}
 \usage{
-formr_store_keys(account_name, secret_2fa = NULL)
+formr_store_keys(account_name, email = NULL, secret_2fa = NULL)
 }
 \arguments{
 \item{account_name}{a shorthand for the account you're using}
+
+\item{email}{email address for the account, will be prompted if omitted}
 
 \item{secret_2fa}{a 2FA secret, optional, set to NULL if you want to
 be prompted for it when logging in, set to "" if you don't have 2FA}
