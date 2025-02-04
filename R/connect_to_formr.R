@@ -666,18 +666,16 @@ formr_backup_files = function(survey_name,
     i = 0
     for (file in file_list) {
     	i = i + 1
-    	file$stored_path <- gsub(x = file$stored_path, pattern = "webroot/", "")
-  	  file_path = paste0(host, "/", file$stored_path)
-      file_name = basename(file$stored_path)
-      file_name = paste0(save_path, "/", file_name)
-      resp = httr::GET(file_path)
+      local_file_name = basename(file$stored_path)
+      local_file_name = paste0(save_path, "/", local_file_name)
+      resp = httr::GET(file$stored_path)
       if (resp$status_code != 200) {
-      	warning("Could not download file ", file_path)
+      	warning("Could not download file ", local_file_name)
       	file_list[[i]]$downloaded <- FALSE
       } else {
-      	if(overwrite | file.exists(file_path)) {
+      	if(overwrite | !file.exists(local_file_name)) {
       		raw_content <- httr::content(resp, as = "raw")
-       		writeBin(raw_content, file_name)
+       		writeBin(raw_content, local_file_name)
       	}
       	file_list[[i]]$downloaded <- TRUE
       }
