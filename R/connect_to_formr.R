@@ -37,7 +37,7 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 																																			 password = password))
 	text <- httr::content(resp, encoding = "utf8", as = "text")
 	
-	if (grepl("Verify your identity via 2FA", text)) {
+	if (grepl("Two Factor Authentication Verification", text)) {
 		# Try to get 2FA secret from keyring if available
 		twofa_secret <- NULL
 		if (!is.null(keyring)) {
@@ -53,19 +53,19 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 		} else {
 			code <- readline("Enter 2FA code: ")
 		}
-		resp <- httr::POST(paste0(host, "/admin/account/twoFactor"), 
+		resp <- httr::POST(paste0(host, "/admin/account/two-factor"), 
 											body = list(email = email,
 																 password = password,
-																 "2facode" = code))
+																 `2facode` = code))
 		text <- httr::content(resp, encoding = "utf8", as = "text")
 	}
 	
 	if (resp$status_code == 200 && grepl("Success!", text, fixed = TRUE)) { 
 		invisible(TRUE)
-	} else if (grepl("alert-danger", text, fixed = TRUE)) { 
-		stop("Incorrect credentials.") 
 	} else if (grepl("Logout", text, fixed = TRUE)) { 
 		warning("Already logged in.")
+	} else if (grepl("alert-danger", text, fixed = TRUE)) { 
+		stop("Incorrect credentials.") 
 	} else { 
 		stop("Could not login for unknown reason.") 
 	}
@@ -273,7 +273,7 @@ formr_backup_surveys = function(survey_names, surveys = list(), save_path = "./"
                          path = paste0(save_path, "/", survey_name, "/item_displays.json"), 
                          pretty = TRUE)
 
-    file_list = formr_backup_files(survey_name, overwrite, paste0(save_path, "/", survey_name), host)
+    file_list = formr_backup_files(survey_name, overwrite, paste0(save_path, "/", survey_name, "/user_uploaded_files"), host)
     jsonlite::write_json(file_list, 
                          path = paste0(save_path, "/", survey_name, "/file_list.json"), 
                          pretty = TRUE)
@@ -657,17 +657,30 @@ formr_uploaded_files = function(survey_name, host = formr_last_host()) {
 
 formr_backup_files = function(survey_name, 
     overwrite = FALSE, 
-    save_path = survey_name,
+    save_path = paste0(survey_name, "/user_uploaded_files"),
     host = formr_last_host()) {
   file_list = formr_uploaded_files(survey_name, host)
   if(length(file_list) > 0) {
     dir.create(save_path, showWarnings = FALSE)
     message("Downloading ", length(file_list), " user-uploaded files...")
+    i = 0
     for (file in file_list) {
-      file_path = paste0(host, "/", file$stored_path)
+    	i = i + 1
+    	file$stored_path <- gsub(x = file$stored_path, pattern = "webroot/", "")
+  	  file_path = paste0(host, "/", file$stored_path)
       file_name = basename(file$stored_path)
       file_name = paste0(save_path, "/", file_name)
-      httr::GET(file_path, httr::write_disk(file_name, overwrite = overwrite))
+      resp = httr::GET(file_path)
+      if (resp$status_code != 200) {
+      	warning("Could not download file ", file_path)
+      	file_list[[i]]$downloaded <- FALSE
+      } else {
+      	if(overwrite | file.exists(file_path)) {
+      		raw_content <- httr::content(resp, as = "raw")
+       		writeBin(raw_content, file_name)
+      	}
+      	file_list[[i]]$downloaded <- TRUE
+      }
     }
   }
   invisible(file_list)

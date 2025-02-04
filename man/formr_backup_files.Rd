@@ -7,7 +7,7 @@
 formr_backup_files(
   survey_name,
   overwrite = FALSE,
-  save_path = survey_name,
+  save_path = paste0(survey_name, "/user_uploaded_files"),
   host = formr_last_host()
 )
 }
