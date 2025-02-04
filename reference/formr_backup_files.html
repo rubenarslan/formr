@@ -9,7 +9,7 @@ you can backup uploaded files using this command."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ you can backup uploaded files using this command.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_backup_files</span><span class="op">(</span></span>
 <span>  <span class="va">survey_name</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  save_path <span class="op">=</span> <span class="va">survey_name</span>,</span>
+<span>  save_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">survey_name</span>, <span class="st">"/user_uploaded_files"</span><span class="op">)</span>,</span>
 <span>  host <span class="op">=</span> <span class="fu"><a href="formr_last_host.html">formr_last_host</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
