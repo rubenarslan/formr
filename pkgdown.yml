@@ -1,8 +1,8 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-02-04T12:45Z
+last_built: 2025-11-27T10:41Z
 urls:
   reference: http://rubenarslan.github.io/formr/reference
   article: http://rubenarslan.github.io/formr/articles

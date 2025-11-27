@@ -17,7 +17,7 @@ defaults to quiet = TRUE
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@ However, you may also want to use knit_children inside functions to e.g. summari
 <span class="r-in"><span><span class="co"># an example of a wrapper function that calls asis_knit_child with an argument</span></span></span>
 <span class="r-in"><span><span class="co"># ensures distinct paths for cache and figures, so that these calls can be looped in parallel</span></span></span>
 <span class="r-in"><span><span class="va">regression_summary</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>   <span class="va">child_hash</span> <span class="op">=</span> <span class="fu">digest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/digest/man/digest.html" class="external-link">digest</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">child_hash</span> <span class="op">=</span> <span class="fu">digest</span><span class="fu">::</span><span class="fu"><a href="https://eddelbuettel.github.io/digest/man/digest.html" class="external-link">digest</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span>   <span class="va">options</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>       fig.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"fig.path"</span><span class="op">)</span>, <span class="va">child_hash</span>, <span class="st">"-"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>       cache.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"cache.path"</span><span class="op">)</span>, <span class="va">child_hash</span>, <span class="st">"-"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -119,7 +119,7 @@ However, you may also want to use knit_children inside functions to e.g. summari
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
