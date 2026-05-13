@@ -59,26 +59,32 @@ formr_api_fetch_results <- function(run_name, surveys = NULL, session_ids = NULL
 
 #' Get and Process Run Results
 #'
-#' This is the main function for scientists. It fetches data from the API, 
-#' automatically cleans types (dates/numbers), reverses items, computes scales, 
+#' This is the main function for scientists. It fetches data from the API,
+#' automatically cleans types (dates/numbers), reverses items, computes scales,
 #' and joins everything into one dataframe.
 #'
-#' @param run_name Name of the run.
+#' @param run_name Name of the run. Defaults to `.formr$run_name`, which
+#'   is set automatically when the code runs inside an OpenCPU session on
+#'   formr.org — so portable run code can omit this argument.
 #' @param ... Filters passed to API (e.g. `surveys = c("Daily", "Intake")`, `session_ids = "..."`).
 #' @param compute_scales Logical. Should scales (e.g. `extraversion`) be computed from items (e.g. `extra_1`, `extra_2`)?
-#' @param join Logical. If TRUE (default), joins all surveys into one wide dataframe. 
+#' @param join Logical. If TRUE (default), joins all surveys into one wide dataframe.
 #' @param remove_test_sessions Logical. Filter out sessions marked as testing?
 #' @param verbose Logical. Print progress messages?
-#' 
+#'
 #' @return A processed tibble with class `formr_results`.
 #' @export
-formr_api_results <- function(run_name, 
-															..., 
-															compute_scales = TRUE, 
-															join = TRUE, 
+formr_api_results <- function(run_name = .formr$run_name,
+															...,
+															compute_scales = TRUE,
+															join = TRUE,
 															remove_test_sessions = TRUE,
 															verbose = TRUE) {
-	
+
+	if (is.null(run_name) || !nzchar(run_name)) {
+		stop("run_name is required (no .formr$run_name available — pass it explicitly when running outside formr.org)")
+	}
+
 	log_msg <- function(...) if(verbose) message(sprintf(...))
 	
 	# 1. Fetch Metadata

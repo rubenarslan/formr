@@ -70,10 +70,14 @@ formr_api_session <- function() {
 
 #' Authenticate with formr
 #'
-#' Connects to the API. If no credentials are provided, 
-#' it tries to find them in the Global Environment or keyring.
+#' Connects to the API. If no credentials are provided, the auto-pickup
+#' chain is: the package's hidden `.formr` env (set automatically when
+#' the code runs inside an OpenCPU session on formr.org), then the
+#' calling-frame chain (for legacy injectors that wrote bare locals into
+#' the wrapper scope), then the keyring.
 #'
-#' @param host API Base URL.
+#' @param host API Base URL. Defaults to `.formr$host` when running on
+#'   formr.org, otherwise `"https://formr.org"`.
 #' @param client_id OAuth Client ID.
 #' @param client_secret OAuth Client Secret.
 #' @param access_token Direct Access Token.
@@ -84,13 +88,21 @@ formr_api_authenticate <- function(host = "https://formr.org",
 																	 client_secret = NULL,
 																	 access_token = NULL,
 																	 account = NULL) {
-	
-	# 0. Try to load from the calling environment chain (OpenCPU) or Global Environment if missing
+
+	# 0a. Hidden `.formr` env — preferred, set by formr.org without
+	# polluting any visible scope.
+	if ((missing(access_token) || is.null(access_token)) && !is.null(.formr$access_token)) {
+		access_token <- .formr$access_token
+	}
+	if ((missing(host) || is.null(host)) && !is.null(.formr$host)) {
+		host <- .formr$host
+	}
+
+	# 0b. Calling-frame chain (legacy OpenCPU injection that wrote
+	# bare `access_token` / `host` locals into the wrapper scope).
 	if ((missing(access_token) || is.null(access_token)) && exists("access_token", envir = parent.frame(), inherits = TRUE)) {
 		access_token <- get("access_token", envir = parent.frame(), inherits = TRUE)
 	}
-	
-	# Use missing() to ensure we can override the default host argument if defined in the outer scope
 	if ((missing(host) || is.null(host)) && exists("host", envir = parent.frame(), inherits = TRUE)) {
 		host <- get("host", envir = parent.frame(), inherits = TRUE)
 	}
