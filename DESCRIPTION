@@ -16,7 +16,7 @@ Authors@R: c(
         email = "tim.seidel@outlook.com", 
         role = "ctb")
     )
-Version: 0.13.0
+Version: 1.0.0
 Depends:
     R (>= 3.0.2)
 Imports:

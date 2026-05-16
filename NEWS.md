@@ -1,4 +1,10 @@
-# formr 0.13.0 (development)
+# formr 1.0.0
+
+Released alongside formr.org server v1.0.0. Major version bump tracks
+the formr v1 RESTful API surface stabilising — `formr_api_*` is now
+the supported entry point for new code; the legacy `formr_results()` /
+`formr_raw_results()` ("Classic") path continues to work but is no
+longer the recommended starting point in the vignette.
 
 * **Vignette walks through the new multi-credential account page.** Server
   v0.26.x lets a user hold several labelled OAuth credentials side by
