@@ -7,7 +7,17 @@
 formr_api_session()
 }
 \value{
-A list with 'base_url' and 'token' elements, or NULL.
+A list, or NULL if not authenticated:
+\itemize{
+\item \code{base_url}: parsed URL (httr style).
+\item \code{token}: the bearer access token.
+\item \code{scope}: space-delimited string of scopes granted to this
+token. \code{NA_character_} when the auth path couldn't introspect
+(direct access-token authentication, or older server). \code{""}
+means the credential was issued with no scopes — every API call
+will 403 until the user picks scopes at admin/account#api.
+\item \code{expires_at}: POSIXct of token expiry (or NULL).
+}
 }
 \description{
 Returns the current session object or NULL if not authenticated.

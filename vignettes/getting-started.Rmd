@@ -62,9 +62,25 @@ You can store your credentials securely in your system's keyring so you don't ha
 #### 1.1 Save your API Credentials
 
 1.  Log in to formr.org (or your instance).
-2.  Go to **Account > API Settings**.
-3.  Create a Client ID and Secret.
-4.  Run the following code **once** in your R console:
+2.  Go to **Account > API Credentials** (the "API" tab on the account page).
+3.  Pick which **scopes** the credential should grant. Each scope is a verb on a resource:
+
+    | Scope | What it grants |
+    | :--- | :--- |
+    | `user:read` / `user:write` | Read / update your account profile |
+    | `survey:read` / `survey:write` | Read survey definitions / upload + edit them |
+    | `run:read` / `run:write` | Read run metadata / create + update + delete runs |
+    | `session:read` / `session:write` | Read participant sessions / create + advance them |
+    | `data:read` | Read participant response data |
+    | `file:read` / `file:write` | Download / upload files attached to runs |
+
+    A token issued under a credential can only call endpoints whose required scopes it carries. A credential with only `run:read` will succeed on `GET /v1/runs/{name}` and return 403 on `PATCH /v1/runs/{name}`.
+
+4.  Optionally **restrict the credential to specific runs**. Leave the run picker empty to allow this credential to act on all of your runs; tick one or more runs to limit it. A run-restricted credential also implicitly restricts which surveys it can touch — only surveys that are part of one of the allowlisted runs are reachable.
+
+5.  Click **Generate**. The Client ID and Client Secret are shown **once**. Copy both immediately — the server stores only a SHA-256 hash, so a forgotten secret has to be rotated, not recovered.
+
+6.  Run the following code **once** in your R console:
 
 ```{r, store_keys, eval = FALSE}
 # Store your credentials once
@@ -99,7 +115,13 @@ Once your keys are stored, you simply authenticate at the start of your session:
 ```{r, auth_local, eval = FALSE}
 # Automatically finds your stored keys
 formr_api_authenticate(host = "https://api.formr.org") # or your custom API-URL!
+
+# After authentication, you can see which scopes the credential carries:
+formr_api_session()$scope
+#> [1] "run:read run:write survey:read"
 ```
+
+If you call a function whose endpoint needs a scope you don't have, the package surfaces the server's 403 alongside a hint at the bottom pointing at `admin/account#api` — the same place to fix it.
 
 #### 1.2 With your User Credentials (Classic)
 
