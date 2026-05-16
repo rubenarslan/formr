@@ -53,6 +53,8 @@ reference:
     - '`formr_api_authenticate`'
     - '`formr_api_logout`'
     - '`formr_api_session`'
+    - '`formr_api_is_authenticated`'
+    - '`formr_api_token_expiry`'
     - '`formr_connect`'
     - '`formr_disconnect`'
     - '`formr_last_host`'
@@ -96,6 +98,7 @@ reference:
     - '`formr_api_recognise`'
     - '`formr_api_reverse`'
     - '`formr_api_aggregate`'
+    - '`summary.formr_results`'
 
   - title: Classic formr Functions
     desc: Classic functions for retrieving data
