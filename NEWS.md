@@ -1,5 +1,14 @@
 # formr 0.13.0 (development)
 
+* **Vignette walks through the new multi-credential account page.** Server
+  v0.26.x lets a user hold several labelled OAuth credentials side by
+  side (each with its own scopes + run allowlist). On the wire nothing
+  changed — `formr_store_keys()` / `formr_api_authenticate()` already
+  accepted an `account` parameter that namespaces credentials in the
+  keyring. The vignette now nudges users to pass the server-side label
+  as `account` so the local store and the server's credential page line
+  up by name.
+
 * **`formr_api_session()` now exposes the granted OAuth `scope`.** After
   `formr_api_authenticate()` returns, `formr_api_session()$scope` holds
   the space-delimited scope string the server stamped on the token.

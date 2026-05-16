@@ -62,8 +62,16 @@ You can store your credentials securely in your system's keyring so you don't ha
 #### 1.1 Save your API Credentials
 
 1.  Log in to formr.org (or your instance).
-2.  Go to **Account > API Credentials** (the "API" tab on the account page).
-3.  Pick which **scopes** the credential should grant. Each scope is a verb on a resource:
+2.  Go to **Account > API Credentials** (the "API" tab on the account page). You can hold
+    several credentials side by side — each one with its own scopes and run allowlist.
+    A common pattern is one narrow read-only credential for a dashboard, plus a separate
+    broader credential for a cron job.
+3.  Give the credential a **label** (e.g. `dashboard`, `cron-2026`). The label is only
+    used on the credentials page to tell credentials apart; it must be unique within
+    your account. You will pass the same string to `formr_store_keys(..., account = "...")`
+    in step 6 so the R package can keep multiple credentials per host straight in
+    your keyring.
+4.  Pick which **scopes** the credential should grant. Each scope is a verb on a resource:
 
     | Scope | What it grants |
     | :--- | :--- |
@@ -76,21 +84,24 @@ You can store your credentials securely in your system's keyring so you don't ha
 
     A token issued under a credential can only call endpoints whose required scopes it carries. A credential with only `run:read` will succeed on `GET /v1/runs/{name}` and return 403 on `PATCH /v1/runs/{name}`.
 
-4.  Optionally **restrict the credential to specific runs**. Leave the run picker empty to allow this credential to act on all of your runs; tick one or more runs to limit it. A run-restricted credential also implicitly restricts which surveys it can touch — only surveys that are part of one of the allowlisted runs are reachable.
+5.  Optionally **restrict the credential to specific runs**. Leave the run picker empty to allow this credential to act on all of your runs; tick one or more runs to limit it. A run-restricted credential also implicitly restricts which surveys it can touch — only surveys that are part of one of the allowlisted runs are reachable.
 
-5.  Click **Generate**. The Client ID and Client Secret are shown **once**. Copy both immediately — the server stores only a SHA-256 hash, so a forgotten secret has to be rotated, not recovered.
+6.  Click **Create credential**. The Client ID and Client Secret are shown **once**. Copy both immediately — the server stores only a SHA-256 hash, so a forgotten secret has to be rotated, not recovered.
 
-6.  Run the following code **once** in your R console:
+7.  Run the following code **once** in your R console:
 
 ```{r, store_keys, eval = FALSE}
 # Store your credentials once
 # This saves them securely in your OS credential store
 formr_store_keys(
-  host = "https://api.formr.org", 
-  client_id = "YOUR_CLIENT_ID", 
-  client_secret = "YOUR_CLIENT_SECRET"
-  # Optional: account = "the name you give the account"
-  # this allows for multiple saved API IDs and secrets per host.
+  host = "https://api.formr.org",
+  client_id = "YOUR_CLIENT_ID",
+  client_secret = "YOUR_CLIENT_SECRET",
+  # Optional but recommended when you have more than one credential:
+  # pass the same string you used as the credential's label on the
+  # server. This lets you switch between credentials by name when you
+  # call formr_api_authenticate(account = "...").
+  account = "dashboard"
 )
 ```
 
