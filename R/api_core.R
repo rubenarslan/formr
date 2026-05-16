@@ -6,7 +6,15 @@
 #'
 #' Returns the current session object or NULL if not authenticated.
 #'
-#' @return A list with 'base_url' and 'token' elements, or NULL.
+#' @return A list, or NULL if not authenticated:
+#'   - `base_url`: parsed URL (httr style).
+#'   - `token`: the bearer access token.
+#'   - `scope`: space-delimited string of scopes granted to this
+#'     token. `NA_character_` when the auth path couldn't introspect
+#'     (direct access-token authentication, or older server). `""`
+#'     means the credential was issued with no scopes — every API call
+#'     will 403 until the user picks scopes at admin/account#api.
+#'   - `expires_at`: POSIXct of token expiry (or NULL).
 #' @export
 formr_api_session <- function() {
 	if (exists("session", envir = .formr_state)) {
@@ -136,58 +144,81 @@ formr_api_authenticate <- function(host = "https://formr.org",
 		session_data <- list(
 			base_url = httr::parse_url(host),
 			token = access_token,
+			# Direct-token path can't introspect the token's grants
+			# without an extra round-trip — leave NA so callers can
+			# distinguish "unknown" from "no scopes."
+			scope = NA_character_,
 			expires_at = NULL
 		)
-		
+
 		assign("auth_params", list(host = host, account = account), envir = .formr_state)
 		assign("session", session_data, envir = .formr_state)
-		
+
 		tryCatch({
 			formr_api_request("user/me", method = "GET")
 			message("[SUCCESS] Authenticated via Access Token.")
 		}, error = function(e) {
 			warning("Authentication failed: ", e$message)
 		})
-		
+
 	} else if (!is.null(client_id) && !is.null(client_secret)) {
 		token_url <- httr::parse_url(host)
 		token_url$path <- paste0(token_url$path, "/oauth/access_token")
 		token_url$path <- gsub("//", "/", token_url$path)
-		
+
 		res <- httr::POST(
 			token_url,
 			httr::authenticate(client_id, client_secret, type = "basic"),
 			body = list(grant_type = "client_credentials"),
 			encode = "form"
 		)
-		
+
 		if (httr::status_code(res) >= 400)
 			stop("OAuth Error: ", httr::content(res, "text"))
-		
+
 		token_content <- httr::content(res)
-		
+
 		if (is.null(token_content$access_token))
 			stop("OAuth Error: No access_token in response")
-		
+
 		token <- token_content$access_token
-		
+
 		expires_at <- NULL
 		if (!is.null(token_content$expires_in)) {
 			expires_at <- Sys.time() + token_content$expires_in
 		} else {
 			expires_at <- Sys.time() + 3600
 		}
-		
+
+		# Capture the granted scopes from the OAuth response so callers
+		# can introspect via formr_api_session()$scope. The server's
+		# bshaffer flow stamps the client's stored scope string onto
+		# the token; what comes back is exactly what was granted. NA
+		# (not "") signals "older formr server that didn't return a
+		# scope field" so we don't lie about granting nothing.
+		granted_scope <- if (is.null(token_content$scope)) NA_character_
+		else as.character(token_content$scope)
+
 		session_data <- list(
 			base_url = httr::parse_url(host),
 			token = token,
+			scope = granted_scope,
 			expires_at = expires_at
 		)
-		
+
 		assign("auth_params", list(host = host, account = account), envir = .formr_state)
 		assign("session", session_data, envir = .formr_state)
-		
-		message("[SUCCESS] Authenticated via OAuth.")
+
+		if (!is.na(granted_scope) && nzchar(granted_scope)) {
+			message("[SUCCESS] Authenticated via OAuth. Granted scopes: ", granted_scope)
+		} else if (!is.na(granted_scope) && !nzchar(granted_scope)) {
+			# Token issued but with no scopes — every API call will 403.
+			# Surface this loudly so users hit the fix path (pick scopes
+			# at admin/account#api) instead of debugging blind 403s.
+			warning("OAuth token has NO scopes. The credential at admin/account#api needs scopes selected. Every API call will return 403 until that's fixed.")
+		} else {
+			message("[SUCCESS] Authenticated via OAuth.")
+		}
 		
 	} else {
 		stop("No credentials found. Use formr_store_keys() or provide arguments.")
@@ -386,12 +417,50 @@ formr_api_request <- function(endpoint,
 	}
 
 	if (status >= 400) {
-		stop(sprintf(
-			"API Error (%s): %s",
-			status,
-			httr::content(req, "text")
-		))
+		body_text <- httr::content(req, "text")
+		# Add a hint when the failure is one of the scoping-aware 403s
+		# emitted by the v1 API. Three flavours, all surface from the
+		# same admin/account#api page so the fix path is identical.
+		hint <- ""
+		if (status == 403) {
+			if (grepl("Insufficient permissions:", body_text, fixed = TRUE)) {
+				hint <- paste0(
+					"\nHint: this credential is missing the OAuth scope this endpoint needs. ",
+					"Open admin/account#api on your formr instance, tick the matching read/write scope, ",
+					"and rotate. Granted scopes were: ",
+					.formatted_session_scope()
+				)
+			} else if (grepl("not authorized for run", body_text)) {
+				hint <- paste0(
+					"\nHint: this credential is restricted to a subset of your runs and the run you asked for is outside that subset. ",
+					"Open admin/account#api on your formr instance, adjust the run allowlist, and rotate."
+				)
+			} else if (grepl("not authorized for survey", body_text)) {
+				hint <- paste0(
+					"\nHint: this credential's run allowlist doesn't include any run that uses this survey. ",
+					"Either add the survey to one of the allowed runs, or widen the allowlist at admin/account#api."
+				)
+			} else if (grepl("Cannot create surveys with a run-restricted API client", body_text)) {
+				hint <- paste0(
+					"\nHint: run-restricted credentials cannot create new surveys (the new survey would be unreachable through the allowlist until you linked it into a run). ",
+					"Create the survey via the admin UI first, then update it via the API."
+				)
+			}
+		}
+		stop(sprintf("API Error (%s): %s%s", status, body_text, hint))
 	}
-	
+
 	httr::content(req, "parsed")
+}
+
+#' Format the current session's granted scopes for an error hint.
+#' Returns the scope string, "(unknown)" when the auth flow couldn't
+#' capture it (direct access_token path), or "(none)" when the server
+#' explicitly granted an empty scope set.
+#' @noRd
+.formatted_session_scope <- function() {
+	session <- formr_api_session()
+	if (is.null(session) || is.null(session$scope) || is.na(session$scope)) return("(unknown)")
+	if (!nzchar(session$scope)) return("(none)")
+	session$scope
 }

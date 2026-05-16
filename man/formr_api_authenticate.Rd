@@ -13,7 +13,8 @@ formr_api_authenticate(
 )
 }
 \arguments{
-\item{host}{API Base URL.}
+\item{host}{API Base URL. Defaults to \code{.formr$host} when running on
+formr.org, otherwise \code{"https://formr.org"}.}
 
 \item{client_id}{OAuth Client ID.}
 
@@ -24,6 +25,9 @@ formr_api_authenticate(
 \item{account}{Optional string identifier for multiple accounts on the same host.}
 }
 \description{
-Connects to the API. If no credentials are provided,
-it tries to find them in the Global Environment or keyring.
+Connects to the API. If no credentials are provided, the auto-pickup
+chain is: the package's hidden \code{.formr} env (set automatically when
+the code runs inside an OpenCPU session on formr.org), then the
+calling-frame chain (for legacy injectors that wrote bare locals into
+the wrapper scope), then the keyring.
 }
