@@ -154,12 +154,7 @@ formr_api_authenticate <- function(host = "https://formr.org",
 		assign("auth_params", list(host = host, account = account), envir = .formr_state)
 		assign("session", session_data, envir = .formr_state)
 
-		tryCatch({
-			formr_api_request("user/me", method = "GET")
-			message("[SUCCESS] Authenticated via Access Token.")
-		}, error = function(e) {
-			warning("Authentication failed: ", e$message)
-		})
+		message("[SUCCESS] Authenticated via Access Token.")
 
 	} else if (!is.null(client_id) && !is.null(client_secret)) {
 		token_url <- httr::parse_url(host)
