@@ -5,7 +5,7 @@
 \title{Get and Process Run Results}
 \usage{
 formr_api_results(
-  run_name,
+  run_name = .formr$run_name,
   ...,
   compute_scales = TRUE,
   join = TRUE,
@@ -14,7 +14,9 @@ formr_api_results(
 )
 }
 \arguments{
-\item{run_name}{Name of the run.}
+\item{run_name}{Name of the run. Defaults to \code{.formr$run_name}, which
+is set automatically when the code runs inside an OpenCPU session on
+formr.org — so portable run code can omit this argument.}
 
 \item{...}{Filters passed to API (e.g. \code{surveys = c("Daily", "Intake")}, \code{session_ids = "..."}).}
 

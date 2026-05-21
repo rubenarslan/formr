@@ -9,7 +9,7 @@ library(formr)
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Authenticate using stored credentials
-# formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+# formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Fetch, reverse, aggregate, and join all data

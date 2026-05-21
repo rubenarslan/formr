@@ -125,7 +125,7 @@ Once your keys are stored, you simply authenticate at the start of your session:
 
 ```{r, auth_local, eval = FALSE}
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org") # or your custom API-URL!
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
 
 # After authentication, you can see which scopes the credential carries:
 formr_api_session()$scope
@@ -149,7 +149,7 @@ You can also use the API functions within the R-Code of your actual survey run (
 
 ```{r, auth_run, eval = FALSE}
 # Inside a formr Run, simply call:
-formr_api_authenticate(host = "https://api.formr.org") # or your custom API-URL!
+formr_api_authenticate() # The package detects that it's running inside a Run and uses the temporary context provided by the server.
 ```
 
 ---

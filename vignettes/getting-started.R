@@ -17,9 +17,12 @@ knitr::opts_chunk$set(
 # formr_store_keys(
 #   host = "https://api.formr.org",
 #   client_id = "YOUR_CLIENT_ID",
-#   client_secret = "YOUR_CLIENT_SECRET"
-#   # Optional: account = "the name you give the account"
-#   # this allows for multiple saved API IDs and secrets per host.
+#   client_secret = "YOUR_CLIENT_SECRET",
+#   # Optional but recommended when you have more than one credential:
+#   # pass the same string you used as the credential's label on the
+#   # server. This lets you switch between credentials by name when you
+#   # call formr_api_authenticate(account = "...").
+#   account = "dashboard"
 # )
 
 ## ----store_keys_classic, eval = FALSE-----------------------------------------
@@ -28,7 +31,11 @@ knitr::opts_chunk$set(
 
 ## ----auth_local, eval = FALSE-------------------------------------------------
 # # Automatically finds your stored keys
-# formr_api_authenticate(host = "https://api.formr.org") # or your custom API-URL!
+# formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
+# 
+# # After authentication, you can see which scopes the credential carries:
+# formr_api_session()$scope
+# #> [1] "run:read run:write survey:read"
 
 ## ----connect_classic, eval = FALSE--------------------------------------------
 # # Connect using the stored credentials
@@ -36,7 +43,7 @@ knitr::opts_chunk$set(
 
 ## ----auth_run, eval = FALSE---------------------------------------------------
 # # Inside a formr Run, simply call:
-# formr_api_authenticate(host = "https://api.formr.org") # or your custom API-URL!
+# formr_api_authenticate() # The package detects that it's running inside a Run and uses the temporary context provided by the server.
 
 ## ----push_pull, eval = FALSE--------------------------------------------------
 # # Download a project (surveys and files) to your local folder

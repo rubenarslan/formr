@@ -27,7 +27,7 @@ Before fetching data, ensure you are authenticated. If you have stored your keys
 
 ```{r, eval = FALSE}
 # Authenticate using stored credentials
-formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 ## 2. The One-Stop Solution (`formr_api_results`)

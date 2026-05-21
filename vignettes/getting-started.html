@@ -411,20 +411,90 @@ you don’t have to type them every time.</p>
 <div id="save-your-api-credentials" class="section level4">
 <h4>1.1 Save your API Credentials</h4>
 <ol style="list-style-type: decimal">
-<li>Log in to formr.org (or your instance).</li>
-<li>Go to <strong>Account &gt; API Settings</strong>.</li>
-<li>Create a Client ID and Secret.</li>
-<li>Run the following code <strong>once</strong> in your R console:</li>
+<li><p>Log in to formr.org (or your instance).</p></li>
+<li><p>Go to <strong>Account &gt; API Credentials</strong> (the “API”
+tab on the account page). You can hold several credentials side by side
+— each one with its own scopes and run allowlist. A common pattern is
+one narrow read-only credential for a dashboard, plus a separate broader
+credential for a cron job.</p></li>
+<li><p>Give the credential a <strong>label</strong>
+(e.g. <code>dashboard</code>, <code>cron-2026</code>). The label is only
+used on the credentials page to tell credentials apart; it must be
+unique within your account. You will pass the same string to
+<code>formr_store_keys(..., account = &quot;...&quot;)</code> in step 6 so the R
+package can keep multiple credentials per host straight in your
+keyring.</p></li>
+<li><p>Pick which <strong>scopes</strong> the credential should grant.
+Each scope is a verb on a resource:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Scope</th>
+<th align="left">What it grants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>user:read</code> / <code>user:write</code></td>
+<td align="left">Read / update your account profile</td>
+</tr>
+<tr class="even">
+<td align="left"><code>survey:read</code> /
+<code>survey:write</code></td>
+<td align="left">Read survey definitions / upload + edit them</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>run:read</code> / <code>run:write</code></td>
+<td align="left">Read run metadata / create + update + delete runs</td>
+</tr>
+<tr class="even">
+<td align="left"><code>session:read</code> /
+<code>session:write</code></td>
+<td align="left">Read participant sessions / create + advance them</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>data:read</code></td>
+<td align="left">Read participant response data</td>
+</tr>
+<tr class="even">
+<td align="left"><code>file:read</code> / <code>file:write</code></td>
+<td align="left">Download / upload files attached to runs</td>
+</tr>
+</tbody>
+</table>
+<p>A token issued under a credential can only call endpoints whose
+required scopes it carries. A credential with only <code>run:read</code>
+will succeed on <code>GET /v1/runs/{name}</code> and return 403 on
+<code>PATCH /v1/runs/{name}</code>.</p></li>
+<li><p>Optionally <strong>restrict the credential to specific
+runs</strong>. Leave the run picker empty to allow this credential to
+act on all of your runs; tick one or more runs to limit it. A
+run-restricted credential also implicitly restricts which surveys it can
+touch — only surveys that are part of one of the allowlisted runs are
+reachable.</p></li>
+<li><p>Click <strong>Create credential</strong>. The Client ID and
+Client Secret are shown <strong>once</strong>. Copy both immediately —
+the server stores only a SHA-256 hash, so a forgotten secret has to be
+rotated, not recovered.</p></li>
+<li><p>Run the following code <strong>once</strong> in your R
+console:</p></li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Store your credentials once</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># This saves them securely in your OS credential store</span></span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">formr_store_keys</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, </span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">client_id =</span> <span class="st">&quot;YOUR_CLIENT_ID&quot;</span>, </span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">client_secret =</span> <span class="st">&quot;YOUR_CLIENT_SECRET&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="co"># Optional: account = &quot;the name you give the account&quot;</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="co"># this allows for multiple saved API IDs and secrets per host.</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">client_id =</span> <span class="st">&quot;YOUR_CLIENT_ID&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">client_secret =</span> <span class="st">&quot;YOUR_CLIENT_SECRET&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="co"># Optional but recommended when you have more than one credential:</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="co"># pass the same string you used as the credential&#39;s label on the</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="co"># server. This lets you switch between credentials by name when you</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="co"># call formr_api_authenticate(account = &quot;...&quot;).</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="save-your-regular-user-credentials-classic" class="section level4">
 <h4>1.2 Save your regular User Credentials (Classic)</h4>
@@ -449,7 +519,15 @@ your session:</p>
 <div id="thru-the-api" class="section level4">
 <h4>1.1 Thru the API</h4>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>) <span class="co"># or your custom API-URL!</span></span></code></pre></div>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom API-URL + account name!</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">formr_api_session</span>()<span class="sc">$</span>scope</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
+<p>If you call a function whose endpoint needs a scope you don’t have,
+the package surfaces the server’s 403 alongside a hint at the bottom
+pointing at <code>admin/account#api</code> — the same place to fix
+it.</p>
 </div>
 <div id="with-your-user-credentials-classic" class="section level4">
 <h4>1.2 With your User Credentials (Classic)</h4>
@@ -466,7 +544,7 @@ survey run (e.g., to look up previous results). In this environment, you
 do not need credentials; the system provides a temporary context. Just
 run:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Inside a formr Run, simply call:</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>) <span class="co"># or your custom API-URL!</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>() <span class="co"># The package detects that it&#39;s running inside a Run and uses the temporary context provided by the server.</span></span></code></pre></div>
 <hr />
 </div>
 </div>
