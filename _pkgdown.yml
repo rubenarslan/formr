@@ -41,9 +41,10 @@ navbar:
           href: articles/manage-your-surveys.html
         - text: "Manage your Files"
           href: articles/manage-your-files.html
-        # - text: "------------------"
-        # - text: "Use the R-Package in your formr-Run"
-        #              WORK IN PROGRESS
+        - text: "------------------"
+        - text: "Inside your Run"
+        - text: "Running R Inside Your formr Study"
+          href: articles/run-r-inside-your-study.html
 
 reference:
   - title: Setup & Authentication
