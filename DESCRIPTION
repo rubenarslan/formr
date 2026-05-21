@@ -14,8 +14,8 @@ Authors@R: c(
         role = c("aut","cre")),
     person("Tim B", "Seidel", 
         email = "tim.seidel@outlook.com", 
-        role = "ctb")
-    )
+        role = c("aut","ctb"))
+        )
 Version: 1.0.0
 Depends:
     R (>= 3.0.2)

@@ -11,7 +11,7 @@ and joins everything into one dataframe."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,11 +70,12 @@ and joins everything into one dataframe.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_results</span><span class="op">(</span></span>
-<span>  <span class="va">run_name</span>,</span>
+<span>  run_name <span class="op">=</span> <span class="va">.formr</span><span class="op">$</span><span class="va">run_name</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  compute_scales <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  join <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  remove_test_sessions <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  remove_test_sessions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,7 +84,9 @@ and joins everything into one dataframe.</p>
 
 
 <dl><dt id="arg-run-name">run_name<a class="anchor" aria-label="anchor" href="#arg-run-name"></a></dt>
-<dd><p>Name of the run.</p></dd>
+<dd><p>Name of the run. Defaults to <code>.formr$run_name</code>, which
+is set automatically when the code runs inside an OpenCPU session on
+formr.org — so portable run code can omit this argument.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -101,10 +104,14 @@ and joins everything into one dataframe.</p>
 <dt id="arg-remove-test-sessions">remove_test_sessions<a class="anchor" aria-label="anchor" href="#arg-remove-test-sessions"></a></dt>
 <dd><p>Logical. Filter out sessions marked as testing?</p></dd>
 
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. Print progress messages?</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A processed tibble (if joined) or a list of processed tibbles.</p>
+    <p>A processed tibble with class <code>formr_results</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -112,7 +119,7 @@ and joins everything into one dataframe.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ruben Arslan.</p>
+  <p>Developed by Ruben Arslan, Tim B Seidel.</p>
 </div>
 
 <div class="pkgdown-footer-right">

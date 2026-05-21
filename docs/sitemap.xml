@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>http://rubenarslan.github.io/formr/404.html</loc></url>
+<url><loc>http://rubenarslan.github.io/formr/CLAUDE.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/LICENSE-text.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/LICENSE.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/articles/fetch-and-process-results.html</loc></url>
@@ -41,6 +42,7 @@
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_delete_survey.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_fetch_results.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_files.html</loc></url>
+<url><loc>http://rubenarslan.github.io/formr/reference/formr_api_is_authenticated.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_logout.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_pull_project.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_push_project.html</loc></url>
@@ -55,6 +57,7 @@
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_sessions.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_survey_structure.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_surveys.html</loc></url>
+<url><loc>http://rubenarslan.github.io/formr/reference/formr_api_token_expiry.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_upload_file.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_api_upload_survey.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/formr_backup_files.html</loc></url>
@@ -129,6 +132,7 @@
 <url><loc>http://rubenarslan.github.io/formr/reference/reverse_labelled_values.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/shuffleWithBlocks.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/summarise_all_vars.html</loc></url>
+<url><loc>http://rubenarslan.github.io/formr/reference/summary.formr_results.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/take_nonmissing.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/text_message_clickatell.html</loc></url>
 <url><loc>http://rubenarslan.github.io/formr/reference/text_message_massenversand.html</loc></url>

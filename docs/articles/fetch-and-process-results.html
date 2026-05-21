@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ stored your keys (see <a href="getting-started.html">Getting
 Started</a>), this is automatic.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Authenticate using stored credentials</span></span>
-<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.formr.org"</span><span class="op">)</span> <span class="co"># or your custom URL!</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.formr.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-one-stop-solution-formr_api_results">2. The One-Stop Solution (<code>formr_api_results</code>)<a class="anchor" aria-label="anchor" href="#the-one-stop-solution-formr_api_results"></a>
@@ -165,8 +165,8 @@ survey’s metadata (the item table).</p>
 reversed (e.g., ends in <code>R</code>), and what the scale options
 are.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fetch the run structure (contains all item metadata)</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"daily_diary"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Fetch the survey structure (contains all item metadata)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_survey_structure.html">formr_api_survey_structure</a></span><span class="op">(</span><span class="st">"daily_diary"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="b--reverse-coding-formr_api_reverse">B. Reverse Coding (<code>formr_api_reverse</code>)<a class="anchor" aria-label="anchor" href="#b--reverse-coding-formr_api_reverse"></a>
@@ -174,7 +174,7 @@ are.</p>
 <p>This function automatically reverses items that end in <code>R</code>
 (e.g., <code>bfi_neuro_3R</code>). It uses the item’s defined choices
 (e.g., 1 to 5) to calculate the reversal correctly:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>e</mi><mi>w</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>M</mi><mi>a</mi><mi>x</mi><mo>+</mo><mi>M</mi><mi>i</mi><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>O</mi><mi>l</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">New = (Max + Min) - Old</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>e</mi><mi>w</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mi>a</mi><mi>x</mi><mo>+</mo><mi>M</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>O</mi><mi>l</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">New = (Max + Min) - Old</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Apply reverse coding to raw results</span></span>
 <span><span class="va">df_reversed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_reverse.html">formr_api_reverse</a></span><span class="op">(</span>results <span class="op">=</span> <span class="va">raw_data</span>, item_list <span class="op">=</span> <span class="va">metadata</span><span class="op">)</span></span></code></pre></div>
@@ -216,7 +216,7 @@ significantly compared to older versions of the package.</p>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_results.html">formr_api_results</a></span><span class="op">(</span><span class="va">run_name</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 3. Analyze</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clean_data</span><span class="op">$</span><span class="va">bfi_neuro</span><span class="op">)</span> <span class="co"># This scale was computed automatically!</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">bfi_neuro</span><span class="op">)</span> <span class="co"># This scale was computed automatically!</span></span>
 <span><span class="co"># ...</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -238,7 +238,7 @@ significantly compared to older versions of the package.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ruben Arslan.</p>
+  <p>Developed by Ruben Arslan, Tim B Seidel.</p>
 </div>
 
 <div class="pkgdown-footer-right">

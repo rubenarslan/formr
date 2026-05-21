@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,13 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="formr-100">formr 1.0.0<a class="anchor" aria-label="anchor" href="#formr-100"></a></h2>
+<p>Released alongside formr.org server v1.0.0. Major version bump tracks the formr v1 RESTful API surface stabilising — <code>formr_api_*</code> is now the supported entry point for new code; the legacy <code><a href="../reference/formr_results.html">formr_results()</a></code> / <code><a href="../reference/formr_raw_results.html">formr_raw_results()</a></code> (“Classic”) path continues to work but is no longer the recommended starting point in the vignette.</p>
+<ul><li><p><strong>Vignette walks through the new multi-credential account page.</strong> Server v0.26.x lets a user hold several labelled OAuth credentials side by side (each with its own scopes + run allowlist). On the wire nothing changed — <code><a href="../reference/formr_store_keys.html">formr_store_keys()</a></code> / <code><a href="../reference/formr_api_authenticate.html">formr_api_authenticate()</a></code> already accepted an <code>account</code> parameter that namespaces credentials in the keyring. The vignette now nudges users to pass the server-side label as <code>account</code> so the local store and the server’s credential page line up by name.</p></li>
+<li><p><strong><code><a href="../reference/formr_api_session.html">formr_api_session()</a></code> now exposes the granted OAuth <code>scope</code>.</strong> After <code><a href="../reference/formr_api_authenticate.html">formr_api_authenticate()</a></code> returns, <code>formr_api_session()$scope</code> holds the space-delimited scope string the server stamped on the token. <code>NA_character_</code> when the auth path can’t introspect (direct access-token authentication, or older server). The auth success message surfaces the granted scopes inline, and an empty scope string (a credential with no scopes selected at <code>admin/account#api</code>) emits a warning at auth time so users don’t debug blind 403s.</p></li>
+<li><p><strong>Actionable error messages on scoping-aware 403s.</strong> When the v1 API returns <code>Insufficient permissions: '&lt;scope&gt;' scope required</code>, the package’s error appends a hint pointing at the credential page and prints the currently-granted scopes. Same for the per-credential run-allowlist failure (<code>not authorized for run</code>), the survey-via-run failure (<code>not authorized for survey</code>), and the new-survey-create guard for run-restricted credentials. The 403 body is preserved so programmatic callers can still pattern-match.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.1" id="formr-0111">formr 0.11.1<a class="anchor" aria-label="anchor" href="#formr-0111"></a></h2>
 <ul><li>Update formr_store_keys to accept secret and email as arguments.</li>
 </ul></div>
@@ -73,7 +80,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ruben Arslan.</p>
+  <p>Developed by Ruben Arslan, Tim B Seidel.</p>
 </div>
 
 <div class="pkgdown-footer-right">

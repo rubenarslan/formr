@@ -121,7 +121,7 @@ formr_store_keys("main_account")
 
 Once your keys are stored, you simply authenticate at the start of your session:
 
-#### 1.1 Thru the API
+#### 2.1 Thru the API
 
 ```{r, auth_local, eval = FALSE}
 # Automatically finds your stored keys
@@ -134,7 +134,7 @@ formr_api_session()$scope
 
 If you call a function whose endpoint needs a scope you don't have, the package surfaces the server's 403 alongside a hint at the bottom pointing at `admin/account#api` — the same place to fix it.
 
-#### 1.2 With your User Credentials (Classic)
+#### 2.2 With your User Credentials (Classic)
 
 Once stored, you can connect in your scripts using this shorthand:
 

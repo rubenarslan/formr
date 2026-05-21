@@ -1,5 +1,6 @@
 ---
 title: "Manage your Sessions"
+description: "List, create, and control participant sessions in your runs"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Manage your Sessions}
@@ -17,7 +18,7 @@ knitr::opts_chunk$set(
 ```{r setup, eval = FALSE}
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 Managing sessions is a critical part of maintaining a study. Whether you are debugging an issue with a participant, cleaning up test data, or generating codes for participants, the formr package provides tools to inspect and control sessions directly from R.

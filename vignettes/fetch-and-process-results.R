@@ -4,8 +4,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----setup--------------------------------------------------------------------
-library(formr)
+## ----setup, eval = FALSE------------------------------------------------------
+# library(formr)
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Authenticate using stored credentials
@@ -23,8 +23,8 @@ library(formr)
 # raw_data <- formr_api_results("daily_diary", compute_scales = FALSE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-# # Fetch the run structure (contains all item metadata)
-# metadata <- formr_api_run_structure("daily_diary")
+# # Fetch the survey structure (contains all item metadata)
+# metadata <- formr_api_survey_structure("daily_diary")
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Apply reverse coding to raw results
@@ -46,6 +46,6 @@ library(formr)
 # data <- formr_api_results(run_name)
 # 
 # # 3. Analyze
-# summary(clean_data$bfi_neuro) # This scale was computed automatically!
+# summary(data$bfi_neuro) # This scale was computed automatically!
 # # ...
 

@@ -401,8 +401,8 @@ survey’s metadata (the item table).</p>
 <p>Processing requires knowing which items are numeric, which are
 reversed (e.g., ends in <code>R</code>), and what the scale options
 are.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Fetch the run structure (contains all item metadata)</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">formr_api_run_structure</span>(<span class="st">&quot;daily_diary&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Fetch the survey structure (contains all item metadata)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">formr_api_survey_structure</span>(<span class="st">&quot;daily_diary&quot;</span>)</span></code></pre></div>
 </div>
 <div id="b.-reverse-coding-formr_api_reverse" class="section level3">
 <h3>B. Reverse Coding (<code>formr_api_reverse</code>)</h3>
@@ -445,7 +445,7 @@ significantly compared to older versions of the package.</p>
 <span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">formr_api_results</span>(run_name)</span>
 <span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co"># 3. Analyze</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">summary</span>(clean_data<span class="sc">$</span>bfi_neuro) <span class="co"># This scale was computed automatically!</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">summary</span>(data<span class="sc">$</span>bfi_neuro) <span class="co"># This scale was computed automatically!</span></span>
 <span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
 </div>
 <div id="troubleshooting" class="section level2">

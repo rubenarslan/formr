@@ -343,7 +343,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(formr)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>) <span class="co"># or your custom URL!</span></span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
 <p>Managing sessions is a critical part of maintaining a study. Whether
 you are debugging an issue with a participant, cleaning up test data, or
 generating codes for participants, the formr package provides tools to

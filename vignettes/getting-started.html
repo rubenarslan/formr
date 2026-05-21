@@ -517,20 +517,20 @@ optionally a 2FA secret) securely.</li>
 <p>Once your keys are stored, you simply authenticate at the start of
 your session:</p>
 <div id="thru-the-api" class="section level4">
-<h4>1.1 Thru the API</h4>
+<h4>2.1 Thru the API</h4>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom API-URL + account name!</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">formr_api_session</span>()<span class="sc">$</span>scope</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
 <p>If you call a function whose endpoint needs a scope you don’t have,
 the package surfaces the server’s 403 alongside a hint at the bottom
 pointing at <code>admin/account#api</code> — the same place to fix
 it.</p>
 </div>
 <div id="with-your-user-credentials-classic" class="section level4">
-<h4>1.2 With your User Credentials (Classic)</h4>
+<h4>2.2 With your User Credentials (Classic)</h4>
 <p>Once stored, you can connect in your scripts using this
 shorthand:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Connect using the stored credentials</span></span>

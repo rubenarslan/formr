@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, eval = FALSE}
 library(formr)
 ```
 
@@ -70,8 +70,8 @@ If you used `compute_scales = FALSE` above, or if you are debugging why a specif
 Processing requires knowing which items are numeric, which are reversed (e.g., ends in `R`), and what the scale options are.
 
 ```{r, eval = FALSE}
-# Fetch the run structure (contains all item metadata)
-metadata <- formr_api_run_structure("daily_diary")
+# Fetch the survey structure (contains all item metadata)
+metadata <- formr_api_survey_structure("daily_diary")
 ```
 
 ### B. Reverse Coding (`formr_api_reverse`)
@@ -114,7 +114,7 @@ run_name <- "daily_diary"
 data <- formr_api_results(run_name)
 
 # 3. Analyze
-summary(clean_data$bfi_neuro) # This scale was computed automatically!
+summary(data$bfi_neuro) # This scale was computed automatically!
 # ...
 ```
 

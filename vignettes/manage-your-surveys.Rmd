@@ -1,5 +1,6 @@
 ---
 title: "Manage your Surveys"
+description: "List, inspect, download, upload, and delete surveys via the API"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Manage your Surveys}
@@ -17,10 +18,10 @@ knitr::opts_chunk$set(
 ```{r setup, eval = FALSE}
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
 ```
 
-In addition to managing Runs, `formr` allows you to directly interact with the underlying Surveys (the spreadsheets containing your items and logic). While the [Project Workflow](manage-your-studies.html) (`formr_api_push_project`) is recommended for syncing entire studies, the functions below allow you to list, inspect, download, or delete specific surveys individually.
+In addition to managing Runs, `formr` allows you to directly interact with the underlying Surveys (the spreadsheets containing your items and logic). While the [Project Workflow](manage-your-projects.html) (`formr_api_push_project`) is recommended for syncing entire studies, the functions below allow you to list, inspect, download, or delete specific surveys individually.
 
 ## Listing Your Surveys
 

@@ -343,10 +343,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(formr)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>) <span class="co"># or your custom URL!</span></span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
 <p>Most complex studies require more than just survey spreadsheets. For
 example, you might need to host images for experimental stimuli.</p>
-<p>While the <a href="manage-your-studies.html">Project Workflow</a>
+<p>While the <a href="manage-your-projects.html">Project Workflow</a>
 (<code>formr_api_push_project</code>) syncs your <code>files/</code>
 folder automatically, the functions below give you direct, granular
 control over the file storage of your run.</p>

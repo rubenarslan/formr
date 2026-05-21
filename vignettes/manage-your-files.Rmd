@@ -1,5 +1,6 @@
 ---
 title: "Manage your Files"
+description: "Upload, list, and delete files attached to your runs"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Manage your Files}
@@ -17,12 +18,12 @@ knitr::opts_chunk$set(
 ```{r setup, eval = FALSE}
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 Most complex studies require more than just survey spreadsheets. For example, you might need to host images for experimental stimuli.
 
-While the [Project Workflow](manage-your-studies.html) (`formr_api_push_project`) syncs your `files/` folder automatically, the functions below give you direct, granular control over the file storage of your run.
+While the [Project Workflow](manage-your-projects.html) (`formr_api_push_project`) syncs your `files/` folder automatically, the functions below give you direct, granular control over the file storage of your run.
 
 ## Listing Files
 

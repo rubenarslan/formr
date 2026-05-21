@@ -351,7 +351,7 @@ local editors for Excel, CSS, and JavaScript files.</p>
 <h2>Prerequisites</h2>
 <p>Ensure you have stored your API credentials as described in the <a href="getting-started.html">Getting Started</a> guide.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>) <span class="co"># or your custom URL!</span></span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
 </div>
 <div id="backing-up-a-study" class="section level2">
 <h2>Backing up a Study</h2>
@@ -408,11 +408,11 @@ what has changed.</p>
 <div id="watch-mode" class="section level4">
 <h4>Watch Mode</h4>
 <p>If you are heavily editing a survey, running
-<code>formr_push_project</code> manually every time can be tedious. You
-can use the <code>watch</code> argument to keep the connection open. The
-package will monitor your folder and upload changes immediately as you
-save files. Note that you cannot run other commands until you stop the
-watcher by pressing the “Esc”-Key.</p>
+<code>formr_api_push_project</code> manually every time can be tedious.
+You can use the <code>watch</code> argument to keep the connection open.
+The package will monitor your folder and upload changes immediately as
+you save files. Note that you cannot run other commands until you stop
+the watcher by pressing the “Esc”-Key.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Automatically push changes when files are saved (Press Esc to stop)</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">formr_api_push_project</span>(<span class="st">&quot;my-study-name&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;my_project_folder&quot;</span>, <span class="at">watch =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
