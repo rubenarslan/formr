@@ -60,3 +60,4 @@ Config/testthat/edition: 3
 URL: https://rubenarslan.github.io/formr/, https://github.com/rubenarslan/formr
 BugReports: https://github.com/rubenarslan/formr/issues
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

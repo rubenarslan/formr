@@ -523,7 +523,7 @@ your session:</p>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">formr_api_session</span>()<span class="sc">$</span>scope</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
 <p>If you call a function whose endpoint needs a scope you don’t have,
 the package surfaces the server’s 403 alongside a hint at the bottom
 pointing at <code>admin/account#api</code> — the same place to fix

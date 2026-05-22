@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 # 
 # # After authentication, you can see which scopes the credential carries:
 # formr_api_session()$scope
-# # [1] "run:read run:write survey:read"
+# #> [1] "run:read run:write survey:read"
 
 ## ----connect_classic, eval = FALSE--------------------------------------------
 # # Connect using the stored credentials

@@ -268,6 +268,40 @@ as.data.frame.formr_api_run_structure <- function(x, ...) {
 #' @export
 formr_api_delete_run <- function(run_name, prompt = TRUE) {
 	
+	if (length(run_name) > 1) {
+		if (prompt) {
+			for (rn in run_name) {
+				cat(sprintf("\n DANGER: You are about to permanently delete the run '%s'.\n", rn))
+			}
+			cat("   This includes ALL structure and attached files.\n")
+			cat("   This action cannot be undone.\n")
+			response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
+			if (tolower(trimws(response)) != "y") {
+				message("[FAILED] Operation cancelled.")
+				return(invisible(FALSE))
+			}
+		}
+		results <- vapply(run_name, function(rn) {
+			tryCatch({
+				formr_api_request(endpoint = paste0("runs/", rn), method = "DELETE")
+				message(sprintf("[SUCCESS] Run '%s' deleted successfully.", rn))
+				TRUE
+			}, error = function(e) {
+				message(sprintf("[FAILED] Run '%s': %s", rn, e$message))
+				FALSE
+			})
+		}, logical(1))
+		successes <- sum(results)
+		failures <- sum(!results)
+		msg <- sprintf("[DONE] %d run(s) deleted, %d failed.", successes, failures)
+		if (failures > 0) {
+			warning(msg, call. = FALSE)
+		} else {
+			message(msg)
+		}
+		return(invisible(results))
+	}
+	
 	if (prompt) {
 		cat(sprintf("\n DANGER: You are about to permanently delete the run '%s'.\n", run_name))
 		cat("   This includes ALL structure and attached files.\n")
