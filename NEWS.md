@@ -1,6 +1,11 @@
-# formr 1.1.0
+# formr 1.0.0
 
-* Initial CRAN release. Previous versions were available on GitHub only.
+Initial CRAN release. Released alongside formr.org server v1.0.0.
+Major version bump tracks the formr v1 RESTful API surface
+stabilising — `formr_api_*` is now the supported entry point for new
+code; the legacy `formr_results()` / `formr_raw_results()` ("Classic")
+path continues to work but is no longer the recommended starting
+point in the vignette.
 
 * **`formr_api_unit_sessions()`** wraps the new
   `GET /v1/runs/{name}/unit_sessions` endpoint — one row per
@@ -17,14 +22,6 @@
   draw cycles), and surfaces the average per-participant visit count
   as an "avg N visits" label suffix when it exceeds 1. Top-to-bottom
   orientation by default; pass `orientation = "h"` for left-to-right.
-
-# formr 1.0.0
-
-Released alongside formr.org server v1.0.0. Major version bump tracks
-the formr v1 RESTful API surface stabilising — `formr_api_*` is now
-the supported entry point for new code; the legacy `formr_results()` /
-`formr_raw_results()` ("Classic") path continues to work but is no
-longer the recommended starting point in the vignette.
 
 * **Vignette walks through the new multi-credential account page.** Server
   v0.26.x lets a user hold several labelled OAuth credentials side by
