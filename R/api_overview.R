@@ -28,7 +28,7 @@
 #'   top-to-bottom (readable on narrow admin pages), `"h"` renders
 #'   left-to-right.
 #' @param min_avg_visits_to_annotate Threshold above which a node's
-#'   label gets the "avg N visits" suffix. Default 1.1 — slightly above
+#'   label gets the "avg N visits" suffix. Default 1.1 -- slightly above
 #'   exactly-once so single-pass runs stay clean.
 #' @return A plotly Sankey object, or `NULL` with a message when there
 #'   are no rows to plot. Returning `NULL` lets the caller's knitr chunk
@@ -41,14 +41,19 @@ formr_overview_sankey <- function(run_name = .formr$run_name,
 
 	us <- formr_api_unit_sessions(run_name, testing = testing)
 
+	if (nrow(us) == 0) {
+		message("No participants yet -- nothing to plot.")
+		return(invisible(NULL))
+	}
+
 	# Special units (OverviewScriptPage / ServiceMessagePage / ReminderEmail)
-	# sit outside the ordered flow and arrive with position = NA — drop
+	# sit outside the ordered flow and arrive with position = NA -- drop
 	# them so the diagram focuses on the participant path.
 	steps <- dplyr::filter(us, !is.na(.data$position))
 	steps <- dplyr::arrange(steps, .data$session, .data$created, .data$unit_session_id)
 
 	if (nrow(steps) == 0) {
-		message("No participants in an ordered unit yet — nothing to plot.")
+		message("No participants in an ordered unit yet -- nothing to plot.")
 		return(invisible(NULL))
 	}
 

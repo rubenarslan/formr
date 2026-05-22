@@ -265,21 +265,50 @@ formr_api_unit_sessions <- function(run_name, session_codes = NULL, testing = NU
 
 	res <- formr_api_request(paste0("runs/", run_name, "/unit_sessions"), query = query)
 
+	# Canonical empty tibble with the documented schema -- callers that
+	# pipe into dplyr::filter/select are safe even when nothing is
+	# returned by the API.
+	empty <- dplyr::tibble(
+		unit_session_id  = integer(0),
+		session          = character(0),
+		testing          = logical(0),
+		unit_id          = integer(0),
+		unit_type        = character(0),
+		unit_description = character(0),
+		position         = integer(0),
+		iteration        = integer(0),
+		created          = as.POSIXct(character(0)),
+		expires          = as.POSIXct(character(0)),
+		ended            = as.POSIXct(character(0)),
+		expired          = as.POSIXct(character(0)),
+		result           = character(0),
+		state            = character(0)
+	)
+
 	if (length(res) == 0) {
 		message(sprintf("[INFO] No unit sessions found for run '%s'.", run_name))
-		return(dplyr::tibble())
+		return(empty)
 	}
 
 	df <- dplyr::bind_rows(res)
 
-	# Type coercion — JSON gives numbers and strings, R wants typed columns.
-	if ("created" %in% names(df))  df$created  <- as.POSIXct(df$created)
-	if ("expires" %in% names(df))  df$expires  <- as.POSIXct(df$expires)
-	if ("ended"   %in% names(df))  df$ended    <- as.POSIXct(df$ended)
-	if ("expired" %in% names(df))  df$expired  <- as.POSIXct(df$expired)
-	if ("testing" %in% names(df))  df$testing  <- as.logical(df$testing)
-	if ("position" %in% names(df)) df$position <- as.integer(df$position)
-	if ("iteration" %in% names(df)) df$iteration <- as.integer(df$iteration)
+	# Guarantee the documented column set even when every row had NULL
+	# for that field (dplyr::bind_rows drops all-NULL columns, which would
+	# trip downstream code that references e.g. `expired` on a run where
+	# nothing has expired yet). Default to NA; type coercion below puts
+	# each column in the right class.
+	for (col in setdiff(names(empty), names(df))) {
+		df[[col]] <- NA
+	}
+
+	# Type coercion -- JSON gives numbers and strings, R wants typed columns.
+	df$created   <- as.POSIXct(df$created)
+	df$expires   <- as.POSIXct(df$expires)
+	df$ended     <- as.POSIXct(df$ended)
+	df$expired   <- as.POSIXct(df$expired)
+	df$testing   <- as.logical(df$testing)
+	df$position  <- as.integer(df$position)
+	df$iteration <- as.integer(df$iteration)
 
 	dplyr::as_tibble(df)
 }
