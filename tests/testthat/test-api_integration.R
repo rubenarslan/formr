@@ -1,6 +1,14 @@
 library(testthat)
-library(vcr)
 library(formr)
+
+# Whole file relies on vcr cassettes + mockery; bail out before the
+# library() calls when either is missing (e.g. CRAN's
+# `_R_CHECK_DEPENDS_ONLY_` strict run). Wrapping in if() means the body
+# is simply not parsed if the gate trips.
+if (requireNamespace("vcr", quietly = TRUE) &&
+    requireNamespace("mockery", quietly = TRUE)) {
+
+library(vcr)
 library(mockery)
 
 test_that("formr_api_authenticate works (live/recorded)", {
@@ -293,3 +301,6 @@ test_that("Logic Unit Test: Reversal, Types, and Scales work with hardcoded data
 	# Row 2: extra_1=3, extra_2R (reversed)=3. Mean = 3.
 	expect_equal(step3$extra[2], 3)
 })
+
+} # close: if (requireNamespace vcr & mockery)
+

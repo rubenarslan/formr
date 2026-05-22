@@ -118,6 +118,11 @@ formr_overview_sankey <- function(run_name = .formr$run_name,
 	idx   <- setNames(seq_along(nodes) - 1L, nodes)
 	n_real <- length(unique(steps$session))
 
+	if (!requireNamespace("plotly", quietly = TRUE)) {
+		stop("formr_overview_sankey() needs the 'plotly' package. ",
+		     "Install it with install.packages(\"plotly\").")
+	}
+
 	plot <- plotly::plot_ly(
 		type = "sankey",
 		orientation = orientation,

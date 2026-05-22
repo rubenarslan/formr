@@ -23,7 +23,7 @@ top-to-bottom (readable on narrow admin pages), \code{"h"} renders
 left-to-right.}
 
 \item{min_avg_visits_to_annotate}{Threshold above which a node's
-label gets the "avg N visits" suffix. Default 1.1 — slightly above
+label gets the "avg N visits" suffix. Default 1.1 -- slightly above
 exactly-once so single-pass runs stay clean.}
 }
 \value{

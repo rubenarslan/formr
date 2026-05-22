@@ -36,7 +36,8 @@ formr_aggregate(
 
 \item{aggregation_function}{defaults to rowMeans with na.rm = FALSE}
 
-\item{...}{passed to  \code{\link[psych:alpha]{psych::alpha()}}}
+\item{...}{formerly passed to \code{psych::alpha()}; ignored now that the
+reliability/Likert code has moved to the \code{codebook} package}
 }
 \description{
 If you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this

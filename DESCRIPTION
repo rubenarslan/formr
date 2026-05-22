@@ -1,57 +1,62 @@
 Package: formr
-Title: formr survey framework accompanying R package
-Description: Serves as a robust companion toolkit for the 'formr' survey 
-    framework. The package acts as a bridge between the server and 
-    a local R environment. Key features include an API interface 
-    for fetching, type-casting, and automatically scoring data, as well as 
-    a project management workflow for syncing study assets (surveys, CSS) 
-    for local editing. It also supplies functions for use within 'formr' 
-    runs to generate dynamic, personalized feedback plots and simplify 
-    survey logic.
+Title: Companion R Package for the 'formr' Survey Framework
+Description: Serves as a companion toolkit for the 'formr' survey
+    framework (<https://formr.org>). The package acts as a bridge
+    between a 'formr' server and a local R environment. Key features
+    include an API client for fetching, type-casting, and automatically
+    scoring data; a project management workflow for syncing study
+    assets (surveys, CSS) for local editing; and functions for use
+    within 'formr' runs to generate dynamic, personalized feedback
+    plots and to simplify survey logic.
+Version: 1.1.0
 Authors@R: c(
     person("Ruben", "Arslan",
         email = "rubenarslan@gmail.com",
-        role = c("aut","cre")),
-    person("Tim B", "Seidel", 
-        email = "tim.seidel@outlook.com", 
-        role = c("aut","ctb"))
-        )
-Version: 1.0.0
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-6670-5658")),
+    person("Tim B", "Seidel",
+        email = "tim.seidel@outlook.com",
+        role = c("aut", "ctb"))
+    )
 Depends:
-    R (>= 3.0.2)
+    R (>= 4.1.0)
 Imports:
-		stats,
-		methods,
-		dplyr,
-		ggplot2,
-		scales,
-		haven,
-		stringr,
-		tidyr,
-		knitr,
-		httr,
-		curl,
-		jsonlite,
-		lubridate,
-		commonmark,
-		rmarkdown,
-		otp,
-		keyring,
-		purrr,
-		readr,
-		tibble
-License: MIT + file LICENSE
-LazyData: true
-Date: 2014-12-09 12:06:54
-RoxygenNote: 7.3.3
-Roxygen: list(markdown = TRUE) 
-Encoding: UTF-8
-Suggests: 
+    stats,
+    methods,
+    tools,
+    utils,
+    dplyr,
+    ggplot2,
+    scales,
+    haven,
+    stringr,
+    tidyr,
+    knitr,
+    httr,
+    curl,
+    jsonlite,
+    lubridate,
+    commonmark,
+    rmarkdown,
+    otp,
+    keyring,
+    purrr,
+    readr,
+    rlang,
+    tibble
+Suggests:
     testthat (>= 3.0.0),
     vcr,
     mockery,
     withr,
-    rstudioapi
+    rstudioapi,
+    plotly
+License: MIT + file LICENSE
+LazyData: true
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: http://rubenarslan.github.io/formr/
+URL: https://rubenarslan.github.io/formr/, https://github.com/rubenarslan/formr
+BugReports: https://github.com/rubenarslan/formr/issues
+Config/roxygen2/version: 8.0.0

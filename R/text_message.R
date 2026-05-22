@@ -10,14 +10,16 @@
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
 #' @export
 #' @examples
+#' \dontrun{
 #' text_message_twilio(
-#' 	To = '492222', 
-#' 	From = '15005000', 
+#' 	To = '492222',
+#' 	From = '15005000',
 #' 	Body = 'Hello friend',
 #' 	Account = 'ID', Token = 'Tokentokentoken')
+#' }
 
 text_message_twilio = function(To, From, Body, Account, Token, 
-  return_result = F) {
+  return_result = FALSE) {
   result = httr::POST(paste0("https://api.twilio.com/2010-04-01/Accounts/", 
     Account, "/Messages.json"), httr::authenticate(Account, 
     Token), body = list(From = From, To = To, Body = Body))
@@ -50,7 +52,7 @@ text_message_twilio = function(To, From, Body, Account, Token,
 #' 	Token = 'Tokentokentoken')
 #' 	}
 
-text_message_clickatell = function(To, Body, Token, return_result = F) {
+text_message_clickatell = function(To, Body, Token, return_result = FALSE) {
   result = httr::POST("https://api.clickatell.com/rest/message", 
     httr::add_headers(`X-Version` = 1, `Content-Type` = "application/json", 
       Authorization = paste("Bearer", Token), accept = "application/json"), 
@@ -97,7 +99,7 @@ text_message_clickatell = function(To, Body, Token, return_result = F) {
 #' 	}
 
 text_message_massenversand = function(To, From, Body, id, pw, 
-  time = "0", msgtype = "t", tarif = "OA", test = "0", return_result = F) {
+  time = "0", msgtype = "t", tarif = "OA", test = "0", return_result = FALSE) {
   # don't forget to use html character encoding (e.g. for
   # emptyspaces)
   params = paste0("test=", test, "&", "receiver=", To, "&", 

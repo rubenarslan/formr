@@ -65,7 +65,7 @@ formr_api_fetch_results <- function(run_name, surveys = NULL, session_ids = NULL
 #'
 #' @param run_name Name of the run. Defaults to `.formr$run_name`, which
 #'   is set automatically when the code runs inside an OpenCPU session on
-#'   formr.org — so portable run code can omit this argument.
+#'   formr.org -- so portable run code can omit this argument.
 #' @param ... Filters passed to API (e.g. `surveys = c("Daily", "Intake")`, `session_ids = "..."`).
 #' @param compute_scales Logical. Should scales (e.g. `extraversion`) be computed from items (e.g. `extra_1`, `extra_2`)?
 #' @param join Logical. If TRUE (default), joins all surveys into one wide dataframe.
@@ -82,7 +82,7 @@ formr_api_results <- function(run_name = .formr$run_name,
 															verbose = TRUE) {
 
 	if (is.null(run_name) || !nzchar(run_name)) {
-		stop("run_name is required (no .formr$run_name available — pass it explicitly when running outside formr.org)")
+		stop("run_name is required (no .formr$run_name available -- pass it explicitly when running outside formr.org)")
 	}
 
 	log_msg <- function(...) if(verbose) message(sprintf(...))

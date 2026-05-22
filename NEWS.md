@@ -1,4 +1,6 @@
-# formr (development version)
+# formr 1.1.0
+
+* Initial CRAN release. Previous versions were available on GitHub only.
 
 * **`formr_api_unit_sessions()`** wraps the new
   `GET /v1/runs/{name}/unit_sessions` endpoint — one row per

@@ -18,11 +18,17 @@ The formr R package serves as a bridge between the formr.org survey framework an
 - Dynamic Feedback: Generate immediate, personalized charts and visualizations to show participants their results.
 - Survey Logic: Use shorthand functions to handle complex text logic or conditional display settings within your survey units.
 
-[You can get started right here!](https://rubenarslan.github.io/formr/docs/articles/getting-started.html)
+[You can get started right here!](https://rubenarslan.github.io/formr/)
 
 ## Installation
 
-You can install the development version from GitHub:
+You can install the released version from CRAN:
+
+```r
+install.packages("formr")
+```
+
+Or the development version from GitHub:
 
 ```r
 if (!requireNamespace("remotes")) install.packages("remotes")
@@ -40,8 +46,8 @@ The package currently supports two workflows.
 | **Auth** | OAuth (Access Tokens) | Email/Password |
 | **Capabilities** | Data fetching, **Project Management (Push/Pull)**, Session manipulation. | Classic formr functions. |
 
-## [Documentation](https://rubenarslan.github.io/formr)
+## [Documentation](https://rubenarslan.github.io/formr/)
 
-Learn how to get startet and how to use the formr package to your advantage:
+Learn how to get started and how to use the formr package to your advantage:
 
-[https://rubenarslan.github.io/formr](https://rubenarslan.github.io/formr)
+[https://rubenarslan.github.io/formr/](https://rubenarslan.github.io/formr/)

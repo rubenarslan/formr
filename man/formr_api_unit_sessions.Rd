@@ -32,9 +32,9 @@ incremental polling.}
 }
 \value{
 A tidy tibble with columns: \code{unit_session_id}, \code{session},
-\code{testing}, \code{unit_id}, \code{unit_type}, \code{unit_description},
-\code{position}, \code{iteration}, \code{created}, \code{expires},
-\code{ended}, \code{expired}, \code{result}, \code{state}.
+\code{testing}, \code{unit_id}, \code{unit_type}, \code{unit_description}, \code{position},
+\code{iteration}, \code{created}, \code{expires}, \code{ended}, \code{expired}, \code{result},
+\code{state}.
 }
 \description{
 Returns one row per (participant × unit × iteration) for the run — the
@@ -44,7 +44,7 @@ row per participant with their \emph{current} unit only).
 \details{
 Use this for trajectory plots (Sankey, alluvial), drop-off analytics,
 and debugging stuck participants. The rows arrive ordered by
-\code{(session, created, unit_session_id)}, so \verb{dplyr::group_by(session) |>  dplyr::mutate(next_unit = dplyr::lead(unit_description))} gives the
+\verb{(session, created, unit_session_id)}, so \code{dplyr::group_by(session) |> dplyr::mutate(next_unit = dplyr::lead(unit_description))} gives the
 edges of a trajectory plot directly.
 
 Special units (OverviewScriptPage, ServiceMessagePage, ReminderEmail)

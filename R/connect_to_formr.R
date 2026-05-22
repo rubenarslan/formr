@@ -1,5 +1,4 @@
-if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, maggritr
-.data = rlang::.data
+if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, magrittr
 
 #' Connect to formr
 #'
@@ -116,7 +115,7 @@ formr_disconnect = function(host = formr_last_host()) {
   resp = httr::GET(paste0(host, "/admin/account/logout"))
   text = httr::content(resp, encoding = "utf8", as = "text")
   if (resp$status_code == 200 && grepl("logged out", text, 
-    fixed = T)) 
+    fixed = TRUE)) 
     invisible(TRUE) else warning("You weren't logged in.")
 }
 
@@ -757,7 +756,7 @@ formr_user_detail = function(run_name, host = formr_last_host()) {
 #' Random date in range
 #' 
 #' taken from Dirk Eddelbuettel's answer
-#' here http://stackoverflow.com/a/14721124/263054
+#' here <https://stackoverflow.com/a/14721124/263054>.
 #'
 #' @param N desired number of random dates
 #' @param lower lower limit
@@ -817,7 +816,7 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
       char_vars = sapply(results, is.character)
       if (length(char_vars) > 0) { # for special case: no data
 	      type.convert = utils::type.convert
-        results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = F], 
+        results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = FALSE], 
 					dplyr::funs(type.convert(., as.is = TRUE)))
       }
     } else {
@@ -832,7 +831,7 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
         if (length(item$choices)) {
           # choice-based items
           results[, item$name] = utils::type.convert(as.character(results[, 
-          item$name]), as.is = T)
+          item$name]), as.is = TRUE)
           if (all(is.na(results[[ item$name ]])) || is.integer(results[[ item$name ]])) {
           	# prevent logical types, for which labelled doesn't work,
           	# and prevent integers for which we can't have tagged NAs
@@ -911,9 +910,9 @@ formr_simulate_from_items = function(item_list, n = 300) {
       next
     } else if (length(item$choices)) {
       # choice-based items
-      sample_from = utils::type.convert(names(item$choices), as.is = F)
+      sample_from = utils::type.convert(names(item$choices), as.is = FALSE)
       sim[, item$name] = sample(sample_from, size = n, 
-        replace = T)
+        replace = TRUE)
     } else if (length(item$type_options) && stringr::str_detect(item$type_options, 
       "^[0-9.,]+$")) {
       limits = as.numeric(stringr::str_split(item$type_options, 
@@ -924,7 +923,7 @@ formr_simulate_from_items = function(item_list, n = 300) {
           by = ifelse( by < 0, -1 * by, by))
 
         sim[, item$name] = sample(sample_from, size = n, 
-          replace = T)
+          replace = TRUE)
       }
     }
   }
@@ -958,13 +957,13 @@ formr_upload_items = function(survey_file_path, host = formr_last_host()) {
 		body = list(uploaded = httr::upload_file(survey_file_path))
 	)
 	text = httr::content(resp, encoding = "utf8", as = "text")
-	if (resp$status_code == 200 && grepl("Success!",text,fixed = T)) { 
+	if (resp$status_code == 200 && grepl("Success!",text,fixed = TRUE)) { 
 		invisible(TRUE)
-	} else if (grepl("You have to select an item table file",text,fixed = T)) { 
+	} else if (grepl("You have to select an item table file",text,fixed = TRUE)) { 
 		stop("You have to select an item table file here.") 
-	} else if (grepl("You need to login",text,fixed = T)) { 
+	} else if (grepl("You need to login",text,fixed = TRUE)) { 
 		stop("You need to login to access the admin section.")
-	} else if (grepl("is already taken",text,fixed = T)) { 
+	} else if (grepl("is already taken",text,fixed = TRUE)) { 
 		stop("The survey name is already taken.", survey_file_path)
 	} else { 
 		stop("Could not upload for unknown reasons. Try manually.") 
@@ -1002,7 +1001,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
   if (is.null(item_list)) {
     char_vars = sapply(results, is.character)
     type.convert = utils::type.convert
-    results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = F], 
+    results[, char_vars] = dplyr::mutate_all(results[, char_vars, drop = FALSE], 
     																				 dplyr::funs(type.convert(., as.is = TRUE)))
     
     # get reversed items
@@ -1013,7 +1012,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
         # reverse these items based on fallback_max, or if higher the
         # item's own maximum
       	item_max <- max(results[, reversed_items[i]], 
-      									fallback_max, na.rm = T)
+      									fallback_max, na.rm = TRUE)
       	warning(reversed_items[i], " was reversed in place without value labels. You will need to keep track of its reversion status manually.")
       	results[[ reversed_items[i] ]] <- item_max + 1 - results[[ reversed_items[i] ]]
       }
@@ -1056,8 +1055,8 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param plot_likert deprecated, functionality migrated to codebook package
 #' @param quiet defaults to FALSE - If set to true, likert plots and reliability computations are not echoed.
 #' @param aggregation_function defaults to rowMeans with na.rm = FALSE
-
-#' @param ... passed to  [psych::alpha()]
+#' @param ... formerly passed to `psych::alpha()`; ignored now that the
+#'   reliability/Likert code has moved to the `codebook` package
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
