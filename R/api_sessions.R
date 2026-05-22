@@ -220,3 +220,66 @@ formr_api_session_action <- function(run_name, session_codes, action, position =
 	
 	return(dplyr::as_tibble(df))
 }
+
+#' List Per-Unit Sessions in a Run
+#'
+#' Returns one row per (participant × unit × iteration) for the run — the
+#' history view that complements [formr_api_sessions()] (which gives one
+#' row per participant with their *current* unit only).
+#'
+#' Use this for trajectory plots (Sankey, alluvial), drop-off analytics,
+#' and debugging stuck participants. The rows arrive ordered by
+#' `(session, created, unit_session_id)`, so `dplyr::group_by(session) |>
+#' dplyr::mutate(next_unit = dplyr::lead(unit_description))` gives the
+#' edges of a trajectory plot directly.
+#'
+#' Special units (OverviewScriptPage, ServiceMessagePage, ReminderEmail)
+#' surface with `position = NA` because they live outside the ordered
+#' run flow.
+#'
+#' @param run_name Name of the run.
+#' @param session_codes Optional character vector — restrict to one or
+#'   more participants' histories.
+#' @param testing Filter: TRUE for test sessions only, FALSE for real
+#'   participants only, NULL for both.
+#' @param since Optional ISO 8601 datetime string. Returns only unit
+#'   sessions whose `created` is at-or-after this — handy for
+#'   incremental polling.
+#' @param limit Pagination limit (default 1000, max 10000).
+#' @param offset Pagination offset (default 0).
+#' @return A tidy tibble with columns: `unit_session_id`, `session`,
+#'   `testing`, `unit_id`, `unit_type`, `unit_description`, `position`,
+#'   `iteration`, `created`, `expires`, `ended`, `expired`, `result`,
+#'   `state`.
+#' @export
+formr_api_unit_sessions <- function(run_name, session_codes = NULL, testing = NULL,
+                                     since = NULL, limit = 1000, offset = 0) {
+	query <- list(limit = limit, offset = offset)
+	if (!is.null(session_codes)) {
+		# The API accepts comma-delimited codes; collapse here so the
+		# caller gets a vector-in / vector-out experience.
+		query$session <- paste(session_codes, collapse = ",")
+	}
+	if (!is.null(testing)) query$testing <- if (testing) 1 else 0
+	if (!is.null(since))   query$since   <- since
+
+	res <- formr_api_request(paste0("runs/", run_name, "/unit_sessions"), query = query)
+
+	if (length(res) == 0) {
+		message(sprintf("[INFO] No unit sessions found for run '%s'.", run_name))
+		return(dplyr::tibble())
+	}
+
+	df <- dplyr::bind_rows(res)
+
+	# Type coercion — JSON gives numbers and strings, R wants typed columns.
+	if ("created" %in% names(df))  df$created  <- as.POSIXct(df$created)
+	if ("expires" %in% names(df))  df$expires  <- as.POSIXct(df$expires)
+	if ("ended"   %in% names(df))  df$ended    <- as.POSIXct(df$ended)
+	if ("expired" %in% names(df))  df$expired  <- as.POSIXct(df$expired)
+	if ("testing" %in% names(df))  df$testing  <- as.logical(df$testing)
+	if ("position" %in% names(df)) df$position <- as.integer(df$position)
+	if ("iteration" %in% names(df)) df$iteration <- as.integer(df$iteration)
+
+	dplyr::as_tibble(df)
+}

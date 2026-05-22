@@ -1,3 +1,14 @@
+# formr (development version)
+
+* **`formr_api_unit_sessions()`** wraps the new
+  `GET /v1/runs/{name}/unit_sessions` endpoint — one row per
+  (participant × unit × iteration), ordered by `(session, created,
+  unit_session_id)` so consecutive rows per participant form trajectory
+  edges. The server-side default Overview script renders a plotly Sankey
+  on top of it; the same helper is useful for drop-off analytics and
+  for debugging stuck participants. Filters: `session_codes`, `testing`,
+  `since`; pagination via `limit` / `offset`. Scope: `session:read`.
+
 # formr 1.0.0
 
 Released alongside formr.org server v1.0.0. Major version bump tracks
