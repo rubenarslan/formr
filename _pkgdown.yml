@@ -59,6 +59,7 @@ reference:
     - '`formr_connect`'
     - '`formr_disconnect`'
     - '`formr_last_host`'
+    - '`.formr`'
 
   - title: API - Project Management
     desc: Tools for managing runs and syncing local files with the server

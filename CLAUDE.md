@@ -41,6 +41,7 @@ Other modules:
 ## Conventions to preserve
 
 - Documentation is roxygen2 with `Roxygen: list(markdown = TRUE)`. Edit the roxygen blocks in `R/*.R`, then run `devtools::document()` — never hand-edit `NAMESPACE` or files under `man/`.
+- **Every new exported function or object must also be added to `_pkgdown.yml` under the appropriate `reference:` section** (e.g. `Setup & Authentication`, `API - Runs & Sessions`, `Helpers & Shorthands`). pkgdown errors out the GitHub Actions build with "topic missing from index" otherwise. If a symbol is genuinely internal, mark it with `@keywords internal` instead so pkgdown skips it.
 - `testthat` edition 3 (see `DESCRIPTION`); use `expect_*` style, not the legacy `expect_that(..., equals(...))` form.
 - `formr_last_host()` is authoritative for the active host across cookie-path functions; new functions that talk to formr.org should default `host = formr_last_host()` rather than hardcoding a URL.
 - Indentation in existing files mixes tabs and spaces on purpose (the `indentation_linter` is disabled in `.lintr`). When editing a file, match whatever that file already uses instead of reflowing it.
