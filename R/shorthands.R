@@ -183,11 +183,29 @@ escapeRegex = function(string)
     "$"))
 }
 
+#' Per-request environment populated by formr.org
+#'
+#' An environment that the formr.org server fills with per-request state
+#' when R code runs inside an OpenCPU session on a formr study (for
+#' example, on a `CalculateUnit` page or an `OverviewScriptPage`). Useful
+#' fields the server may set:
+#'
+#' * `.formr$run_name` -- the name of the current run.
+#' * `.formr$host` -- the API host (e.g. `https://api.formr.org`).
+#' * `.formr$access_token` -- a short-lived OAuth token for the request.
+#' * `.formr$last_action_time` / `.formr$last_action_date` -- timestamps
+#'   used by [time_passed()] and the other shorthands.
+#'
+#' Several user-facing functions (e.g. [formr_api_authenticate()],
+#' [formr_api_results()], [formr_overview_sankey()]) default their `host`
+#' / `run_name` / `access_token` arguments to these fields, so the same
+#' code runs unchanged locally and on a formr study. Outside a formr
+#' session the environment is empty.
+#'
+#' @format An environment.
 #' @export
 .formr <- new.env()
-#' @export
 .formr$last_action_time <- NULL
-#' @export
 .formr$last_action_date <- NULL
 
 #' checks how much time has passed relative to the user's last action
