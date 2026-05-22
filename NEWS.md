@@ -4,10 +4,17 @@
   `GET /v1/runs/{name}/unit_sessions` endpoint — one row per
   (participant × unit × iteration), ordered by `(session, created,
   unit_session_id)` so consecutive rows per participant form trajectory
-  edges. The server-side default Overview script renders a plotly Sankey
-  on top of it; the same helper is useful for drop-off analytics and
-  for debugging stuck participants. Filters: `session_codes`, `testing`,
-  `since`; pagination via `limit` / `offset`. Scope: `session:read`.
+  edges. Useful for drop-off analytics and debugging stuck
+  participants. Filters: `session_codes`, `testing`, `since`;
+  pagination via `limit` / `offset`. Scope: `session:read`.
+
+* **`formr_overview_sankey()`** is the higher-level helper that the
+  formr.org default OverviewScriptPage now uses. Pulls the unit-session
+  history, collapses re-iteration to one node per position so the
+  Sankey stays acyclic (diary / longitudinal designs would otherwise
+  draw cycles), and surfaces the average per-participant visit count
+  as an "avg N visits" label suffix when it exceeds 1. Top-to-bottom
+  orientation by default; pass `orientation = "h"` for left-to-right.
 
 # formr 1.0.0
 

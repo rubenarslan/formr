@@ -78,6 +78,8 @@ reference:
     - '`formr_api_sessions`'
     - '`formr_api_create_session`'
     - '`formr_api_session_action`'
+    - '`formr_api_unit_sessions`'
+    - '`formr_overview_sankey`'
 
   - title: API - Surveys & Files
     desc: Upload and manage survey structures and attached files
