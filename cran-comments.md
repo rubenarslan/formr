@@ -6,7 +6,7 @@
 
 ## Test environments
 
-* local Ubuntu 24.04, R 4.3.3
+* local Ubuntu 24.04, R 4.3.3, macOS Sequoia 15.7.4, R 4.5.1
 * R-hub v2 (GitHub Actions): linux, macos, windows, r-devel-linux-x86_64-debian-clang
 * GitHub Actions (planned post-release): macOS, Windows, Ubuntu --
   release / oldrel / devel
