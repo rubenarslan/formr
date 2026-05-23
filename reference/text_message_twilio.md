@@ -28,7 +28,7 @@ text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
 
 - Token:
 
-  your Twili token
+  your Twilio token
 
 - return_result:
 

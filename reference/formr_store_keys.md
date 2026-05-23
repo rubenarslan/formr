@@ -17,7 +17,7 @@ formr_store_keys(
   email = NULL,
   password = NULL,
   secret_2fa = NULL,
-  host = "https://formr.org",
+  host = "https://rforms.org",
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
@@ -47,7 +47,7 @@ formr_store_keys(
 
 - host:
 
-  (API) The API URL (e.g., https://formr.org). Defaults to formr.org.
+  (API) The API URL (e.g., https://rforms.org). Defaults to rforms.org.
 
 - client_id:
 

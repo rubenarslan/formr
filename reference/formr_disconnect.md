@@ -14,7 +14,7 @@ formr_disconnect(host = formr_last_host())
 
   defaults to
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
-  which defaults to https://formr.org
+  which defaults to https://rforms.org
 
 ## Examples
 

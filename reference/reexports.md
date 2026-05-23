@@ -5,4 +5,4 @@ to see their documentation.
 
 - dplyr:
 
-  [`%>%`](https://dplyr.tidyverse.org/reference/reexports.html)
+  [`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)

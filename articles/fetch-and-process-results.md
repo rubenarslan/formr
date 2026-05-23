@@ -22,7 +22,7 @@ this is automatic.
 ``` r
 
 # Authenticate using stored credentials
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 ## 2. The One-Stop Solution (`formr_api_results`)
@@ -129,7 +129,7 @@ library(formr)
 library(dplyr)
 
 # 1. Connect
-formr_api_authenticate(host = "https://api.formr.org") # or your custom URL!
+formr_api_authenticate(host = "https://api.rforms.org") # or your custom URL!
 
 # 2. Get Processed Data (Reversed & Scored)
 run_name <- "daily_diary"

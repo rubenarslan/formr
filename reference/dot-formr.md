@@ -1,6 +1,6 @@
-# Per-request environment populated by formr.org
+# Per-request environment populated by rforms.org
 
-An environment that the formr.org server fills with per-request state
+An environment that the rforms.org server fills with per-request state
 when R code runs inside an OpenCPU session on a formr study (for
 example, on a `CalculateUnit` page or an `OverviewScriptPage`). Useful
 fields the server may set:
@@ -19,7 +19,7 @@ An environment.
 
 - `.formr$run_name` – the name of the current run.
 
-- `.formr$host` – the API host (e.g. `https://api.formr.org`).
+- `.formr$host` – the API host (e.g. `https://api.rforms.org`).
 
 - `.formr$access_token` – a short-lived OAuth token for the request.
 

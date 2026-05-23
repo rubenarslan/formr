@@ -7,7 +7,7 @@ coverage](https://codecov.io/gh/rubenarslan/formr/graph/badge.svg)](https://app.
 
 ## The accompanying R package for the study framework [formr](https://github.com/rubenarslan/formr.org)
 
-The formr R package serves as a bridge between the formr.org survey
+The formr R package serves as a bridge between the rforms.org survey
 framework and your R environment. While the package is pre-loaded on the
 server to handle survey logic, it also provides a suite of tools for
 your local R workflow.
@@ -22,7 +22,7 @@ administration and analysis of your study.
   changes back to the server.
 
 **When used within a run (Internal Usage):** These functions are
-designed to run inside formr.org via OpenCPU to enhance the participant
+designed to run inside rforms.org via OpenCPU to enhance the participant
 experience.
 
 - Dynamic Feedback: Generate immediate, personalized charts and

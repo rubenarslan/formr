@@ -4,7 +4,7 @@
 
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 Managing sessions is a critical part of maintaining a study. Whether you
@@ -70,7 +70,7 @@ Sometimes you need to intervene in a participant’s progress. The
 [`formr_api_session_action()`](https://rubenarslan.github.io/formr/reference/formr_api_session_action.md)
 function allows you to modify the state of one or more sessions.
 
-### Use Case 1: Unstucking a User (Move Position)
+### Use Case 1: Unsticking a User (Move Position)
 
 If a bug or logic error causes a user to get stuck at a specific point,
 you can manually move them to a different unit in the run.

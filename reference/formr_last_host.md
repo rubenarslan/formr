@@ -13,7 +13,7 @@ formr_last_host(host = NULL)
 
 - host:
 
-  defaults to https://formr.org
+  defaults to https://rforms.org
 
 ## Value
 
@@ -22,8 +22,8 @@ the last specified host
 ## Examples
 
 ``` r
-formr_last_host("https://formr.org")
-#> [1] "https://formr.org"
+formr_last_host("https://rforms.org")
+#> [1] "https://rforms.org"
 formr_last_host()
-#> [1] "https://formr.org"
+#> [1] "https://rforms.org"
 ```

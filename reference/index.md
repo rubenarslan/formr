@@ -23,7 +23,7 @@ Connect to formr using the API or classic authentication
 - [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md)
   : Get the last specified host
 - [`.formr`](https://rubenarslan.github.io/formr/reference/dot-formr.md)
-  : Per-request environment populated by formr.org
+  : Per-request environment populated by rforms.org
 
 ## API - Project Management
 
@@ -215,7 +215,7 @@ Utility functions for writing survey logic
   uncertain results in an if-clause. In most cases, you should not use
   this function, because it can lump a lot of very different cases
   together, but it may have some use for fool-proofing certain
-  if-clauses on formr.org, where a field in a survey may either not
+  if-clauses on rforms.org, where a field in a survey may either not
   exist, be missing or have a value to check.
 
 - [`ifelsena()`](https://rubenarslan.github.io/formr/reference/ifelsena.md)

@@ -7,7 +7,7 @@ coverage](https://codecov.io/gh/rubenarslan/formr/graph/badge.svg)](https://app.
 
 ## The accompanying R package for the study framework [formr](https://github.com/rubenarslan/formr.org)
 
-The formr R package serves as a bridge between the formr.org survey
+The formr R package serves as a bridge between the rforms.org survey
 framework and your R environment. While the package is pre-loaded on the
 server to handle survey logic, it also provides a suite of tools for
 your local R workflow.
@@ -22,7 +22,7 @@ administration and analysis of your study.
   changes back to the server.
 
 **When used within a run (Internal Usage):** These functions are
-designed to run inside formr.org via OpenCPU to enhance the participant
+designed to run inside rforms.org via OpenCPU to enhance the participant
 experience.
 
 - Dynamic Feedback: Generate immediate, personalized charts and
@@ -92,7 +92,7 @@ Connect to formr using the API or classic authentication
 - [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md)
   : Get the last specified host
 - [`.formr`](https://rubenarslan.github.io/formr/reference/dot-formr.md)
-  : Per-request environment populated by formr.org
+  : Per-request environment populated by rforms.org
 
 ## API - Project Management
 
@@ -284,7 +284,7 @@ Utility functions for writing survey logic
   uncertain results in an if-clause. In most cases, you should not use
   this function, because it can lump a lot of very different cases
   together, but it may have some use for fool-proofing certain
-  if-clauses on formr.org, where a field in a survey may either not
+  if-clauses on rforms.org, where a field in a survey may either not
   exist, be missing or have a value to check.
 
 - [`ifelsena()`](https://rubenarslan.github.io/formr/reference/ifelsena.md)

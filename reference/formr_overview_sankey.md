@@ -20,7 +20,7 @@ formr_overview_sankey(
 
 - run_name:
 
-  Name of the run. Defaults to `.formr$run_name`, which formr.org sets
+  Name of the run. Defaults to `.formr$run_name`, which rforms.org sets
   when an OverviewScriptPage renders.
 
 - testing:
@@ -56,8 +56,8 @@ suffix on the node label. Single-pass runs stay clutter-free (no suffix
 when the average is ~1); diary studies show e.g. "p20: Daily mood (avg
 14.2 visits)" so the loop density is visible without drawing it.
 
-Designed to be called from an OverviewScriptPage on formr.org, where the
-server injects the per-token `.formr$access_token` / `.formr$host` /
+Designed to be called from an OverviewScriptPage on rforms.org, where
+the server injects the per-token `.formr$access_token` / `.formr$host` /
 `.formr$run_name` environment and
 [`formr_api_authenticate()`](https://rubenarslan.github.io/formr/reference/formr_api_authenticate.md)
 picks them up automatically. Outside an Overview render, set `run_name`

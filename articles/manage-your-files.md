@@ -4,7 +4,7 @@
 
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 Most complex studies require more than just survey spreadsheets. For

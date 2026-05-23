@@ -56,7 +56,7 @@ time_passed(
 - time:
 
   defaults to .formr\$last_action_time, a hidden variable that is
-  automatically set by formr.org
+  automatically set by rforms.org
 
 ## Examples
 

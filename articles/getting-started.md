@@ -1,7 +1,7 @@
 # Getting Started
 
 The `formr` R package is the companion to the
-[formr.org](https://formr.org) survey framework. It allows you to:
+[rforms.org](https://rforms.org) survey framework. It allows you to:
 
 1.  **Manage Projects:** Sync surveys and files between your computer
     and the server.
@@ -55,7 +55,7 @@ don’t have to type them every time.
 
 #### 1.1 Save your API Credentials
 
-1.  Log in to formr.org (or your instance).
+1.  Log in to rforms.org (or your instance).
 
 2.  Go to **Account \> API Credentials** (the “API” tab on the account
     page). You can hold several credentials side by side — each one with
@@ -105,7 +105,7 @@ don’t have to type them every time.
 # Store your credentials once
 # This saves them securely in your OS credential store
 formr_store_keys(
-  host = "https://api.formr.org",
+  host = "https://api.rforms.org",
   client_id = "YOUR_CLIENT_ID",
   client_secret = "YOUR_CLIENT_SECRET",
   # Optional but recommended when you have more than one credential:
@@ -145,7 +145,7 @@ session:
 ``` r
 
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom API-URL + account name!
 
 # After authentication, you can see which scopes the credential carries:
 formr_api_session()$scope

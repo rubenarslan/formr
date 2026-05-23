@@ -23,7 +23,7 @@ formr_api_results(
 
   Name of the run. Defaults to `.formr$run_name`, which is set
   automatically when the code runs inside an OpenCPU session on
-  formr.org – so portable run code can omit this argument.
+  rforms.org – so portable run code can omit this argument.
 
 - ...:
 

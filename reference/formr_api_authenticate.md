@@ -2,7 +2,7 @@
 
 Connects to the API. If no credentials are provided, the auto-pickup
 chain is: the package's hidden `.formr` env (set automatically when the
-code runs inside an OpenCPU session on formr.org), then the
+code runs inside an OpenCPU session on rforms.org), then the
 calling-frame chain (for legacy injectors that wrote bare locals into
 the wrapper scope), then the keyring.
 
@@ -10,7 +10,7 @@ the wrapper scope), then the keyring.
 
 ``` r
 formr_api_authenticate(
-  host = "https://formr.org",
+  host = "https://rforms.org",
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
@@ -22,8 +22,8 @@ formr_api_authenticate(
 
 - host:
 
-  API Base URL. Defaults to `.formr$host` when running on formr.org,
-  otherwise `"https://formr.org"`.
+  API Base URL. Defaults to `.formr$host` when running on rforms.org,
+  otherwise `"https://rforms.org"`.
 
 - client_id:
 

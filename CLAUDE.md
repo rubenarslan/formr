@@ -5,9 +5,9 @@ with code in this repository.
 
 ## Project
 
-R package `formr` (CRAN), the client-side companion to the formr.org
+R package `formr` (CRAN), the client-side companion to the rforms.org
 survey framework. The same package is *also* loaded server-side inside
-formr.org via openCPU, so exported functions are called both from local
+rforms.org via openCPU, so exported functions are called both from local
 user R sessions and from within running formr studies — avoid changes
 that silently break either context.
 
@@ -53,7 +53,7 @@ conflated:
   feeds.
 - **OAuth client-credentials path** (`R/formr_api.R`) —
   `formr_api_access_token()` hits
-  `https://api.formr.org/oauth/access_token`, stores the URL + token in
+  `https://api.rforms.org/oauth/access_token`, stores the URL + token in
   the `.formr_current_session` closure, and
   [`formr_api_results()`](https://rubenarslan.github.io/formr/reference/formr_api_results.md)
   /
@@ -104,7 +104,7 @@ runs.
   the legacy `expect_that(..., equals(...))` form.
 - [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md)
   is authoritative for the active host across cookie-path functions; new
-  functions that talk to formr.org should default
+  functions that talk to rforms.org should default
   `host = formr_last_host()` rather than hardcoding a URL.
 - Indentation in existing files mixes tabs and spaces on purpose (the
   `indentation_linter` is disabled in `.lintr`). When editing a file,

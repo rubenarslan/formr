@@ -2,7 +2,7 @@
 
 ## formr 1.0.0
 
-Initial CRAN release. Released alongside formr.org server v1.0.0. Major
+Initial CRAN release. Released alongside rforms.org server v1.0.0. Major
 version bump tracks the formr v1 RESTful API surface stabilising —
 `formr_api_*` is now the supported entry point for new code; the legacy
 [`formr_results()`](https://rubenarslan.github.io/formr/reference/formr_results.md)
@@ -20,7 +20,7 @@ starting point in the vignette.
   `since`; pagination via `limit` / `offset`. Scope: `session:read`.
 
 - **[`formr_overview_sankey()`](https://rubenarslan.github.io/formr/reference/formr_overview_sankey.md)**
-  is the higher-level helper that the formr.org default
+  is the higher-level helper that the rforms.org default
   OverviewScriptPage now uses. Pulls the unit-session history, collapses
   re-iteration to one node per position so the Sankey stays acyclic
   (diary / longitudinal designs would otherwise draw cycles), and
