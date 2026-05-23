@@ -53,8 +53,13 @@ test_that("random_date_in_range generates valid dates", {
   # Check number of dates
   expect_equal(length(dates), n)
   
-  # Check all dates are within range
-  expect_true(all(dates >= as.POSIXct(lower) & dates <= as.POSIXct(upper)))
+  # Bounds must match the function's own conversion: as.POSIXct(as.Date(x))
+  # forces tz = "UTC" (as.POSIXct.Date default), whereas as.POSIXct(<string>)
+  # falls back to local tz. In a non-UTC zone the two midnights differ by
+  # the TZ offset, which makes ~2 hours of generated dates spuriously fail
+  # the upper check.
+  expect_true(all(dates >= as.POSIXct(as.Date(lower)) &
+                  dates <= as.POSIXct(as.Date(upper))))
   
   # Check dates are sorted
   expect_true(all(diff(dates) >= 0))
