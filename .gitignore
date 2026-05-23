@@ -4,3 +4,14 @@
 .credentials.R
 graph_run
 .lintr
+.DS_Store
+package.json
+yarn.lock
+node_modules
+repomix.config.json
+.repomixignore
+formr_codebase.xml
+.Renviron
+coverage.xml
+.positai
+.claude

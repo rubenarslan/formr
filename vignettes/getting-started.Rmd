@@ -1,0 +1,195 @@
+---
+title: "Getting Started"
+description: "Installation, Authentication, and Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `formr` R package is the companion to the [formr.org](https://formr.org) survey framework. It allows you to:
+
+1.  **Manage Projects:** Sync surveys and files between your computer and the server.
+2.  **Fetch Data:** Download and process results for analysis.
+3.  **Control Logic:** Use the API *within* a Run to check user progress or previous answers dynamically.
+
+## Installation
+
+You can install the package from GitHub:
+
+```{r, setup, eval = FALSE}
+if (!requireNamespace("remotes")) install.packages("remotes")
+remotes::install_github("rubenarslan/formr")
+```
+
+The package is automatically installed within your formr server. Just use:
+
+```{r, setup2, eval = FALSE}
+library(formr)
+```
+
+## The "Two Ways of Connecting"
+
+The package currently contains two ways of interacting with the formr-server.
+It is helpful to know which one to use:
+
+| Feature | **New API (V1)** | **Classic** |
+| :--- | :--- | :--- |
+| **Prefix** | `formr_api_*` | `formr_*` |
+| **Authentication** | OAuth / Access Tokens | Email & Password |
+| **Primary Use** | Project Management, Live Logic within your Run, Modern Data Fetching | Legacy Data Fetching |
+
+**Recommendation:** Use the **API (`formr_api_*`)** for all new projects.
+
+---
+
+## Authentication
+
+To use the API features (fetching results, managing files), you must first authenticate. 
+
+### 1. Local Setup (One-time)
+
+You can store your credentials securely in your system's keyring so you don't have to type them every time.
+
+#### 1.1 Save your API Credentials
+
+1.  Log in to formr.org (or your instance).
+2.  Go to **Account > API Credentials** (the "API" tab on the account page). You can hold
+    several credentials side by side — each one with its own scopes and run allowlist.
+    A common pattern is one narrow read-only credential for a dashboard, plus a separate
+    broader credential for a cron job.
+3.  Give the credential a **label** (e.g. `dashboard`, `cron-2026`). The label is only
+    used on the credentials page to tell credentials apart; it must be unique within
+    your account. You will pass the same string to `formr_store_keys(..., account = "...")`
+    in step 6 so the R package can keep multiple credentials per host straight in
+    your keyring.
+4.  Pick which **scopes** the credential should grant. Each scope is a verb on a resource:
+
+    | Scope | What it grants |
+    | :--- | :--- |
+    | `user:read` / `user:write` | Read / update your account profile |
+    | `survey:read` / `survey:write` | Read survey definitions / upload + edit them |
+    | `run:read` / `run:write` | Read run metadata / create + update + delete runs |
+    | `session:read` / `session:write` | Read participant sessions / create + advance them |
+    | `data:read` | Read participant response data |
+    | `file:read` / `file:write` | Download / upload files attached to runs |
+
+    A token issued under a credential can only call endpoints whose required scopes it carries. A credential with only `run:read` will succeed on `GET /v1/runs/{name}` and return 403 on `PATCH /v1/runs/{name}`.
+
+5.  Optionally **restrict the credential to specific runs**. Leave the run picker empty to allow this credential to act on all of your runs; tick one or more runs to limit it. A run-restricted credential also implicitly restricts which surveys it can touch — only surveys that are part of one of the allowlisted runs are reachable.
+
+6.  Click **Create credential**. The Client ID and Client Secret are shown **once**. Copy both immediately — the server stores only a SHA-256 hash, so a forgotten secret has to be rotated, not recovered.
+
+7.  Run the following code **once** in your R console:
+
+```{r, store_keys, eval = FALSE}
+# Store your credentials once
+# This saves them securely in your OS credential store
+formr_store_keys(
+  host = "https://api.formr.org",
+  client_id = "YOUR_CLIENT_ID",
+  client_secret = "YOUR_CLIENT_SECRET",
+  # Optional but recommended when you have more than one credential:
+  # pass the same string you used as the credential's label on the
+  # server. This lets you switch between credentials by name when you
+  # call formr_api_authenticate(account = "...").
+  account = "dashboard"
+)
+```
+
+#### 1.2 Save your regular User Credentials (Classic)
+
+If you plan to use the "Classic" functions (e.g. `formr_results()`, `formr_raw_results()`), you need to store your email and password. This allows you to create a shorthand name for your account to log in securely without putting passwords in your script.
+
+1.  Run the following code **once** in your R console.
+2.  You will be prompted to enter your email and password (and optionally a 2FA secret) securely.
+
+```{r, store_keys_classic, eval = FALSE}
+# Store your email/password under a shorthand name (e.g. "main_account")
+formr_store_keys("main_account")
+```
+
+### 2. Authenticating in Scripts
+
+Once your keys are stored, you simply authenticate at the start of your session:
+
+#### 2.1 Thru the API
+
+```{r, auth_local, eval = FALSE}
+# Automatically finds your stored keys
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
+
+# After authentication, you can see which scopes the credential carries:
+formr_api_session()$scope
+#> [1] "run:read run:write survey:read"
+```
+
+If you call a function whose endpoint needs a scope you don't have, the package surfaces the server's 403 alongside a hint at the bottom pointing at `admin/account#api` — the same place to fix it.
+
+#### 2.2 With your User Credentials (Classic)
+
+Once stored, you can connect in your scripts using this shorthand:
+
+```{r, connect_classic, eval = FALSE}
+# Connect using the stored credentials
+formr_connect("main_account")
+```
+
+### 3. Authenticating *Inside* formr Runs
+
+You can also use the API functions within the R-Code of your actual survey run (e.g., to look up previous results). In this environment, you do not need credentials; the system provides a temporary context. Just run:
+
+```{r, auth_run, eval = FALSE}
+# Inside a formr Run, simply call:
+formr_api_authenticate() # The package detects that it's running inside a Run and uses the temporary context provided by the server.
+```
+
+---
+
+## Workflow Examples
+
+### Project Management (Push & Pull)
+
+The new API allows you to work on your survey structure and files locally and sync them to the server.
+Learn more about how this can save you time in the [Manage your Projects](manage-your-projects.html) Tutorial.
+
+```{r, push_pull, eval = FALSE}
+# Download a project (surveys and files) to your local folder
+formr_api_pull_project("daily_diary")
+
+# Upload changes back to the server
+formr_api_push_project("daily_diary")
+```
+
+### Fetching Results
+
+The `formr_api_results()` function is the modern way to get data. It automatically recognizes data types, reverses items, and aggregates scales. Learn how it works in the [Fetch & Process Results](fetch-and-process-results.html) Tutorial.
+
+```{r, results, eval = FALSE}
+# Fetch and process
+df <- formr_api_results("daily_diary")
+```
+
+---
+
+## Token Management & Security
+
+When you run `formr_api_authenticate()`, it provides you with an Access Token.
+
+* **Validity:** The token is valid for **one hour**. You will need to rerun authentication after this period.
+* **On the Server:** When running code *inside* a formr survey, the token is invalidated automatically when the request finishes.
+* **Local Device:** When running code on your laptop, the token remains valid until it expires or you revoke it.
+
+At the end of your analysis session, you may revoke the token manually:
+
+```{r, logout, eval = FALSE}
+formr_api_logout()
+```

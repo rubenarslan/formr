@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started</h1>
+
+
+
+<p>The <code>formr</code> R package is the companion to the <a href="https://formr.org">formr.org</a> survey framework. It allows you
+to:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Manage Projects:</strong> Sync surveys and files between
+your computer and the server.</li>
+<li><strong>Fetch Data:</strong> Download and process results for
+analysis.</li>
+<li><strong>Control Logic:</strong> Use the API <em>within</em> a Run to
+check user progress or previous answers dynamically.</li>
+</ol>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the package from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;remotes&quot;</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;rubenarslan/formr&quot;</span>)</span></code></pre></div>
+<p>The package is automatically installed within your formr server. Just
+use:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(formr)</span></code></pre></div>
+</div>
+<div id="the-two-ways-of-connecting" class="section level2">
+<h2>The “Two Ways of Connecting”</h2>
+<p>The package currently contains two ways of interacting with the
+formr-server. It is helpful to know which one to use:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Feature</th>
+<th align="left"><strong>New API (V1)</strong></th>
+<th align="left"><strong>Classic</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Prefix</strong></td>
+<td align="left"><code>formr_api_*</code></td>
+<td align="left"><code>formr_*</code></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Authentication</strong></td>
+<td align="left">OAuth / Access Tokens</td>
+<td align="left">Email &amp; Password</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Primary Use</strong></td>
+<td align="left">Project Management, Live Logic within your Run, Modern
+Data Fetching</td>
+<td align="left">Legacy Data Fetching</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong> Use the <strong>API
+(<code>formr_api_*</code>)</strong> for all new projects.</p>
+<hr />
+</div>
+<div id="authentication" class="section level2">
+<h2>Authentication</h2>
+<p>To use the API features (fetching results, managing files), you must
+first authenticate.</p>
+<div id="local-setup-one-time" class="section level3">
+<h3>1. Local Setup (One-time)</h3>
+<p>You can store your credentials securely in your system’s keyring so
+you don’t have to type them every time.</p>
+<div id="save-your-api-credentials" class="section level4">
+<h4>1.1 Save your API Credentials</h4>
+<ol style="list-style-type: decimal">
+<li><p>Log in to formr.org (or your instance).</p></li>
+<li><p>Go to <strong>Account &gt; API Credentials</strong> (the “API”
+tab on the account page). You can hold several credentials side by side
+— each one with its own scopes and run allowlist. A common pattern is
+one narrow read-only credential for a dashboard, plus a separate broader
+credential for a cron job.</p></li>
+<li><p>Give the credential a <strong>label</strong>
+(e.g. <code>dashboard</code>, <code>cron-2026</code>). The label is only
+used on the credentials page to tell credentials apart; it must be
+unique within your account. You will pass the same string to
+<code>formr_store_keys(..., account = &quot;...&quot;)</code> in step 6 so the R
+package can keep multiple credentials per host straight in your
+keyring.</p></li>
+<li><p>Pick which <strong>scopes</strong> the credential should grant.
+Each scope is a verb on a resource:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Scope</th>
+<th align="left">What it grants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>user:read</code> / <code>user:write</code></td>
+<td align="left">Read / update your account profile</td>
+</tr>
+<tr class="even">
+<td align="left"><code>survey:read</code> /
+<code>survey:write</code></td>
+<td align="left">Read survey definitions / upload + edit them</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>run:read</code> / <code>run:write</code></td>
+<td align="left">Read run metadata / create + update + delete runs</td>
+</tr>
+<tr class="even">
+<td align="left"><code>session:read</code> /
+<code>session:write</code></td>
+<td align="left">Read participant sessions / create + advance them</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>data:read</code></td>
+<td align="left">Read participant response data</td>
+</tr>
+<tr class="even">
+<td align="left"><code>file:read</code> / <code>file:write</code></td>
+<td align="left">Download / upload files attached to runs</td>
+</tr>
+</tbody>
+</table>
+<p>A token issued under a credential can only call endpoints whose
+required scopes it carries. A credential with only <code>run:read</code>
+will succeed on <code>GET /v1/runs/{name}</code> and return 403 on
+<code>PATCH /v1/runs/{name}</code>.</p></li>
+<li><p>Optionally <strong>restrict the credential to specific
+runs</strong>. Leave the run picker empty to allow this credential to
+act on all of your runs; tick one or more runs to limit it. A
+run-restricted credential also implicitly restricts which surveys it can
+touch — only surveys that are part of one of the allowlisted runs are
+reachable.</p></li>
+<li><p>Click <strong>Create credential</strong>. The Client ID and
+Client Secret are shown <strong>once</strong>. Copy both immediately —
+the server stores only a SHA-256 hash, so a forgotten secret has to be
+rotated, not recovered.</p></li>
+<li><p>Run the following code <strong>once</strong> in your R
+console:</p></li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Store your credentials once</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># This saves them securely in your OS credential store</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">formr_store_keys</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">client_id =</span> <span class="st">&quot;YOUR_CLIENT_ID&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">client_secret =</span> <span class="st">&quot;YOUR_CLIENT_SECRET&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="co"># Optional but recommended when you have more than one credential:</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="co"># pass the same string you used as the credential&#39;s label on the</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="co"># server. This lets you switch between credentials by name when you</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="co"># call formr_api_authenticate(account = &quot;...&quot;).</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="save-your-regular-user-credentials-classic" class="section level4">
+<h4>1.2 Save your regular User Credentials (Classic)</h4>
+<p>If you plan to use the “Classic” functions
+(e.g. <code>formr_results()</code>, <code>formr_raw_results()</code>),
+you need to store your email and password. This allows you to create a
+shorthand name for your account to log in securely without putting
+passwords in your script.</p>
+<ol style="list-style-type: decimal">
+<li>Run the following code <strong>once</strong> in your R console.</li>
+<li>You will be prompted to enter your email and password (and
+optionally a 2FA secret) securely.</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Store your email/password under a shorthand name (e.g. &quot;main_account&quot;)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">formr_store_keys</span>(<span class="st">&quot;main_account&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="authenticating-in-scripts" class="section level3">
+<h3>2. Authenticating in Scripts</h3>
+<p>Once your keys are stored, you simply authenticate at the start of
+your session:</p>
+<div id="thru-the-api" class="section level4">
+<h4>2.1 Thru the API</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Automatically finds your stored keys</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>(<span class="at">host =</span> <span class="st">&quot;https://api.formr.org&quot;</span>, <span class="at">account =</span> <span class="st">&quot;dashboard&quot;</span>) <span class="co"># or your custom API-URL + account name!</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">formr_api_session</span>()<span class="sc">$</span>scope</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;run:read run:write survey:read&quot;</span></span></code></pre></div>
+<p>If you call a function whose endpoint needs a scope you don’t have,
+the package surfaces the server’s 403 alongside a hint at the bottom
+pointing at <code>admin/account#api</code> — the same place to fix
+it.</p>
+</div>
+<div id="with-your-user-credentials-classic" class="section level4">
+<h4>2.2 With your User Credentials (Classic)</h4>
+<p>Once stored, you can connect in your scripts using this
+shorthand:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Connect using the stored credentials</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">formr_connect</span>(<span class="st">&quot;main_account&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="authenticating-inside-formr-runs" class="section level3">
+<h3>3. Authenticating <em>Inside</em> formr Runs</h3>
+<p>You can also use the API functions within the R-Code of your actual
+survey run (e.g., to look up previous results). In this environment, you
+do not need credentials; the system provides a temporary context. Just
+run:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Inside a formr Run, simply call:</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>() <span class="co"># The package detects that it&#39;s running inside a Run and uses the temporary context provided by the server.</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="workflow-examples" class="section level2">
+<h2>Workflow Examples</h2>
+<div id="project-management-push-pull" class="section level3">
+<h3>Project Management (Push &amp; Pull)</h3>
+<p>The new API allows you to work on your survey structure and files
+locally and sync them to the server. Learn more about how this can save
+you time in the <a href="manage-your-projects.html">Manage your
+Projects</a> Tutorial.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Download a project (surveys and files) to your local folder</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">formr_api_pull_project</span>(<span class="st">&quot;daily_diary&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Upload changes back to the server</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">formr_api_push_project</span>(<span class="st">&quot;daily_diary&quot;</span>)</span></code></pre></div>
+</div>
+<div id="fetching-results" class="section level3">
+<h3>Fetching Results</h3>
+<p>The <code>formr_api_results()</code> function is the modern way to
+get data. It automatically recognizes data types, reverses items, and
+aggregates scales. Learn how it works in the <a href="fetch-and-process-results.html">Fetch &amp; Process Results</a>
+Tutorial.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Fetch and process</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">formr_api_results</span>(<span class="st">&quot;daily_diary&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="token-management-security" class="section level2">
+<h2>Token Management &amp; Security</h2>
+<p>When you run <code>formr_api_authenticate()</code>, it provides you
+with an Access Token.</p>
+<ul>
+<li><strong>Validity:</strong> The token is valid for <strong>one
+hour</strong>. You will need to rerun authentication after this
+period.</li>
+<li><strong>On the Server:</strong> When running code <em>inside</em> a
+formr survey, the token is invalidated automatically when the request
+finishes.</li>
+<li><strong>Local Device:</strong> When running code on your laptop, the
+token remains valid until it expires or you revoke it.</li>
+</ul>
+<p>At the end of your analysis session, you may revoke the token
+manually:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">formr_api_logout</span>()</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

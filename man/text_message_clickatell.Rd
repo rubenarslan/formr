@@ -4,7 +4,7 @@
 \alias{text_message_clickatell}
 \title{Send text message via Clickatell}
 \usage{
-text_message_clickatell(To, Body, Token, return_result = F)
+text_message_clickatell(To, Body, Token, return_result = FALSE)
 }
 \arguments{
 \item{To}{the number you're texting to (usually without zeroes at the beginning)}

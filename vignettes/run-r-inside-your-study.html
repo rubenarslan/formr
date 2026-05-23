@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Running R Inside Your formr Study</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Running R Inside Your formr Study</h1>
+
+
+
+<p>You may need to look up a participant’s previous answers, generate a
+unique code, compute a dynamic score mid-run, or show different content
+based on data from other surveys in the same study run.</p>
+<p>formr lets you run arbitrary R code <strong>inside your study
+run</strong> — in calculate items, showif conditions, and inline R
+expressions within labels. This vignette covers the patterns you need to
+do that safely and effectively.</p>
+<p>If you haven’t already, read the <a href="getting-started.html">Getting Started</a> guide first for the
+background on authentication.</p>
+<div id="authentication-inside-a-run" class="section level2">
+<h2>1. Authentication Inside a Run</h2>
+<p>When your code runs inside a formr study (via OpenCPU on the server),
+you do <strong>not</strong> need to pass credentials. The server injects
+a temporary access token into the hidden <code>.formr</code>
+environment. Just call:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Inside a formr Run — no credentials needed</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>()</span></code></pre></div>
+<p>The package detects <code>.formr$access_token</code> and
+<code>.formr$host</code> automatically. The token is valid for the
+duration of the request and is invalidated when the request
+finishes.</p>
+</div>
+<div id="accessing-run-context" class="section level2">
+<h2>2. Accessing Run Context</h2>
+<p>Two hidden variables are available in every server-side R
+context:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.formr$run_name</code></td>
+<td>The name of the current run (e.g. <code>&quot;daily_diary&quot;</code>)</td>
+</tr>
+<tr class="even">
+<td><code>survey_run_sessions$session</code></td>
+<td>The current participant’s session code</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Inside a calculate item or inline R block</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>run_name <span class="ot">&lt;-</span> .formr<span class="sc">$</span>run_name</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>user_session <span class="ot">&lt;-</span> survey_run_sessions<span class="sc">$</span>session</span></code></pre></div>
+<p>These are essential for fetching the right data and associating new
+data with the right session even when porting R-Code or Surveys between
+different runs.</p>
+</div>
+<div id="fetching-data-from-other-surveys" class="section level2">
+<h2>3. Fetching Data from Other Surveys</h2>
+<p>The function for reading data <em>from within a run</em> is
+<code>formr_api_fetch_results()</code>. It differs from
+<code>formr_api_results()</code> in important ways:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><code>formr_api_results()</code></th>
+<th><code>formr_api_fetch_results()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Auto-reverses items</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Auto-computes scales</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Returns processed data</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><code>item_names</code> filter</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Default <code>run_name</code></td>
+<td><code>.formr$run_name</code></td>
+<td>Required (pass explicitly)</td>
+</tr>
+</tbody>
+</table>
+<p>Inside a run, you almost always want
+<code>formr_api_fetch_results()</code> — it gives you the raw data
+without transformations, which is safer when you’re going to process it
+yourself.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Fetch specific items from all surveys in the run</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">formr_api_fetch_results</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  .formr<span class="sc">$</span>run_name,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">item_names =</span> <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;score&quot;</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">join =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>Use <code>item_names</code> to request only the columns you need —
+this is more efficient and keeps the response small.</p>
+<p>The result is a tibble with one row per session and a column for each
+requested item (plus a <code>session</code> column).</p>
+<p>If you use the same item name in different surveys, the survey_name
+will be attached to the item_name.</p>
+</div>
+<div id="the-survey_itemlength-pattern" class="section level2">
+<h2>4. The <code>survey_item[length()]</code> Pattern</h2>
+<p>In showif conditions and value expressions, formr repeats items
+within a session. To get the <strong>current/last</strong> value of a
+repeated item, use the <code>[length()]</code> accessor:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># In a showif condition — check the current selection</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>menu_survey<span class="sc">$</span>choice[<span class="fu">length</span>(menu_survey<span class="sc">$</span>choice)] <span class="sc">==</span> <span class="st">&quot;option_a&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># In a calculate item value — capture the latest input</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>current_input <span class="ot">&lt;-</span> my_survey<span class="sc">$</span>text_input[<span class="fu">length</span>(my_survey<span class="sc">$</span>text_input)]</span></code></pre></div>
+<p>This is a formr convention, not base R behaviour. The
+<code>length()</code> refers to the number of times that item has been
+submitted within the current session.</p>
+</div>
+<div id="three-ways-to-run-r-inside-a-study" class="section level2">
+<h2>5. Three Ways to Run R Inside a Study</h2>
+<div id="a.-calculate-items" class="section level3">
+<h3>A. Calculate Items</h3>
+<p>A calculate item is a hidden field that runs R code on the server
+when the participant reaches it. The result is stored in the session
+data.</p>
+<p>Use calculate items for: - Processing JSON data from previous surveys
+- Computing derived scores mid-run - Generating codes or tokens - Any
+server-side logic that needs to happen between surveys</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Example: calculate the mean over ALL answers participants have entered into the happy item</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>past_results <span class="ot">&lt;-</span> <span class="fu">formr_api_fetch_results</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  .formr<span class="sc">$</span>run_name,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">item_names =</span> <span class="st">&quot;happy&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">join =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">mean</span>(past_results<span class="sc">$</span>happy, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The calculate item’s <code>value</code> is the R expression to
+evaluate. The last value in the expression is the result.</p>
+<p>When your logic produces a complex structure (list, data frame),
+round-trip it through JSON:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Store complex data as JSON</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(my_list, <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Parse it back later</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>parsed <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(stored_json_string)</span></code></pre></div>
+</div>
+<div id="b.-inline-r-in-labels" class="section level3">
+<h3>B. Inline R in Labels</h3>
+<p>You can embed R code in any survey label using inline knitr syntax.
+This is useful for displaying dynamic content:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># In a note item&#39;s label field and our calculate item count:</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># ```{r, echo=FALSE, results=&#39;asis&#39;}</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># cat(&quot;You have completed &quot;, count, &quot; surveys so far.&quot;)</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># ```</span></span></code></pre></div>
+<p>The label is processed as an R Markdown chunk. Use
+<code>echo=FALSE</code> to hide the code and <code>results=&#39;asis&#39;</code>
+to print raw output.</p>
+</div>
+<div id="c.-inline-r-in-choices" class="section level3">
+<h3>C. Inline R in Choices</h3>
+<p>Choice lists can also contain dynamic R code. Each choice option can
+use a <code>knitr::knit_child()</code> pattern to generate labels from
+data.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># In a choice option&#39;s label (inside the mc_multiple choices JSON):</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># ```{r}</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co"># choices &lt;- past_results &lt;- formr_api_fetch_results(</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  .formr<span class="sc">$</span>run_name,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  item_names <span class="ot">=</span> <span class="st">&quot;choice&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  join <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="er">)</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># option_index &lt;- 1</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co"># choices$choice[option_index]</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co"># ```</span></span></code></pre></div>
+<p>This is the most advanced pattern — it lets you build dynamic menus
+from fetched data.</p>
+</div>
+</div>
+<div id="complete-walkthrough-participant-counter" class="section level2">
+<h2>6. Complete Walkthrough: Participant Counter</h2>
+<p>Here is a minimal but complete example that demonstrates the core
+patterns.</p>
+<div id="run-structure" class="section level3">
+<h3>Run Structure</h3>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Position</th>
+<th>Type</th>
+<th>Name</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>Survey</td>
+<td><code>register</code></td>
+<td>Collects participant’s name</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td>Calculate</td>
+<td><code>participant_count</code></td>
+<td>Fetches all registrations, counts them</td>
+</tr>
+<tr class="odd">
+<td>30</td>
+<td>Survey</td>
+<td><code>welcome</code></td>
+<td>Shows “You are participant #N”</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="survey-register" class="section level3">
+<h3>Survey: <code>register</code></h3>
+<p>A single text item asking for the participant’s name, plus a submit
+button.</p>
+</div>
+<div id="calculate-participant_count" class="section level3">
+<h3>Calculate: <code>participant_count</code></h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">formr_api_authenticate</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>past <span class="ot">&lt;-</span> <span class="fu">formr_api_fetch_results</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  .formr<span class="sc">$</span>run_name,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">item_names =</span> <span class="st">&quot;name&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">join =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(past) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">nrow</span>(past) <span class="sc">+</span> <span class="dv">1</span> <span class="cf">else</span> <span class="dv">1</span></span></code></pre></div>
+</div>
+<div id="survey-welcome" class="section level3">
+<h3>Survey: <code>welcome</code></h3>
+<p>A note item with this label:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># ```{r, echo=FALSE, results=&#39;asis&#39;}</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co"># library(jsonlite)</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co"># count &lt;- participant_count</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># cat(&quot;## Welcome, Participant #&quot;, count, &quot;\n\n&quot;, sep = &quot;&quot;)</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># cat(&quot;Please proceed with the study.&quot;)</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># ```</span></span></code></pre></div>
+<p>When the participant reaches this screen, they see “Welcome,
+Participant #3” (or whatever number they are).</p>
+</div>
+</div>
+<div id="patterns-for-robust-code" class="section level2">
+<h2>7. Patterns for Robust Code</h2>
+<p>Code running inside a formr study runs on the server. These patterns
+will save you debugging time:</p>
+<p><strong>Defensive JSON parsing.</strong> Always wrap
+<code>jsonlite::fromJSON()</code> in a <code>tryCatch</code> when
+reading data that may be malformed or missing:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>safe_parse_json <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(x),</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">list</span>()</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  )</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Guard against empty results.</strong> Before processing
+fetched data, check that it has rows:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">formr_api_fetch_results</span>(.formr<span class="sc">$</span>run_name, <span class="at">item_names =</span> <span class="st">&quot;score&quot;</span>, <span class="at">join =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(data) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">||</span> <span class="fu">all</span>(<span class="fu">is.na</span>(data<span class="sc">$</span>score))) {</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="co"># fallback</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">max</span>(data<span class="sc">$</span>score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Use <code>item_names</code>.</strong> Always specify the
+exact columns you need when calling
+<code>formr_api_fetch_results()</code> inside a run. This keeps requests
+fast and avoids pulling unnecessary data.</p>
+<hr />
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next Steps</h2>
+<ul>
+<li>The <a href="fetch-and-process-results.html">Fetch &amp; Process
+Results</a> vignette covers the downstream analysis pipeline.</li>
+<li>The <code>?formr_api_fetch_results</code> and
+<code>?formr_api_authenticate</code> help pages have the full parameter
+details.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+/* --- Modern Typography Setup --- */
+
+/* 1. RELAX THE BODY TEXT 
+   1.7 is a "luxury" line-height that makes long text much easier to read.
+   1.125rem (18px) is a modern standard size (up from default 16px). */
+body {
+  line-height: 1.4;
+  font-size: 1.125rem; 
+}
+
+/* 2. FIX HEADING SPACING (The "Vertical Rhythm")
+   We add lots of space ABOVE headings to visually separate sections,
+   and a bit more space BELOW to let the title breathe. */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;     /* Semi-bold looks cleaner than full bold */
+  line-height: 1.3;     /* Headings shouldn't have huge line heights */
+}
+
+/* Exception: No massive gap at the very top of the page */
+h1:first-of-type, main > h2:first-of-type {
+  margin-top: 0;
+}
+
+/* 3. LIST BREATHING ROOM 
+   Default lists are too tight. This spaces out bullet points. */
+li {
+  margin-bottom: 0.5em;
+}
+
+/* 4. CODE BLOCKS
+   Give code blocks more space so they don't crash into text. */
+pre, .sourceCode {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}

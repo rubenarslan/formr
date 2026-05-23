@@ -1,0 +1,21 @@
+http_interactions:
+- request:
+    method: POST
+    uri: http://formr-host-redacted/v1/runs/test-run
+  response:
+    status: 201
+    headers:
+      date: Mon, 02 Feb 2026 18:05:25 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '59'
+      connection: close
+      content-type: application/json
+    body:
+      string: '{"name":"test-run","link":"http:\/\/localhost\/test-run\/"}'
+  recorded_at: 2026-02-02 18:05:25
+recorded_with: VCR-vcr/2.1.0

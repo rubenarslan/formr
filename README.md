@@ -1,4 +1,4 @@
-# formr
+# formr <img src="man/figures/formr_logo.svg" align="right" width="200" />
  <!-- badges: start -->
  [![CRAN status](https://www.r-pkg.org/badges/version/formr)](https://CRAN.R-project.org/package=formr)
   [![Codecov test coverage](https://codecov.io/gh/rubenarslan/formr/graph/badge.svg)](https://app.codecov.io/gh/rubenarslan/formr)
@@ -6,18 +6,48 @@
 
 ## The accompanying R package for the study framework [formr](https://github.com/rubenarslan/formr.org) 
 
-The formr R package provides a few convenience functions that may be useful to the users of formr ([formr.org](https://formr.org)), an online survey framework which heavily relies on R via [openCPU](https://github.com/jeroenooms/opencpu). Some functions may be useful to others too.
+The formr R package serves as a bridge between the formr.org survey framework and your R environment. While the package is pre-loaded on the server to handle survey logic, it also provides a suite of tools for your local R workflow.
 
-Some of the functions conveniently generate individual feedback graphics, some are just shorthands to make certain common operations in formr more palatable to R novices. A large number of functions help connect to formr, extract data, correctly type data (dates, numbers, text etc.), automatically aggregate items of a scale and so on.
+**When used locally (External Usage):** These functions streamline the administration and analysis of your study.
 
-The R package can be used inside formr.org, it is always loaded by default.
+- Data Management: Connect to the API to fetch, type-cast, and automatically score results in a single step.
+- Project Syncing: Download your study structure (surveys, CSS, assets) to your computer for local editing and version control, then push changes back to the server.
 
-## documentation
-https://rubenarslan.github.io/formr
+**When used within a run (Internal Usage):** These functions are designed to run inside formr.org via OpenCPU to enhance the participant experience.
 
-## install
+- Dynamic Feedback: Generate immediate, personalized charts and visualizations to show participants their results.
+- Survey Logic: Use shorthand functions to handle complex text logic or conditional display settings within your survey units.
 
-If you want to install the R package locally (e.g. to connect to formr and fetch the data in a nice format for you), run:
+[You can get started right here!](https://rubenarslan.github.io/formr/)
 
-    install.packages("remotes")
-    remotes::install_github("rubenarslan/formr")
+## Installation
+
+You can install the released version from CRAN:
+
+```r
+install.packages("formr")
+```
+
+Or the development version from GitHub:
+
+```r
+if (!requireNamespace("remotes")) install.packages("remotes")
+remotes::install_github("rubenarslan/formr")
+library(formr)
+```
+
+## Important: API V1 vs. Classic
+
+The package currently supports two workflows.
+
+| Feature | **API** | **Classic** |
+| :--- | :--- | :--- |
+| **Prefix** | `formr_api_*` | `formr_*` |
+| **Auth** | OAuth (Access Tokens) | Email/Password |
+| **Capabilities** | Data fetching, **Project Management (Push/Pull)**, Session manipulation. | Classic formr functions. |
+
+## [Documentation](https://rubenarslan.github.io/formr/)
+
+Learn how to get started and how to use the formr package to your advantage:
+
+[https://rubenarslan.github.io/formr/](https://rubenarslan.github.io/formr/)

@@ -4,7 +4,7 @@
 \alias{text_message_twilio}
 \title{Send text message via Twilio}
 \usage{
-text_message_twilio(To, From, Body, Account, Token, return_result = F)
+text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
 }
 \arguments{
 \item{To}{the number you're texting to (usually without zeroes at the beginning)}
@@ -23,9 +23,11 @@ text_message_twilio(To, From, Body, Account, Token, return_result = F)
 Connects to Twilio using your token and sends a text message.
 }
 \examples{
+\dontrun{
 text_message_twilio(
-	To = '492222', 
-	From = '15005000', 
+	To = '492222',
+	From = '15005000',
 	Body = 'Hello friend',
 	Account = 'ID', Token = 'Tokentokentoken')
+}
 }

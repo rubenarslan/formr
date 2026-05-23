@@ -1,0 +1,47 @@
+http_interactions:
+- request:
+    method: POST
+    uri: http://formr-host-redacted/oauth/access_token
+    body:
+      string: grant_type=client_credentials
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '168'
+      content-type: application/json
+    body:
+      string: '{"access_token":"95468d793b3f0c442900fdb8517d174cf2cad68b","expires_in":3600,"token_type":"Bearer","scope":"user:read
+        user:write survey:read survey:write run:read run:write session:read session:write
+        data:read file:read file:write"}'
+  recorded_at: 2026-02-02 18:05:27
+- request:
+    method: POST
+    uri: http://formr-host-redacted/oauth/delete_token
+    body:
+      string: access_token=95468d793b3f0c442900fdb8517d174cf2cad68b
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:27 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '4'
+      connection: close
+      content-type: application/json
+    body:
+      string: 'null'
+  recorded_at: 2026-02-02 18:05:27
+recorded_with: VCR-vcr/2.1.0

@@ -1,0 +1,124 @@
+---
+title: "Manage your Projects"
+description: "Sync your entire study folder — push, pull, and watch for changes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Manage your Projects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, eval = FALSE}
+library(formr)
+```
+
+Version 0.12.0 of the `formr` package introduces a robust workflow for managing your studies locally. Instead of uploading files one by one on the website, you can now sync your entire project folder. This makes it possible to use Git for version control and your preferred local editors for Excel, CSS, and JavaScript files.
+
+## Prerequisites
+
+Ensure you have stored your API credentials as described in the [Getting Started](getting-started.html) guide.
+
+```{r, eval = FALSE}
+# Automatically finds your stored keys
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+```
+
+## Backing up a Study
+
+Before making major changes, it is good practice to create a full backup of your run. This function downloads the run structure (JSON), all survey item tables (Excel), attached files (images/scripts), and the current results.
+
+```{r, eval = FALSE}
+# Download everything to a folder named "backup_my_study"
+formr_api_backup_run("my-study-name", dir = "backup_my_study")
+```
+
+This creates a self-contained archive of your study state at that moment.
+
+## The Local Development Workflow
+
+The recommended workflow for active development is **Pull -\> Edit -\> Push**.
+
+### 1. Initialize (Pull)
+
+First, create a local directory for your project and pull the current state from the server. This scaffolds the necessary folder structure.
+
+```{r, eval = FALSE}
+# Pull the project into a local folder
+formr_api_pull_project("my-study-name", dir = "my_project_folder")
+```
+
+This will create the following structure:
+
+-   `surveys/`: Contains your survey spreadsheets (`.xlsx`).
+
+-   `files/`: Contains images and other assets.
+
+-   `css/` & `js/`: Contains your custom styling and scripts.
+
+-   `run_settings.json`: Configuration like privacy settings and data expiration.
+
+-   `run_structure.json`: The flow of your run (surveys, pauses, emails).
+
+### 2. Edit
+
+You can now edit these files using your favorite tools:
+
+-   Open `.xlsx` files in Excel/LibreOffice.
+
+-   Edit `.css` and `.js` in VS Code or RStudio.
+
+-   Add new images to the `files/` folder.
+
+### 3. Push
+
+Once you are happy with your local changes, push them back to the server. The function compares file modification times and only uploads what has changed.
+
+```{r, eval = FALSE}
+# Sync local changes to the server
+formr_api_push_project("my-study-name", dir = "my_project_folder")
+```
+
+#### Watch Mode
+
+If you are heavily editing a survey, running `formr_api_push_project` manually every time can be tedious. You can use the `watch` argument to keep the connection open. The package will monitor your folder and upload changes immediately as you save files. Note that you cannot run other commands until you stop the watcher by pressing the "Esc"-Key.
+
+```{r, eval = FALSE}
+# Automatically push changes when files are saved (Press Esc to stop)
+formr_api_push_project("my-study-name", dir = "my_project_folder", watch = TRUE)
+```
+
+## Managing Run Settings
+
+You can also view and update run settings programmatically. This is useful for toggling specific flags like `public` or `locked` without navigating the UI.
+
+```{r, eval = FALSE}
+# View current settings
+settings <- formr_api_run_settings("my-study-name")
+print(settings)
+
+# Update specific settings
+formr_api_run_settings("my-study-name", settings = list(
+  public = 2,        # Make run accessible via Link
+  locked = TRUE      # Lock run
+  # ...
+))
+```
+
+## Advanced: Run Structure (JSON)
+
+For advanced users, the entire flow of the run (the "Unit" list) can be exported and imported as JSON. This allows you to template complex study designs or import them directly.
+
+```{r, eval = FALSE}
+# Export structure to a file
+formr_api_run_structure("my-study-name", file = "structure.json")
+
+# Import structure from a file (Replaces current structure!)
+formr_api_run_structure("my-study-name", structure_json_path = "structure.json")
+```

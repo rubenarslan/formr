@@ -1,8 +1,3 @@
-#' @importFrom dplyr "%>%"
-#' @export
-dplyr::`%>%`
-
-
 #' Reverse labelled values
 #' 
 #' Taken from codebook package
