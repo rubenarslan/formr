@@ -80,24 +80,24 @@ formr_api_session <- function() {
 #'
 #' Connects to the API. If no credentials are provided, the auto-pickup
 #' chain is: the package's hidden `.formr` env (set automatically when
-#' the code runs inside an OpenCPU session on formr.org), then the
+#' the code runs inside an OpenCPU session on rforms.org), then the
 #' calling-frame chain (for legacy injectors that wrote bare locals into
 #' the wrapper scope), then the keyring.
 #'
 #' @param host API Base URL. Defaults to `.formr$host` when running on
-#'   formr.org, otherwise `"https://formr.org"`.
+#'   rforms.org, otherwise `"https://rforms.org"`.
 #' @param client_id OAuth Client ID.
 #' @param client_secret OAuth Client Secret.
 #' @param access_token Direct Access Token.
 #' @param account Optional string identifier for multiple accounts on the same host.
 #' @export
-formr_api_authenticate <- function(host = "https://formr.org",
+formr_api_authenticate <- function(host = "https://rforms.org",
 																	 client_id = NULL,
 																	 client_secret = NULL,
 																	 access_token = NULL,
 																	 account = NULL) {
 
-	# 0a. Hidden `.formr` env — preferred, set by formr.org without
+	# 0a. Hidden `.formr` env — preferred, set by rforms.org without
 	# polluting any visible scope.
 	if ((missing(access_token) || is.null(access_token)) && !is.null(.formr$access_token)) {
 		access_token <- .formr$access_token

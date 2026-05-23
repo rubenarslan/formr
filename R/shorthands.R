@@ -183,15 +183,15 @@ escapeRegex = function(string)
     "$"))
 }
 
-#' Per-request environment populated by formr.org
+#' Per-request environment populated by rforms.org
 #'
-#' An environment that the formr.org server fills with per-request state
+#' An environment that the rforms.org server fills with per-request state
 #' when R code runs inside an OpenCPU session on a formr study (for
 #' example, on a `CalculateUnit` page or an `OverviewScriptPage`). Useful
 #' fields the server may set:
 #'
 #' * `.formr$run_name` -- the name of the current run.
-#' * `.formr$host` -- the API host (e.g. `https://api.formr.org`).
+#' * `.formr$host` -- the API host (e.g. `https://api.rforms.org`).
 #' * `.formr$access_token` -- a short-lived OAuth token for the request.
 #' * `.formr$last_action_time` / `.formr$last_action_date` -- timestamps
 #'   used by [time_passed()] and the other shorthands.
@@ -219,7 +219,7 @@ escapeRegex = function(string)
 #' @param weeks 7 days
 #' @param months 30 days
 #' @param years 365 days
-#' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by formr.org
+#' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by rforms.org
 #' @export
 #' @examples
 #' 
@@ -243,7 +243,7 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
 #'
 #' a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 #'
-#' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.
+#' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by rforms.org. Will be coerced to POSIXct.
 #' @export
 #' @examples
 #' next_day(Sys.time())
@@ -301,7 +301,7 @@ ifelsena = function(test, yes, no, missing = no) {
 #' This function makes sure you know what to expect when evaluating uncertain results in an
 #' if-clause. In most cases, you should not use this function, because it can lump a lot of very 
 #' different cases together, but it may have some use for fool-proofing
-#' certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have
+#' certain if-clauses on rforms.org, where a field in a survey may either not exist, be missing or have
 #' a value to check. 
 #' 
 #' @param test condition. can only have length 0 or length 1

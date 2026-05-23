@@ -4,12 +4,12 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #'
 #' Connects to formr using your normal login and the httr library
 #' which supports persistent session cookies. Calling this function will persist
-#' the specified host (by default https://formr.org) in further formr_ function
+#' the specified host (by default https://rforms.org) in further formr_ function
 #' calls. You can change this by calling [formr_last_host()]
 #'
 #' @param email your registered email address
 #' @param password your password
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param keyring a shorthand for the account you're using
 #' @export
 #' @examples
@@ -76,15 +76,15 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 #' This function returns the default or the last specified host if called without an argument.
 #' It changes the host when called with an argument.
 #' 
-#' @param host defaults to https://formr.org
+#' @param host defaults to https://rforms.org
 #'
 #' @return the last specified host
 #' @export
 #' @examples
-#' formr_last_host("https://formr.org")
+#' formr_last_host("https://rforms.org")
 #' formr_last_host()
 formr_last_host <- local({
-	last_host <- "https://formr.org"
+	last_host <- "https://rforms.org"
 	function(host = NULL) {
 		if (!is.null(host)) {
 			if (!grepl("^https?://", host)) {
@@ -104,7 +104,7 @@ formr_last_host <- local({
 #'
 #' Disconnects from formr if connected.
 #'
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -125,7 +125,7 @@ formr_disconnect = function(host = formr_last_host()) {
 #' you can download the study/run structure using this command.
 #'
 #' @param run_name case-sensitive name of a run your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -146,7 +146,7 @@ formr_run_structure = function(run_name, host = formr_last_host()) {
 #'
 #' @param study_name case-sensitive name of a study your account owns
 #' @param save_path path to save the study data, defaults to the study name
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param overwrite should existing files be overwritten?
 #' @export
 #' @examples
@@ -208,7 +208,7 @@ formr_backup_study = function(study_name, save_path = study_name, host = formr_l
 #' @param surveys a list of survey data (from a run structure), optional
 #' @param overwrite should existing files be overwritten?
 #' @param save_path path to save the study data, defaults to the study name 
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -260,7 +260,7 @@ formr_backup_surveys = function(survey_names, surveys = list(), save_path = "./"
 #' and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_extra)
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param ... passed to [formr_post_process_results()]
 #' @export
 #' @examples
@@ -403,7 +403,7 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 #' you can download data using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -456,7 +456,7 @@ formr_raw_results = function(survey_name, host = formr_last_host()) {
 #' you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param path path to local JSON copy of the item table
 #' @export
 #' @examples
@@ -595,7 +595,7 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #' you can download detailed times and display counts for each item using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -623,7 +623,7 @@ formr_item_displays = function(survey_name, host = formr_last_host()) {
 #' you can download uploaded files using this command.
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -648,7 +648,7 @@ formr_uploaded_files = function(survey_name, host = formr_last_host()) {
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param overwrite should existing files be overwritten? defaults to FALSE
 #' @param save_path defaults to the survey name
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -693,7 +693,7 @@ formr_backup_files = function(survey_name,
 #' you can download the assigned random groups and merge them with your data.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -715,7 +715,7 @@ formr_shuffled = function(run_name, host = formr_last_host()) {
 #' you can download a table showing where they are in the run.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -738,7 +738,7 @@ formr_user_overview = function(run_name, host = formr_last_host()) {
 #' you can download a table showing their progression through the run.
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -780,7 +780,7 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -940,7 +940,7 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #'  
 #'
 #' @param survey_file_path the path to an item table in csv/json/xlsx etc. 
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @export
 #' @examples
 #' \dontrun{
@@ -1049,7 +1049,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
-#' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+#' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param compute_alphas deprecated, functionality migrated to codebook package
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
 #' @param plot_likert deprecated, functionality migrated to codebook package
@@ -1283,7 +1283,7 @@ get_opencpu_rds = function(session_url, local = TRUE) {
 # #' you can download the study structure (or run). It is a JSON file.
 # #' 
 # #' @param run_name case-sensitive name of a run your account owns
-# #' @param host defaults to [formr_last_host()], which defaults to https://formr.org
+# #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 # #' @param ... passed to [formr_post_process_results()]
 # #' @export
 # #' @examples

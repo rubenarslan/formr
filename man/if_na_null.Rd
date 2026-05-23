@@ -5,7 +5,7 @@
 \title{This function makes sure you know what to expect when evaluating uncertain results in an
 if-clause. In most cases, you should not use this function, because it can lump a lot of very
 different cases together, but it may have some use for fool-proofing
-certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have
+certain if-clauses on rforms.org, where a field in a survey may either not exist, be missing or have
 a value to check.}
 \usage{
 if_na_null(test, na = FALSE, null = FALSE)
@@ -21,7 +21,7 @@ if_na_null(test, na = FALSE, null = FALSE)
 This function makes sure you know what to expect when evaluating uncertain results in an
 if-clause. In most cases, you should not use this function, because it can lump a lot of very
 different cases together, but it may have some use for fool-proofing
-certain if-clauses on formr.org, where a field in a survey may either not exist, be missing or have
+certain if-clauses on rforms.org, where a field in a survey may either not exist, be missing or have
 a value to check.
 }
 \examples{

@@ -9,7 +9,7 @@ formr_uploaded_files(survey_name, host = formr_last_host())
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

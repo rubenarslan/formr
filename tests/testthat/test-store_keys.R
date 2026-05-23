@@ -16,7 +16,7 @@ test_that("formr_store_keys (API Mode) stores Access Token correctly", {
 	on.exit(options(keyring_backend = old_backend))
 	
 	# Define test data
-	test_host <- "https://test-api.formr.org"
+	test_host <- "https://test-api.rforms.org"
 	test_token <- "secret_access_token_123"
 	service_name <- paste0("formr_", test_host)
 	
@@ -42,7 +42,7 @@ test_that("formr_store_keys (API Mode) stores OAuth Client Credentials correctly
 	options(keyring_backend = "env")
 	on.exit(options(keyring_backend = old_backend))
 	
-	test_host <- "https://oauth.formr.org"
+	test_host <- "https://oauth.rforms.org"
 	test_id <- "my_client_id"
 	test_secret <- "my_client_secret"
 	service_name <- paste0("formr_", test_host)

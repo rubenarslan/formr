@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The `formr` R package is the companion to the [formr.org](https://formr.org) survey framework. It allows you to:
+The `formr` R package is the companion to the [rforms.org](https://rforms.org) survey framework. It allows you to:
 
 1.  **Manage Projects:** Sync surveys and files between your computer and the server.
 2.  **Fetch Data:** Download and process results for analysis.
@@ -61,7 +61,7 @@ You can store your credentials securely in your system's keyring so you don't ha
 
 #### 1.1 Save your API Credentials
 
-1.  Log in to formr.org (or your instance).
+1.  Log in to rforms.org (or your instance).
 2.  Go to **Account > API Credentials** (the "API" tab on the account page). You can hold
     several credentials side by side — each one with its own scopes and run allowlist.
     A common pattern is one narrow read-only credential for a dashboard, plus a separate
@@ -94,7 +94,7 @@ You can store your credentials securely in your system's keyring so you don't ha
 # Store your credentials once
 # This saves them securely in your OS credential store
 formr_store_keys(
-  host = "https://api.formr.org",
+  host = "https://api.rforms.org",
   client_id = "YOUR_CLIENT_ID",
   client_secret = "YOUR_CLIENT_SECRET",
   # Optional but recommended when you have more than one credential:
@@ -125,7 +125,7 @@ Once your keys are stored, you simply authenticate at the start of your session:
 
 ```{r, auth_local, eval = FALSE}
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom API-URL + account name!
 
 # After authentication, you can see which scopes the credential carries:
 formr_api_session()$scope

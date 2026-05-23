@@ -7,7 +7,7 @@
 formr_last_host(host = NULL)
 }
 \arguments{
-\item{host}{defaults to https://formr.org}
+\item{host}{defaults to https://rforms.org}
 }
 \value{
 the last specified host
@@ -17,6 +17,6 @@ This function returns the default or the last specified host if called without a
 It changes the host when called with an argument.
 }
 \examples{
-formr_last_host("https://formr.org")
+formr_last_host("https://rforms.org")
 formr_last_host()
 }

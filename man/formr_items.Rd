@@ -9,7 +9,7 @@ formr_items(survey_name = NULL, host = formr_last_host(), path = NULL)
 \arguments{
 \item{survey_name}{case-sensitive name of a survey your account owns}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 
 \item{path}{path to local JSON copy of the item table}
 }

@@ -16,7 +16,7 @@ formr_backup_study(
 
 \item{save_path}{path to save the study data, defaults to the study name}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 
 \item{overwrite}{should existing files be overwritten?}
 }

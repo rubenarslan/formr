@@ -2,7 +2,7 @@
 % Please edit documentation in R/shorthands.R
 \name{.formr}
 \alias{.formr}
-\title{Per-request environment populated by formr.org}
+\title{Per-request environment populated by rforms.org}
 \format{
 An environment.
 }
@@ -10,7 +10,7 @@ An environment.
 .formr
 }
 \description{
-An environment that the formr.org server fills with per-request state
+An environment that the rforms.org server fills with per-request state
 when R code runs inside an OpenCPU session on a formr study (for
 example, on a \code{CalculateUnit} page or an \code{OverviewScriptPage}). Useful
 fields the server may set:
@@ -18,7 +18,7 @@ fields the server may set:
 \details{
 \itemize{
 \item \code{.formr$run_name} -- the name of the current run.
-\item \code{.formr$host} -- the API host (e.g. \verb{https://api.formr.org}).
+\item \code{.formr$host} -- the API host (e.g. \verb{https://api.rforms.org}).
 \item \code{.formr$access_token} -- a short-lived OAuth token for the request.
 \item \code{.formr$last_action_time} / \code{.formr$last_action_date} -- timestamps
 used by \code{\link[=time_passed]{time_passed()}} and the other shorthands.

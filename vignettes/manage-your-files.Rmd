@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 ```{r setup, eval = FALSE}
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 Most complex studies require more than just survey spreadsheets. For example, you might need to host images for experimental stimuli.

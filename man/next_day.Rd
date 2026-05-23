@@ -7,7 +7,7 @@
 next_day(date = NULL)
 }
 \arguments{
-\item{date}{defaults to .formr$last_action_date, a hidden variable that is automatically set by formr.org. Will be coerced to POSIXct.}
+\item{date}{defaults to .formr$last_action_date, a hidden variable that is automatically set by rforms.org. Will be coerced to POSIXct.}
 }
 \description{
 a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.

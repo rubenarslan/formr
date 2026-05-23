@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 ```{r setup, eval = FALSE}
 library(formr)
 # Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
 
 While the `formr_api_push_project` and `formr_api_pull_project` functions are excellent for managing file-based assets (surveys, CSS, images), sometimes you need direct control over the run's configuration on the server.

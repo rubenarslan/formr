@@ -13,7 +13,7 @@ formr_overview_sankey(
 }
 \arguments{
 \item{run_name}{Name of the run. Defaults to \code{.formr$run_name},
-which formr.org sets when an OverviewScriptPage renders.}
+which rforms.org sets when an OverviewScriptPage renders.}
 
 \item{testing}{If \code{FALSE} (default), only real participants are
 included. \code{TRUE} to include only test sessions, \code{NULL} for both.}
@@ -47,7 +47,7 @@ visits" suffix on the node label. Single-pass runs stay clutter-free
 Daily mood (avg 14.2 visits)" so the loop density is visible without
 drawing it.
 
-Designed to be called from an OverviewScriptPage on formr.org, where
+Designed to be called from an OverviewScriptPage on rforms.org, where
 the server injects the per-token \code{.formr$access_token} / \code{.formr$host}
 / \code{.formr$run_name} environment and \code{\link[=formr_api_authenticate]{formr_api_authenticate()}} picks
 them up automatically. Outside an Overview render, set

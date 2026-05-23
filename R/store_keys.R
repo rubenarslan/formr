@@ -9,7 +9,7 @@
 #' @param email (Classic) Email address for the account. Will be prompted if omitted.
 #' @param password (Classic) Optional. Provide to skip interactive prompt (useful for scripts/tests).
 #' @param secret_2fa (Classic) A 2FA secret. Set to NULL to be prompted, or "" if not used.
-#' @param host (API) The API URL (e.g., https://formr.org). Defaults to formr.org.
+#' @param host (API) The API URL (e.g., https://rforms.org). Defaults to rforms.org.
 #' @param client_id (API) OAuth Client ID.
 #' @param client_secret (API) OAuth Client Secret.
 #' @param access_token (API) Direct Personal Access Token (alternative to OAuth).
@@ -39,7 +39,7 @@ formr_store_keys <- function(account_name = NULL,
 														 email = NULL,
 														 password = NULL,
 														 secret_2fa = NULL,
-														 host = "https://formr.org",
+														 host = "https://rforms.org",
 														 client_id = NULL,
 														 client_secret = NULL,
 														 access_token = NULL,

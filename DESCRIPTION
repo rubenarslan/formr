@@ -1,7 +1,7 @@
 Package: formr
 Title: Companion R Package for the 'formr' Survey Framework
 Description: Serves as a companion toolkit for the 'formr' survey
-    framework (<https://formr.org>). The package acts as a bridge
+    framework (<https://rforms.org>). The package acts as a bridge
     between a 'formr' server and a local R environment. Key features
     include an API client for fetching, type-casting, and automatically
     scoring data; a project management workflow for syncing study

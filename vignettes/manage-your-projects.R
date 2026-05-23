@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Automatically finds your stored keys
-# formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+# formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # Download everything to a folder named "backup_my_study"

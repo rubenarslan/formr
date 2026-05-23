@@ -12,7 +12,7 @@ test_that("formr_api_session returns NULL when no session exists", {
 
 test_that("formr_api_session validates session structure", {
 	session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "test_token_12345",
 		expires_at = Sys.time() + 3600
 	)
@@ -44,7 +44,7 @@ test_that("formr_api_session rejects corrupted sessions", {
 
 test_that("formr_api_session rejects expired sessions", {
 	expired_session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "test_token",
 		expires_at = Sys.time() - 100
 	)
@@ -63,7 +63,7 @@ test_that("formr_api_is_authenticated works correctly", {
 	expect_false(formr_api_is_authenticated())
 
 	valid_session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "valid_token_12345",
 		expires_at = Sys.time() + 3600
 	)
@@ -71,7 +71,7 @@ test_that("formr_api_is_authenticated works correctly", {
 	expect_true(formr_api_is_authenticated())
 
 	expired_session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "expired_token",
 		expires_at = Sys.time() - 100
 	)
@@ -93,7 +93,7 @@ test_that("formr_api_token_expiry returns correct information", {
 	expect_true(result$is_expired)
 
 	valid_session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "test_token",
 		expires_at = Sys.time() + 1800
 	)
@@ -105,7 +105,7 @@ test_that("formr_api_token_expiry returns correct information", {
 	expect_true(result$seconds_left <= 1800)
 
 	expired_session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "test_token",
 		expires_at = Sys.time() - 100
 	)
@@ -135,7 +135,7 @@ test_that("formr_api_authenticate captures expiry time from OAuth response", {
 	}
 
 	session <- list(
-		base_url = httr::parse_url("https://formr.org"),
+		base_url = httr::parse_url("https://rforms.org"),
 		token = "test_token_123",
 		expires_at = Sys.time() + 3600
 	)

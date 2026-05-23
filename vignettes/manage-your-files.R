@@ -7,7 +7,7 @@ knitr::opts_chunk$set(
 ## ----setup, eval = FALSE------------------------------------------------------
 # library(formr)
 # # Automatically finds your stored keys
-# formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+# formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 
 ## ----eval = FALSE-------------------------------------------------------------
 # # List all files attached to the study

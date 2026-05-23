@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 # # Store your credentials once
 # # This saves them securely in your OS credential store
 # formr_store_keys(
-#   host = "https://api.formr.org",
+#   host = "https://api.rforms.org",
 #   client_id = "YOUR_CLIENT_ID",
 #   client_secret = "YOUR_CLIENT_SECRET",
 #   # Optional but recommended when you have more than one credential:
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 
 ## ----auth_local, eval = FALSE-------------------------------------------------
 # # Automatically finds your stored keys
-# formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom API-URL + account name!
+# formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom API-URL + account name!
 # 
 # # After authentication, you can see which scopes the credential carries:
 # formr_api_session()$scope

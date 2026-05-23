@@ -469,8 +469,8 @@ sync_run_settings <- function(run_name, dir) {
 			}
 
 			# Pin downloads to the authenticated origin. Accept exact match,
-			# a super/sub relationship (e.g. api.formr.org ↔ formr.org), or
-			# a shared parent so siblings like api.formr.org and cdn.formr.org
+			# a super/sub relationship (e.g. api.rforms.org ↔ rforms.org), or
+			# a shared parent so siblings like api.rforms.org and cdn.rforms.org
 			# both resolve. The sibling check approximates eTLD+1 by
 			# stripping the leading label; it is gated on each host having
 			# ≥ 3 labels so that e.g. a.com and b.com don't collapse into

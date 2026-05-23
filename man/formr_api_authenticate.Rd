@@ -5,7 +5,7 @@
 \title{Authenticate with formr}
 \usage{
 formr_api_authenticate(
-  host = "https://formr.org",
+  host = "https://rforms.org",
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
@@ -14,7 +14,7 @@ formr_api_authenticate(
 }
 \arguments{
 \item{host}{API Base URL. Defaults to \code{.formr$host} when running on
-formr.org, otherwise \code{"https://formr.org"}.}
+rforms.org, otherwise \code{"https://rforms.org"}.}
 
 \item{client_id}{OAuth Client ID.}
 
@@ -27,7 +27,7 @@ formr.org, otherwise \code{"https://formr.org"}.}
 \description{
 Connects to the API. If no credentials are provided, the auto-pickup
 chain is: the package's hidden \code{.formr} env (set automatically when
-the code runs inside an OpenCPU session on formr.org), then the
+the code runs inside an OpenCPU session on rforms.org), then the
 calling-frame chain (for legacy injectors that wrote bare locals into
 the wrapper scope), then the keyring.
 }

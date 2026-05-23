@@ -6,14 +6,14 @@
 
 ## The accompanying R package for the study framework [formr](https://github.com/rubenarslan/formr.org) 
 
-The formr R package serves as a bridge between the formr.org survey framework and your R environment. While the package is pre-loaded on the server to handle survey logic, it also provides a suite of tools for your local R workflow.
+The formr R package serves as a bridge between the rforms.org survey framework and your R environment. While the package is pre-loaded on the server to handle survey logic, it also provides a suite of tools for your local R workflow.
 
 **When used locally (External Usage):** These functions streamline the administration and analysis of your study.
 
 - Data Management: Connect to the API to fetch, type-cast, and automatically score results in a single step.
 - Project Syncing: Download your study structure (surveys, CSS, assets) to your computer for local editing and version control, then push changes back to the server.
 
-**When used within a run (Internal Usage):** These functions are designed to run inside formr.org via OpenCPU to enhance the participant experience.
+**When used within a run (Internal Usage):** These functions are designed to run inside rforms.org via OpenCPU to enhance the participant experience.
 
 - Dynamic Feedback: Generate immediate, personalized charts and visualizations to show participants their results.
 - Survey Logic: Use shorthand functions to handle complex text logic or conditional display settings within your survey units.

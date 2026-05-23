@@ -26,7 +26,7 @@ mock_POST_fail <- function(...) {
 
 test_that("formr_last_host works correctly", {
   # Test default value
-  expect_equal(formr_last_host(), "https://formr.org")
+  expect_equal(formr_last_host(), "https://rforms.org")
   
   # Test setting new host
   formr_last_host("https://example.com")
@@ -40,7 +40,7 @@ test_that("formr_last_host works correctly", {
   expect_equal(formr_last_host(), "https://example.com")
   
   # Reset to default for other tests
-  formr_last_host("https://formr.org")
+  formr_last_host("https://rforms.org")
 })
 
 test_that("random_date_in_range generates valid dates", {
@@ -244,4 +244,4 @@ test_that("formr_items works with example data", {
 })
 
 # Reset formr_last_host to default after all tests
-formr_last_host("https://formr.org") 
+formr_last_host("https://rforms.org") 

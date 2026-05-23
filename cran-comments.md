@@ -17,9 +17,9 @@
   currently returns 404 because the package has not yet been
   released; it will resolve once this submission is accepted.
 
-* The `https://api.formr.org` URL appears in two vignettes inside
+* The `https://api.rforms.org` URL appears in two vignettes inside
   example code blocks (`formr_api_authenticate(host =
-  "https://api.formr.org", ...)`). It is the canonical API endpoint
+  "https://api.rforms.org", ...)`). It is the canonical API endpoint
   and intentionally returns `403 Forbidden` for an unauthenticated
   request; the URL itself is valid.
 
@@ -34,5 +34,5 @@
 
 * `plotly` is in Suggests because only `formr_overview_sankey()` uses
   it. That function is intended to run server-side inside an
-  `OverviewScriptPage` on a formr.org instance and gates on
+  `OverviewScriptPage` on a rforms.org instance and gates on
   `requireNamespace("plotly")`.

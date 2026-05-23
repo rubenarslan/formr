@@ -21,7 +21,7 @@ formr_backup_surveys(
 
 \item{overwrite}{should existing files be overwritten?}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
 \description{
 Backup surveys by downloading item lists, results, item displays and file lists.

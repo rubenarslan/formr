@@ -14,14 +14,14 @@
 #' Daily mood (avg 14.2 visits)" so the loop density is visible without
 #' drawing it.
 #'
-#' Designed to be called from an OverviewScriptPage on formr.org, where
+#' Designed to be called from an OverviewScriptPage on rforms.org, where
 #' the server injects the per-token `.formr$access_token` / `.formr$host`
 #' / `.formr$run_name` environment and [formr_api_authenticate()] picks
 #' them up automatically. Outside an Overview render, set
 #' `run_name` explicitly and call [formr_api_authenticate()] first.
 #'
 #' @param run_name Name of the run. Defaults to `.formr$run_name`,
-#'   which formr.org sets when an OverviewScriptPage renders.
+#'   which rforms.org sets when an OverviewScriptPage renders.
 #' @param testing If `FALSE` (default), only real participants are
 #'   included. `TRUE` to include only test sessions, `NULL` for both.
 #' @param orientation Sankey orientation; `"v"` (default) renders

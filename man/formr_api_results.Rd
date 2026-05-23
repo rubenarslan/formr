@@ -16,7 +16,7 @@ formr_api_results(
 \arguments{
 \item{run_name}{Name of the run. Defaults to \code{.formr$run_name}, which
 is set automatically when the code runs inside an OpenCPU session on
-formr.org -- so portable run code can omit this argument.}
+rforms.org -- so portable run code can omit this argument.}
 
 \item{...}{Filters passed to API (e.g. \code{surveys = c("Daily", "Intake")}, \code{session_ids = "..."}).}
 

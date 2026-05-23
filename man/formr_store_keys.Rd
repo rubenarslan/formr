@@ -9,7 +9,7 @@ formr_store_keys(
   email = NULL,
   password = NULL,
   secret_2fa = NULL,
-  host = "https://formr.org",
+  host = "https://rforms.org",
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
@@ -25,7 +25,7 @@ formr_store_keys(
 
 \item{secret_2fa}{(Classic) A 2FA secret. Set to NULL to be prompted, or "" if not used.}
 
-\item{host}{(API) The API URL (e.g., https://formr.org). Defaults to formr.org.}
+\item{host}{(API) The API URL (e.g., https://rforms.org). Defaults to rforms.org.}
 
 \item{client_id}{(API) OAuth Client ID.}
 

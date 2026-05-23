@@ -18,7 +18,7 @@ formr_backup_files(
 
 \item{save_path}{defaults to the survey name}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}

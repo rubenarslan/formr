@@ -9,7 +9,7 @@ formr_upload_items(survey_file_path, host = formr_last_host())
 \arguments{
 \item{survey_file_path}{the path to an item table in csv/json/xlsx etc.}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
 \description{
 To automatically create surveys using formr, you can upload survey item

@@ -18,7 +18,7 @@ formr_recognise(
 
 \item{results}{survey results, will be auto-retrieved based on survey_name if omitted}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
 \description{
 Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this

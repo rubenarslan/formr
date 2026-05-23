@@ -16,14 +16,14 @@ formr_connect(
 
 \item{password}{your password}
 
-\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://formr.org}
+\item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 
 \item{keyring}{a shorthand for the account you're using}
 }
 \description{
 Connects to formr using your normal login and the httr library
 which supports persistent session cookies. Calling this function will persist
-the specified host (by default https://formr.org) in further formr_ function
+the specified host (by default https://rforms.org) in further formr_ function
 calls. You can change this by calling \code{\link[=formr_last_host]{formr_last_host()}}
 }
 \examples{
