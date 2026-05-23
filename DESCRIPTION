@@ -36,28 +36,28 @@ Imports:
     curl,
     jsonlite,
     lubridate,
-    commonmark,
     rmarkdown,
     otp,
     keyring,
     purrr,
     readr,
-    rlang,
-    tibble
+    rlang
 Suggests:
     testthat (>= 3.0.0),
     vcr,
     mockery,
     withr,
     rstudioapi,
-    plotly
+    plotly,
+    commonmark
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
+Language: en-US
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://rubenarslan.github.io/formr/, https://github.com/rubenarslan/formr
 BugReports: https://github.com/rubenarslan/formr/issues
 Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3
+RoxygenNote: 8.0.0

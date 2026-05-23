@@ -97,7 +97,7 @@ formr_api_survey_structure <- function(survey_name, format = "json", file_path =
 		if (!is.null(x$value)) x$value <- as.character(x$value)
 		if (!is.null(x$type_options)) x$type_options <- as.character(x$type_options)
 		x <- lapply(x, function(val) if (is.null(val)) NA else val)
-		return(tibble::as_tibble(x))
+		return(dplyr::as_tibble(x))
 	}
 	
 	item_list <- unname(res$items)

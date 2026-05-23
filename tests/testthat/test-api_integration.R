@@ -252,7 +252,7 @@ test_that("Logic Unit Test: Reversal, Types, and Scales work with hardcoded data
 	
 	# 1. HARDCODE METADATA (What the API structure endpoint would return)
 	# We simulate a simple scale: 'extra_1' and 'extra_2R' (Reverse coded)
-	fake_metadata <- tibble::tibble(
+	fake_metadata <- dplyr::tibble(
 		name = c("extra_1", "extra_2R", "open_q"),
 		type = c("rating_button", "rating_button", "text"),
 		label = c("I am outgoing", "I am shy", "Any comments?"),
@@ -266,7 +266,7 @@ test_that("Logic Unit Test: Reversal, Types, and Scales work with hardcoded data
 	# 2. HARDCODE RAW DATA (What the API results endpoint would return)
 	# - Session 1: answered 1 and 3 (Reverse of 3 in 1..3 range is 1) -> Mean should be (1+1)/2 = 1
 	# - Session 2: answered 3 and 1 (Reverse of 1 in 1..3 range is 3) -> Mean should be (3+3)/2 = 3
-	fake_results <- tibble::tibble(
+	fake_results <- dplyr::tibble(
 		session = c("s1", "s2"),
 		extra_1 = c(1, 3), # Numeric raw data
 		extra_2R = c(3, 1), 

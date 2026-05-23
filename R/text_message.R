@@ -6,7 +6,7 @@
 #' @param From the number you're texting from
 #' @param Body the text message body/text
 #' @param Account your Twilio account ID
-#' @param Token your Twili token
+#' @param Token your Twilio token
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
 #' @export
 #' @examples

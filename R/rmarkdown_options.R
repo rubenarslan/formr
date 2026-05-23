@@ -144,7 +144,11 @@ formr_knit = function(text) {
 #' formr_render_commonmark("There are only `r sample(2:3, 1)` types of people.")
 
 formr_render_commonmark = function(text) {
-	commonmark::markdown_html(text = 
+	if (!requireNamespace("commonmark", quietly = TRUE)) {
+		stop("formr_render_commonmark() needs the 'commonmark' package. ",
+		     "Install it with install.packages(\"commonmark\").")
+	}
+	commonmark::markdown_html(text =
 															knitr::knit(text = text, 
 																					quiet = TRUE, 
 																					encoding = "utf-8"), 

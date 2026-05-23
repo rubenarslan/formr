@@ -69,7 +69,7 @@ formr_api_create_session("my-run-name", codes = c("LAB_001", "LAB_002"))
 
 Sometimes you need to intervene in a participant's progress. The `formr_api_session_action()` function allows you to modify the state of one or more sessions.
 
-### Use Case 1: Unstucking a User (Move Position)
+### Use Case 1: Unsticking a User (Move Position)
 
 If a bug or logic error causes a user to get stuck at a specific point, you can manually move them to a different unit in the run.
 

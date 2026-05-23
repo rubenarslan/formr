@@ -15,7 +15,7 @@ text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
 
 \item{Account}{your Twilio account ID}
 
-\item{Token}{your Twili token}
+\item{Token}{your Twilio token}
 
 \item{return_result}{whether to return simply TRUE/FALSE on success/failure or the whole result}
 }
