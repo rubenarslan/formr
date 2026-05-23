@@ -1,7 +1,7 @@
 # Aggregate data based on item table
 
 If you've retrieved an item table using
-[`formr_items()`](http://rubenarslan.github.io/formr/reference/formr_items.md)
+[`formr_items()`](https://rubenarslan.github.io/formr/reference/formr_items.md)
 you can use this function to aggregate your multiple choice items into
 mean scores. If you do not have a item table (e.g. your data was not
 collected using formr, you don't want another HTTP request in a
@@ -44,7 +44,7 @@ formr_aggregate(
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 - compute_alphas:
@@ -71,7 +71,8 @@ formr_aggregate(
 
 - ...:
 
-  passed to `psych::alpha()`
+  formerly passed to `psych::alpha()`; ignored now that the
+  reliability/Likert code has moved to the `codebook` package
 
 ## Examples
 

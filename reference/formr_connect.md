@@ -4,7 +4,7 @@ Connects to formr using your normal login and the httr library which
 supports persistent session cookies. Calling this function will persist
 the specified host (by default https://formr.org) in further formr\_
 function calls. You can change this by calling
-[`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md)
+[`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md)
 
 ## Usage
 
@@ -30,7 +30,7 @@ formr_connect(
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 - keyring:

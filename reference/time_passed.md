@@ -61,6 +61,7 @@ time_passed(
 ## Examples
 
 ``` r
+
 time_passed(hours = 7, time = Sys.time())
 #> [1] FALSE
 ```

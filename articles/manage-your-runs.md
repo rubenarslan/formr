@@ -1,0 +1,127 @@
+# Manage your Runs
+
+``` r
+
+library(formr)
+# Automatically finds your stored keys
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+```
+
+While the `formr_api_push_project` and `formr_api_pull_project`
+functions are excellent for managing file-based assets (surveys, CSS,
+images), sometimes you need direct control over the run’s configuration
+on the server.
+
+The `formr` package provides a suite of lower-level functions to create,
+configure, inspect, and delete runs programmatically.
+
+## Listing Your Runs
+
+To see an overview of all studies you have access to, use
+[`formr_api_runs()`](https://rubenarslan.github.io/formr/reference/formr_api_runs.md).
+This returns a tidy data frame containing the run ID, name, and status
+flags (whether it is public, locked, or has active cron jobs).
+
+``` r
+
+# List all runs and their status
+runs <- formr_api_runs()
+
+# Quickly check which runs are currently active/public
+subset(runs, public == TRUE)
+```
+
+## Creating a New Run
+
+You can create a new, empty run directly from R. This is useful if you
+are setting up a battery of studies programmatically.
+
+``` r
+
+# Create a new run named "pilot-study-v1"
+formr_api_create_run("pilot-study-v1")
+```
+
+The function returns the public link to your new run upon success.
+
+## Configuring Run Settings
+
+Once a run exists, you often need to toggle its settings—for example,
+locking it to prevent accidental edits during data collection or making
+it public for participants.
+
+The
+[`formr_api_run_settings()`](https://rubenarslan.github.io/formr/reference/formr_api_run_settings.md)
+function handles this.
+
+- **GET:** If you provide only the run name, it returns the current
+  settings.
+
+- **PATCH:** If you provide a `settings` list, it updates the run.
+
+``` r
+
+# 1. View current settings
+settings <- formr_api_run_settings("pilot-study-v1")
+
+# 2. Update settings: Lock the run and make it public
+formr_api_run_settings("pilot-study-v1", settings = list(
+  locked = TRUE,     # Prevent structure changes
+  public = 2,      # Allow participants to access via Link
+  expiresOn = "2026-12-31" 
+  # Set Data Expiration Date (required to make your Run public)
+))
+```
+
+## Managing Run Structure (JSON)
+
+The “Structure” of a run is the ordered list of units (surveys, emails,
+pauses, jumps) that determines the participant’s path. You can export
+this structure to JSON for safekeeping or import it to replicate a study
+design.
+
+### Exporting Structure
+
+You can inspect the structure as an R list or save it directly to a JSON
+file to create a 1:1 backup of the runs configuration.
+
+``` r
+
+# Inspect structure in R
+struct <- formr_api_run_structure("pilot-study-v1")
+print(struct)
+
+# Save to file (Backup)
+formr_api_run_structure("pilot-study-v1", file = "pilot_v1_structure.json")
+```
+
+### Importing Structure
+
+You can upload a JSON file to replace the current run structure. This is
+useful for creating templates: you can define a complex flow once and
+apply it to multiple runs. If they are part of your JSON file, this will
+also create the necessary surveys for the run.
+
+``` r
+
+# Overwrite the run's structure with a local JSON file
+formr_api_run_structure("pilot-study-v1", structure_json_path = "pilot_v1_structure.json")
+```
+
+## Deleting a Run
+
+You can permanently delete a run if it was created by mistake or is no
+longer needed.
+
+**Warning:** This will remove everything associated with the run,
+including the structure, attached files, and all collected results.
+However, the surveys used in the run will be kept.
+
+``` r
+
+# Delete a run (prompts for confirmation by default)
+formr_api_delete_run("pilot-study-v1")
+
+# Force delete without confirmation (for automated scripts)
+formr_api_delete_run("pilot-study-v1", prompt = FALSE)
+```

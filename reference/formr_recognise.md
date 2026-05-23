@@ -1,7 +1,7 @@
 # Recognise data types based on item table
 
 Once you've retrieved an item table using
-[`formr_items()`](http://rubenarslan.github.io/formr/reference/formr_items.md)
+[`formr_items()`](https://rubenarslan.github.io/formr/reference/formr_items.md)
 you can use this function to correctly type your variables based on the
 item table (e.g. formr free text types will be character, but
 select_add_one will be factor, dates are also typed as Date, datetimes
@@ -35,7 +35,7 @@ formr_recognise(
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 ## Examples

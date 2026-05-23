@@ -17,7 +17,7 @@ formr_inline_render(text, self_contained = TRUE, ...)
 - self_contained:
 
   passed to
-  [markdown_custom_options](http://rubenarslan.github.io/formr/reference/markdown_custom_options.md)
+  [markdown_custom_options](https://rubenarslan.github.io/formr/reference/markdown_custom_options.md)
 
 - ...:
 

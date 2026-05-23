@@ -71,7 +71,7 @@ Some caveats:
   [`cat()`](https://rdrr.io/r/base/cat.html) this from loops or an
   if-condition without without setting results='asis'. You can however
   concatenate these objects with
-  [`paste.knit_asis()`](http://rubenarslan.github.io/formr/reference/paste.knit_asis.md)
+  [`paste.knit_asis()`](https://rubenarslan.github.io/formr/reference/paste.knit_asis.md)
 
 ## Examples
 

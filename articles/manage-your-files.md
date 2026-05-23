@@ -1,0 +1,89 @@
+# Manage your Files
+
+``` r
+
+library(formr)
+# Automatically finds your stored keys
+formr_api_authenticate(host = "https://api.formr.org", account = "dashboard") # or your custom URL and account name!
+```
+
+Most complex studies require more than just survey spreadsheets. For
+example, you might need to host images for experimental stimuli.
+
+While the [Project
+Workflow](https://rubenarslan.github.io/formr/articles/manage-your-projects.md)
+(`formr_api_push_project`) syncs your `files/` folder automatically, the
+functions below give you direct, granular control over the file storage
+of your run.
+
+## Listing Files
+
+To see what files are currently attached to your run, use
+[`formr_api_files()`](https://rubenarslan.github.io/formr/reference/formr_api_files.md).
+This returns a data frame containing the file names, their public URLs,
+and upload timestamps.
+
+``` r
+
+# List all files attached to the study
+files <- formr_api_files("my-study-name")
+
+# View the first few files
+head(files)
+```
+
+The returned `url` column is particularly useful if you need to embed
+these assets in external emails or websites.
+
+## Uploading Files
+
+You can upload files individually or in bulk. This is useful for quickly
+patching a missing image or adding a new stimulus without re-syncing the
+entire project.
+
+### Single File
+
+``` r
+
+# Upload a single logo
+formr_api_upload_file("my-study-name", path = "assets/logo.png")
+```
+
+### Multiple Files or Directories
+
+The function is flexible: you can pass a vector of paths or a directory.
+If you pass a directory, `formr` will upload all files directly inside
+it.
+
+``` r
+
+# Upload multiple specific files
+formr_api_upload_file("my-study-name", path = c("assets/img1.jpg", "assets/img2.jpg"))
+
+# Upload an entire folder of stimuli
+formr_api_upload_file("my-study-name", path = "assets/stimuli/")
+```
+
+## Deleting Files
+
+To keep your run clean, you can remove obsolete files.
+
+``` r
+
+# Delete a specific file
+formr_api_delete_file("my-study-name", file_name = "old_logo.png")
+
+# Delete a list of files
+formr_api_delete_file("my-study-name", file_name = c("test1.jpg", "test2.jpg"))
+```
+
+### Cleaning Up (Delete All)
+
+If you are restructuring your study and want to start fresh, you can
+wipe all files. **Use this with caution.**
+
+``` r
+
+# Delete ALL files (prompts for confirmation)
+formr_api_delete_all_files("my-study-name")
+```

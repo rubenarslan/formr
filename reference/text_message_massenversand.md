@@ -15,7 +15,7 @@ text_message_massenversand(
   msgtype = "t",
   tarif = "OA",
   test = "0",
-  return_result = F
+  return_result = FALSE
 )
 ```
 

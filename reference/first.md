@@ -3,7 +3,7 @@
 Just a simple shorthand to get the first, non-missing argument per
 default. Can give more than one element and can include missing
 elements. The inverse of
-[`last()`](http://rubenarslan.github.io/formr/reference/last.md).
+[`last()`](https://rubenarslan.github.io/formr/reference/last.md).
 
 ## Usage
 

@@ -1,7 +1,7 @@
 # Download run structure from formr
 
 After connecting to formr using
-[`formr_connect()`](http://rubenarslan.github.io/formr/reference/formr_connect.md)
+[`formr_connect()`](https://rubenarslan.github.io/formr/reference/formr_connect.md)
 you can download the study/run structure using this command.
 
 ## Usage
@@ -19,7 +19,7 @@ formr_run_structure(run_name, host = formr_last_host())
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 ## Examples

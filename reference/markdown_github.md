@@ -7,7 +7,7 @@ Adds +pipe_tables, +raw_html, +tex_math_single_backslash,
 +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores,
 +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc
 features are disabled (see
-[`markdown_custom_options()`](http://rubenarslan.github.io/formr/reference/markdown_custom_options.md)),
+[`markdown_custom_options()`](https://rubenarslan.github.io/formr/reference/markdown_custom_options.md)),
 but +yaml_metadata_block is re-enabled, so that it is possible to
 specify this output function using YAML.
 

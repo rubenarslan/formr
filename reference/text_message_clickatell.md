@@ -5,7 +5,7 @@ Connects to Clickatell using your token and sends a text message.
 ## Usage
 
 ``` r
-text_message_clickatell(To, Body, Token, return_result = F)
+text_message_clickatell(To, Body, Token, return_result = FALSE)
 ```
 
 ## Arguments

@@ -5,7 +5,7 @@ Connects to Twilio using your token and sends a text message.
 ## Usage
 
 ``` r
-text_message_twilio(To, From, Body, Account, Token, return_result = F)
+text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
 ```
 
 ## Arguments
@@ -38,10 +38,11 @@ text_message_twilio(To, From, Body, Account, Token, return_result = F)
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 text_message_twilio(
-  To = '492222', 
-  From = '15005000', 
+  To = '492222',
+  From = '15005000',
   Body = 'Hello friend',
   Account = 'ID', Token = 'Tokentokentoken')
-#> [1] FALSE
+} # }
 ```

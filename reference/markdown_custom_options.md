@@ -44,12 +44,12 @@ markdown_custom_options(
   [`rmarkdown::html_document()`](https://pkgs.rstudio.com/rmarkdown/reference/html_document.html),
   but with options that you can specify. Find the format options here in
   the pandoc documentation:
-  http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html
-  Pandoc's enhanced version of markdown includes syntax for footnotes,
-  tables, flexible ordered lists, definition lists, fenced code blocks,
-  superscript, subscript, strikeout, title blocks, automatic tables of
-  contents, embedded LaTeX math, citations, and markdown inside HTML
-  block elements or spoken in options: +escaped_line_breaks,
+  <https://pandoc.org/MANUAL.html#pandocs-markdown>. Pandoc's enhanced
+  version of markdown includes syntax for footnotes, tables, flexible
+  ordered lists, definition lists, fenced code blocks, superscript,
+  subscript, strikeout, title blocks, automatic tables of contents,
+  embedded LaTeX math, citations, and markdown inside HTML block
+  elements or spoken in options: +escaped_line_breaks,
   +header_attributes, +yaml_metadata_block, +auto_identifiers,
   +implicit_header_references, +blank_before_blockquote,
   +fenced_code_blocks, +fenced_code_attributes, +line_blocks,

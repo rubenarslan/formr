@@ -1,7 +1,7 @@
 # Download items from formr
 
 After connecting to formr using
-[`formr_connect()`](http://rubenarslan.github.io/formr/reference/formr_connect.md)
+[`formr_connect()`](https://rubenarslan.github.io/formr/reference/formr_connect.md)
 you can download items using this command. One of survey_name or path
 has to be specified, if both are specified, survey_name is preferred.
 
@@ -20,7 +20,7 @@ formr_items(survey_name = NULL, host = formr_last_host(), path = NULL)
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 - path:

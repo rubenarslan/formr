@@ -1,9 +1,9 @@
 # Processed, aggregated results
 
 This function chains
-[`formr_recognise()`](http://rubenarslan.github.io/formr/reference/formr_recognise.md)
+[`formr_recognise()`](https://rubenarslan.github.io/formr/reference/formr_recognise.md)
 and
-[`formr_aggregate()`](http://rubenarslan.github.io/formr/reference/formr_aggregate.md)
+[`formr_aggregate()`](https://rubenarslan.github.io/formr/reference/formr_aggregate.md)
 in sequence. Useful if you want to post-process raw results before
 aggregating etc.
 

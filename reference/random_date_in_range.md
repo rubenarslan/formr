@@ -1,7 +1,7 @@
 # Random date in range
 
 taken from Dirk Eddelbuettel's answer here
-http://stackoverflow.com/a/14721124/263054
+<https://stackoverflow.com/a/14721124/263054>.
 
 ## Usage
 

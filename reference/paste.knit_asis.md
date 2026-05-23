@@ -1,7 +1,7 @@
 # paste.knit_asis
 
 Helper function for knit_asis objects, useful when e.g.
-[`asis_knit_child()`](http://rubenarslan.github.io/formr/reference/asis_knit_child.md)
+[`asis_knit_child()`](https://rubenarslan.github.io/formr/reference/asis_knit_child.md)
 was used in a loop.
 
 ## Usage

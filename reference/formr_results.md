@@ -1,14 +1,14 @@
 # Download processed, aggregated results from formr
 
 After connecting to formr using
-[`formr_connect()`](http://rubenarslan.github.io/formr/reference/formr_connect.md)
+[`formr_connect()`](https://rubenarslan.github.io/formr/reference/formr_connect.md)
 you can download data and process it. This approach calls the following
 functions in the right sequence:
-[`formr_raw_results()`](http://rubenarslan.github.io/formr/reference/formr_raw_results.md)
-[`formr_items()`](http://rubenarslan.github.io/formr/reference/formr_items.md),
-[`formr_item_displays()`](http://rubenarslan.github.io/formr/reference/formr_item_displays.md)
+[`formr_raw_results()`](https://rubenarslan.github.io/formr/reference/formr_raw_results.md)
+[`formr_items()`](https://rubenarslan.github.io/formr/reference/formr_items.md),
+[`formr_item_displays()`](https://rubenarslan.github.io/formr/reference/formr_item_displays.md)
 and
-[`formr_post_process_results()`](http://rubenarslan.github.io/formr/reference/formr_post_process_results.md).
+[`formr_post_process_results()`](https://rubenarslan.github.io/formr/reference/formr_post_process_results.md).
 So, results are downloaded, metadata on items (labels etc.) is added,
 normal and missing values are labelled. In the end, items like
 bfi_extra_3R are reversed in place (maintaining labels but changing
@@ -30,13 +30,13 @@ formr_results(survey_name, host = formr_last_host(), ...)
 - host:
 
   defaults to
-  [`formr_last_host()`](http://rubenarslan.github.io/formr/reference/formr_last_host.md),
+  [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://formr.org
 
 - ...:
 
   passed to
-  [`formr_post_process_results()`](http://rubenarslan.github.io/formr/reference/formr_post_process_results.md)
+  [`formr_post_process_results()`](https://rubenarslan.github.io/formr/reference/formr_post_process_results.md)
 
 ## Examples
 

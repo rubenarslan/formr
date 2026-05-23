@@ -3,16 +3,20 @@
 ## Authors
 
 - **Ruben Arslan**. Author, maintainer.
+  [](https://orcid.org/0000-0002-6670-5658)
+
+- **Tim B Seidel**. Author, contributor.
 
 ## Citation
 
-Arslan R (2025). *formr: formr survey framework accompanying R package*.
-R package version 0.11.3, <http://rubenarslan.github.io/formr/>.
+Arslan R, Seidel T (2026). *formr: Companion R Package for the 'formr'
+Survey Framework*. R package version 1.0.0,
+<https://rubenarslan.github.io/formr/>.
 
     @Manual{,
-      title = {formr: formr survey framework accompanying R package},
-      author = {Ruben Arslan},
-      year = {2025},
-      note = {R package version 0.11.3},
-      url = {http://rubenarslan.github.io/formr/},
+      title = {formr: Companion R Package for the 'formr' Survey Framework},
+      author = {Ruben Arslan and Tim B Seidel},
+      year = {2026},
+      note = {R package version 1.0.0},
+      url = {https://rubenarslan.github.io/formr/},
     }

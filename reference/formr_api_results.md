@@ -1,34 +1,52 @@
-# Get result from formr
+# Get and Process Run Results
 
-After obtaining a token from formr, use this request
+This is the main function for scientists. It fetches data from the API,
+automatically cleans types (dates/numbers), reverses items, computes
+scales, and joins everything into one dataframe.
 
 ## Usage
 
 ``` r
-formr_api_results(request = NULL, token = NULL)
+formr_api_results(
+  run_name = .formr$run_name,
+  ...,
+  compute_scales = TRUE,
+  join = TRUE,
+  remove_test_sessions = TRUE,
+  verbose = TRUE
+)
 ```
 
 ## Arguments
 
-- request:
+- run_name:
 
-  parameter (see example, API docs)
+  Name of the run. Defaults to `.formr$run_name`, which is set
+  automatically when the code runs inside an OpenCPU session on
+  formr.org – so portable run code can omit this argument.
 
-- token:
+- ...:
 
-  defaults to last used token
+  Filters passed to API (e.g. `surveys = c("Daily", "Intake")`,
+  `session_ids = "..."`).
 
-## Examples
+- compute_scales:
 
-``` r
-if (FALSE) { # \dontrun{
-request <- 
-  list(
-    "run[name]" = 'widgets',
-    "run[sessions]" = 
-      'PJ_nACjFQDEBhx7pMUfZQz3mV-OtetnpEdqT88aiY8eXE4-HegFI7Sri4yifxPXO',
-    "surveys[all_widgets]" = "abode, yourstory, mc_god"
-)
-formr_api_results(request)
-} # }
-```
+  Logical. Should scales (e.g. `extraversion`) be computed from items
+  (e.g. `extra_1`, `extra_2`)?
+
+- join:
+
+  Logical. If TRUE (default), joins all surveys into one wide dataframe.
+
+- remove_test_sessions:
+
+  Logical. Filter out sessions marked as testing?
+
+- verbose:
+
+  Logical. Print progress messages?
+
+## Value
+
+A processed tibble with class `formr_results`.
