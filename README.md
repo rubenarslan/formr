@@ -18,7 +18,7 @@ The formr R package serves as a bridge between the rforms.org survey framework a
 - Dynamic Feedback: Generate immediate, personalized charts and visualizations to show participants their results.
 - Survey Logic: Use shorthand functions to handle complex text logic or conditional display settings within your survey units.
 
-[You can get started right here!](https://rubenarslan.github.io/formr/)
+[You can get started right here!](vignettes/getting-started.Rmd)
 
 ## Installation
 
