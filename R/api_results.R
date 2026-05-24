@@ -3,13 +3,20 @@
 #' Fetches raw results. Advanced users can use this if they want 
 #' completely raw data without any type coercion or processing.
 #'
-#' @param run_name Name of the run.
+#' @param run_name Name of the run. Defaults to `.formr$run_name`,
+#'   which is set automatically when the code runs inside an OpenCPU
+#'   session on rforms.org.
 #' @param surveys Optional character vector of survey names to filter by.
 #' @param session_ids Optional character vector of session IDs to filter by.
 #' @param item_names Optional character vector of item names to filter by.
 #' @param join Logical. If TRUE, joins the results into a single data frame.
 #' @export
-formr_api_fetch_results <- function(run_name, surveys = NULL, session_ids = NULL, item_names = NULL, join = FALSE) {
+formr_api_fetch_results <- function(run_name = .formr$run_name, surveys = NULL, session_ids = NULL, item_names = NULL, join = FALSE) {
+
+	if (is.null(run_name) || !nzchar(run_name)) {
+		stop("run_name is required (no .formr$run_name available -- pass it explicitly when running outside rforms.org)")
+	}
+
 	query <- list()
 	if (!is.null(surveys)) query$surveys <- paste(surveys, collapse = ",")
 	if (!is.null(session_ids)) query$sessions <- paste(session_ids, collapse = ",")

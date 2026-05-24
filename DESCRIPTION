@@ -8,7 +8,7 @@ Description: Serves as a companion toolkit for the 'formr' survey
     assets (surveys, CSS) for local editing; and functions for use
     within 'formr' runs to generate dynamic, personalized feedback
     plots and to simplify survey logic.
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person("Ruben", "Arslan",
         email = "rubenarslan@gmail.com",
