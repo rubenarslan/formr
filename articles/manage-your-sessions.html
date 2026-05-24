@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,11 +120,20 @@ or those marked as test sessions.</p>
 <span><span class="va">test_users</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_sessions.html">formr_api_sessions</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, testing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="pagination">Pagination<a class="anchor" aria-label="anchor" href="#pagination"></a>
+</h3>
+<p>For runs with many sessions, use <code>limit</code> and
+<code>offset</code> to page through results (default limit is 1000).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get sessions 101-200</span></span>
+<span><span class="va">sessions_page</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_sessions.html">formr_api_sessions</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, limit <span class="op">=</span> <span class="fl">100</span>, offset <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="find-specific-participants">Find Specific Participants<a class="anchor" aria-label="anchor" href="#find-specific-participants"></a>
 </h3>
 <p>If you know a participant’s session code (e.g., from a user report),
 you can fetch their details directly to see exactly where they are.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect a specific user</span></span>
 <span><span class="va">user_status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_sessions.html">formr_api_sessions</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, session_codes <span class="op">=</span> <span class="st">"USER_CODE_123"</span><span class="op">)</span></span>
 <span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">user_status</span><span class="op">)</span></span></code></pre></div>
@@ -144,7 +153,7 @@ out to participants.</li>
 <strong>Automated Testing:</strong> Creating dummy users to test
 your study flow.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a random session code for testing</span></span>
 <span><span class="va">new_sessions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_create_session.html">formr_api_create_session</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, testing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -163,7 +172,7 @@ the state of one or more sessions.</p>
 </h3>
 <p>If a bug or logic error causes a user to get stuck at a specific
 point, you can manually move them to a different unit in the run.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Move user to position 10 (e.g., the next survey)</span></span>
 <span><span class="fu"><a href="../reference/formr_api_session_action.html">formr_api_session_action</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, </span>
 <span>                     session_codes <span class="op">=</span> <span class="st">"STUCK_USER_CODE"</span>, </span>
@@ -176,7 +185,7 @@ point, you can manually move them to a different unit in the run.</p>
 <p>If you accidentally performed a self-test with a “real” session code,
 or if a real participant used a test code, you can toggle the testing
 flag. This helps keep your data clean/separate.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mark a real session as a test session</span></span>
 <span><span class="fu"><a href="../reference/formr_api_session_action.html">formr_api_session_action</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, </span>
 <span>                     session_codes <span class="op">=</span> <span class="st">"REAL_USER_CODE"</span>, </span>
@@ -187,7 +196,7 @@ flag. This helps keep your data clean/separate.</p>
 </h3>
 <p>If you want to manually finish an external module for a session, you
 can do it with the “end_external” action.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># End a session</span></span>
 <span><span class="fu"><a href="../reference/formr_api_session_action.html">formr_api_session_action</a></span><span class="op">(</span><span class="st">"my-run-name"</span>, </span>
 <span>                     session_codes <span class="op">=</span> <span class="st">"WITHDRAWN_USER_Code"</span>, </span>

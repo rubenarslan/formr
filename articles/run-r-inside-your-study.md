@@ -1,37 +1,129 @@
 # Running R Inside Your formr Study
 
-You may need to look up a participant’s previous answers, generate a
-unique code, compute a dynamic score mid-run, or show different content
-based on data from other surveys in the same study run.
-
-formr lets you run arbitrary R code **inside your study run** — in
-calculate items, showif conditions, and inline R expressions within
-labels. This vignette covers the patterns you need to do that safely and
-effectively.
-
 If you haven’t already, read the [Getting
 Started](https://rubenarslan.github.io/formr/articles/getting-started.md)
-guide first for the background on authentication.
+guide for authentication basics.
 
-## 1. Authentication Inside a Run
+## 1. Why Run R Inside Your Study?
 
-When your code runs inside a formr study (via OpenCPU on the server),
-you do **not** need to pass credentials. The server injects a temporary
-access token into the hidden `.formr` environment. Just call:
+Running R code inside your formr study has always been possible —
+calculate items, showif conditions, and inline labels can already draw
+on the current participant’s own data. The V1 API **broadens** this to
+data from *other* participants. A calculate item can now ask “what did
+everyone else answer?” and branch, display, or store based on the
+answer. Here is what becomes possible:
+
+- **Adapt in real time.** Check what other participants have answered so
+  far and branch, skip, or compute norms on the fly.
+- **Balance experimental groups automatically.** Count completions per
+  condition and route each new participant to the smaller cell,
+  compensating for differential attrition without manual intervention.
+- **Synchronise participants.** Poll the database for incoming sessions
+  and advance a whole cohort at once — enabling live dyadic tasks, focus
+  groups, or team exercises inside an asynchronous survey framework.
+
+All of these patterns are built on the same small set of tools:
+authentication, context variables, and a single data-fetching function.
+The walkthroughs in §4–§7 show each pattern from start to finish.
+
+These are just starting points — since you can run arbitrary R code, any
+server-side logic that benefits from cross-session data or further API
+functions is fair game.
+
+## 2. Where the API Code Goes
+
+The V1 API is called from **calculate items** — hidden fields that run R
+on the server between surveys. The results are then displayed or acted
+upon by two other mechanisms that already existed in formr.
+
+### A. Calculate Items (API Entry Point)
+
+A calculate item evaluates an R expression when the participant reaches
+it. The last value is stored in the session data and can be used by
+later units (showif conditions, labels, other calculate items). This is
+where
+[`formr_api_authenticate()`](https://rubenarslan.github.io/formr/reference/formr_api_authenticate.md)
+and
+[`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md)
+go.
 
 ``` r
 
-# Inside a formr Run — no credentials needed
+# Inside a calculate item's "value" field:
+formr_api_authenticate()
+
+past <- formr_api_fetch_results(.formr$run_name, item_names = "score", join = TRUE)
+mean(past$score, na.rm = TRUE)
+```
+
+Use calculate items for any logic that needs cross-session data:
+computing norms, generating tokens, processing JSON, or counting
+completions per experimental cell.
+
+### B. Inline R in Labels (Display + Fetch)
+
+Labels render text and plots to the participant. They can call API
+functions just like calculate items —
+[`formr_api_authenticate()`](https://rubenarslan.github.io/formr/reference/formr_api_authenticate.md)
+and
+[`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md)
+work here too.
+
+``` r
+
+# In a note item's label — fetch and display in one step:
+# ```{r, echo=FALSE, results='asis'}
+# formr_api_authenticate()
+# scores <- formr_api_fetch_results(.formr$run_name,
+#   item_names = "engagement", join = TRUE)
+# cat("The sample mean is ", mean(scores$engagement, na.rm = TRUE), ".")
+# ```
+```
+
+Use `echo=FALSE` to hide the code and `results='asis'` to print raw
+output. You can also render `ggplot2` charts this way (see the Group
+Norms walkthrough in §5).
+
+As a style choice, you can separate fetch logic into a calculate item
+and keep labels minimal — this makes studies easier to debug. But
+nothing prevents you from doing both in one label, as the Group Norms
+walkthrough in §5 does.
+
+### C. Inline R in Choices (Display)
+
+Choice labels can also display dynamic content, useful when a dropdown
+menu should reflect live database contents.
+
+``` r
+
+# Inside a mc_multiple choice option's label — fetch and display in one step:
+# ```{r}
+# formr_api_authenticate()
+# posts <- formr_api_fetch_results(.formr$run_name, item_names = "title", join = TRUE)
+# posts$title[1]
+# ```
+```
+
+## 3. Your Toolkit
+
+Every piece of server-side R code needs the same few ingredients.
+
+### Authentication
+
+Inside a run, credentials are injected automatically. Just call:
+
+``` r
+
 formr_api_authenticate()
 ```
 
-The package detects `.formr$access_token` and `.formr$host`
-automatically. The token is valid for the duration of the request and is
-invalidated when the request finishes.
+The package detects `.formr$access_token` and `.formr$host` set by the
+server. The token is valid for the duration of the request and is
+revoked when the request finishes.
 
-## 2. Accessing Run Context
+### Run Context
 
-Two hidden variables are available in every server-side R context:
+Two hidden variables are always available:
 
 | Variable | What it holds |
 |----|----|
@@ -40,16 +132,14 @@ Two hidden variables are available in every server-side R context:
 
 ``` r
 
-# Inside a calculate item or inline R block
 run_name <- .formr$run_name
 user_session <- survey_run_sessions$session
 ```
 
-These are essential for fetching the right data and associating new data
-with the right session even when porting R-Code or Surveys between
-different runs.
+Use these to fetch the right data and associate new data with the right
+session, making your code portable across runs.
 
-## 3. Fetching Data from Other Surveys
+### Fetching Data from Other Surveys
 
 The function for reading data *from within a run* is
 [`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md).
@@ -63,146 +153,60 @@ in important ways:
 | Auto-computes scales | Yes | No |
 | Returns processed data | Yes | No |
 | `item_names` filter | No | Yes |
-| Default `run_name` | `.formr$run_name` | Required (pass explicitly) |
+| Default `run_name` | `.formr$run_name` | `.formr$run_name` |
+| Default `join` | `TRUE` | `FALSE` |
 
 Inside a run, you almost always want
 [`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md)
-— it gives you the raw data without transformations, which is safer when
-you’re going to process it yourself.
+— raw data without transformations is safer when you process it
+yourself.
 
 ``` r
 
-# Fetch specific items from all surveys in the run
-data <- formr_api_fetch_results(
-  .formr$run_name,
-  item_names = c("name", "age", "score"),
-  join = TRUE
-)
+data <- formr_api_fetch_results(.formr$run_name,
+  item_names = c("name", "age", "score"), join = TRUE)
 ```
 
-Use `item_names` to request only the columns you need — this is more
-efficient and keeps the response small.
+Always specify `item_names` to keep requests fast. The result is a
+tibble with one row per session and a column per requested item (plus a
+`session` column). If the same item name appears in multiple surveys,
+the survey name is prefixed.
 
-The result is a tibble with one row per session and a column for each
-requested item (plus a `session` column).
-
-If you use the same item name in different surveys, the survey_name will
-be attached to the item_name.
-
-## 4. The `survey_item[length()]` Pattern
+### The `current()` Shorthand
 
 In showif conditions and value expressions, formr repeats items within a
-session. To get the **current/last** value of a repeated item, use the
-`[length()]` accessor:
+session. The helper `current(x)` returns the **most recent submission**
+of an item — the last element of the vector, which is always the current
+session’s value:
 
 ``` r
 
 # In a showif condition — check the current selection
-menu_survey$choice[length(menu_survey$choice)] == "option_a"
+current(menu_survey$choice) == "option_a"
 
-# In a calculate item value — capture the latest input
-current_input <- my_survey$text_input[length(my_survey$text_input)]
+# In a calculate item — capture the latest input
+current(my_survey$text_input)
 ```
 
-This is a formr convention, not base R behaviour. The
-[`length()`](https://rdrr.io/r/base/length.html) refers to the number of
-times that item has been submitted within the current session.
+This is cleaner than the equivalent base-R `x[length(x)]` pattern and
+makes your intent explicit. See
+[`?current`](https://rubenarslan.github.io/formr/reference/current.md)
+for details.
 
-## 5. Three Ways to Run R Inside a Study
+------------------------------------------------------------------------
 
-### A. Calculate Items
+## 4. Walkthrough: Participant Counter
 
-A calculate item is a hidden field that runs R code on the server when
-the participant reaches it. The result is stored in the session data.
-
-Use calculate items for: - Processing JSON data from previous surveys -
-Computing derived scores mid-run - Generating codes or tokens - Any
-server-side logic that needs to happen between surveys
-
-``` r
-
-# Example: calculate the mean over ALL answers participants have entered into the happy item
-formr_api_authenticate()
-
-past_results <- formr_api_fetch_results(
-  .formr$run_name,
-  item_names = "happy",
-  join = TRUE
-)
-
-mean(past_results$happy, na.rm = TRUE)
-```
-
-The calculate item’s `value` is the R expression to evaluate. The last
-value in the expression is the result.
-
-When your logic produces a complex structure (list, data frame),
-round-trip it through JSON:
-
-``` r
-
-# Store complex data as JSON
-jsonlite::toJSON(my_list, auto_unbox = TRUE)
-
-# Parse it back later
-parsed <- jsonlite::fromJSON(stored_json_string)
-```
-
-### B. Inline R in Labels
-
-You can embed R code in any survey label using inline knitr syntax. This
-is useful for displaying dynamic content:
-
-``` r
-
-# In a note item's label field and our calculate item count:
-# ```{r, echo=FALSE, results='asis'}
-# cat("You have completed ", count, " surveys so far.")
-# ```
-```
-
-The label is processed as an R Markdown chunk. Use `echo=FALSE` to hide
-the code and `results='asis'` to print raw output.
-
-### C. Inline R in Choices
-
-Choice lists can also contain dynamic R code. Each choice option can use
-a [`knitr::knit_child()`](https://rdrr.io/pkg/knitr/man/knit_child.html)
-pattern to generate labels from data.
-
-``` r
-# In a choice option's label (inside the mc_multiple choices JSON):
-# ```{r}
-# choices <- past_results <- formr_api_fetch_results(
-  .formr$run_name,
-  item_names = "choice",
-  join = TRUE
-)
-# option_index <- 1
-# choices$choice[option_index]
-# ```
-```
-
-This is the most advanced pattern — it lets you build dynamic menus from
-fetched data.
-
-## 6. Complete Walkthrough: Participant Counter
-
-Here is a minimal but complete example that demonstrates the core
-patterns.
+The simplest complete example: greet each participant by their number in
+the study, using cross-session data.
 
 ### Run Structure
 
-| Position | Type | Name | What it does |
-|----|----|----|----|
-| 10 | Survey | `register` | Collects participant’s name |
-| 20 | Calculate | `participant_count` | Fetches all registrations, counts them |
-| 30 | Survey | `welcome` | Shows “You are participant \#N” |
-
-### Survey: `register`
-
-A single text item asking for the participant’s name, plus a submit
-button.
+| Position | Type      | Name                | What it does                    |
+|----------|-----------|---------------------|---------------------------------|
+| 10       | Survey    | `register`          | Collects participant’s name     |
+| 20       | Calculate | `participant_count` | Counts all registrations so far |
+| 30       | Survey    | `welcome`           | Shows “You are participant \#N” |
 
 ### Calculate: `participant_count`
 
@@ -210,11 +214,7 @@ button.
 
 formr_api_authenticate()
 
-past <- formr_api_fetch_results(
-  .formr$run_name,
-  item_names = "name",
-  join = TRUE
-)
+past <- formr_api_fetch_results(.formr$run_name, item_names = "name", join = TRUE)
 
 if (nrow(past) > 0) nrow(past) + 1 else 1
 ```
@@ -226,24 +226,198 @@ A note item with this label:
 ``` r
 
 # ```{r, echo=FALSE, results='asis'}
-# library(jsonlite)
-# count <- participant_count
-# cat("## Welcome, Participant #", count, "\n\n", sep = "")
+# cat("## Welcome, Participant #", participant_count, "\n\n", sep = "")
 # cat("Please proceed with the study.")
 # ```
 ```
 
-When the participant reaches this screen, they see “Welcome, Participant
-\#3” (or whatever number they are).
+## 5. Walkthrough: Real-Time Group Norms
 
-## 7. Patterns for Robust Code
+**Problem:** A single score tells a participant nothing. Showing how
+they compare to the current sample (descriptive norms) increases
+engagement and provides real value.
 
-Code running inside a formr study runs on the server. These patterns
-will save you debugging time:
+**Research context example:** Occupational burnout surveys where
+participants see their score plotted against the organisational
+distribution in real time.
 
-**Defensive JSON parsing.** Always wrap
-[`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
-in a `tryCatch` when reading data that may be malformed or missing:
+### Run Structure
+
+| Position | Type | Name | What it does |
+|----|----|----|----|
+| 10 | Survey | `burnout` | Contains a regular item called `engagement` |
+| 20 | Survey | `feedback` | Note item whose label fetches, plots, and displays |
+
+The `burnout` survey has a regular item called `engagement` where the
+participant enters their score. The feedback label does everything in
+one step — no separate calculate item needed, no data stored between
+units.
+
+### Survey: `feedback` (label)
+
+A note item whose label fetches all engagement scores via the API and
+renders a ggplot comparing the current participant against the sample
+distribution:
+
+``` r
+
+# ```{r, echo=FALSE, results='asis', fig.width=6, fig.height=3}
+# library(ggplot2)
+# formr_api_authenticate()
+#
+# # Fetch all participants' engagement scores
+# all_scores <- formr_api_fetch_results(.formr$run_name,
+#   item_names = "engagement", join = TRUE)
+#
+# # Current participant's own score — local, no API needed
+# my_engagement <- current(burnout$engagement)
+#
+# ggplot(all_scores, aes(x = engagement)) +
+#   geom_density(fill = "grey70") +
+#   geom_vline(xintercept = my_engagement, colour = "red", linewidth = 1) +
+#   labs(
+#     title = "Your engagement score vs. the organisation",
+#     subtitle = paste0("Sample: ", nrow(all_scores), " colleagues"),
+#     x = "Engagement", y = ""
+#   ) +
+#   theme_minimal()
+# ```
+```
+
+Note two patterns worth reusing:
+
+1.  The current participant’s own score (`current(burnout$engagement)`)
+    is available locally from the session — no API roundtrip needed.
+2.  The API call (`formr_api_fetch_results`) only fetches what the label
+    cannot already see: *other* participants’ data. This is one
+    roundtrip, one OpenCPU session, and nothing stored in the database
+    beyond what the `burnout` survey already saves.
+
+------------------------------------------------------------------------
+
+## 6. Walkthrough: Dynamic Group Balancing
+
+**Problem:** In field experiments, attrition often differs between
+conditions. Static random assignment at the start produces unequal cell
+sizes by the end. Manually monitoring and rebalancing is tedious and
+error-prone.
+
+**Solution:** Count completed sessions per condition on every new entry
+and route the participant to the currently smaller group.
+
+### Run Structure
+
+| Position | Type | Name | What it does |
+|----|----|----|----|
+| 10 | Survey | `intake` | Baseline demographics |
+| 20 | Calculate | `pick_condition` | Fetches prior completions, picks smaller group |
+| 30 | Survey | `intervention_a` | Treatment module A (shown if condition == “A”) |
+| 40 | Survey | `intervention_b` | Treatment module B (shown if condition == “B”) |
+
+### Calculate: `pick_condition`
+
+``` r
+
+formr_api_authenticate()
+
+# Fetch the condition assignments from all completed sessions
+past <- formr_api_fetch_results(.formr$run_name,
+  item_names = "assigned_condition", join = TRUE)
+
+count_a <- sum(past$assigned_condition == "A", na.rm = TRUE)
+count_b <- sum(past$assigned_condition == "B", na.rm = TRUE)
+
+# Assign to the smaller group; break ties randomly
+if (count_a <= count_b) "A" else "B"
+```
+
+### Showif conditions
+
+Position 30 (`intervention_a`) showif:
+
+    current(pick_condition) == "A"
+
+Position 40 (`intervention_b`) showif:
+
+    current(pick_condition) == "B"
+
+------------------------------------------------------------------------
+
+## 7. Walkthrough: Synchronising with a Waiting Room
+
+**Problem:** Live dyadic tasks, focus groups, and team exercises require
+multiple participants to start a module simultaneously. Asynchronous
+survey frameworks let everyone progress at their own pace.
+
+**Solution:** Trap early arrivals in a refresh loop, then advance the
+whole cohort at once via the API.
+
+### Run Structure
+
+| Position | Type | Name | What it does |
+|----|----|----|----|
+| 10 | Survey | `lobby` | Intake survey |
+| 20 | Survey | `waiting_room` | Auto-refreshing hold page (submit: 2000 ms) |
+| 30 | SkipBackward | `loop_back` | Returns to position 20 |
+| 40 | Survey | `dyadic_task` | The live interaction — only visible after release |
+
+The waiting room survey has a single hidden submit button configured
+with `submit: 2000` in its survey settings, causing it to re-submit
+every 2 seconds. A SkipBackward unit (position 30) immediately sends the
+session back to position 20, creating a continuous loop.
+
+An **administrator trigger** (run manually or on a cron schedule) polls
+for queued sessions and releases them:
+
+``` r
+
+# Admin trigger — run outside the study, on your local machine or a cron job
+formr_api_authenticate(host = "https://api.rforms.org", account = "admin")
+
+# Find sessions currently at the waiting room (position 20)
+queued <- formr_api_sessions("my-run-name", active = TRUE)
+waiting <- queued$session[queued$position == 20]
+
+if (length(waiting) >= 2) {
+  formr_api_session_action("my-run-name",
+    session_codes = waiting, action = "move_to_position", position = 40)
+  message("Released ", length(waiting), " participants to the dyadic task.")
+}
+```
+
+After release, sessions land directly on position 40 (the `dyadic_task`
+survey), bypassing the SkipBackward loop.
+
+### Participant experience
+
+1.  Complete the lobby survey.
+2.  Land on the waiting room — the page auto-re-submits every 2 s,
+    keeping them in the loop.
+3.  When the admin trigger finds enough participants, it moves them past
+    the SkipBackward to the live task.
+
+------------------------------------------------------------------------
+
+## 8. Patterns for Robust Code
+
+The walkthroughs above keep code minimal for clarity. When you adapt
+them to a real study, a few defensive habits will save you debugging
+time — code running inside formr runs on the server and a single
+unhandled error can break a participant’s flow.
+
+**Handling JSON data.** formr handles JSON in three ways:
+
+1.  **Automatic:** When a calculate item returns a named list (like
+    `list(my_score = ..., sample_n = ...)`), formr serialises it to JSON
+    and stores it. You never write `toJSON()` for this — it just works.
+2.  **Persistence:** For complex state that must survive across OpenCPU
+    requests (e.g., a balancing matrix or network adjacency list), use
+    `jsonlite::toJSON(x, auto_unbox = TRUE)` to store it explicitly as a
+    session variable, and
+    [`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+    to read it back in a later calculate item.
+3.  **Parsing responses:** API columns sometimes contain nested JSON
+    (e.g., multi-select choices). Always wrap parsing in a `tryCatch`:
 
 ``` r
 
@@ -263,7 +437,6 @@ that it has rows:
 data <- formr_api_fetch_results(.formr$run_name, item_names = "score", join = TRUE)
 
 if (nrow(data) == 0 || all(is.na(data$score))) {
-  # fallback
   result <- 0
 } else {
   result <- max(data$score, na.rm = TRUE)
@@ -288,3 +461,8 @@ data.
   and
   [`?formr_api_authenticate`](https://rubenarslan.github.io/formr/reference/formr_api_authenticate.md)
   help pages have the full parameter details.
+- See
+  [`?current`](https://rubenarslan.github.io/formr/reference/current.md),
+  [`?first`](https://rubenarslan.github.io/formr/reference/first.md),
+  and [`?last`](https://rubenarslan.github.io/formr/reference/last.md)
+  for the other shorthand helpers available inside a run.

@@ -77,10 +77,8 @@ project folder.
 ``` r
 
 # Upload a local Excel file
-formr_api_upload_survey(
-  file_path = "surveys/my_new_survey.xlsx", 
-  survey_name = "my_new_survey" # Optional: Defaults to filename if omitted
-)
+# The survey name on the server is derived from the filename
+formr_api_upload_survey(file_path = "surveys/my_new_survey.xlsx")
 ```
 
 ### Google Sheets

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,6 +198,11 @@ column <code>extra</code>.</p>
 <span><span class="va">df_scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_aggregate.html">formr_api_aggregate</a></span><span class="op">(</span>results <span class="op">=</span> <span class="va">df_reversed</span>, item_list <span class="op">=</span> <span class="va">metadata</span><span class="op">)</span></span></code></pre></div>
 <p><em>Result:</em> A new column <code>extra</code> is added to the
 dataframe containing the mean of the items.</p>
+<p>By default, at least 2 items are required to form a scale. You can
+override this with <code>min_items</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Allow single-item "scales"</span></span>
+<span><span class="va">df_scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_aggregate.html">formr_api_aggregate</a></span><span class="op">(</span>results <span class="op">=</span> <span class="va">df_reversed</span>, item_list <span class="op">=</span> <span class="va">metadata</span>, min_items <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -207,7 +212,7 @@ dataframe containing the mean of the items.</p>
 <p>Here is a complete, reproducible snippet for a typical analysis
 script. Note how <code>formr_api_results</code> simplifies the process
 significantly compared to older versions of the package.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>

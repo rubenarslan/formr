@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -158,10 +158,8 @@ want to update just one component of a study without syncing the entire
 project folder.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Upload a local Excel file</span></span>
-<span><span class="fu"><a href="../reference/formr_api_upload_survey.html">formr_api_upload_survey</a></span><span class="op">(</span></span>
-<span>  file_path <span class="op">=</span> <span class="st">"surveys/my_new_survey.xlsx"</span>, </span>
-<span>  survey_name <span class="op">=</span> <span class="st">"my_new_survey"</span> <span class="co"># Optional: Defaults to filename if omitted</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># The survey name on the server is derived from the filename</span></span>
+<span><span class="fu"><a href="../reference/formr_api_upload_survey.html">formr_api_upload_survey</a></span><span class="op">(</span>file_path <span class="op">=</span> <span class="st">"surveys/my_new_survey.xlsx"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="google-sheets">Google Sheets<a class="anchor" aria-label="anchor" href="#google-sheets"></a>
 </h3>

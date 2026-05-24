@@ -30,7 +30,8 @@ experience.
 - Survey Logic: Use shorthand functions to handle complex text logic or
   conditional display settings within your survey units.
 
-[You can get started right here!](https://rubenarslan.github.io/formr/)
+[You can get started right
+here!](https://rubenarslan.github.io/formr/articles/getting-started.html)
 
 ## Installation
 

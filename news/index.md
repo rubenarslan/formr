@@ -1,5 +1,28 @@
 # Changelog
 
+## formr 1.1.0
+
+- **[`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md)
+  now defaults `run_name` to `.formr$run_name`**, matching
+  [`formr_api_results()`](https://rubenarslan.github.io/formr/reference/formr_api_results.md)
+  and
+  [`formr_overview_sankey()`](https://rubenarslan.github.io/formr/reference/formr_overview_sankey.md).
+  Code running inside an OpenCPU session on rforms.org can omit the
+  argument; outside, the function errors with a clear message if the run
+  name is unset.
+
+- **Vignette rework: `run-r-inside-your-study.Rmd`** gains end-to-end
+  walkthroughs for the v1 API’s cross-session data path – a participant
+  counter, real-time group norms, dynamic group balancing, and a
+  waiting-room synchronisation pattern. Smaller clarifications in the
+  fetch-and-process-results, manage-your-sessions, and
+  manage-your-surveys vignettes.
+
+- **`docs/` is no longer tracked.** Deployment to the pkgdown site is
+  already handled by `.github/workflows/pkgdown.yaml` pushing to
+  `gh-pages`, so the in-tree mirror was redundant and went stale on
+  every PR.
+
 ## formr 1.0.0
 
 Initial CRAN release. Released alongside rforms.org server v1.0.0. Major

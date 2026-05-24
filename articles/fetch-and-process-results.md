@@ -115,6 +115,15 @@ df_scored <- formr_api_aggregate(results = df_reversed, item_list = metadata)
 *Result:* A new column `extra` is added to the dataframe containing the
 mean of the items.
 
+By default, at least 2 items are required to form a scale. You can
+override this with `min_items`:
+
+``` r
+
+# Allow single-item "scales"
+df_scored <- formr_api_aggregate(results = df_reversed, item_list = metadata, min_items = 1)
+```
+
 ------------------------------------------------------------------------
 
 ## 4. Full Workflow Example

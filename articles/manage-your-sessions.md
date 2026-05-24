@@ -33,6 +33,17 @@ active_users <- formr_api_sessions("my-run-name", active = TRUE)
 test_users <- formr_api_sessions("my-run-name", testing = TRUE)
 ```
 
+### Pagination
+
+For runs with many sessions, use `limit` and `offset` to page through
+results (default limit is 1000).
+
+``` r
+
+# Get sessions 101-200
+sessions_page <- formr_api_sessions("my-run-name", limit = 100, offset = 100)
+```
+
 ### Find Specific Participants
 
 If you know a participant’s session code (e.g., from a user report), you

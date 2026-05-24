@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,12 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="formr-110">formr 1.1.0<a class="anchor" aria-label="anchor" href="#formr-110"></a></h2>
+<ul><li><p><strong><code><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results()</a></code> now defaults <code>run_name</code> to <code>.formr$run_name</code></strong>, matching <code><a href="../reference/formr_api_results.html">formr_api_results()</a></code> and <code><a href="../reference/formr_overview_sankey.html">formr_overview_sankey()</a></code>. Code running inside an OpenCPU session on rforms.org can omit the argument; outside, the function errors with a clear message if the run name is unset.</p></li>
+<li><p><strong>Vignette rework: <code>run-r-inside-your-study.Rmd</code></strong> gains end-to-end walkthroughs for the v1 API’s cross-session data path – a participant counter, real-time group norms, dynamic group balancing, and a waiting-room synchronisation pattern. Smaller clarifications in the fetch-and-process-results, manage-your-sessions, and manage-your-surveys vignettes.</p></li>
+<li><p><strong><code>docs/</code> is no longer tracked.</strong> Deployment to the pkgdown site is already handled by <code>.github/workflows/pkgdown.yaml</code> pushing to <code>gh-pages</code>, so the in-tree mirror was redundant and went stale on every PR.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="formr-100">formr 1.0.0<a class="anchor" aria-label="anchor" href="#formr-100"></a></h2>
 <p>Initial CRAN release. Released alongside rforms.org server v1.0.0. Major version bump tracks the formr v1 RESTful API surface stabilising — <code>formr_api_*</code> is now the supported entry point for new code; the legacy <code><a href="../reference/formr_results.html">formr_results()</a></code> / <code><a href="../reference/formr_raw_results.html">formr_raw_results()</a></code> (“Classic”) path continues to work but is no longer the recommended starting point in the vignette.</p>
