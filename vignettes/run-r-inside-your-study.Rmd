@@ -59,7 +59,8 @@ The function for reading data *from within a run* is `formr_api_fetch_results()`
 | Auto-computes scales | Yes | No |
 | Returns processed data | Yes | No |
 | `item_names` filter | No | Yes |
-| Default `run_name` | `.formr$run_name` | Required (pass explicitly) |
+| Default `run_name` | `.formr$run_name` | `.formr$run_name` |
+| Default `join` | `TRUE` | `FALSE` |
 
 Inside a run, you almost always want `formr_api_fetch_results()` — it gives you the raw data without transformations, which is safer when you're going to process it yourself.
 
