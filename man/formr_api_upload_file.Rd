@@ -4,12 +4,14 @@
 \alias{formr_api_upload_file}
 \title{Upload File(s) to Run}
 \usage{
-formr_api_upload_file(run_name, path)
+formr_api_upload_file(run_name, path, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run.}
 
 \item{path}{Local path to the file, a vector of paths, or a directory path.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 Invisibly returns a list of server responses.

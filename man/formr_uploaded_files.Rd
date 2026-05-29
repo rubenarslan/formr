@@ -11,12 +11,16 @@ formr_uploaded_files(survey_name, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+A list (parsed JSON) of uploaded-file metadata.
+}
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download uploaded files using this command.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_uploaded_files(survey_name = 'training_diary' )
 }
 }

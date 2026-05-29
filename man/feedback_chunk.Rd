@@ -11,6 +11,9 @@ feedback_chunk(normed_value, chunks)
 
 \item{chunks}{a three or five element long character vector containing the text chunks for feedback}
 }
+\value{
+A length-1 character string: the chunk selected for the interval containing \code{normed_value}.
+}
 \description{
 If you pass in a z-standardised value (x - Mean)/SD,
 and a vector of feedback text chunks, that has either three

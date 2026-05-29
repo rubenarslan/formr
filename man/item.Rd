@@ -11,6 +11,10 @@ item(survey, item_name)
 
 \item{item_name}{item name}
 }
+\value{
+The metadata list for a single item (from a survey variable's attributes),
+or \code{NULL} with a warning if not found.
+}
 \description{
 Shortcut for attributes(survey$item_name)$item. Fails with a warning.
 }

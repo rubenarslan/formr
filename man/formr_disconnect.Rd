@@ -9,11 +9,15 @@ formr_disconnect(host = formr_last_host())
 \arguments{
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+Invisibly \code{TRUE} on a successful logout; called to log out and clear the active session.
+}
 \description{
 Disconnects from formr if connected.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_disconnect()
 }
 }

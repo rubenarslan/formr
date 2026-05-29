@@ -15,6 +15,32 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup}
+library(formr)
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
+```
+
 The `formr` R package is the companion to the [rforms.org](https://rforms.org) survey framework. It allows you to:
 
 1.  **Manage Projects:** Sync surveys and files between your computer and the server.
@@ -25,7 +51,8 @@ The `formr` R package is the companion to the [rforms.org](https://rforms.org) s
 
 You can install the package from GitHub:
 
-```{r, setup, eval = FALSE}
+```{r, install, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 if (!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github("rubenarslan/formr")
 ```
@@ -91,6 +118,7 @@ You can store your credentials securely in your system's keyring so you don't ha
 7.  Run the following code **once** in your R console:
 
 ```{r, store_keys, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 # Store your credentials once
 # This saves them securely in your OS credential store
 formr_store_keys(
@@ -113,6 +141,7 @@ If you plan to use the "Classic" functions (e.g. `formr_results()`, `formr_raw_r
 2.  You will be prompted to enter your email and password (and optionally a 2FA secret) securely.
 
 ```{r, store_keys_classic, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 # Store your email/password under a shorthand name (e.g. "main_account")
 formr_store_keys("main_account")
 ```
@@ -123,13 +152,15 @@ Once your keys are stored, you simply authenticate at the start of your session:
 
 #### 2.1 Thru the API
 
-```{r, auth_local, eval = FALSE}
+```{r, eval = FALSE}
+# Not run: authenticate with your own host/credentials.
 # Automatically finds your stored keys
 formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom API-URL + account name!
+```
 
+```{r auth_local, eval = .formr_vcr}
 # After authentication, you can see which scopes the credential carries:
 formr_api_session()$scope
-#> [1] "run:read run:write survey:read"
 ```
 
 If you call a function whose endpoint needs a scope you don't have, the package surfaces the server's 403 alongside a hint at the bottom pointing at `admin/account#api` — the same place to fix it.
@@ -139,6 +170,7 @@ If you call a function whose endpoint needs a scope you don't have, the package 
 Once stored, you can connect in your scripts using this shorthand:
 
 ```{r, connect_classic, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 # Connect using the stored credentials
 formr_connect("main_account")
 ```
@@ -148,6 +180,7 @@ formr_connect("main_account")
 You can also use the API functions within the R-Code of your actual survey run (e.g., to look up previous results). In this environment, you do not need credentials; the system provides a temporary context. Just run:
 
 ```{r, auth_run, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 # Inside a formr Run, simply call:
 formr_api_authenticate() # The package detects that it's running inside a Run and uses the temporary context provided by the server.
 ```
@@ -162,6 +195,7 @@ The new API allows you to work on your survey structure and files locally and sy
 Learn more about how this can save you time in the [Manage your Projects](manage-your-projects.html) Tutorial.
 
 ```{r, push_pull, eval = FALSE}
+# Not run: needs credentials / a live formr server.
 # Download a project (surveys and files) to your local folder
 formr_api_pull_project("daily_diary")
 
@@ -173,9 +207,12 @@ formr_api_push_project("daily_diary")
 
 The `formr_api_results()` function is the modern way to get data. It automatically recognizes data types, reverses items, and aggregates scales. Learn how it works in the [Fetch & Process Results](fetch-and-process-results.html) Tutorial.
 
-```{r, results, eval = FALSE}
+```{r results, eval = .formr_vcr}
 # Fetch and process
-df <- formr_api_results("daily_diary")
+vcr::use_cassette("formr_api_results_fetch_single", {
+  df <- formr_api_results("test-run", verbose = FALSE)
+})
+class(df)
 ```
 
 ---
@@ -190,6 +227,7 @@ When you run `formr_api_authenticate()`, it provides you with an Access Token.
 
 At the end of your analysis session, you may revoke the token manually:
 
-```{r, logout, eval = FALSE}
+```{r logout, eval = FALSE}
+# Not run: revokes the live token on the server.
 formr_api_logout()
 ```

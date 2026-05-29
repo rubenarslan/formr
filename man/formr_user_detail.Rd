@@ -11,6 +11,9 @@ formr_user_detail(run_name, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+A data.frame (parsed JSON) of detailed per-session progress through the run.
+}
 \description{
 formr collects information about users' progression through the run
 After connecting using \code{\link[=formr_connect]{formr_connect()}}
@@ -18,6 +21,7 @@ you can download a table showing their progression through the run.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_user_detail(run_name = 'different_drills' )
 }

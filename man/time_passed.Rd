@@ -32,6 +32,9 @@ time_passed(
 
 \item{time}{defaults to .formr$last_action_time, a hidden variable that is automatically set by rforms.org}
 }
+\value{
+A length-1 logical: \code{TRUE} if at least the specified duration has elapsed since \code{time}.
+}
 \description{
 checks how much time has passed. You can choose the unit. Implemented via \code{\link[lubridate:dseconds]{lubridate::dseconds()}}, not periods, i.e. a minute has 60 seconds, an hour 60 minutes, a day 24 hours. Months and years are not well-defined durations, but we offer them anyway for convenience.  Returns true or false.
 }

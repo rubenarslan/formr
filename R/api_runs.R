@@ -29,19 +29,20 @@ formr_api_runs <- function() {
 #' with the public link for each.
 #' 
 #' @param name A character vector of names for the new runs (must be unique).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly returns a data frame containing the `name` and `link` of the created runs.
 #' @importFrom dplyr bind_rows
 #' @export
-formr_api_create_run <- function(name) {
-	
+formr_api_create_run <- function(name, verbose = TRUE) {
+
 	# Helper function to create a single run
 	create_single <- function(single_name) {
 		# Endpoint: POST /v1/runs/{name}
 		res <- formr_api_request(paste0("runs/", single_name), method = "POST", api_version = "v1")
-		
+
 		# User-friendly feedback
-		message(sprintf("[SUCCESS] Success! Run '%s' created.", res$name))
-		message(sprintf(" Link: %s", res$link))
+		if (verbose) message(sprintf("Success! Run '%s' created.", res$name))
+		if (verbose) message(sprintf(" Link: %s", res$link))
 		
 		return(res)
 	}
@@ -64,12 +65,13 @@ formr_api_create_run <- function(name) {
 #' @param run_name Name of the run (or a vector of names).
 #' @param settings A list of settings to update (e.g., `list(public = 1, locked = TRUE)`). 
 #'   If NULL, returns the current settings.
-#' @return 
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return
 #'   - If `settings` is NULL: A data.frame/tibble with details for all requested runs.
 #'   - If `settings` is provided: Invisibly returns TRUE on success.
 #' @importFrom dplyr bind_rows mutate
 #' @export
-formr_api_run_settings <- function(run_name, settings = NULL) {
+formr_api_run_settings <- function(run_name, settings = NULL, verbose = TRUE) {
 	
 	# --- Helper function to process a single run ---
 	process_single_run <- function(single_name) {
@@ -92,7 +94,7 @@ formr_api_run_settings <- function(run_name, settings = NULL) {
 		} else {
 			# PATCH: Update settings
 			formr_api_request(paste0("runs/", single_name), method = "PATCH", body = settings, api_version = "v1")
-			message(sprintf("[SUCCESS] Settings updated successfully for run '%s'.", single_name))
+			if (verbose) message(sprintf("Settings updated successfully for run '%s'.", single_name))
 			return(NULL)
 		}
 	}
@@ -122,12 +124,13 @@ formr_api_run_settings <- function(run_name, settings = NULL) {
 #'   If provided, the function uploads this file to the server.
 #' @param file Optional path to save the DOWNLOADED (GET) structure as a .json file.
 #'   This ensures a perfect 1:1 backup of the server configuration.
-#' @return 
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return
 #'   - GET (default): A `formr_run_structure` object (list) for inspection.
 #'   - GET (file provided): Invisibly returns the file path.
 #'   - PUT: Invisibly returns TRUE on success.
 #' @export
-formr_api_run_structure <- function(run_name, structure_json_path = NULL, file = NULL) {
+formr_api_run_structure <- function(run_name, structure_json_path = NULL, file = NULL, verbose = TRUE) {
 	
 	# --- PUT Mode: Import/Upload Structure ---
 	if (!is.null(structure_json_path)) {
@@ -150,7 +153,7 @@ formr_api_run_structure <- function(run_name, structure_json_path = NULL, file =
 			encode = "raw"
 		)
 		
-		message("[SUCCESS] Structure imported successfully.")
+		if (verbose) message("Structure imported successfully.")
 		return(invisible(TRUE))
 	}
 	
@@ -172,7 +175,7 @@ formr_api_run_structure <- function(run_name, structure_json_path = NULL, file =
 		
 		# Write raw content directly to file
 		writeBin(httr::content(response, "raw"), file)
-		message(sprintf("[SUCCESS] Backup saved to: %s", file))
+		if (verbose) message(sprintf("Backup saved to: %s", file))
 		return(invisible(file))
 	}
 	
@@ -190,6 +193,7 @@ formr_api_run_structure <- function(run_name, structure_json_path = NULL, file =
 #' Print method for formr run structure
 #' @param x The object.
 #' @param ... Additional arguments.
+#' @return Invisibly returns `x`; called for its side effect of printing a formatted table of the run's units.
 #' @export
 print.formr_api_run_structure <- function(x, ...) {
 	cat(sprintf(" Run Structure: %s\n", x$name))
@@ -223,6 +227,7 @@ print.formr_api_run_structure <- function(x, ...) {
 #' Convert formr run structure to data.frame
 #' @param x The object.
 #' @param ... Additional arguments.
+#' @return A data.frame with one row per unit and columns `position`, `type`, `description` and `details`.
 #' @export
 as.data.frame.formr_api_run_structure <- function(x, ...) {
 	if (length(x$units) == 0) return(data.frame())
@@ -264,63 +269,61 @@ as.data.frame.formr_api_run_structure <- function(x, ...) {
 #'
 #' @param run_name Name of the run to delete.
 #' @param prompt Logical. If TRUE (default), asks for interactive confirmation.
-#' @return Invisibly returns TRUE on success.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE` (single run) or a named logical vector (multiple
+#'   runs) indicating per-run success; `FALSE` if the user declines the prompt.
 #' @export
-formr_api_delete_run <- function(run_name, prompt = TRUE) {
+formr_api_delete_run <- function(run_name, prompt = TRUE, verbose = TRUE) {
 	
 	if (length(run_name) > 1) {
-		if (prompt) {
-			for (rn in run_name) {
-				cat(sprintf("\n DANGER: You are about to permanently delete the run '%s'.\n", rn))
-			}
-			cat("   This includes ALL structure and attached files.\n")
-			cat("   This action cannot be undone.\n")
+		if (prompt && interactive()) {
+			warning(sprintf(
+				"You are about to permanently delete %d runs (%s). This includes ALL structure and attached files and cannot be undone.",
+				length(run_name), paste(run_name, collapse = ", ")), call. = FALSE, immediate. = TRUE)
 			response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
 			if (tolower(trimws(response)) != "y") {
-				message("[FAILED] Operation cancelled.")
+				message("Operation cancelled.")
 				return(invisible(FALSE))
 			}
 		}
 		results <- vapply(run_name, function(rn) {
 			tryCatch({
 				formr_api_request(endpoint = paste0("runs/", rn), method = "DELETE")
-				message(sprintf("[SUCCESS] Run '%s' deleted successfully.", rn))
+				if (verbose) message(sprintf("Run '%s' deleted.", rn))
 				TRUE
 			}, error = function(e) {
-				message(sprintf("[FAILED] Run '%s': %s", rn, e$message))
+				warning(sprintf("Run '%s': %s", rn, e$message), call. = FALSE)
 				FALSE
 			})
 		}, logical(1))
 		successes <- sum(results)
 		failures <- sum(!results)
-		msg <- sprintf("[DONE] %d run(s) deleted, %d failed.", successes, failures)
 		if (failures > 0) {
-			warning(msg, call. = FALSE)
-		} else {
-			message(msg)
+			warning(sprintf("%d run(s) deleted, %d failed.", successes, failures), call. = FALSE)
+		} else if (verbose) {
+			message(sprintf("%d run(s) deleted.", successes))
 		}
 		return(invisible(results))
 	}
 	
-	if (prompt) {
-		cat(sprintf("\n DANGER: You are about to permanently delete the run '%s'.\n", run_name))
-		cat("   This includes ALL structure and attached files.\n")
-		cat("   This action cannot be undone.\n")
-		
+	if (prompt && interactive()) {
+		warning(sprintf(
+			"You are about to permanently delete the run '%s'. This includes ALL structure and attached files and cannot be undone.",
+			run_name), call. = FALSE, immediate. = TRUE)
 		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
 		if (tolower(trimws(response)) != "y") {
-			message("[FAILED] Operation cancelled.")
+			message("Operation cancelled.")
 			return(invisible(FALSE))
 		}
 	}
-	
+
 	tryCatch({
 		# DELETE /runs/{run_name}
 		formr_api_request(
-			endpoint = paste0("runs/", run_name), 
+			endpoint = paste0("runs/", run_name),
 			method = "DELETE"
 		)
-		message(sprintf("[SUCCESS] Run '%s' deleted successfully.", run_name))
+		if (verbose) message(sprintf("Run '%s' deleted.", run_name))
 		return(invisible(TRUE))
 		
 	}, error = function(e) {

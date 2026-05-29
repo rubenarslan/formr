@@ -9,6 +9,9 @@ formr_knit(text)
 \arguments{
 \item{text}{rmarkdown that will be knit}
 }
+\value{
+A length-1 character string of knitted markdown.
+}
 \description{
 Render text
 }

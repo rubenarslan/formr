@@ -1,0 +1,84 @@
+http_interactions:
+- request:
+    method: POST
+    uri: http://formr-host-redacted/v1/runs/test-run/files
+  response:
+    status: 201
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '138'
+      connection: close
+      content-type: application/json
+    body:
+      string: '{"messages":["The file \"test_upload.txt\" was successfully uploaded
+        to assets\/tmp\/admin\/v4eCM-ns0ZuBlhhBMf-t\/test_upload.txt."],"file":"test_upload.txt"}'
+  recorded_at: 2026-02-02 18:05:26
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs/test-run/files
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '177'
+      connection: close
+      content-type: application/json
+    body:
+      string: '[{"id":309,"name":"test_upload.txt","path":"assets\/tmp\/admin\/v4eCM-ns0ZuBlhhBMf-t\/test_upload.txt","url":"http:\/\/localhost\/assets\/tmp\/admin\/v4eCM-ns0ZuBlhhBMf-t\/test_upload.txt?v=1770055526","created":"2026-02-02
+        19:05:26","modified":null}]'
+  recorded_at: 2026-02-02 18:05:26
+- request:
+    method: DELETE
+    uri: http://formr-host-redacted/v1/runs/test-run/files/test_upload.txt
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '2'
+      connection: close
+      content-type: application/json
+    body:
+      string: '[]'
+  recorded_at: 2026-02-02 18:05:26
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs/test-run/files
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '2'
+      connection: close
+      content-type: application/json
+    body:
+      string: '[]'
+  recorded_at: 2026-02-02 18:05:26
+recorded_with: VCR-vcr/2.1.0

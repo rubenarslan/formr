@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+A data.frame with one row per unit and columns \code{position}, \code{type}, \code{description} and \code{details}.
+}
 \description{
 Convert formr run structure to data.frame
 }

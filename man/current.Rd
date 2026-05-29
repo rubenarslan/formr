@@ -9,6 +9,9 @@ current(x)
 \arguments{
 \item{x}{vector of which you want the current element}
 }
+\value{
+A length-1 vector (the last element of \code{x}), keeping \code{x}'s type.
+}
 \description{
 Just a simple shorthand to get the current element (in a formr df,
 where the last element is always the one from the current session).

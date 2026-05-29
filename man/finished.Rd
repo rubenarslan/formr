@@ -11,6 +11,10 @@ finished(survey, variable = "ended")
 
 \item{variable}{which variable should be filled out, defaults to "ended"}
 }
+\value{
+An integer: the count of non-missing values in \code{survey[[variable]]}
+(0 when the survey or column is empty).
+}
 \description{
 Just a simple to check how many times a survey (e.g. diary)
 was finished. It defaults to checking the "ended" variable for this.

@@ -4,7 +4,12 @@
 \alias{formr_api_run_structure}
 \title{Get or Update Run Structure (Run Units)}
 \usage{
-formr_api_run_structure(run_name, structure_json_path = NULL, file = NULL)
+formr_api_run_structure(
+  run_name,
+  structure_json_path = NULL,
+  file = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{run_name}{Name of the run.}
@@ -14,6 +19,8 @@ If provided, the function uploads this file to the server.}
 
 \item{file}{Optional path to save the DOWNLOADED (GET) structure as a .json file.
 This ensures a perfect 1:1 backup of the server configuration.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 \itemize{

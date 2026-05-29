@@ -10,7 +10,8 @@ formr_api_unit_sessions(
   testing = NULL,
   since = NULL,
   limit = 1000,
-  offset = 0
+  offset = 0,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ incremental polling.}
 \item{limit}{Pagination limit (default 1000, max 10000).}
 
 \item{offset}{Pagination offset (default 0).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 A tidy tibble with columns: \code{unit_session_id}, \code{session},

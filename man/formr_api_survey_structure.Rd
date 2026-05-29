@@ -13,6 +13,9 @@ formr_api_survey_structure(survey_name, format = "json", file_path = NULL)
 
 \item{file_path}{Optional. Required if format is "xlsx".}
 }
+\value{
+In JSON mode (the default) a tibble of the survey's items; in \code{xlsx} mode invisibly the \code{file_path} written.
+}
 \description{
 Retrieves the item table for a survey. Can return a tibble (JSON) or download
 the original Excel file (XLSX).

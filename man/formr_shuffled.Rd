@@ -11,6 +11,9 @@ formr_shuffled(run_name, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+A data.frame (parsed JSON) of random group assignments keyed by session.
+}
 \description{
 formr has a specific module for randomisation.
 After connecting using \code{\link[=formr_connect]{formr_connect()}}
@@ -18,6 +21,7 @@ you can download the assigned random groups and merge them with your data.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_shuffled(run_name = 'different_drills' )
 }

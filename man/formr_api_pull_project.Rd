@@ -5,14 +5,22 @@
 \title{Pull Project from Server
 Scaffolds folder structure if missing, then overwrites local files with Server state.}
 \usage{
-formr_api_pull_project(run_name, dir = ".", prompt = TRUE)
+formr_api_pull_project(run_name, dir = NULL, prompt = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run.}
 
-\item{dir}{Local directory (default ".").}
+\item{dir}{Local directory to scaffold and write into. Defaults to
+\code{\link[=formr_default_dir]{formr_default_dir()}}; set that (or pass \code{dir}) since formr never writes to
+the working directory by default.}
 
-\item{prompt}{Logical. If TRUE (default), asks for confirmation before overwriting (unless dir is empty).}
+\item{prompt}{Logical. If TRUE (default), asks for confirmation before
+overwriting when run interactively (unless \code{dir} is empty).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{NULL} on success (or \code{FALSE} if the user declines the overwrite prompt); called for its side effect of scaffolding \code{dir} and writing the run's structure, settings, surveys and files from the server.
 }
 \description{
 Pull Project from Server

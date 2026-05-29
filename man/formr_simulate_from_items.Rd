@@ -11,6 +11,10 @@ formr_simulate_from_items(item_list, n = 300)
 
 \item{n}{defaults to 300}
 }
+\value{
+A data.frame of simulated survey data (columns \code{id}, \code{created}, \code{modified},
+\code{ended}, plus sampled values for each item).
+}
 \description{
 Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to sample data from the possible choices.
@@ -20,6 +24,7 @@ Does not yet handle dates, times, text, locations, colors
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 sim = formr_simulate_from_items(item_list = formr_items('training_diary'), n = 100)
 summary(lm(pushups ~ pullups, data = sim))

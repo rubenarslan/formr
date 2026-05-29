@@ -9,6 +9,9 @@ next_day(date = NULL)
 \arguments{
 \item{date}{defaults to .formr$last_action_date, a hidden variable that is automatically set by rforms.org. Will be coerced to POSIXct.}
 }
+\value{
+A POSIXct: midnight at the start of the day after \code{date}.
+}
 \description{
 a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 }

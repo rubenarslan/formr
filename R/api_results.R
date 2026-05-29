@@ -10,6 +10,7 @@
 #' @param session_ids Optional character vector of session IDs to filter by.
 #' @param item_names Optional character vector of item names to filter by.
 #' @param join Logical. If TRUE, joins the results into a single data frame.
+#' @return A tibble of survey results, or (when `join = FALSE`) a named list of tibbles, one per survey.
 #' @export
 formr_api_fetch_results <- function(run_name = .formr$run_name, surveys = NULL, session_ids = NULL, item_names = NULL, join = FALSE) {
 
@@ -25,7 +26,7 @@ formr_api_fetch_results <- function(run_name = .formr$run_name, surveys = NULL, 
 	res <- formr_api_request(endpoint = paste0("runs/", run_name, "/results"), query = query)
 	
 	if (length(res) == 0) {
-		message("[INFO] No results found.")
+		message("No results found.")
 		return(dplyr::tibble(session = character()))
 	}
 	
@@ -228,6 +229,7 @@ formr_api_results <- function(run_name = .formr$run_name,
 #' Apply Type Definitions and Labels
 #' @param item_list A data frame containing item metadata.
 #' @param results A data frame containing the raw results.
+#' @return The results data.frame with item types applied: POSIXct timestamps and choice items as `haven::labelled` vectors.
 #' @export
 formr_api_recognise <- function(item_list, results) {
 	if (is.null(results) || nrow(results) == 0) return(results)
@@ -329,6 +331,7 @@ formr_api_recognise <- function(item_list, results) {
 #' 
 #' @param results A data frame containing the results.
 #' @param item_list A data frame containing item metadata.
+#' @return The results data.frame with reverse-keyed items (those ending in `R`) flipped and their value labels remapped.
 #' @export
 formr_api_reverse <- function(results, item_list) {
 	if (is.null(item_list)) return(results)
@@ -408,6 +411,7 @@ formr_api_reverse <- function(results, item_list) {
 #' @param results A data frame/tibble containing the run results.
 #' @param item_list A data frame containing item metadata (names, types, choices).
 #' @param min_items Minimum number of valid items required to calculate a mean (default 2).
+#' @return The results data.frame with one added numeric column per scale (the row mean of its items); scale reliability stored in attributes.
 #' @importFrom stats var
 #' @export
 formr_api_aggregate <- function(results, item_list, min_items = 2) {
@@ -533,6 +537,7 @@ formr_api_aggregate <- function(results, item_list, min_items = 2) {
 #' 
 #' @param object A `formr_results` object.
 #' @param ... Additional arguments passed to summary (ignored).
+#' @return Invisibly `NULL`; called for its side effect of printing the processing audit trail.
 #' @export
 summary.formr_results <- function(object, ...) {
 	history <- attr(object, "processing_history")

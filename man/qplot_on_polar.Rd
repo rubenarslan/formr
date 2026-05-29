@@ -13,6 +13,9 @@ qplot_on_polar(normed_data, ylab = "Your value", title = "")
 
 \item{title}{Plot title}
 }
+\value{
+A \code{ggplot} object drawn in polar coordinates.
+}
 \description{
 Pass in a data.frame with z-standardised values (x - Mean)/SD,
 and variable names, get a bar chart. Getting your data.frame into this shape

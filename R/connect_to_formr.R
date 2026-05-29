@@ -11,9 +11,12 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' @param password your password
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param keyring a shorthand for the account you're using
+#' @return Invisibly `TRUE` on success; called for its side effect of establishing
+#'   an authenticated cookie session with the formr server (stored in httr's cookie jar).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(keyring = "formr_diary_study_account" )
 #' }
 formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(), keyring = NULL) {
@@ -100,14 +103,64 @@ formr_last_host <- local({
 })
 
 
+#' Get or set the default directory for downloads and backups
+#'
+#' formr's file-writing functions (e.g. [formr_backup_study()],
+#' [formr_api_backup_run()], [formr_api_pull_project()]) never write to your
+#' working directory by default. Instead they default their destination to the
+#' value stored here, which is unset (`NULL`) until you choose one — so nothing
+#' is ever written until you opt in. Call this function with a path to set a
+#' session-wide default, or without arguments to read the current value. The
+#' path is held in memory for the current R session only; nothing is written to
+#' disk to persist it.
+#'
+#' @param dir a single directory path to use as the default. If `NULL` (the
+#'   default) the stored value is returned unchanged. The directory itself is
+#'   created on first write if it does not yet exist.
+#' @return The current default directory as a length-1 character string, or
+#'   `NULL` when none has been set.
+#' @export
+#' @examples
+#' formr_default_dir(tempdir())
+#' formr_default_dir()
+formr_default_dir <- local({
+	default_dir <- NULL
+	function(dir = NULL) {
+		if (!is.null(dir)) {
+			if (!is.character(dir) || length(dir) != 1L) {
+				stop("`dir` must be a single directory path.")
+			}
+			default_dir <<- dir
+		}
+		default_dir
+	}
+})
+
+# internal: resolve a write destination from the session default, or stop with
+# a helpful message. Used so writing functions never default to the working
+# directory (CRAN policy: no writing to the user's filespace by default).
+.formr_default_or_stop <- function(arg = "save_path") {
+	base <- formr_default_dir()
+	if (is.null(base)) {
+		stop(sprintf(paste0(
+			"No `%s` given and no default directory set. Pass `%s = ` ",
+			"explicitly (e.g. tempdir()) or call formr_default_dir('your/path') first."),
+			arg, arg), call. = FALSE)
+	}
+	base
+}
+
+
 #' Disconnect from formr
 #'
 #' Disconnects from formr if connected.
 #'
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return Invisibly `TRUE` on a successful logout; called to log out and clear the active session.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_disconnect()
 #' }
 
@@ -126,9 +179,11 @@ formr_disconnect = function(host = formr_last_host()) {
 #'
 #' @param run_name case-sensitive name of a run your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A list (parsed JSON) describing the run structure (its `units`).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_run_structure(run_name = 'training_diary' )
 #' }
 formr_run_structure = function(run_name, host = formr_last_host()) {
@@ -145,15 +200,22 @@ formr_run_structure = function(run_name, host = formr_last_host()) {
 #' Backup a study by downloading all surveys, results, item displays, run shuffle, user overview and user details. This function will save the data in a folder named after the study.
 #'
 #' @param study_name case-sensitive name of a study your account owns
-#' @param save_path path to save the study data, defaults to the study name
+#' @param save_path directory to write the backup into. Defaults to a sub-folder
+#'   named after the study inside [formr_default_dir()]; set that (or pass
+#'   `save_path`) since formr never writes to the working directory by default.
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param overwrite should existing files be overwritten?
+#' @return Invisibly `NULL`; called for its side effect of downloading a whole study
+#'   (run structure, surveys, files and results) into `save_path`.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_default_dir(tempdir())
 #' formr_backup_study(study_name = 'training_diary' )
 #' }
-formr_backup_study = function(study_name, save_path = study_name, host = formr_last_host(), overwrite = FALSE) {
+formr_backup_study = function(study_name, save_path = NULL, host = formr_last_host(), overwrite = FALSE) {
+  if (is.null(save_path)) save_path <- file.path(.formr_default_or_stop("save_path"), study_name)
   run_structure = formr_run_structure(study_name, host)
 
   if(file.exists(save_path) && !overwrite) {
@@ -207,14 +269,20 @@ formr_backup_study = function(study_name, save_path = study_name, host = formr_l
 #' @param survey_names case-sensitive names of surveys your account owns
 #' @param surveys a list of survey data (from a run structure), optional
 #' @param overwrite should existing files be overwritten?
-#' @param save_path path to save the study data, defaults to the study name 
+#' @param save_path directory to write the surveys into. Defaults to
+#'   [formr_default_dir()]; set that (or pass `save_path`) since formr never
+#'   writes to the working directory by default.
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return Invisibly `NULL`; called for its side effect of downloading surveys
+#'   (items, results, item displays and files) into `save_path`.
 #' @export
 #' @examples
 #' \dontrun{
-#' formr_backup_surveys(survey_names = 'training_diary', save_path = 'surveys')
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_backup_surveys(survey_names = 'training_diary', save_path = file.path(tempdir(), 'surveys'))
 #' }
-formr_backup_surveys = function(survey_names, surveys = list(), save_path = "./", overwrite = FALSE, host = formr_last_host()) {
+formr_backup_surveys = function(survey_names, surveys = list(), save_path = NULL, overwrite = FALSE, host = formr_last_host()) {
+  if (is.null(save_path)) save_path <- .formr_default_or_stop("save_path")
   # Store all survey item lists/settings
   for (survey_name in survey_names) {
     dir.create(paste0(save_path, "/", survey_name), showWarnings = FALSE)
@@ -262,9 +330,11 @@ formr_backup_surveys = function(survey_names, surveys = list(), save_path = "./"
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param ... passed to [formr_post_process_results()]
+#' @return A tibble of processed, aggregated survey results (the output of [formr_post_process_results()]).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_results(survey_name = 'training_diary' )
 #' }
 
@@ -291,6 +361,8 @@ formr_results = function(survey_name, host = formr_last_host(), ...) {
 #' @param item_displays an item display table, necessary to tag missings
 #' @param tag_missings should missings that result from an item not being shown be distinguished from missings due to skipped questions?
 #' @param remove_test_sessions by default, formr removes results resulting from test session (animal names and null session codes)
+#' @return A data.frame/tibble with recognised types, reverse-keyed items flipped,
+#'   scales aggregated, and missing values tagged.
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -404,9 +476,11 @@ formr_label_missings <- function(results, item_displays, tag_missings = TRUE) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return The survey's results before processing: a data.frame (or the raw parsed list).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_raw_results(survey_name = 'training_diary' )
 #' }
 
@@ -458,9 +532,11 @@ formr_raw_results = function(survey_name, host = formr_last_host()) {
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
 #' @param path path to local JSON copy of the item table
+#' @return A list of class `formr_item_list` (item metadata per item, named by item name).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_items(survey_name = 'training_diary' )
 #' }
@@ -549,9 +625,12 @@ formr_items = function(survey_name = NULL, host = formr_last_host(),
 #' @param row.names not used
 #' @param ... not used
 #' 
+#' @return A data.frame of item metadata, one row per item, with `choices`
+#'   collapsed to a comma-separated string.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' as.data.frame(formr_items(survey_name = 'training_diary' ))
 #' }
@@ -596,9 +675,11 @@ as.data.frame.formr_item_list = function(x, row.names, ...) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A data.frame (parsed JSON) of item-display records with timing and display counts.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_item_displays(survey_name = 'training_diary' )
 #' }
@@ -624,9 +705,11 @@ formr_item_displays = function(survey_name, host = formr_last_host()) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A list (parsed JSON) of uploaded-file metadata.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_uploaded_files(survey_name = 'training_diary' )
 #' }
 
@@ -647,18 +730,26 @@ formr_uploaded_files = function(survey_name, host = formr_last_host()) {
 #'
 #' @param survey_name case-sensitive name of a survey your account owns
 #' @param overwrite should existing files be overwritten? defaults to FALSE
-#' @param save_path defaults to the survey name
+#' @param save_path directory to write the files into. Defaults to a sub-folder
+#'   named after the survey inside [formr_default_dir()]; set that (or pass
+#'   `save_path`) since formr never writes to the working directory by default.
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return Invisibly the file list with an updated `downloaded` field; called to
+#'   download a survey's user-uploaded files into `save_path`.
 #' @export
 #' @examples
 #' \dontrun{
-#' formr_backup_files(survey_name = 'training_diary' )
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_backup_files(survey_name = 'training_diary', save_path = tempdir() )
 #' }
 
-formr_backup_files = function(survey_name, 
-    overwrite = FALSE, 
-    save_path = paste0(survey_name, "/user_uploaded_files"),
+formr_backup_files = function(survey_name,
+    overwrite = FALSE,
+    save_path = NULL,
     host = formr_last_host()) {
+  if (is.null(save_path)) {
+    save_path <- file.path(.formr_default_or_stop("save_path"), survey_name, "user_uploaded_files")
+  }
   file_list = formr_uploaded_files(survey_name, host)
   if(length(file_list) > 0) {
     dir.create(save_path, showWarnings = FALSE)
@@ -694,9 +785,11 @@ formr_backup_files = function(survey_name,
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A data.frame (parsed JSON) of random group assignments keyed by session.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_shuffled(run_name = 'different_drills' )
 #' }
@@ -716,9 +809,11 @@ formr_shuffled = function(run_name, host = formr_last_host()) {
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A data.frame (parsed JSON) of per-session progress/overview data.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_user_overview(run_name = 'different_drills' )
 #' }
@@ -739,9 +834,11 @@ formr_user_overview = function(run_name, host = formr_last_host()) {
 #'
 #' @param run_name case-sensitive name of the run in which you randomised participants
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return A data.frame (parsed JSON) of detailed per-session progress through the run.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' formr_user_detail(run_name = 'different_drills' )
 #' }
@@ -761,6 +858,7 @@ formr_user_detail = function(run_name, host = formr_last_host()) {
 #' @param N desired number of random dates
 #' @param lower lower limit
 #' @param upper upper limit
+#' @return A POSIXct vector of `N` random dates within the given range.
 
 random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") {
   st <- as.POSIXct(as.Date(lower))
@@ -781,6 +879,8 @@ random_date_in_range <- function(N, lower = "2012/01/01", upper = "2012/12/31") 
 #' @param item_list an item_list, will be auto-retrieved based on survey_name if omitted
 #' @param results survey results, will be auto-retrieved based on survey_name if omitted
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return The results data.frame with POSIXct timestamps and numeric/factor/`haven::labelled`
+#'   columns set according to item types.
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -883,9 +983,12 @@ formr_recognise = function(survey_name = NULL, item_list = formr_items(survey_na
 #'
 #' @param item_list the result of a call to [formr_connect()]
 #' @param n defaults to 300
+#' @return A data.frame of simulated survey data (columns `id`, `created`, `modified`,
+#'   `ended`, plus sampled values for each item).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' sim = formr_simulate_from_items(item_list = formr_items('training_diary'), n = 100)
 #' summary(lm(pushups ~ pullups, data = sim))
@@ -941,9 +1044,11 @@ formr_simulate_from_items = function(item_list, n = 300) {
 #'
 #' @param survey_file_path the path to an item table in csv/json/xlsx etc. 
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
+#' @return Invisibly `TRUE` on success; called to upload an item-table file to the formr server.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' items <- system.file('extdata/gods_example_items.json', package = 'formr', 
 #' mustWork = TRUE)
@@ -979,9 +1084,12 @@ formr_upload_items = function(survey_file_path, host = formr_last_host()) {
 #' @param results survey results
 #' @param item_list an item_list, defaults to NULL
 #' @param fallback_max defaults to 5 - if the item_list is set to null, we will use this to reverse
+#' @return The results data.frame with reverse-keyed (`R`-suffixed) items flipped and
+#'   labelled items' value labels updated.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
 #' formr_connect(email = 'you@@example.net', password = 'zebrafinch' )
 #' icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/')
 #' # get some simulated data and aggregate it
@@ -1057,6 +1165,7 @@ formr_reverse = function(results, item_list = NULL, fallback_max = 5) {
 #' @param aggregation_function defaults to rowMeans with na.rm = FALSE
 #' @param ... formerly passed to `psych::alpha()`; ignored now that the
 #'   reliability/Likert code has moved to the `codebook` package
+#' @return The results data.frame with one added numeric column per scale (the row mean of its items).
 #' @export
 #' @examples
 #' results = jsonlite::fromJSON(txt = 
@@ -1171,6 +1280,7 @@ formr_aggregate = function(survey_name, item_list = formr_items(survey_name,
 #' 
 #'
 #' @param survey survey with item_list attribute
+#' @return A list of class `formr_item_list` extracted from a survey data.frame's variable attributes.
 #' @export
 #' @examples
 #' example(formr_post_process_results)
@@ -1197,6 +1307,8 @@ items = function(survey) {
 #'
 #' @param survey survey with item_list attribute
 #' @param item_name item name
+#' @return The metadata list for a single item (from a survey variable's attributes),
+#'   or `NULL` with a warning if not found.
 #' @export
 #' @examples
 #' example(formr_post_process_results)
@@ -1220,6 +1332,7 @@ item = function(survey, item_name) {
 #'
 #' @param survey survey with item_list attribute
 #' @param item_name item name
+#' @return A vector of choice labels mapped onto the supplied item values.
 #' @export
 #' @examples
 #' example(formr_post_process_results)
@@ -1237,9 +1350,12 @@ choice_labels_for_values = function(survey, item_name) {
 #'
 #' @param x image ID
 #' @param ext extension, defaults to .png
+#' @return A length-1 character string holding a `cid:` reference for inline email images,
+#'   carrying the source path in its `link` attribute.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: meant to run inside a knitr session as the figure upload hook.
 #' library(knitr); library(formr)
 #' opts_knit$set(upload.fun=formr::email_image)
 #' }
@@ -1255,9 +1371,11 @@ email_image = function(x, ext = ".png") {
 #'
 #' @param session_url the session url, e.g. https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds
 #' @param local defaults to FALSE, if true, will assume that the session is not on another server, and do some not-very-smart substitution to load it via the file system instead of HTTP/HTTPS
+#' @return The R object deserialised from an OpenCPU session's RDS result (or loaded from a local `.RData`).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: fetches a result from a remote OpenCPU server.
 #' get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
 #' }
 get_opencpu_rds = function(session_url, local = TRUE) {

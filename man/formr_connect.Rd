@@ -20,6 +20,10 @@ formr_connect(
 
 \item{keyring}{a shorthand for the account you're using}
 }
+\value{
+Invisibly \code{TRUE} on success; called for its side effect of establishing
+an authenticated cookie session with the formr server (stored in httr's cookie jar).
+}
 \description{
 Connects to formr using your normal login and the httr library
 which supports persistent session cookies. Calling this function will persist
@@ -28,6 +32,7 @@ calls. You can change this by calling \code{\link[=formr_last_host]{formr_last_h
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(keyring = "formr_diary_study_account" )
 }
 }

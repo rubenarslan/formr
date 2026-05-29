@@ -11,11 +11,15 @@ get_opencpu_rds(session_url, local = TRUE)
 
 \item{local}{defaults to FALSE, if true, will assume that the session is not on another server, and do some not-very-smart substitution to load it via the file system instead of HTTP/HTTPS}
 }
+\value{
+The R object deserialised from an OpenCPU session's RDS result (or loaded from a local \code{.RData}).
+}
 \description{
 useful to programmatically access openCPU session object stored in character variables etc.
 }
 \examples{
 \dontrun{
+# Not run: fetches a result from a remote OpenCPU server.
 get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
 }
 }

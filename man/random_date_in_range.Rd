@@ -13,6 +13,9 @@ random_date_in_range(N, lower = "2012/01/01", upper = "2012/12/31")
 
 \item{upper}{upper limit}
 }
+\value{
+A POSIXct vector of \code{N} random dates within the given range.
+}
 \description{
 taken from Dirk Eddelbuettel's answer
 here \url{https://stackoverflow.com/a/14721124/263054}.

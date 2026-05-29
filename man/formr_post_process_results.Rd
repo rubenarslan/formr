@@ -35,6 +35,10 @@ formr_post_process_results(
 
 \item{remove_test_sessions}{by default, formr removes results resulting from test session (animal names and null session codes)}
 }
+\value{
+A data.frame/tibble with recognised types, reverse-keyed items flipped,
+scales aggregated, and missing values tagged.
+}
 \description{
 This function chains \code{\link[=formr_recognise]{formr_recognise()}} and \code{\link[=formr_aggregate]{formr_aggregate()}}
 in sequence. Useful if you want to post-process raw results before aggregating etc.
