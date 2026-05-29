@@ -1,11 +1,18 @@
 #' Pull Project from Server
 #' Scaffolds folder structure if missing, then overwrites local files with Server state.
 #' @param run_name Name of the run.
-#' @param dir Local directory (default ".").
-#' @param prompt Logical. If TRUE (default), asks for confirmation before overwriting (unless dir is empty).
+#' @param dir Local directory to scaffold and write into. Defaults to
+#'   [formr_default_dir()]; set that (or pass `dir`) since formr never writes to
+#'   the working directory by default.
+#' @param prompt Logical. If TRUE (default), asks for confirmation before
+#'   overwriting when run interactively (unless `dir` is empty).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `NULL` on success (or `FALSE` if the user declines the overwrite prompt); called for its side effect of scaffolding `dir` and writing the run's structure, settings, surveys and files from the server.
 #' @export
-formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
-	
+formr_api_pull_project <- function(run_name, dir = NULL, prompt = TRUE, verbose = TRUE) {
+
+	if (is.null(dir)) dir <- .formr_default_or_stop("dir")
+
 	# --- 1. Scaffolding ---
 	
 	# Ensure main directory exists
@@ -28,18 +35,18 @@ formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
 	# If the directory is effectively empty, we skip warning the user about overwriting.
 	is_fresh_install <- length(list.files(dir, pattern = "\\.json$|surveys|files", recursive = TRUE)) == 0
 	
-	if (prompt && !is_fresh_install) {
-		cat(sprintf("[WARNING] You are about to overwrite local files in '%s' with data from run '%s'.\n", normalizePath(dir, mustWork = FALSE), run_name))
-		cat("   Any local changes that have not been pushed to the server will be LOST.\n")
-		
+	if (prompt && interactive() && !is_fresh_install) {
+		warning(sprintf(
+			"You are about to overwrite local files in '%s' with data from run '%s'. Any local changes that have not been pushed to the server will be LOST.",
+			normalizePath(dir, mustWork = FALSE), run_name), call. = FALSE, immediate. = TRUE)
 		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
 		if (tolower(trimws(response)) != "y") {
-			message("[FAILED] Operation cancelled.")
+			message("Operation cancelled.")
 			return(invisible(FALSE))
 		}
 	}
-	
-	message("[INFO] Pulling changes from Server...")
+
+	if (verbose) message("Pulling changes from server...")
 	
 	struct <- NULL
 	
@@ -47,7 +54,7 @@ formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
 	tryCatch({
 		struct <- formr_api_run_structure(run_name)
 		jsonlite::write_json(struct, file.path(dir, "run_structure.json"), pretty = TRUE, auto_unbox = TRUE)
-		message("[SUCCESS] Structure downloaded.")
+		if (verbose) message("Structure downloaded.")
 	}, error = function(e) warning("Failed to pull structure: ", e$message))
 	
 	# --- 4. Settings ---
@@ -66,7 +73,7 @@ formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
 		read_only <- c("id", "link", "created", "modified", "json_jwt")
 		for (ro in read_only) settings[[ro]] <- NULL
 		jsonlite::write_json(settings, file.path(dir, "run_settings.json"), pretty = TRUE, auto_unbox = TRUE)
-		message("[SUCCESS] Settings downloaded.")
+		if (verbose) message("Settings downloaded.")
 	}, error = function(e) warning("Failed to pull settings: ", e$message))
 	
 	# --- 5. Surveys (Using Shared Helper) ---
@@ -77,7 +84,7 @@ formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
 	# --- 6. Files (Using Shared Helper) ---
 	.sync_api_server_files(run_name, dir)
 	
-	message("[SUCCESS] Project files updated from server.")
+	if (verbose) message("Project files updated from server.")
 }
 
 #' Push Project to Server
@@ -86,24 +93,29 @@ formr_api_pull_project <- function(run_name, dir = ".", prompt = TRUE) {
 #' Optionally monitors the directory for subsequent changes (Watcher mode).
 #'
 #' @param run_name Name of the run.
-#' @param dir Local directory (default ".").
+#' @param dir Local directory to push from. Defaults to [formr_default_dir()];
+#'   set that (or pass `dir`) since formr never writes to the working directory
+#'   by default.
 #' @param watch Logical. If TRUE, keeps the connection open and uploads changes immediately when files are saved.
 #' @param background Logical. If TRUE (default), launches watcher as an RStudio Job.
 #' @param interval Seconds between checks (default 2).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE` when the watcher is launched as a background RStudio job; otherwise invisibly `NULL`. Called for its side effect of uploading the local project in `dir` to the server (optionally starting a file-watcher).
 #' @export
-formr_api_push_project <- function(run_name, dir = ".", watch = FALSE, background = TRUE, interval = 2) {
+formr_api_push_project <- function(run_name, dir = NULL, watch = FALSE, background = TRUE, interval = 2, verbose = TRUE) {
+	if (is.null(dir)) dir <- .formr_default_or_stop("dir")
 	if (!dir.exists(dir)) stop("Directory not found. Run formr_api_pull_project() first.")
-	
+
 	# 1. Initial Push (Sync current state immediately)
 	# We do this in the main thread so the user sees immediate success/failure
-	message(sprintf("[INFO] Pushing '%s' -> Run '%s'", normalizePath(dir), run_name))
+	if (verbose) message(sprintf("Pushing '%s' -> Run '%s'", normalizePath(dir), run_name))
 	current_state <- get_api_project_state(dir)
 	initial_changes <- list(added = names(current_state), modified = character(0), deleted = character(0))
 	
 	if (length(initial_changes$added) > 0) {
 		handle_api_project_changes(run_name, dir, initial_changes)
 	} else {
-		message("[INFO] No initial changes to push.")
+		if (verbose) message("No initial changes to push.")
 	}
 	
 	# 2. Watcher Logic
@@ -142,12 +154,12 @@ formr_api_push_project <- function(run_name, dir = ".", watch = FALSE, backgroun
 				importEnv = FALSE 
 			)
 			
-			message("[SUCCESS] Watcher started in the 'Jobs' tab.")
+			message("Watcher started in the 'Jobs' tab.")
 			return(invisible(TRUE))
 		}
 		
 		# --- Blocking Loop (Runs if background=FALSE or not in RStudio) ---
-		message(sprintf("\n[INFO] Watching '%s' for changes (Press Esc to stop)...", dir))
+		message(sprintf("\nWatching '%s' for changes (Press Esc to stop)...", dir))
 		
 		last_state <- current_state
 		
@@ -171,7 +183,7 @@ formr_api_push_project <- function(run_name, dir = ".", watch = FALSE, backgroun
 				}
 			}
 		}, interrupt = function(i) {
-			message("\n[INFO] Watcher stopped.")
+			message("\nWatcher stopped.")
 		})
 	}
 }
@@ -270,21 +282,21 @@ handle_api_project_changes <- function(run_name, dir, changes) {
 		if (grepl("[^a-zA-Z0-9_-]", s_name)) {
 			suggested_name <- gsub("[^a-zA-Z0-9_-]", "_", s_name)
 			
-			message("[WARNING]  SKIPPED: '", basename(f), "'")
+			message("SKIPPED: '", basename(f), "'")
 			message("   Reason: Survey names cannot contain spaces or special characters.")
 			message("   Action: Please rename the file locally to '", suggested_name, ".xlsx'")
 			next 
 		}
 		
-		message("[INFO] Syncing Survey: ", s_name)
+		message("Syncing Survey: ", s_name)
 		
 		tryCatch(
 			{
 				formr_api_upload_survey(file_path = file.path(dir, f))
-				message("   [SUCCESS] Upload success")
+				message("   Upload success")
 			},
 			error = function(e) {
-				message("   [FAILED] Upload failed: ", e$message)
+				message("   Upload failed: ", e$message)
 			}
 		)
 	}
@@ -312,7 +324,7 @@ handle_api_project_changes <- function(run_name, dir, changes) {
 					formr_api_delete_file(run_name, server_name)
 				},
 				error = function(e) {
-					message("   [WARNING] Could not delete '", server_name, "': ", e$message)
+					message("   Could not delete '", server_name, "': ", e$message)
 				}
 			)
 		}
@@ -320,7 +332,7 @@ handle_api_project_changes <- function(run_name, dir, changes) {
 	
 	# 5. STRUCTURE (Modified with Auto-Fix)
 	if ("run_structure.json" %in% to_process) {
-		message("[INFO]  Syncing Run Structure...")
+		message("Syncing Run Structure...")
 		
 		json_path <- file.path(dir, "run_structure.json")
 		
@@ -399,7 +411,7 @@ sync_run_settings <- function(run_name, dir) {
 .sync_api_server_surveys <- function(struct, dir) {
 	if (is.null(struct) || is.null(struct$units)) return()
 	
-	message("[INFO] Syncing survey tables...")
+	message("Syncing survey tables...")
 	
 	# Ensure folder exists
 	survey_dir <- file.path(dir, "surveys")
@@ -421,7 +433,7 @@ sync_run_settings <- function(run_name, dir) {
 			# and escape survey_dir when the XLSX is written to disk.
 			if (!is.null(survey_name) &&
 					!grepl("^[a-zA-Z][a-zA-Z0-9_]{2,64}$", survey_name)) {
-				message("   [WARNING] Skipping survey with unsafe name: '", survey_name, "'")
+				message("   Skipping survey with unsafe name: '", survey_name, "'")
 				survey_name <- NULL
 			}
 
@@ -435,18 +447,18 @@ sync_run_settings <- function(run_name, dir) {
 					)
 					if (!is.null(path)) count <- count + 1
 				}, error = function(e) {
-					message("   [WARNING] Failed to download '", survey_name, "': ", e$message)
+					message("   Failed to download '", survey_name, "': ", e$message)
 				})
 			}
 		}
 	}
-	message(sprintf("[SUCCESS] Downloaded %d survey table(s).", count))
+	message(sprintf("Downloaded %d survey table(s).", count))
 }
 
 #' Sync Assets/Files from Server to Local
 #' @noRd
 .sync_api_server_files <- function(run_name, dir) {
-	message("[INFO] Syncing assets/files...")
+	message("Syncing assets/files...")
 	
 	# Ensure parent directory exists before proceeding
 	if (!dir.exists(dir)) {
@@ -463,7 +475,7 @@ sync_run_settings <- function(run_name, dir) {
 			# Strict check for subfolder creation
 			if (!dir.exists(files_dir)) {
 				if (!dir.create(files_dir, recursive = TRUE)) {
-					warning("   [WARNING] Could not create 'files' folder. Skipping downloads.")
+					warning("   Could not create 'files' folder. Skipping downloads.")
 					return()
 				}
 			}
@@ -493,7 +505,7 @@ sync_run_settings <- function(run_name, dir) {
 						base_name %in% c(".", "..") ||
 						grepl("[/\\\\]", raw_name) ||
 						startsWith(base_name, ".")) {
-					message("   [WARNING] Skipping file with unsafe name: '", raw_name, "'")
+					message("   Skipping file with unsafe name: '", raw_name, "'")
 					next
 				}
 				safe_name <- gsub(" ", "_", base_name)
@@ -511,16 +523,16 @@ sync_run_settings <- function(run_name, dir) {
 						 identical(parsed_parts[-1], expected_parts[-1]))
 				}
 				if (is.null(parsed) || !isTRUE(parsed$scheme %in% c("http", "https")) || !host_ok) {
-					message("   [WARNING] Skipping file with unsafe URL for '", raw_name, "'")
+					message("   Skipping file with unsafe URL for '", raw_name, "'")
 					next
 				}
 
 				tryCatch({
 					download.file(f$url, dest, mode = "wb", quiet = TRUE)
 					f_count <- f_count + 1
-				}, error = function(e) message("   [WARNING] Failed to download file '", f$name, "'"))
+				}, error = function(e) message("   Failed to download file '", f$name, "'"))
 			}
-			message(sprintf("[SUCCESS] Downloaded %d file(s).", f_count))
+			message(sprintf("Downloaded %d file(s).", f_count))
 		} else {
 			message("   (No files found on server)")
 		}

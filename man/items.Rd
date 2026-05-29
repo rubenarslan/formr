@@ -9,6 +9,9 @@ items(survey)
 \arguments{
 \item{survey}{survey with item_list attribute}
 }
+\value{
+A list of class \code{formr_item_list} extracted from a survey data.frame's variable attributes.
+}
 \description{
 get item list from survey attributes
 }

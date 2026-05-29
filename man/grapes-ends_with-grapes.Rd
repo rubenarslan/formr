@@ -11,6 +11,9 @@ haystack \%ends_with\% needle
 
 \item{needle}{string to search for}
 }
+\value{
+A logical vector, \code{TRUE} where \code{haystack} ends with \code{needle}.
+}
 \description{
 Escapes any special RegExp characters in the search term. A way to check whether the search term (e.g. a variable name) is the ending.
 Just a simple shorthand so that inexperienced R users don't have

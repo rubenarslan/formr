@@ -4,16 +4,31 @@
 \alias{formr_api_backup_run}
 \title{Backup a study}
 \usage{
-formr_api_backup_run(run_name, dir = NULL, prompt = TRUE)
+formr_api_backup_run(run_name, dir = NULL, prompt = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run/study.}
 
-\item{dir}{Local folder to save data (defaults to run_name).}
+\item{dir}{Directory to write the backup into. Defaults to a sub-folder named
+after the run inside \code{\link[=formr_default_dir]{formr_default_dir()}}; set that (or pass \code{dir}) since
+formr never writes to the working directory by default.}
 
-\item{prompt}{Logical. If TRUE (default), asks for confirmation before overwriting.}
+\item{prompt}{Logical. If TRUE (default), asks for confirmation before
+overwriting when run interactively.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{NULL}; called for its side effect of writing the run
+structure (JSON), surveys, files and results (\code{results.rds}) into \code{dir}.
 }
 \description{
 Downloads the full run structure, all survey items, attached files, and results.
 Saves everything into a structured folder.
+}
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_backup_run("my_run", dir = tempdir())
+}
 }

@@ -11,12 +11,16 @@ formr_run_structure(run_name, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+A list (parsed JSON) describing the run structure (its \code{units}).
+}
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download the study/run structure using this command.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_run_structure(run_name = 'training_diary' )
 }
 }

@@ -11,6 +11,9 @@ render_text(text, ...)
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }
+\value{
+A length-1 character string of rendered HTML.
+}
 \description{
 Render text
 }

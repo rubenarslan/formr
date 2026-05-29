@@ -11,6 +11,9 @@ haystack \%contains\% needle
 
 \item{needle}{string to search for}
 }
+\value{
+A logical vector, \code{TRUE} where \code{haystack} contains \code{needle} as a fixed substring.
+}
 \description{
 Just a simple shorthand so that inexperienced R users don't have
 to use somewhat complex functions such as \code{\link[=grepl]{grepl()}} and \code{\link[stringr:str_detect]{stringr::str_detect()}}

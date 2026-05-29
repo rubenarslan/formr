@@ -8,9 +8,11 @@
 #' @param Account your Twilio account ID
 #' @param Token your Twilio token
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
+#' @return Logical `TRUE`/`FALSE` indicating send success, or (when `return_result = TRUE`) the raw API response list.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: sends a real SMS via the Twilio gateway (needs an account).
 #' text_message_twilio(
 #' 	To = '492222',
 #' 	From = '15005000',
@@ -43,9 +45,11 @@ text_message_twilio = function(To, From, Body, Account, Token,
 #' @param Body the text message body/text
 #' @param Token your Clickatell token
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
+#' @return Logical `TRUE`/`FALSE` indicating send success, or (when `return_result = TRUE`) the raw API response list.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: sends a real SMS via the Clickatell gateway (needs an account).
 #' text_message_clickatell(
 #' 	To = '492222', 
 #' 	Body = 'Hello friend', 
@@ -87,9 +91,11 @@ text_message_clickatell = function(To, Body, Token, return_result = FALSE) {
 #' @param test see provider API
 #' @param return_result whether to return simply TRUE/FALSE on success/failure or the whole result
 #' 
+#' @return Logical `TRUE`/`FALSE` indicating send success (or the raw character API response).
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: sends a real SMS via the massenversand.de gateway (needs an account).
 #' text_message_massenversand(
 #' 	To = '492222', 
 #' 	From = '15005000', 

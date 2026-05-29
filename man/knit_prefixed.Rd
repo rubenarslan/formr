@@ -11,6 +11,9 @@ knit_prefixed(input, ...)
 
 \item{...}{all arguments passed to \code{\link[knitr:knit]{knitr::knit()}}}
 }
+\value{
+A length-1 character string of knitted output, with figure/cache paths prefixed by the input file name.
+}
 \description{
 Knit using knitr, but prefix file name to figure and cache folder (to knit in parallel on e.g. a cluster)
 }

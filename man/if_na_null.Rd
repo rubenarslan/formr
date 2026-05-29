@@ -17,6 +17,10 @@ if_na_null(test, na = FALSE, null = FALSE)
 
 \item{null}{passed to ifelse}
 }
+\value{
+A length-0-or-1 value: \code{test} when it is non-missing, \code{na} when \code{test}
+is \code{NA}, or \code{null} when \code{test} has length 0.
+}
 \description{
 This function makes sure you know what to expect when evaluating uncertain results in an
 if-clause. In most cases, you should not use this function, because it can lump a lot of very

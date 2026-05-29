@@ -5,7 +5,7 @@
 \title{Lower-level API Result Fetcher}
 \usage{
 formr_api_fetch_results(
-  run_name,
+  run_name = .formr$run_name,
   surveys = NULL,
   session_ids = NULL,
   item_names = NULL,
@@ -13,7 +13,9 @@ formr_api_fetch_results(
 )
 }
 \arguments{
-\item{run_name}{Name of the run.}
+\item{run_name}{Name of the run. Defaults to \code{.formr$run_name},
+which is set automatically when the code runs inside an OpenCPU
+session on rforms.org.}
 
 \item{surveys}{Optional character vector of survey names to filter by.}
 
@@ -22,6 +24,9 @@ formr_api_fetch_results(
 \item{item_names}{Optional character vector of item names to filter by.}
 
 \item{join}{Logical. If TRUE, joins the results into a single data frame.}
+}
+\value{
+A tibble of survey results, or (when \code{join = FALSE}) a named list of tibbles, one per survey.
 }
 \description{
 Fetches raw results. Advanced users can use this if they want

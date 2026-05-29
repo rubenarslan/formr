@@ -1,5 +1,24 @@
 # formr 1.1.0
 
+* **CRAN resubmission fixes (addressing the 1.0.0 review):**
+  * Every exported function and method now documents its return value with
+    `\value`, describing the class/structure and meaning of the output.
+  * Functions no longer write informational output with `cat()`/`print()`.
+    Progress and status messages now use `message()` and can be silenced with a
+    new `verbose` argument; the warnings before destructive actions use
+    `warning()` and only prompt when `interactive()`.
+  * New `formr_default_dir()` sets a session-wide default output directory.
+    The writing helpers (`formr_backup_study()`, `formr_backup_surveys()`,
+    `formr_backup_files()`, `formr_api_backup_run()`, `formr_api_pull_project()`,
+    `formr_api_push_project()`) no longer default to the working directory: set
+    `formr_default_dir()` once, or pass `dir`/`save_path` explicitly. In
+    examples, vignettes and tests these write only to `tempdir()`.
+  * Vignettes now execute code — API calls are replayed offline from bundled
+    `vcr` cassettes, and the reverse/aggregate pipeline runs on bundled example
+    data — so users can run them and CRAN can test them.
+  * `\dontrun{}` examples now begin with a one-line comment explaining why they
+    are not run.
+
 * **`formr_api_fetch_results()` now defaults `run_name` to `.formr$run_name`**,
   matching `formr_api_results()` and `formr_overview_sankey()`. Code running
   inside an OpenCPU session on rforms.org can omit the argument; outside,

@@ -4,15 +4,16 @@
 #' public URLs and timestamps.
 #' 
 #' @param run_name Name of the run.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A data.frame containing: id, name, path, url, created, modified.
 #' @importFrom dplyr bind_rows
 #' @export
-formr_api_files <- function(run_name) {
+formr_api_files <- function(run_name, verbose = TRUE) {
 	# GET /runs/{run_name}/files
 	res <- formr_api_request(paste0("runs/", run_name, "/files"), method = "GET")
-	
+
 	if (length(res) == 0) {
-		message(sprintf("[INFO] No files found for run '%s'.", run_name))
+		if (verbose) message(sprintf("No files found for run '%s'.", run_name))
 		return(data.frame())
 	}
 	
@@ -38,14 +39,15 @@ formr_api_files <- function(run_name) {
 #' 
 #' @param run_name Name of the run.
 #' @param path Local path to the file, a vector of paths, or a directory path.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly returns a list of server responses.
 #' @export
-formr_api_upload_file <- function(run_name, path) {
-	
+formr_api_upload_file <- function(run_name, path, verbose = TRUE) {
+
 	# 1. Handle Directory Input
 	# If a single path is provided and it is a directory, get all files inside
 	if (length(path) == 1 && dir.exists(path)) {
-		message(sprintf("[INFO] Directory detected. Preparing to upload files from '%s'...", path))
+		if (verbose) message(sprintf("Directory detected. Preparing to upload files from '%s'...", path))
 		path <- list.files(path, full.names = TRUE, recursive = FALSE)
 		
 		if (length(path) == 0) {
@@ -71,7 +73,7 @@ formr_api_upload_file <- function(run_name, path) {
 			body = body
 		)
 		
-		message(sprintf("[SUCCESS] File '%s' uploaded successfully.", res$file))
+		if (verbose) message(sprintf("File '%s' uploaded successfully.", res$file))
 		return(res)
 	})
 	
@@ -86,14 +88,16 @@ formr_api_upload_file <- function(run_name, path) {
 #' 
 #' @param run_name Name of the run.
 #' @param file_name The name of the file(s) to delete (e.g. "image.png"), or a local directory path.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE`; called to delete the named file(s) from the run.
 #' @export
-formr_api_delete_file <- function(run_name, file_name) {
-	
+formr_api_delete_file <- function(run_name, file_name, verbose = TRUE) {
+
 	# 1. Handle Directory Input
 	# If input is a directory, we assume user wants to delete files on server
 	# that match the filenames found in that local directory.
 	if (length(file_name) == 1 && dir.exists(file_name)) {
-		message(sprintf("[INFO] Directory detected. Deleting files matching names in '%s'...", file_name))
+		if (verbose) message(sprintf("Directory detected. Deleting files matching names in '%s'...", file_name))
 		# We only need the basename (e.g. "image.png") not the full local path
 		file_name <- basename(list.files(file_name, full.names = TRUE, recursive = FALSE))
 		
@@ -114,9 +118,9 @@ formr_api_delete_file <- function(run_name, file_name) {
 				endpoint = paste0("runs/", run_name, "/files/", encoded_name),
 				method = "DELETE"
 			)
-			message(sprintf("[SUCCESS] File '%s' deleted.", single_name))
+			if (verbose) message(sprintf("File '%s' deleted.", single_name))
 		}, error = function(e) {
-			warning(sprintf("[FAILED] Failed to delete '%s': %s", single_name, e$message))
+			warning(sprintf("Failed to delete '%s': %s", single_name, e$message))
 		})
 	})
 	
@@ -131,36 +135,37 @@ formr_api_delete_file <- function(run_name, file_name) {
 #' @param run_name Name of the run.
 #' @param prompt Logical. If TRUE (default), the function asks for interactive confirmation 
 #'        before deleting. Set to FALSE for automated scripts (use with care).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE` on success; called to delete all files from the run.
 #' @export
-formr_api_delete_all_files <- function(run_name, prompt = TRUE) {
+formr_api_delete_all_files <- function(run_name, prompt = TRUE, verbose = TRUE) {
 	# 1. Fetch existing files
 	files <- formr_api_files(run_name)
-	
+
 	if (nrow(files) == 0) {
-		message(sprintf("[INFO] No files found in run '%s'. Nothing to delete.", run_name))
+		if (verbose) message(sprintf("No files found in run '%s'. Nothing to delete.", run_name))
 		return(invisible(TRUE))
 	}
 	
 	file_names <- files$name
 	count <- length(file_names)
 	
-	# 2. Safety Prompt
-	if (prompt) {
-		cat(sprintf("DANGER: You are about to delete %d files from run '%s'.\n", count, run_name))
-		cat("Files: ", paste(head(file_names, 3), collapse = ", "), if(count > 3) "..." else "", "\n")
-		
+	# 2. Safety prompt
+	if (prompt && interactive()) {
+		shown <- paste(head(file_names, 3), collapse = ", ")
+		warning(sprintf("You are about to delete %d files from run '%s' (%s%s).",
+			count, run_name, shown, if (count > 3) ", ..." else ""), call. = FALSE, immediate. = TRUE)
 		response <- readline(prompt = "Are you sure you want to proceed? (y/n): ")
 		if (tolower(trimws(response)) != "y") {
-			message("[FAILED] Operation cancelled.")
+			message("Operation cancelled.")
 			return(invisible(FALSE))
 		}
 	}
-	
-	# 3. Perform Deletion
-	# Since we updated formr_api_delete_file to accept vectors, we can pass the whole list.
-	message(sprintf("[START] Starting deletion of %d files...", count))
+
+	# 3. Perform deletion (delete_file accepts a vector)
+	if (verbose) message(sprintf("Deleting %d files...", count))
 	formr_api_delete_file(run_name, file_names)
-	
-	message("[SUCCESS] All files have been processed.")
+
+	if (verbose) message("All files have been processed.")
 	invisible(TRUE)
 }

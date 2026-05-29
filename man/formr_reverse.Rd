@@ -13,11 +13,16 @@ formr_reverse(results, item_list = NULL, fallback_max = 5)
 
 \item{fallback_max}{defaults to 5 - if the item_list is set to null, we will use this to reverse}
 }
+\value{
+The results data.frame with reverse-keyed (\code{R}-suffixed) items flipped and
+labelled items' value labels updated.
+}
 \description{
 Example: If your data contains Extraversion_1, Extraversion_2R and Extraversion_3, there will be two new variables in the result: Extraversion_2 (reversed to align with _1 and _2) and Extraversion, the mean score of the three. If you supply an item table, the maximum possible answer to the item will be used to reverse it. If you don't, the maximum actually given answer or the fallback_max argument will be used to reverse it. It's faster to do this without an item table, but this can lead to problems, if you mis-specify the fallback max or the highest possible value does not occur in the data.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/')
 # get some simulated data and aggregate it

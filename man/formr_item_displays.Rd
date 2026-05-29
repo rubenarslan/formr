@@ -11,12 +11,16 @@ formr_item_displays(survey_name, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+A data.frame (parsed JSON) of item-display records with timing and display counts.
+}
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download detailed times and display counts for each item using this command.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_item_displays(survey_name = 'training_diary' )
 }

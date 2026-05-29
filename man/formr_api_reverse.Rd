@@ -11,6 +11,9 @@ formr_api_reverse(results, item_list)
 
 \item{item_list}{A data frame containing item metadata.}
 }
+\value{
+The results data.frame with reverse-keyed items (those ending in \code{R}) flipped and their value labels remapped.
+}
 \description{
 Reverses numeric items ending in 'R' based on metadata bounds.
 Critically, it also updates \code{haven::labelled} attributes so that

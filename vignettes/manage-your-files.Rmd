@@ -15,10 +15,30 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, eval = FALSE}
+```{r setup}
 library(formr)
-# Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
 ```
 
 Most complex studies require more than just survey spreadsheets. For example, you might need to host images for experimental stimuli.
@@ -29,9 +49,11 @@ While the [Project Workflow](manage-your-projects.html) (`formr_api_push_project
 
 To see what files are currently attached to your run, use `formr_api_files()`. This returns a data frame containing the file names, their public URLs, and upload timestamps.
 
-```{r, eval = FALSE}
+```{r, eval = .formr_vcr}
 # List all files attached to the study
-files <- formr_api_files("my-study-name")
+vcr::use_cassette("formr_api_upload_delete_flow", {
+  files <- formr_api_files("test-run")
+})
 
 # View the first few files
 head(files)
@@ -45,6 +67,7 @@ You can upload files individually or in bulk. This is useful for quickly patchin
 
 ### Single File
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Upload a single logo
 formr_api_upload_file("my-study-name", path = "assets/logo.png")
 ```
@@ -53,6 +76,7 @@ formr_api_upload_file("my-study-name", path = "assets/logo.png")
 The function is flexible: you can pass a vector of paths or a directory. If you pass a directory, `formr` will upload all files directly inside it.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Upload multiple specific files
 formr_api_upload_file("my-study-name", path = c("assets/img1.jpg", "assets/img2.jpg"))
 
@@ -65,6 +89,7 @@ formr_api_upload_file("my-study-name", path = "assets/stimuli/")
 To keep your run clean, you can remove obsolete files.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Delete a specific file
 formr_api_delete_file("my-study-name", file_name = "old_logo.png")
 
@@ -76,6 +101,7 @@ formr_api_delete_file("my-study-name", file_name = c("test1.jpg", "test2.jpg"))
 If you are restructuring your study and want to start fresh, you can wipe all files. **Use this with caution.**
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Delete ALL files (prompts for confirmation)
 formr_api_delete_all_files("my-study-name")
 ```

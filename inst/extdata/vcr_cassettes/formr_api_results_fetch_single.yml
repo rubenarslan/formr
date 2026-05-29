@@ -1,0 +1,68 @@
+http_interactions:
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs/test-run/structure
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '377'
+      connection: close
+      content-type: application/json
+    body:
+      string: '{"name":"test-run","units":[{"type":"Pause","description":null,"position":10,"special":null,"wait_until_time":null,"wait_until_date":null,"wait_minutes":"10.00","relative_to":null,"body":null}],"settings":{"header_image_path":null,"description":null,"footer_text":"Contact
+        the [study administration](mailto:rform@researchmixtapes.com) in case of questions.
+        [Privacy Policy](http:\/\/localhost\/test-run\/privacy_policy\/). [Terms of
+        Service](http:\/\/localhost\/test-run\/terms_of_service\/). [Settings](http:\/\/localhost\/test-run\/settings\/).","public_blurb":null,"privacy":null,"tos":null,"cron_active":1,"custom_js":"","custom_css":"","expiresOn":null},"files":[]}'
+  recorded_at: 2026-02-02 18:05:26
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs/test-run/sessions?limit=1e%2B05&offset=0
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '339'
+      connection: close
+      content-type: application/json
+    body:
+      string: '[{"id":926,"session":"jGGHbs3dqlOTLdwwXNwCmakzOq2UUpGSAV3l1HhpfKU-nM1_cxZnLbRRRySP646A","run_id":264,"user_id":0,"position":10,"current_unit_session_id":490,"created":"2026-02-02
+        19:05:26","last_access":null,"ended":null,"deactivated":false,"no_email":false,"testing":true,"current_unit":{"id":2796,"type":"Pause","description":"","session_id":490}},{"id":925,"session":"4sZ2ylpKgGtait_McaUumPGxtBnNkie6d87qApQIn-rC0ECl3EV18EibxtgUlhJm","run_id":264,"user_id":0,"position":0,"current_unit_session_id":null,"created":"2026-02-02
+        19:05:26","last_access":null,"ended":null,"deactivated":false,"no_email":false,"testing":true}]'
+  recorded_at: 2026-02-02 18:05:26
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs/test-run/results
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:26 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '15'
+      connection: close
+      content-type: application/json
+    body:
+      string: '{"shuffles":[]}'
+  recorded_at: 2026-02-02 18:05:26
+recorded_with: VCR-vcr/2.1.0

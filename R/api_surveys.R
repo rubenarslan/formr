@@ -3,18 +3,19 @@
 #' Returns a list of all surveys owned by the user.
 #' 
 #' @param name_pattern Optional. Filter surveys by name (partial match).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A tibble of surveys (id, name, created, modified, results_table).
 #' @importFrom dplyr bind_rows as_tibble mutate
 #' @export
-formr_api_surveys <- function(name_pattern = NULL) {
+formr_api_surveys <- function(name_pattern = NULL, verbose = TRUE) {
 	query <- list()
 	if (!is.null(name_pattern)) query$name <- name_pattern
-	
+
 	# Source: ApiHelperV1.php surveys (GET)
 	res <- formr_api_request("surveys", query = query)
-	
+
 	if (length(res) == 0) {
-		message("[INFO] No surveys found.")
+		if (verbose) message("No surveys found.")
 		return(dplyr::tibble())
 	}
 	
@@ -35,6 +36,7 @@ formr_api_surveys <- function(name_pattern = NULL) {
 #' @param survey_name The name of the survey.
 #' @param format The format to retrieve: "json" (default) or "xlsx".
 #' @param file_path Optional. Required if format is "xlsx".
+#' @return In JSON mode (the default) a tibble of the survey's items; in `xlsx` mode invisibly the `file_path` written.
 #' @export
 formr_api_survey_structure <- function(survey_name, format = "json", file_path = NULL) {
 	
@@ -85,7 +87,7 @@ formr_api_survey_structure <- function(survey_name, format = "json", file_path =
 	res <- formr_api_request(endpoint = paste0("surveys/", survey_name), method = "GET")
 	
 	if (is.null(res$items) || length(res$items) == 0) {
-		warning(sprintf("[WARNING] Survey '%s' exists but has no items.", survey_name))
+		warning(sprintf("Survey '%s' exists but has no items.", survey_name))
 		return(dplyr::tibble())
 	}
 	
@@ -111,8 +113,10 @@ formr_api_survey_structure <- function(survey_name, format = "json", file_path =
 #' 
 #' @param file_path Path to a local file.
 #' @param google_sheet_url Google Sheet URL.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly the server response; called to upload or update a survey from a local file or Google Sheet.
 #' @export
-formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL) {
+formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL, verbose = TRUE) {
 	
 	body <- list()
 	
@@ -133,15 +137,14 @@ formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL) {
 		encode = "multipart" 
 	)
 	
-	message(sprintf("[SUCCESS] Survey '%s' processed successfully.", res$name))
-	
-	if (!is.null(res$logs) && length(res$logs) > 0) {
-		cat("\n[INFO] Server Logs:\n")
+	if (verbose) message(sprintf("Survey '%s' processed.", res$name))
+
+	if (verbose && !is.null(res$logs) && length(res$logs) > 0) {
 		logs <- unlist(res$logs)
 		clean_logs <- gsub("<[^>]+>", "", logs)
-		cat(paste0("...", clean_logs, collapse = "\n"), "\n")
+		message("Server logs:\n", paste0("...", clean_logs, collapse = "\n"))
 	}
-	
+
 	invisible(res)
 }
 
@@ -152,27 +155,28 @@ formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL) {
 #'
 #' @param survey_name Name of the survey to delete.
 #' @param prompt Logical. If TRUE (default), asks for interactive confirmation.
-#' @return Invisibly returns TRUE on success.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE` on success; `FALSE` if the user declines the prompt.
 #' @export
-formr_api_delete_survey <- function(survey_name, prompt = TRUE) {
-	
-	if (prompt) {
-		cat(sprintf("\n[WARNING]  WARNING: You are about to delete the survey '%s'.\n", survey_name))
-		
+formr_api_delete_survey <- function(survey_name, prompt = TRUE, verbose = TRUE) {
+
+	if (prompt && interactive()) {
+		warning(sprintf("You are about to permanently delete the survey '%s'.", survey_name),
+			call. = FALSE, immediate. = TRUE)
 		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
 		if (tolower(trimws(response)) != "y") {
-			message("[FAILED] Operation cancelled.")
+			message("Operation cancelled.")
 			return(invisible(FALSE))
 		}
 	}
-	
+
 	tryCatch({
 		# DELETE /surveys/{survey_name}
 		formr_api_request(
-			endpoint = paste0("surveys/", survey_name), 
+			endpoint = paste0("surveys/", survey_name),
 			method = "DELETE"
 		)
-		message(sprintf("[SUCCESS] Survey '%s' deleted successfully.", survey_name))
+		if (verbose) message(sprintf("Survey '%s' deleted.", survey_name))
 		return(invisible(TRUE))
 		
 	}, error = function(e) {

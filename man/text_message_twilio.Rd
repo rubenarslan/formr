@@ -19,11 +19,15 @@ text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
 
 \item{return_result}{whether to return simply TRUE/FALSE on success/failure or the whole result}
 }
+\value{
+Logical \code{TRUE}/\code{FALSE} indicating send success, or (when \code{return_result = TRUE}) the raw API response list.
+}
 \description{
 Connects to Twilio using your token and sends a text message.
 }
 \examples{
 \dontrun{
+# Not run: sends a real SMS via the Twilio gateway (needs an account).
 text_message_twilio(
 	To = '492222',
 	From = '15005000',

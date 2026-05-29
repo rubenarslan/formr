@@ -11,6 +11,9 @@ choice_labels_for_values(survey, item_name)
 
 \item{item_name}{item name}
 }
+\value{
+A vector of choice labels mapped onto the supplied item values.
+}
 \description{
 formr display labels for multiple choice items, but stores their values. We assume you prefer to analyse the values (e.g. numeric values for Likert-type items, or English values for international surveys), but sometimes you may wish to switch this around.
 }

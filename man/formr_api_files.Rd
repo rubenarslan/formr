@@ -4,10 +4,12 @@
 \alias{formr_api_files}
 \title{List files attached to a run}
 \usage{
-formr_api_files(run_name)
+formr_api_files(run_name, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 A data.frame containing: id, name, path, url, created, modified.

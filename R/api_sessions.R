@@ -10,9 +10,10 @@
 #' @param testing Filter: TRUE for test sessions, FALSE for real users, NULL for all.
 #' @param limit Pagination limit (default 1000).
 #' @param offset Pagination offset (default 0).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A combined tibble of session states and details.
 #' @export
-formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, testing = NULL, limit = 1000, offset = 0) {
+formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, testing = NULL, limit = 1000, offset = 0, verbose = TRUE) {
 	
 	# --- MODE A: Fetch specific codes ---
 	if (!is.null(session_codes)) {
@@ -24,7 +25,7 @@ formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, te
 					method = "GET"
 				)
 			}, error = function(e) {
-				warning(paste0("[WARNING] Failed to fetch '", code, "': ", e$message), call. = FALSE)
+				warning(paste0("Failed to fetch '", code, "': ", e$message), call. = FALSE)
 				return(NULL)
 			})
 		}
@@ -47,7 +48,7 @@ formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, te
 	res <- formr_api_request(paste0("runs/", run_name, "/sessions"), query = query)
 	
 	if (length(res) == 0) {
-		message(sprintf("[INFO] No sessions found for run '%s'.", run_name))
+		if (verbose) message(sprintf("No sessions found for run '%s'.", run_name))
 		return(dplyr::tibble())
 	}
 	
@@ -62,9 +63,11 @@ formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, te
 #' @param run_name Name of the run.
 #' @param codes Character vector of codes. If NULL, creates one random code.
 #' @param testing Logical. Mark these sessions as testing?
-#' @return Invisibly returns the API response (including created sessions and any errors).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly the API response: a list with the created `sessions` and,
+#'   for any that failed, an `errors` data.frame to inspect.
 #' @export
-formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE) {
+formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE, verbose = TRUE) {
 	body <- list(testing = if(testing) 1 else 0)
 	
 	# API expects 'code' to be an array if multiple, or a single value
@@ -84,26 +87,22 @@ formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE) {
 	count_created <- if(!is.null(res$count_created)) res$count_created else 0
 	count_failed <- if(!is.null(res$count_failed)) res$count_failed else 0
 	
-	if (count_created > 0) {
-		message(sprintf("[SUCCESS] Successfully created %d session(s).", count_created))
-		# Print the first few created codes
-		if(length(res$sessions) > 0) {
-			shown <- head(res$sessions, 5)
-			cat(paste0("   Codes: ", paste(shown, collapse = ", ")))
-			if(length(res$sessions) > 5) cat(" ...")
-			cat("\n")
+	if (count_created > 0 && verbose) {
+		msg <- sprintf("Created %d session(s).", count_created)
+		if (length(res$sessions) > 0) {
+			codes_shown <- paste(head(res$sessions, 5), collapse = ", ")
+			if (length(res$sessions) > 5) codes_shown <- paste0(codes_shown, ", ...")
+			msg <- paste0(msg, " Codes: ", codes_shown)
 		}
+		message(msg)
 	}
-	
+
 	if (count_failed > 0) {
-		warning(sprintf("[WARNING] Failed to create %d session(s).", count_failed))
-		# Print the errors
-		if(!is.null(res$errors)) {
-			err_df <- dplyr::bind_rows(res$errors)
-			print(err_df)
-		}
+		# Errors are returned in res$errors for the caller to inspect.
+		warning(sprintf("Failed to create %d session(s); see the returned object's $errors.", count_failed),
+			call. = FALSE)
 	}
-	
+
 	invisible(res)
 }
 
@@ -115,9 +114,10 @@ formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE) {
 #' @param session_codes A single code or vector of session codes.
 #' @param action One of: "end_external", "toggle_testing", "move_to_position", "execute", "advance".
 #' @param position Required only if action is "move_to_position".
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A logical vector indicating success for each session.
 #' @export
-formr_api_session_action <- function(run_name, session_codes, action, position = NULL) {
+formr_api_session_action <- function(run_name, session_codes, action, position = NULL, verbose = TRUE) {
 	
 	# 1. Validation
 	valid_actions <- c("end_external", "toggle_testing", "move_to_position", "execute", "advance")
@@ -144,7 +144,7 @@ formr_api_session_action <- function(run_name, session_codes, action, position =
 			return(TRUE)
 			
 		}, error = function(e) {
-			warning(sprintf("[WARNING] Failed to perform action on '%s': %s", code, e$message))
+			warning(sprintf("Failed to perform action on '%s': %s", code, e$message))
 			return(FALSE)
 		})
 	}
@@ -158,11 +158,11 @@ formr_api_session_action <- function(run_name, session_codes, action, position =
 	total_count <- length(session_codes)
 	
 	if (success_count == total_count) {
-		message(sprintf("[SUCCESS] Action '%s' successfully performed on all %d session(s).", action, total_count))
+		if (verbose) message(sprintf("Action '%s' successfully performed on all %d session(s).", action, total_count))
 	} else if (success_count > 0) {
-		message(sprintf("[INFO] Action '%s' performed on %d/%d session(s). (See warnings for failures)", action, success_count, total_count))
+		if (verbose) message(sprintf("Action '%s' performed on %d/%d session(s). (See warnings for failures)", action, success_count, total_count))
 	} else {
-		warning(sprintf("[FAILED] Action '%s' failed for all %d session(s).", action, total_count))
+		warning(sprintf("Action '%s' failed for all %d session(s).", action, total_count))
 	}
 	
 	invisible(results)
@@ -247,13 +247,14 @@ formr_api_session_action <- function(run_name, session_codes, action, position =
 #'   incremental polling.
 #' @param limit Pagination limit (default 1000, max 10000).
 #' @param offset Pagination offset (default 0).
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A tidy tibble with columns: `unit_session_id`, `session`,
 #'   `testing`, `unit_id`, `unit_type`, `unit_description`, `position`,
 #'   `iteration`, `created`, `expires`, `ended`, `expired`, `result`,
 #'   `state`.
 #' @export
 formr_api_unit_sessions <- function(run_name, session_codes = NULL, testing = NULL,
-                                     since = NULL, limit = 1000, offset = 0) {
+                                     since = NULL, limit = 1000, offset = 0, verbose = TRUE) {
 	query <- list(limit = limit, offset = offset)
 	if (!is.null(session_codes)) {
 		# The API accepts comma-delimited codes; collapse here so the
@@ -286,7 +287,7 @@ formr_api_unit_sessions <- function(run_name, session_codes = NULL, testing = NU
 	)
 
 	if (length(res) == 0) {
-		message(sprintf("[INFO] No unit sessions found for run '%s'.", run_name))
+		if (verbose) message(sprintf("No unit sessions found for run '%s'.", run_name))
 		return(empty)
 	}
 

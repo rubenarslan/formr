@@ -11,6 +11,9 @@ if_na(x, missing)
 
 \item{missing}{What to replace missing values with}
 }
+\value{
+\code{x} with its \code{NA} values replaced by \code{missing}.
+}
 \description{
 Often, you want to substitute missing values with some implicit known value (e.g. if the question on number of sexual partners was skipped for sexually inactive people, you know the missing should turn into zero)
 }

@@ -15,8 +15,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, eval = FALSE}
+```{r setup}
 library(formr)
+
+# So this vignette can run offline, the API calls below are replayed from
+# pre-recorded responses (vcr "cassettes" shipped with the package). With a
+# real server you would simply call formr_api_authenticate() with your own
+# host and credentials instead of this block.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
 ```
 
 The new `formr` API (V1) provides a streamlined pipeline for importing data. The API strictly separates **fetching** (getting data from the server) from **wrangling** (processing types, reversals, and scales), but the package provides a powerful convenience wrapper, `formr_api_results()`, to handle the entire process in one step.
@@ -26,17 +49,20 @@ The new `formr` API (V1) provides a streamlined pipeline for importing data. The
 Before fetching data, ensure you are authenticated. If you have stored your keys (see [Getting Started](getting-started.html)), this is automatic.
 
 ```{r, eval = FALSE}
-# Authenticate using stored credentials
-formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
+# On a real server, authenticate with your own host/account:
+formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard")
 ```
 
 ## 2. The One-Stop Solution (`formr_api_results`)
 
-The primary function is `formr_api_results()`. By default, it performs a "Smart Fetch" that handles everything from download to psychometric scoring.
+The primary function is `formr_api_results()`. By default, it performs a "Smart Fetch" that downloads every survey in the run, recognises data types, reverses items ending in `R`, aggregates scales, and joins everything into one wide tibble (one row per session).
 
-```{r, eval = FALSE}
-# Fetch, reverse, aggregate, and join all data
-df <- formr_api_results(run_name = "daily_diary")
+```{r, eval = .formr_vcr}
+# Replayed from a recorded response for a run called "test-run":
+vcr::use_cassette("formr_api_results_fetch_single", {
+  df <- formr_api_results("test-run", verbose = FALSE)
+})
+class(df)   # a "formr_results" tibble, ready for analysis
 ```
 
 ### What does `formr_api_results` do by default?
@@ -63,71 +89,74 @@ raw_data <- formr_api_results("daily_diary", compute_scales = FALSE)
 
 ## 3. Advanced: The Manual Pipeline
 
-If you used `compute_scales = FALSE` above, or if you are debugging why a specific scale isn't calculating correctly, you can use the lower-level processing functions manually. These rely on the survey's metadata (the item table).
+If you set `compute_scales = FALSE`, or you are debugging why a scale isn't calculating, you can call the lower-level processing functions yourself. They take the raw results plus the survey's item table (metadata).
 
-### A. Get Metadata
+To show this running offline, we use a small example dataset bundled with the
+package instead of a live download. On a real server you would get `results`
+from `formr_api_results(..., compute_scales = FALSE)` and `item_list` from
+`formr_api_survey_structure()`.
 
-Processing requires knowing which items are numeric, which are reversed (e.g., ends in `R`), and what the scale options are.
+```{r}
+# Raw results: one row per session, items not yet reversed or scored.
+results <- jsonlite::fromJSON(
+  system.file("extdata/gods_example_results.json", package = "formr"))
 
-```{r, eval = FALSE}
-# Fetch the survey structure (contains all item metadata)
-metadata <- formr_api_survey_structure("daily_diary")
+# Item metadata: a table with (at least) a `name` and a `choices` column —
+# exactly what formr_api_survey_structure() returns from the server.
+items_raw <- jsonlite::fromJSON(
+  system.file("extdata/gods_example_items.json", package = "formr"),
+  simplifyVector = FALSE)
+item_list <- data.frame(
+  name = vapply(items_raw$items, function(it) it$name, character(1)),
+  stringsAsFactors = FALSE)
+item_list$choices <- lapply(items_raw$items, function(it) it$choices)
+
+head(results[, c("session", "religiousness_2R", "religiousness_3")])
 ```
 
 ### B. Reverse Coding (`formr_api_reverse`)
 
-This function automatically reverses items that end in `R` (e.g., `bfi_neuro_3R`). It uses the item's defined choices (e.g., 1 to 5) to calculate the reversal correctly: $New = (Max + Min) - Old$.
+This function automatically reverses items whose name ends in `R` (e.g. `religiousness_2R`). It uses each item's defined choices to compute the reversal: $New = (Max + Min) - Old$.
 
-```{r, eval = FALSE}
-# Apply reverse coding to raw results
-df_reversed <- formr_api_reverse(results = raw_data, item_list = metadata)
+```{r}
+df_reversed <- formr_api_reverse(results = results, item_list = item_list)
+
+# religiousness_2R is reverse-keyed — its values are now flipped:
+data.frame(before = results$religiousness_2R,
+           after  = df_reversed$religiousness_2R)
 ```
-
-*Result:* The column `bfi_neuro_3R` now contains reversed values. An attribute `reversed = TRUE` is added to the column for tracking.
 
 ### C. Aggregation (`formr_api_aggregate`)
 
-This function calculates mean scores for items sharing a common "stem". For example, if you have `extra_1`, `extra_2`, and `extra_3R`, the function detects the stem `extra`, calculates the row-mean, and creates a new column `extra`.
+This function computes mean scores for items sharing a common stem. Items `religiousness_1`, `religiousness_2R`, `religiousness_3`, ... share the stem `religiousness`, so it creates a new `religiousness` column with the row mean.
 
-```{r, eval = FALSE}
-# Calculate scales (means)
-df_scored <- formr_api_aggregate(results = df_reversed, item_list = metadata)
+```{r}
+df_scored <- formr_api_aggregate(results = df_reversed, item_list = item_list,
+                                 min_items = 1)
+
+# New scale columns appear alongside the raw items:
+head(df_scored[, c("session", "religiousness", "prefer")])
 ```
 
-*Result:* A new column `extra` is added to the dataframe containing the mean of the items.
-
-By default, at least 2 items are required to form a scale. You can override this with `min_items`:
-
-```{r, eval = FALSE}
-# Allow single-item "scales"
-df_scored <- formr_api_aggregate(results = df_reversed, item_list = metadata, min_items = 1)
-```
+By default at least 2 items are required to form a scale; override with `min_items` as above.
 
 ------------------------------------------------------------------------
 
 ## 4. Full Workflow Example
 
-Here is a complete, reproducible snippet for a typical analysis script. Note how `formr_api_results` simplifies the process significantly compared to older versions of the package.
+A complete analysis script. `formr_api_results()` collapses fetching, reversing, and scoring into one call.
 
 ```{r, eval = FALSE}
 library(formr)
 library(dplyr)
 
-# 1. Connect
-formr_api_authenticate(host = "https://api.rforms.org") # or your custom URL!
-
-# 2. Get Processed Data (Reversed & Scored)
-run_name <- "daily_diary"
-data <- formr_api_results(run_name)
-
-# 3. Analyze
-summary(data$bfi_neuro) # This scale was computed automatically!
-# ...
+formr_api_authenticate(host = "https://api.rforms.org")   # your host
+data <- formr_api_results("daily_diary")                  # fetch + process
+summary(data$bfi_neuro)                                   # scale computed for you
 ```
 
 ## 5. Troubleshooting
 
 ### "My scale isn't calculating!"
 
-Ensure your variable names follow the `stem_number` or `stem_numberR` convention (e.g., `neuro_1`, `neuro_2R`). `formr_api_aggregate` (and thus `formr_api_results`) relies on this to group items.
-
+Ensure your variable names follow the `stem_number` or `stem_numberR` convention (e.g., `neuro_1`, `neuro_2R`). `formr_api_aggregate()` (and thus `formr_api_results()`) relies on this to group items.

@@ -1,0 +1,36 @@
+http_interactions:
+- request:
+    method: GET
+    uri: http://formr-host-redacted/v1/runs
+  response:
+    status: 200
+    headers:
+      date: Mon, 02 Feb 2026 18:05:25 GMT
+      server: Apache/2.4.65 (Debian)
+      x-powered-by: PHP/8.2.2
+      expires: Thu, 19 Nov 1981 08:52:00 GMT
+      cache-control: no-store, no-cache, must-revalidate
+      pragma: no-cache
+      vary: Accept-Encoding
+      content-encoding: gzip
+      access-control-allow-origin: ocpu.rforms.org
+      content-length: '479'
+      connection: close
+      content-type: application/json
+    body:
+      string: '[{"id":2,"name":"auto-submit","title":"Comprehensive Study Title Update","public":1,"cron_active":1,"locked":0,"created":"2025-09-29
+        13:54:11","modified":"2025-12-07 23:58:20"},{"id":3,"name":"EMI","title":"EMI","public":2,"cron_active":1,"locked":0,"created":"2025-09-29
+        14:59:33","modified":"2026-01-09 22:55:58"},{"id":4,"name":"test2","title":"test2","public":2,"cron_active":1,"locked":0,"created":"2025-10-08
+        22:49:04","modified":"2025-10-13 20:47:12"},{"id":52,"name":"katjas-run","title":"katjas-run","public":0,"cron_active":1,"locked":0,"created":"2025-12-11
+        15:03:42","modified":"2025-12-11 15:03:42"},{"id":102,"name":"test-all-units","title":"test-all-units","public":0,"cron_active":1,"locked":0,"created":"2025-12-14
+        18:56:09","modified":"2025-12-14 18:56:09"},{"id":125,"name":"HEOP","title":"HEOP","public":0,"cron_active":1,"locked":0,"created":"2025-12-15
+        14:03:26","modified":"2025-12-15 14:03:26"},{"id":126,"name":"HEOPP","title":"HEOPP","public":0,"cron_active":1,"locked":0,"created":"2025-12-15
+        14:03:43","modified":"2025-12-15 14:03:43"},{"id":127,"name":"HEOPPL","title":"HEOPPL","public":0,"cron_active":1,"locked":0,"created":"2025-12-15
+        14:05:33","modified":"2025-12-15 14:05:33"},{"id":129,"name":"HEOPPL23","title":"HEOPPL23","public":0,"cron_active":1,"locked":0,"created":"2025-12-15
+        14:07:21","modified":"2025-12-15 14:07:21"},{"id":131,"name":"usihsu","title":"usihsu","public":0,"cron_active":1,"locked":0,"created":"2025-12-15
+        14:13:50","modified":"2025-12-15 14:13:50"},{"id":144,"name":"hjfwerhwjh","title":"hjfwerhwjh","public":0,"cron_active":1,"locked":0,"created":"2025-12-17
+        17:20:39","modified":"2025-12-17 17:20:39"},{"id":152,"name":"jujujujuj","title":"jujujujuj","public":0,"cron_active":1,"locked":0,"created":"2025-12-17
+        22:50:44","modified":"2025-12-17 22:50:44"},{"id":168,"name":"martin","title":"martin","public":0,"cron_active":1,"locked":0,"created":"2025-12-23
+        12:30:40","modified":"2025-12-23 12:30:40"}]'
+  recorded_at: 2026-02-02 18:05:25
+recorded_with: VCR-vcr/2.1.0

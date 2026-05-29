@@ -11,6 +11,9 @@ formr_upload_items(survey_file_path, host = formr_last_host())
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+Invisibly \code{TRUE} on success; called to upload an item-table file to the formr server.
+}
 \description{
 To automatically create surveys using formr, you can upload survey item
 tables from R. Only file uploads are available. The file name determines
@@ -20,6 +23,7 @@ deletion).
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 items <- system.file('extdata/gods_example_items.json', package = 'formr', 
 mustWork = TRUE)

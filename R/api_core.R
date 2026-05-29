@@ -90,12 +90,15 @@ formr_api_session <- function() {
 #' @param client_secret OAuth Client Secret.
 #' @param access_token Direct Access Token.
 #' @param account Optional string identifier for multiple accounts on the same host.
+#' @param verbose Logical. If TRUE (default), reports success via [message()].
+#' @return Invisibly `NULL`; called for its side effect of obtaining and caching an OAuth access token (errors on failure).
 #' @export
 formr_api_authenticate <- function(host = "https://rforms.org",
 																	 client_id = NULL,
 																	 client_secret = NULL,
 																	 access_token = NULL,
-																	 account = NULL) {
+																	 account = NULL,
+																	 verbose = TRUE) {
 
 	# 0a. Hidden `.formr` env — preferred, set by rforms.org without
 	# polluting any visible scope.
@@ -154,7 +157,7 @@ formr_api_authenticate <- function(host = "https://rforms.org",
 		assign("auth_params", list(host = host, account = account), envir = .formr_state)
 		assign("session", session_data, envir = .formr_state)
 
-		message("[SUCCESS] Authenticated via Access Token.")
+		if (verbose) message("Authenticated via Access Token.")
 
 	} else if (!is.null(client_id) && !is.null(client_secret)) {
 		token_url <- httr::parse_url(host)
@@ -205,14 +208,14 @@ formr_api_authenticate <- function(host = "https://rforms.org",
 		assign("session", session_data, envir = .formr_state)
 
 		if (!is.na(granted_scope) && nzchar(granted_scope)) {
-			message("[SUCCESS] Authenticated via OAuth. Granted scopes: ", granted_scope)
+			if (verbose) message("Authenticated via OAuth. Granted scopes: ", granted_scope)
 		} else if (!is.na(granted_scope) && !nzchar(granted_scope)) {
 			# Token issued but with no scopes — every API call will 403.
 			# Surface this loudly so users hit the fix path (pick scopes
 			# at admin/account#api) instead of debugging blind 403s.
 			warning("OAuth token has NO scopes. The credential at admin/account#api needs scopes selected. Every API call will return 403 until that's fixed.")
 		} else {
-			message("[SUCCESS] Authenticated via OAuth.")
+			if (verbose) message("Authenticated via OAuth.")
 		}
 		
 	} else {
@@ -225,13 +228,15 @@ formr_api_authenticate <- function(host = "https://rforms.org",
 #' Invalidates the current access token on the server and 
 #' clears the local session state.
 #'
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
+#' @return Invisibly `TRUE` on success (or `FALSE` if there was no active session); called to revoke the access token on the server and clear the local session.
 #' @export
-formr_api_logout <- function() {
+formr_api_logout <- function(verbose = TRUE) {
 	# 1. Get current session
 	session <- formr_api_session()
-	
+
 	if (is.null(session)) {
-		message("No active session found.")
+		if (verbose) message("No active session found.")
 		return(invisible(FALSE))
 	}
 	
@@ -252,7 +257,7 @@ formr_api_logout <- function() {
 		
 		# Check for success (200 OK)
 		if (httr::status_code(res) == 200) {
-			message("[SUCCESS] Token revoked on server.")
+			message("Token revoked on server.")
 		} else {
 			warning("Server could not revoke token (it may already be expired): ", 
 							httr::content(res, "text"))
@@ -270,7 +275,7 @@ formr_api_logout <- function() {
 		rm("auth_params", envir = .formr_state)
 	}
 	
-	message("[SUCCESS] Local session cleared.")
+	message("Local session cleared.")
 	return(invisible(TRUE))
 }
 

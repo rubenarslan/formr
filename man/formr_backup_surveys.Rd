@@ -7,7 +7,7 @@
 formr_backup_surveys(
   survey_names,
   surveys = list(),
-  save_path = "./",
+  save_path = NULL,
   overwrite = FALSE,
   host = formr_last_host()
 )
@@ -17,17 +17,24 @@ formr_backup_surveys(
 
 \item{surveys}{a list of survey data (from a run structure), optional}
 
-\item{save_path}{path to save the study data, defaults to the study name}
+\item{save_path}{directory to write the surveys into. Defaults to
+\code{\link[=formr_default_dir]{formr_default_dir()}}; set that (or pass \code{save_path}) since formr never
+writes to the working directory by default.}
 
 \item{overwrite}{should existing files be overwritten?}
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
+}
+\value{
+Invisibly \code{NULL}; called for its side effect of downloading surveys
+(items, results, item displays and files) into \code{save_path}.
 }
 \description{
 Backup surveys by downloading item lists, results, item displays and file lists.
 }
 \examples{
 \dontrun{
-formr_backup_surveys(survey_names = 'training_diary', save_path = 'surveys')
+# Not run: needs a live formr server and an authenticated session.
+formr_backup_surveys(survey_names = 'training_diary', save_path = file.path(tempdir(), 'surveys'))
 }
 }

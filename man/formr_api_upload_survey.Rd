@@ -4,12 +4,21 @@
 \alias{formr_api_upload_survey}
 \title{Upload/Update Survey}
 \usage{
-formr_api_upload_survey(file_path = NULL, google_sheet_url = NULL)
+formr_api_upload_survey(
+  file_path = NULL,
+  google_sheet_url = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{file_path}{Path to a local file.}
 
 \item{google_sheet_url}{Google Sheet URL.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly the server response; called to upload or update a survey from a local file or Google Sheet.
 }
 \description{
 Uploads a survey structure.

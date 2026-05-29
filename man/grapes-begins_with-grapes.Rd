@@ -12,6 +12,9 @@ haystack \%begins_with\% needle
 
 \item{needle}{string to search for}
 }
+\value{
+A logical vector, \code{TRUE} where \code{haystack} begins with \code{needle}.
+}
 \description{
 Escapes any special RegExp characters in the search term. A way to check whether the search term
 (e.g. a variable name) is the beginning.

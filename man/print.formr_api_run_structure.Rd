@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+Invisibly returns \code{x}; called for its side effect of printing a formatted table of the run's units.
+}
 \description{
 Print method for formr run structure
 }

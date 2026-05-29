@@ -10,7 +10,8 @@ formr_api_sessions(
   active = NULL,
   testing = NULL,
   limit = 1000,
-  offset = 0
+  offset = 0,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ If provided, \code{active}, \code{limit}, and \code{offset} are ignored.}
 \item{limit}{Pagination limit (default 1000).}
 
 \item{offset}{Pagination offset (default 0).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 A combined tibble of session states and details.

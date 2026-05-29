@@ -13,6 +13,9 @@ formr_render(text, self_contained = FALSE, ...)
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }
+\value{
+A length-1 character string: the path to the rendered HTML file.
+}
 \description{
 Render text
 }

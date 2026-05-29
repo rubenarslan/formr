@@ -4,10 +4,12 @@
 \alias{formr_api_surveys}
 \title{List Surveys}
 \usage{
-formr_api_surveys(name_pattern = NULL)
+formr_api_surveys(name_pattern = NULL, verbose = TRUE)
 }
 \arguments{
 \item{name_pattern}{Optional. Filter surveys by name (partial match).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 A tibble of surveys (id, name, created, modified, results_table).

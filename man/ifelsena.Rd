@@ -15,6 +15,9 @@ ifelsena(test, yes, no, missing = no)
 
 \item{missing}{defaults to the value for no}
 }
+\value{
+A vector like \code{\link[=ifelse]{ifelse()}}'s result, with \code{NA} positions replaced by \code{missing}.
+}
 \description{
 Deprecated. Please use \code{\link[dplyr:if_else]{dplyr::if_else()}} in the future.
 Defaults to assigning the "no" value to missing values as well. Often missings encapsulate
@@ -22,6 +25,7 @@ some sort of meaning for the variable you're trying to define.
 }
 \examples{
 \dontrun{
+# Not run: ifelsena() is deprecated; use dplyr::if_else() instead.
 data(beavers)
 beaver1$activ[1:10] = NA
 beaver1$hyperactive = ifelse(beaver1$activ > 1, 1, 0)

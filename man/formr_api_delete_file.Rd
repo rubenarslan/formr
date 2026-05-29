@@ -4,12 +4,17 @@
 \alias{formr_api_delete_file}
 \title{Delete file(s) from a run}
 \usage{
-formr_api_delete_file(run_name, file_name)
+formr_api_delete_file(run_name, file_name, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run.}
 
 \item{file_name}{The name of the file(s) to delete (e.g. "image.png"), or a local directory path.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{TRUE}; called to delete the named file(s) from the run.
 }
 \description{
 Removes file attachment(s) from the run. Accepts a single filename, a vector
