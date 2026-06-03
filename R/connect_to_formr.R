@@ -112,7 +112,8 @@ formr_last_host <- local({
 #' is ever written until you opt in. Call this function with a path to set a
 #' session-wide default, or without arguments to read the current value. The
 #' path is held in memory for the current R session only; nothing is written to
-#' disk to persist it.
+#' disk to persist it. There is no separate reset: the value lasts until you
+#' overwrite it with another path or your R session ends.
 #'
 #' @param dir a single directory path to use as the default. If `NULL` (the
 #'   default) the stored value is returned unchanged. The directory itself is
@@ -148,6 +149,28 @@ formr_default_dir <- local({
 			arg, arg), call. = FALSE)
 	}
 	base
+}
+
+# internal: confirmation gate shared by the destructive/overwriting functions.
+# Returns TRUE to proceed, FALSE if the user declined an interactive prompt.
+# When `prompt` is TRUE but the session is non-interactive we cannot ask, so we
+# stop() rather than proceed unattended (CRAN: no readline() in batch; and we
+# refuse to silently delete/overwrite). Callers opt out with `prompt = FALSE`.
+.formr_confirm <- function(warning_text, prompt = TRUE) {
+	if (!isTRUE(prompt)) return(TRUE)
+	if (!interactive()) {
+		stop(warning_text,
+			"\nCannot ask for confirmation in a non-interactive session. ",
+			"Re-run with `prompt = FALSE` to proceed without confirmation.",
+			call. = FALSE)
+	}
+	warning(warning_text, call. = FALSE, immediate. = TRUE)
+	response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
+	if (tolower(trimws(response)) != "y") {
+		message("Operation cancelled.")
+		return(FALSE)
+	}
+	TRUE
 }
 
 

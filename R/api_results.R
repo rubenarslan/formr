@@ -550,11 +550,11 @@ summary.formr_results <- function(object, ...) {
 	cat("=== Processing Audit Trail ===\n\n")
 	categories <- unique(vapply(history, function(x) x$category, character(1)))
 	
-	for (cat in categories) {
-		cat(toupper(cat), "\n")
-		cat(paste0(rep("-", nchar(cat)), collapse = ""), "\n")
-		
-		cat_entries <- Filter(function(x) x$category == cat, history)
+	for (category in categories) {
+		cat(toupper(category), "\n")
+		cat(paste0(rep("-", nchar(category)), collapse = ""), "\n")
+
+		cat_entries <- Filter(function(x) x$category == category, history)
 		for (entry in cat_entries) {
 			cat("  - ", entry$message, "\n", sep = "")
 		}

@@ -257,7 +257,7 @@ formr_api_logout <- function(verbose = TRUE) {
 		
 		# Check for success (200 OK)
 		if (httr::status_code(res) == 200) {
-			message("Token revoked on server.")
+			if (verbose) message("Token revoked on server.")
 		} else {
 			warning("Server could not revoke token (it may already be expired): ", 
 							httr::content(res, "text"))
@@ -275,7 +275,7 @@ formr_api_logout <- function(verbose = TRUE) {
 		rm("auth_params", envir = .formr_state)
 	}
 	
-	message("Local session cleared.")
+	if (verbose) message("Local session cleared.")
 	return(invisible(TRUE))
 }
 

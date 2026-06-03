@@ -9,7 +9,9 @@ formr_api_delete_survey(survey_name, prompt = TRUE, verbose = TRUE)
 \arguments{
 \item{survey_name}{Name of the survey to delete.}
 
-\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation.}
+\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation;
+in a non-interactive session it errors instead of proceeding unattended.
+Pass \code{prompt = FALSE} to delete without confirmation (e.g. in scripts).}
 
 \item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }

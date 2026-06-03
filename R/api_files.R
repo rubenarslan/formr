@@ -133,8 +133,9 @@ formr_api_delete_file <- function(run_name, file_name, verbose = TRUE) {
 #' It first fetches the list of existing files, then iterates through them to delete.
 #'
 #' @param run_name Name of the run.
-#' @param prompt Logical. If TRUE (default), the function asks for interactive confirmation 
-#'        before deleting. Set to FALSE for automated scripts (use with care).
+#' @param prompt Logical. If TRUE (default), asks for interactive confirmation
+#'        before deleting; in a non-interactive session it errors instead of
+#'        proceeding unattended. Set to FALSE for automated scripts (use with care).
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` on success; called to delete all files from the run.
 #' @export
@@ -151,15 +152,10 @@ formr_api_delete_all_files <- function(run_name, prompt = TRUE, verbose = TRUE) 
 	count <- length(file_names)
 	
 	# 2. Safety prompt
-	if (prompt && interactive()) {
-		shown <- paste(head(file_names, 3), collapse = ", ")
-		warning(sprintf("You are about to delete %d files from run '%s' (%s%s).",
-			count, run_name, shown, if (count > 3) ", ..." else ""), call. = FALSE, immediate. = TRUE)
-		response <- readline(prompt = "Are you sure you want to proceed? (y/n): ")
-		if (tolower(trimws(response)) != "y") {
-			message("Operation cancelled.")
-			return(invisible(FALSE))
-		}
+	shown <- paste(head(file_names, 3), collapse = ", ")
+	if (!.formr_confirm(sprintf("You are about to delete %d files from run '%s' (%s%s).",
+		count, run_name, shown, if (count > 3) ", ..." else ""), prompt)) {
+		return(invisible(FALSE))
 	}
 
 	# 3. Perform deletion (delete_file accepts a vector)

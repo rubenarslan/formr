@@ -14,7 +14,9 @@ after the run inside \code{\link[=formr_default_dir]{formr_default_dir()}}; set 
 formr never writes to the working directory by default.}
 
 \item{prompt}{Logical. If TRUE (default), asks for confirmation before
-overwriting when run interactively.}
+overwriting when run interactively; in a non-interactive session it errors
+instead of proceeding unattended. Pass \code{prompt = FALSE} to overwrite
+without confirmation (e.g. in scripts).}
 
 \item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }

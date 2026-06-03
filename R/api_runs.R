@@ -268,7 +268,9 @@ as.data.frame.formr_api_run_structure <- function(x, ...) {
 #' Permanently deletes a run and all associated data (sessions, results).
 #'
 #' @param run_name Name of the run to delete.
-#' @param prompt Logical. If TRUE (default), asks for interactive confirmation.
+#' @param prompt Logical. If TRUE (default), asks for interactive confirmation;
+#'   in a non-interactive session it errors instead of proceeding unattended.
+#'   Pass `prompt = FALSE` to delete without confirmation (e.g. in scripts).
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` (single run) or a named logical vector (multiple
 #'   runs) indicating per-run success; `FALSE` if the user declines the prompt.
@@ -276,15 +278,10 @@ as.data.frame.formr_api_run_structure <- function(x, ...) {
 formr_api_delete_run <- function(run_name, prompt = TRUE, verbose = TRUE) {
 	
 	if (length(run_name) > 1) {
-		if (prompt && interactive()) {
-			warning(sprintf(
-				"You are about to permanently delete %d runs (%s). This includes ALL structure and attached files and cannot be undone.",
-				length(run_name), paste(run_name, collapse = ", ")), call. = FALSE, immediate. = TRUE)
-			response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
-			if (tolower(trimws(response)) != "y") {
-				message("Operation cancelled.")
-				return(invisible(FALSE))
-			}
+		if (!.formr_confirm(sprintf(
+			"You are about to permanently delete %d runs (%s). This includes ALL structure and attached files and cannot be undone.",
+			length(run_name), paste(run_name, collapse = ", ")), prompt)) {
+			return(invisible(FALSE))
 		}
 		results <- vapply(run_name, function(rn) {
 			tryCatch({
@@ -306,15 +303,10 @@ formr_api_delete_run <- function(run_name, prompt = TRUE, verbose = TRUE) {
 		return(invisible(results))
 	}
 	
-	if (prompt && interactive()) {
-		warning(sprintf(
-			"You are about to permanently delete the run '%s'. This includes ALL structure and attached files and cannot be undone.",
-			run_name), call. = FALSE, immediate. = TRUE)
-		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
-		if (tolower(trimws(response)) != "y") {
-			message("Operation cancelled.")
-			return(invisible(FALSE))
-		}
+	if (!.formr_confirm(sprintf(
+		"You are about to permanently delete the run '%s'. This includes ALL structure and attached files and cannot be undone.",
+		run_name), prompt)) {
+		return(invisible(FALSE))
 	}
 
 	tryCatch({

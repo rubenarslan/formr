@@ -6,7 +6,12 @@
   * Functions no longer write informational output with `cat()`/`print()`.
     Progress and status messages now use `message()` and can be silenced with a
     new `verbose` argument; the warnings before destructive actions use
-    `warning()` and only prompt when `interactive()`.
+    `warning()`. The confirmation prompt now only appears in interactive
+    sessions: destructive/overwriting calls (`formr_api_delete_run()`,
+    `formr_api_delete_survey()`, `formr_api_delete_all_files()`,
+    `formr_api_backup_run()`, `formr_api_pull_project()`) **error** in a
+    non-interactive session rather than proceeding unattended — pass
+    `prompt = FALSE` to confirm in scripts.
   * New `formr_default_dir()` sets a session-wide default output directory.
     The writing helpers (`formr_backup_study()`, `formr_backup_surveys()`,
     `formr_backup_files()`, `formr_api_backup_run()`, `formr_api_pull_project()`,

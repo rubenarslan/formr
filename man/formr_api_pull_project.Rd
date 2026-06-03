@@ -15,7 +15,9 @@ formr_api_pull_project(run_name, dir = NULL, prompt = TRUE, verbose = TRUE)
 the working directory by default.}
 
 \item{prompt}{Logical. If TRUE (default), asks for confirmation before
-overwriting when run interactively (unless \code{dir} is empty).}
+overwriting when run interactively (unless \code{dir} is empty); in a
+non-interactive session it errors instead of overwriting unattended. Pass
+\code{prompt = FALSE} to overwrite without confirmation (e.g. in scripts).}
 
 \item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }

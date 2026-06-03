@@ -23,7 +23,8 @@ value stored here, which is unset (\code{NULL}) until you choose one — so noth
 is ever written until you opt in. Call this function with a path to set a
 session-wide default, or without arguments to read the current value. The
 path is held in memory for the current R session only; nothing is written to
-disk to persist it.
+disk to persist it. There is no separate reset: the value lasts until you
+overwrite it with another path or your R session ends.
 }
 \examples{
 formr_default_dir(tempdir())

@@ -9,8 +9,9 @@ formr_api_delete_all_files(run_name, prompt = TRUE, verbose = TRUE)
 \arguments{
 \item{run_name}{Name of the run.}
 
-\item{prompt}{Logical. If TRUE (default), the function asks for interactive confirmation
-before deleting. Set to FALSE for automated scripts (use with care).}
+\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation
+before deleting; in a non-interactive session it errors instead of
+proceeding unattended. Set to FALSE for automated scripts (use with care).}
 
 \item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }

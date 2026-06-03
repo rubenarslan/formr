@@ -154,20 +154,16 @@ formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL, v
 #' Note: The API may prevent deletion if this survey is currently used in an active run.
 #'
 #' @param survey_name Name of the survey to delete.
-#' @param prompt Logical. If TRUE (default), asks for interactive confirmation.
+#' @param prompt Logical. If TRUE (default), asks for interactive confirmation;
+#'   in a non-interactive session it errors instead of proceeding unattended.
+#'   Pass `prompt = FALSE` to delete without confirmation (e.g. in scripts).
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` on success; `FALSE` if the user declines the prompt.
 #' @export
 formr_api_delete_survey <- function(survey_name, prompt = TRUE, verbose = TRUE) {
 
-	if (prompt && interactive()) {
-		warning(sprintf("You are about to permanently delete the survey '%s'.", survey_name),
-			call. = FALSE, immediate. = TRUE)
-		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
-		if (tolower(trimws(response)) != "y") {
-			message("Operation cancelled.")
-			return(invisible(FALSE))
-		}
+	if (!.formr_confirm(sprintf("You are about to permanently delete the survey '%s'.", survey_name), prompt)) {
+		return(invisible(FALSE))
 	}
 
 	tryCatch({

@@ -8,7 +8,9 @@
 #'   after the run inside [formr_default_dir()]; set that (or pass `dir`) since
 #'   formr never writes to the working directory by default.
 #' @param prompt Logical. If TRUE (default), asks for confirmation before
-#'   overwriting when run interactively.
+#'   overwriting when run interactively; in a non-interactive session it errors
+#'   instead of proceeding unattended. Pass `prompt = FALSE` to overwrite
+#'   without confirmation (e.g. in scripts).
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `NULL`; called for its side effect of writing the run
 #'   structure (JSON), surveys, files and results (`results.rds`) into `dir`.
@@ -22,15 +24,10 @@ formr_api_backup_run <- function(run_name, dir = NULL, prompt = TRUE, verbose = 
 
 	if (is.null(dir)) dir <- file.path(.formr_default_or_stop("dir"), run_name)
 
-	if (prompt && interactive()) {
-		warning(sprintf(
-			"You are about to overwrite local files in '%s' with data from run '%s'. Any local changes will be LOST.",
-			normalizePath(dir, mustWork = FALSE), run_name), call. = FALSE, immediate. = TRUE)
-		response <- readline(prompt = "   Are you sure you want to proceed? (y/n): ")
-		if (tolower(trimws(response)) != "y") {
-			message("Operation cancelled.")
-			return(invisible(NULL))
-		}
+	if (!.formr_confirm(sprintf(
+		"You are about to overwrite local files in '%s' with data from run '%s'. Any local changes will be LOST.",
+		normalizePath(dir, mustWork = FALSE), run_name), prompt)) {
+		return(invisible(NULL))
 	}
 
 	# Directory creation & safety check
@@ -45,13 +42,13 @@ formr_api_backup_run <- function(run_name, dir = NULL, prompt = TRUE, verbose = 
 
 	# Run structure (JSON)
 	tryCatch({
-		struct <- formr_api_run_structure(run_name)
+		struct <- formr_api_run_structure(run_name, verbose = verbose)
 		jsonlite::write_json(struct, file.path(dir, "run_structure.json"), pretty = TRUE, auto_unbox = TRUE)
-		.sync_api_server_surveys(struct, dir = dir)
+		.sync_api_server_surveys(struct, dir = dir, verbose = verbose)
 	}, error = function(e) warning("Failed to download run structure: ", e$message))
 
 	# Files
-	.sync_api_server_files(run_name, dir = dir)
+	.sync_api_server_files(run_name, dir = dir, verbose = verbose)
 
 	# Results
 	if (verbose) message("Downloading results...")
