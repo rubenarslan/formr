@@ -120,7 +120,7 @@ formr_api_push_project("my-study-name", dir = tempdir())
 
 #### Watch Mode
 
-If you are heavily editing a survey, running `formr_api_push_project` manually every time can be tedious. You can use the `watch` argument to keep the connection open. The package will monitor your folder and upload changes immediately as you save files. Note that you cannot run other commands until you stop the watcher by pressing the "Esc"-Key.
+If you are heavily editing a survey, running `formr_api_push_project` manually every time can be tedious. You can use the `watch` argument to keep the connection open. The package will monitor your folder and upload changes immediately as you save files. Note that you can run other commands in your R session, as the watcher launches as a background job. You can stop the watcher by terminating the background process.
 
 ```{r, eval = FALSE}
 # Not run: needs a live formr server.
