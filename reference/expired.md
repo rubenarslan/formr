@@ -20,6 +20,11 @@ expired(survey, variable = "expired")
 
   which variable should be filled out, defaults to "ended"
 
+## Value
+
+An integer: the count of expired sessions (non-missing values in
+`survey[[variable]]`).
+
 ## Examples
 
 ``` r

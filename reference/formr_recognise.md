@@ -38,6 +38,12 @@ formr_recognise(
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+The results data.frame with POSIXct timestamps and
+numeric/factor/[`haven::labelled`](https://haven.tidyverse.org/reference/labelled.html)
+columns set according to item types.
+
 ## Examples
 
 ``` r

@@ -23,6 +23,11 @@ feedback_chunk(normed_value, chunks)
   a three or five element long character vector containing the text
   chunks for feedback
 
+## Value
+
+A length-1 character string: the chunk selected for the interval
+containing `normed_value`.
+
 ## Examples
 
 ``` r

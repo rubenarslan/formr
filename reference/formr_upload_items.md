@@ -24,10 +24,16 @@ formr_upload_items(survey_file_path, host = formr_last_host())
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+Invisibly `TRUE` on success; called to upload an item-table file to the
+formr server.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 items <- system.file('extdata/gods_example_items.json', package = 'formr', 
 mustWork = TRUE)

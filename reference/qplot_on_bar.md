@@ -42,6 +42,10 @@ qplot_on_bar(
   the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to
   minuses, pluses and the average sign
 
+## Value
+
+A `ggplot` object: a bar chart, optionally with error bars.
+
 ## Examples
 
 ``` r

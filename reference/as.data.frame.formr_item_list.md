@@ -27,10 +27,16 @@ as.data.frame(x, row.names, ...)
 
   not used
 
+## Value
+
+A data.frame of item metadata, one row per item, with `choices`
+collapsed to a comma-separated string.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 as.data.frame(formr_items(survey_name = 'training_diary' ))
 } # }

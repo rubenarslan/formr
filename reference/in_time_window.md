@@ -18,6 +18,11 @@ in_time_window(min, max)
 
   POSIXct \> min
 
+## Value
+
+A length-1 logical: `TRUE` if the current time lies between `min` and
+`max`.
+
 ## Examples
 
 ``` r

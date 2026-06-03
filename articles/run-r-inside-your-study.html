@@ -92,8 +92,16 @@
 
     
     
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span></code></pre></div>
 <p>If you haven’t already, read the <a href="getting-started.html">Getting Started</a> guide for authentication
 basics.</p>
+<p>Most code in this vignette is meant to be <strong>pasted into a formr
+study</strong> (a calculate item or a label), where the server injects
+the run context and credentials. Those snippets are shown but not
+executed here. The local helper functions (<code><a href="../reference/current.html">current()</a></code>,
+<code><a href="../reference/first.html">first()</a></code>, <code><a href="../reference/last.html">last()</a></code>, and JSON parsing), however,
+run anywhere — and are executed below.</p>
 <div class="section level2">
 <h2 id="why-run-r-inside-your-study">1. Why Run R Inside Your Study?<a class="anchor" aria-label="anchor" href="#why-run-r-inside-your-study"></a>
 </h2>
@@ -141,7 +149,7 @@ reaches it. The last value is stored in the session data and can be used
 by later units (showif conditions, labels, other calculate items). This
 is where <code><a href="../reference/formr_api_authenticate.html">formr_api_authenticate()</a></code> and
 <code><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results()</a></code> go.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inside a calculate item's "value" field:</span></span>
 <span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -158,7 +166,7 @@ completions per experimental cell.</p>
 functions just like calculate items —
 <code><a href="../reference/formr_api_authenticate.html">formr_api_authenticate()</a></code> and
 <code><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results()</a></code> work here too.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In a note item's label — fetch and display in one step:</span></span>
 <span><span class="co"># ```{r, echo=FALSE, results='asis'}</span></span>
 <span><span class="co"># formr_api_authenticate()</span></span>
@@ -180,7 +188,7 @@ walkthrough in §5 does.</p>
 </h3>
 <p>Choice labels can also display dynamic content, useful when a
 dropdown menu should reflect live database contents.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inside a mc_multiple choice option's label — fetch and display in one step:</span></span>
 <span><span class="co"># ```{r}</span></span>
 <span><span class="co"># formr_api_authenticate()</span></span>
@@ -197,7 +205,7 @@ dropdown menu should reflect live database contents.</p>
 <h3 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
 </h3>
 <p>Inside a run, credentials are injected automatically. Just call:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The package detects <code>.formr$access_token</code> and
 <code>.formr$host</code> set by the server. The token is valid for the
@@ -227,7 +235,7 @@ duration of the request and is revoked when the request finishes.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_name</span> <span class="op">&lt;-</span> <span class="va">.formr</span><span class="op">$</span><span class="va">run_name</span></span>
 <span><span class="va">user_session</span> <span class="op">&lt;-</span> <span class="va">survey_run_sessions</span><span class="op">$</span><span class="va">session</span></span></code></pre></div>
 <p>Use these to fetch the right data and associate new data with the
@@ -284,7 +292,7 @@ right session, making your code portable across runs.</p>
 <p>Inside a run, you almost always want
 <code><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results()</a></code> — raw data without
 transformations is safer when you process it yourself.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results</a></span><span class="op">(</span><span class="va">.formr</span><span class="op">$</span><span class="va">run_name</span>,</span>
 <span>  item_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"age"</span>, <span class="st">"score"</span><span class="op">)</span>, join <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Always specify <code>item_names</code> to keep requests fast. The
@@ -299,12 +307,22 @@ in multiple surveys, the survey name is prefixed.</p>
 within a session. The helper <code>current(x)</code> returns the
 <strong>most recent submission</strong> of an item — the last element of
 the vector, which is always the current session’s value:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># In a showif condition — check the current selection</span></span>
-<span><span class="fu"><a href="../reference/current.html">current</a></span><span class="op">(</span><span class="va">menu_survey</span><span class="op">$</span><span class="va">choice</span><span class="op">)</span> <span class="op">==</span> <span class="st">"option_a"</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># formr repeats items within a session; current() returns the latest value.</span></span>
+<span><span class="co"># Here is a participant's history of one menu item across repeats:</span></span>
+<span><span class="va">choice_history</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"option_a"</span>, <span class="st">"option_b"</span>, <span class="st">"option_a"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/current.html">current</a></span><span class="op">(</span><span class="va">choice_history</span><span class="op">)</span>                 <span class="co"># the current (most recent) selection</span></span>
+<span><span class="co">#&gt; [1] "option_a"</span></span>
 <span></span>
-<span><span class="co"># In a calculate item — capture the latest input</span></span>
-<span><span class="fu"><a href="../reference/current.html">current</a></span><span class="op">(</span><span class="va">my_survey</span><span class="op">$</span><span class="va">text_input</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># In a showif you would compare it directly, e.g.:</span></span>
+<span><span class="fu"><a href="../reference/current.html">current</a></span><span class="op">(</span><span class="va">choice_history</span><span class="op">)</span> <span class="op">==</span> <span class="st">"option_a"</span>   <span class="co"># TRUE</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="co"># first() and last() are siblings that drop missing values by default:</span></span>
+<span><span class="fu"><a href="../reference/first.html">first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>   <span class="co"># 2</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="fu"><a href="../reference/last.html">last</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span>    <span class="co"># 2</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
 <p>This is cleaner than the equivalent base-R <code>x[length(x)]</code>
 pattern and makes your intent explicit. See <code><a href="../reference/current.html">?current</a></code> for
 details.</p>
@@ -357,7 +375,7 @@ in the study, using cross-session data.</p>
 <div class="section level3">
 <h3 id="calculate-participant_count">Calculate: <code>participant_count</code><a class="anchor" aria-label="anchor" href="#calculate-participant_count"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">past</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results</a></span><span class="op">(</span><span class="va">.formr</span><span class="op">$</span><span class="va">run_name</span>, item_names <span class="op">=</span> <span class="st">"name"</span>, join <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -368,7 +386,7 @@ in the study, using cross-session data.</p>
 <h3 id="survey-welcome">Survey: <code>welcome</code><a class="anchor" aria-label="anchor" href="#survey-welcome"></a>
 </h3>
 <p>A note item with this label:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ```{r, echo=FALSE, results='asis'}</span></span>
 <span><span class="co"># cat("## Welcome, Participant #", participant_count, "\n\n", sep = "")</span></span>
 <span><span class="co"># cat("Please proceed with the study.")</span></span>
@@ -427,7 +445,7 @@ needed, no data stored between units.</p>
 <p>A note item whose label fetches all engagement scores via the API and
 renders a ggplot comparing the current participant against the sample
 distribution:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ```{r, echo=FALSE, results='asis', fig.width=6, fig.height=3}</span></span>
 <span><span class="co"># library(ggplot2)</span></span>
 <span><span class="co"># formr_api_authenticate()</span></span>
@@ -519,7 +537,7 @@ group.</p>
 <div class="section level3">
 <h3 id="calculate-pick_condition">Calculate: <code>pick_condition</code><a class="anchor" aria-label="anchor" href="#calculate-pick_condition"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fetch the condition assignments from all completed sessions</span></span>
@@ -600,7 +618,7 @@ re-submit every 2 seconds. A SkipBackward unit (position 30) immediately
 sends the session back to position 20, creating a continuous loop.</p>
 <p>An <strong>administrator trigger</strong> (run manually or on a cron
 schedule) polls for queued sessions and releases them:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Admin trigger — run outside the study, on your local machine or a cron job</span></span>
 <span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"admin"</span><span class="op">)</span></span>
 <span></span>
@@ -656,16 +674,25 @@ item.</li>
 nested JSON (e.g., multi-select choices). Always wrap parsing in a
 <code>tryCatch</code>:</li>
 </ol>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">safe_parse_json</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>    <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
 <span>    error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">safe_parse_json</span><span class="op">(</span><span class="st">'{"score": 5, "label": "high"}'</span><span class="op">)</span>   <span class="co"># parses to a list</span></span>
+<span><span class="co">#&gt; $score</span></span>
+<span><span class="co">#&gt; [1] 5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $label</span></span>
+<span><span class="co">#&gt; [1] "high"</span></span>
+<span><span class="fu">safe_parse_json</span><span class="op">(</span><span class="st">"not valid json"</span><span class="op">)</span>                    <span class="co"># returns list(), no error</span></span>
+<span><span class="co">#&gt; list()</span></span></code></pre></div>
 <p><strong>Guard against empty results.</strong> Before processing
 fetched data, check that it has rows:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_fetch_results.html">formr_api_fetch_results</a></span><span class="op">(</span><span class="va">.formr</span><span class="op">$</span><span class="va">run_name</span>, item_names <span class="op">=</span> <span class="st">"score"</span>, join <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">score</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>

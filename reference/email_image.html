@@ -81,10 +81,16 @@
 <dd><p>extension, defaults to .png</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A length-1 character string holding a <code>cid:</code> reference for inline email images,
+carrying the source path in its <code>link</code> attribute.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Not run: meant to run inside a knitr session as the figure upload hook.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">opts_knit</span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>upload.fun<span class="op">=</span><span class="fu">formr</span><span class="fu">::</span><span class="va">email_image</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

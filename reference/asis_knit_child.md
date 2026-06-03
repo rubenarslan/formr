@@ -56,6 +56,11 @@ asis_knit_child(
   passed to
   [`knitr::knit_child()`](https://rdrr.io/pkg/knitr/man/knit_child.html)
 
+## Value
+
+A length-1 character string of class `knit_asis` (the knitted child
+document).
+
 ## Details
 
 Why default to the calling environment? Typically this function defaults
@@ -77,6 +82,7 @@ Some caveats:
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: requires a knitr session and an external child .Rmd document.
 # an example of a wrapper function that calls asis_knit_child with an argument
 # ensures distinct paths for cache and figures, so that these calls can be looped in parallel
 regression_summary = function(model) {

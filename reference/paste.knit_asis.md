@@ -26,6 +26,11 @@ paste.knit_asis(..., sep = "\n\n\n", collapse = "\n\n\n")
   defaults to two empty lines, passed to
   [`paste()`](https://rdrr.io/r/base/paste.html)
 
+## Value
+
+A length-1 character string of class `knit_asis` (the inputs
+concatenated).
+
 ## Details
 
 Works like [`paste()`](https://rdrr.io/r/base/paste.html) with both the

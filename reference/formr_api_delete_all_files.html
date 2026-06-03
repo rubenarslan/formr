@@ -69,7 +69,7 @@ It first fetches the list of existing files, then iterates through them to delet
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_delete_all_files</span><span class="op">(</span><span class="va">run_name</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_delete_all_files</span><span class="op">(</span><span class="va">run_name</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,10 +81,19 @@ It first fetches the list of existing files, then iterates through them to delet
 
 
 <dt id="arg-prompt">prompt<a class="anchor" aria-label="anchor" href="#arg-prompt"></a></dt>
-<dd><p>Logical. If TRUE (default), the function asks for interactive confirmation
-before deleting. Set to FALSE for automated scripts (use with care).</p></dd>
+<dd><p>Logical. If TRUE (default), asks for interactive confirmation
+before deleting; in a non-interactive session it errors instead of
+proceeding unattended. Set to FALSE for automated scripts (use with care).</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports progress via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Invisibly <code>TRUE</code> on success; called to delete all files from the run.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

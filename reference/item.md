@@ -18,6 +18,11 @@ item(survey, item_name)
 
   item name
 
+## Value
+
+The metadata list for a single item (from a survey variable's
+attributes), or `NULL` with a warning if not found.
+
 ## Examples
 
 ``` r

@@ -3,8 +3,28 @@
 ``` r
 
 library(formr)
-# Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
 ```
 
 Most complex studies require more than just survey spreadsheets. For
@@ -26,10 +46,16 @@ and upload timestamps.
 ``` r
 
 # List all files attached to the study
-files <- formr_api_files("my-study-name")
+vcr::use_cassette("formr_api_upload_delete_flow", {
+  files <- formr_api_files("test-run")
+})
 
 # View the first few files
 head(files)
+#> # A tibble: 1 × 5
+#>      id name            path                           url   created            
+#>   <int> <chr>           <chr>                          <chr> <dttm>             
+#> 1   309 test_upload.txt assets/tmp/admin/v4eCM-ns0ZuB… http… 2026-02-02 19:05:26
 ```
 
 The returned `url` column is particularly useful if you need to embed
@@ -45,6 +71,7 @@ entire project.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Upload a single logo
 formr_api_upload_file("my-study-name", path = "assets/logo.png")
 ```
@@ -57,6 +84,7 @@ it.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Upload multiple specific files
 formr_api_upload_file("my-study-name", path = c("assets/img1.jpg", "assets/img2.jpg"))
 
@@ -70,6 +98,7 @@ To keep your run clean, you can remove obsolete files.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Delete a specific file
 formr_api_delete_file("my-study-name", file_name = "old_logo.png")
 
@@ -84,6 +113,7 @@ wipe all files. **Use this with caution.**
 
 ``` r
 
+# Not run: needs a live formr server.
 # Delete ALL files (prompts for confirmation)
 formr_api_delete_all_files("my-study-name")
 ```

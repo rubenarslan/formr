@@ -22,6 +22,8 @@ Connect to formr using the API or classic authentication
   : Disconnect from formr
 - [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md)
   : Get the last specified host
+- [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md)
+  : Get or set the default directory for downloads and backups
 - [`.formr`](https://rubenarslan.github.io/formr/reference/dot-formr.md)
   : Per-request environment populated by rforms.org
 

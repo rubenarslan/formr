@@ -9,10 +9,11 @@ server. Optionally monitors the directory for subsequent changes
 ``` r
 formr_api_push_project(
   run_name,
-  dir = ".",
+  dir = NULL,
   watch = FALSE,
   background = TRUE,
-  interval = 2
+  interval = 2,
+  verbose = TRUE
 )
 ```
 
@@ -24,7 +25,10 @@ formr_api_push_project(
 
 - dir:
 
-  Local directory (default ".").
+  Local directory to push from. Defaults to
+  [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md);
+  set that (or pass `dir`) since formr never writes to the working
+  directory by default.
 
 - watch:
 
@@ -38,3 +42,15 @@ formr_api_push_project(
 - interval:
 
   Seconds between checks (default 2).
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
+## Value
+
+Invisibly `TRUE` when the watcher is launched as a background RStudio
+job; otherwise invisibly `NULL`. Called for its side effect of uploading
+the local project in `dir` to the server (optionally starting a
+file-watcher).

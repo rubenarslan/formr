@@ -20,3 +20,8 @@ formr_api_reverse(results, item_list)
 - item_list:
 
   A data frame containing item metadata.
+
+## Value
+
+The results data.frame with reverse-keyed items (those ending in `R`)
+flipped and their value labels remapped.

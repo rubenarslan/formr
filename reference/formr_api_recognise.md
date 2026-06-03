@@ -17,3 +17,10 @@ formr_api_recognise(item_list, results)
 - results:
 
   A data frame containing the raw results.
+
+## Value
+
+The results data.frame with item types applied: POSIXct timestamps and
+choice items as
+[`haven::labelled`](https://haven.tidyverse.org/reference/labelled.html)
+vectors.

@@ -14,7 +14,8 @@ formr_api_unit_sessions(
   testing = NULL,
   since = NULL,
   limit = 1000,
-  offset = 0
+  offset = 0,
+  verbose = TRUE
 )
 ```
 
@@ -46,6 +47,11 @@ formr_api_unit_sessions(
 - offset:
 
   Pagination offset (default 0).
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

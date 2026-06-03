@@ -22,10 +22,16 @@ email_image(x, ext = ".png")
 
   extension, defaults to .png
 
+## Value
+
+A length-1 character string holding a `cid:` reference for inline email
+images, carrying the source path in its `link` attribute.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: meant to run inside a knitr session as the figure upload hook.
 library(knitr); library(formr)
 opts_knit$set(upload.fun=formr::email_image)
 } # }

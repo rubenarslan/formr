@@ -10,7 +10,7 @@ you can backup uploaded files using this command.
 formr_backup_files(
   survey_name,
   overwrite = FALSE,
-  save_path = paste0(survey_name, "/user_uploaded_files"),
+  save_path = NULL,
   host = formr_last_host()
 )
 ```
@@ -27,7 +27,11 @@ formr_backup_files(
 
 - save_path:
 
-  defaults to the survey name
+  directory to write the files into. Defaults to a sub-folder named
+  after the survey inside
+  [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md);
+  set that (or pass `save_path`) since formr never writes to the working
+  directory by default.
 
 - host:
 
@@ -35,10 +39,16 @@ formr_backup_files(
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+Invisibly the file list with an updated `downloaded` field; called to
+download a survey's user-uploaded files into `save_path`.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-formr_backup_files(survey_name = 'training_diary' )
+# Not run: needs a live formr server and an authenticated session.
+formr_backup_files(survey_name = 'training_diary', save_path = tempdir() )
 } # }
 ```

@@ -7,7 +7,7 @@ on the server that match the names of the files in the local directory).
 ## Usage
 
 ``` r
-formr_api_delete_file(run_name, file_name)
+formr_api_delete_file(run_name, file_name, verbose = TRUE)
 ```
 
 ## Arguments
@@ -20,3 +20,12 @@ formr_api_delete_file(run_name, file_name)
 
   The name of the file(s) to delete (e.g. "image.png"), or a local
   directory path.
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
+## Value
+
+Invisibly `TRUE`; called to delete the named file(s) from the run.

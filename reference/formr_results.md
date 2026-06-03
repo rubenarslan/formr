@@ -38,10 +38,16 @@ formr_results(survey_name, host = formr_last_host(), ...)
   passed to
   [`formr_post_process_results()`](https://rubenarslan.github.io/formr/reference/formr_post_process_results.md)
 
+## Value
+
+A tibble of processed, aggregated survey results (the output of
+[`formr_post_process_results()`](https://rubenarslan.github.io/formr/reference/formr_post_process_results.md)).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_results(survey_name = 'training_diary' )
 } # }
 ```

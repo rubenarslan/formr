@@ -21,7 +21,8 @@ formr_store_keys(
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
-  account = NULL
+  account = NULL,
+  verbose = TRUE
 )
 ```
 
@@ -66,10 +67,21 @@ formr_store_keys(
   (API) Optional string identifier for multiple accounts on the same
   host.
 
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
+## Value
+
+Invisibly `NULL`; called for its side effect of storing the password and
+2FA seed in the system keyring.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: prompts interactively and writes to the system keyring.
 # --- Classic EXAMPLES ---
 # Prompts for password interactively
 formr_store_keys("formr_diary_study_account")

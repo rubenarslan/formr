@@ -16,9 +16,13 @@ next_day(date = NULL)
   defaults to .formr\$last_action_date, a hidden variable that is
   automatically set by rforms.org. Will be coerced to POSIXct.
 
+## Value
+
+A POSIXct: midnight at the start of the day after `date`.
+
 ## Examples
 
 ``` r
 next_day(Sys.time())
-#> [1] "2026-05-28 UTC"
+#> [1] "2026-06-04 UTC"
 ```

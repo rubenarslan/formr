@@ -6,7 +6,7 @@ their public URLs and timestamps.
 ## Usage
 
 ``` r
-formr_api_files(run_name)
+formr_api_files(run_name, verbose = TRUE)
 ```
 
 ## Arguments
@@ -14,6 +14,11 @@ formr_api_files(run_name)
 - run_name:
 
   Name of the run.
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

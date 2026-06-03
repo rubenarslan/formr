@@ -62,10 +62,16 @@ text_message_massenversand(
   whether to return simply TRUE/FALSE on success/failure or the whole
   result
 
+## Value
+
+Logical `TRUE`/`FALSE` indicating send success (or the raw character API
+response).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: sends a real SMS via the massenversand.de gateway (needs an account).
 text_message_massenversand(
   To = '492222', 
   From = '15005000', 

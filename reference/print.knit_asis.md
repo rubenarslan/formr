@@ -18,3 +18,8 @@ print(x, ...)
 - ...:
 
   ignored
+
+## Value
+
+Invisibly `NULL`; called for its side effect of printing the `knit_asis`
+content.

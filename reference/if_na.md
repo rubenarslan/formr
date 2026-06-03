@@ -20,6 +20,10 @@ if_na(x, missing)
 
   What to replace missing values with
 
+## Value
+
+`x` with its `NA` values replaced by `missing`.
+
 ## Examples
 
 ``` r

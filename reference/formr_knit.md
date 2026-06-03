@@ -13,3 +13,7 @@ formr_knit(text)
 - text:
 
   rmarkdown that will be knit
+
+## Value
+
+A length-1 character string of knitted markdown.

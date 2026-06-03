@@ -6,7 +6,12 @@ importing a JSON file (PUT).
 ## Usage
 
 ``` r
-formr_api_run_structure(run_name, structure_json_path = NULL, file = NULL)
+formr_api_run_structure(
+  run_name,
+  structure_json_path = NULL,
+  file = NULL,
+  verbose = TRUE
+)
 ```
 
 ## Arguments
@@ -24,6 +29,11 @@ formr_api_run_structure(run_name, structure_json_path = NULL, file = NULL)
 
   Optional path to save the DOWNLOADED (GET) structure as a .json file.
   This ensures a perfect 1:1 backup of the server configuration.
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

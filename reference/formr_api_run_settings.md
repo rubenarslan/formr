@@ -6,7 +6,7 @@ update them by providing a named list of new values.
 ## Usage
 
 ``` r
-formr_api_run_settings(run_name, settings = NULL)
+formr_api_run_settings(run_name, settings = NULL, verbose = TRUE)
 ```
 
 ## Arguments
@@ -20,6 +20,11 @@ formr_api_run_settings(run_name, settings = NULL)
   A list of settings to update (e.g.,
   `list(public = 1, locked = TRUE)`). If NULL, returns the current
   settings.
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

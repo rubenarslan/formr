@@ -23,10 +23,15 @@ formr_shuffled(run_name, host = formr_last_host())
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+A data.frame (parsed JSON) of random group assignments keyed by session.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_shuffled(run_name = 'different_drills' )
 } # }

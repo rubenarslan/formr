@@ -7,7 +7,12 @@ specific codes.
 ## Usage
 
 ``` r
-formr_api_create_session(run_name, codes = NULL, testing = FALSE)
+formr_api_create_session(
+  run_name,
+  codes = NULL,
+  testing = FALSE,
+  verbose = TRUE
+)
 ```
 
 ## Arguments
@@ -24,7 +29,12 @@ formr_api_create_session(run_name, codes = NULL, testing = FALSE)
 
   Logical. Mark these sessions as testing?
 
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
 ## Value
 
-Invisibly returns the API response (including created sessions and any
-errors).
+Invisibly the API response: a list with the created `sessions` and, for
+any that failed, an `errors` data.frame to inspect.

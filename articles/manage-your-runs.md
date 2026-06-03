@@ -3,8 +3,28 @@
 ``` r
 
 library(formr)
-# Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
 ```
 
 While the `formr_api_push_project` and `formr_api_pull_project`
@@ -25,10 +45,19 @@ flags (whether it is public, locked, or has active cron jobs).
 ``` r
 
 # List all runs and their status
-runs <- formr_api_runs()
+vcr::use_cassette("formr_api_runs_list", {
+  runs <- formr_api_runs()
+})
 
 # Quickly check which runs are currently active/public
 subset(runs, public == TRUE)
+#> # A tibble: 3 × 8
+#>      id name        title          public cron_active locked created            
+#>   <int> <chr>       <chr>          <lgl>  <lgl>       <lgl>  <dttm>             
+#> 1     2 auto-submit Comprehensive… TRUE   TRUE        FALSE  2025-09-29 13:54:11
+#> 2     3 EMI         EMI            TRUE   TRUE        FALSE  2025-09-29 14:59:33
+#> 3     4 test2       test2          TRUE   TRUE        FALSE  2025-10-08 22:49:04
+#> # ℹ 1 more variable: modified <dttm>
 ```
 
 ## Creating a New Run
@@ -38,8 +67,10 @@ are setting up a battery of studies programmatically.
 
 ``` r
 
-# Create a new run named "pilot-study-v1"
-formr_api_create_run("pilot-study-v1")
+# Create a new run named "test-run"
+vcr::use_cassette("formr_api_runs_create", {
+  formr_api_create_run("test-run", verbose = FALSE)
+})
 ```
 
 The function returns the public link to your new run upon success.
@@ -61,6 +92,7 @@ function handles this.
 
 ``` r
 
+# Not run: needs a live formr server.
 # 1. View current settings
 settings <- formr_api_run_settings("pilot-study-v1")
 
@@ -88,9 +120,86 @@ file to create a 1:1 backup of the runs configuration.
 ``` r
 
 # Inspect structure in R
-struct <- formr_api_run_structure("pilot-study-v1")
+vcr::use_cassette("formr_api_run_structure_import", {
+  struct <- formr_api_run_structure("test-run")
+})
 print(struct)
+#> $name
+#> [1] "test-run"
+#> 
+#> $units
+#> $units[[1]]
+#> $units[[1]]$type
+#> [1] "Pause"
+#> 
+#> $units[[1]]$description
+#> NULL
+#> 
+#> $units[[1]]$position
+#> [1] 10
+#> 
+#> $units[[1]]$special
+#> NULL
+#> 
+#> $units[[1]]$wait_until_time
+#> NULL
+#> 
+#> $units[[1]]$wait_until_date
+#> NULL
+#> 
+#> $units[[1]]$wait_minutes
+#> [1] "10.00"
+#> 
+#> $units[[1]]$relative_to
+#> NULL
+#> 
+#> $units[[1]]$body
+#> NULL
+#> 
+#> 
+#> 
+#> $settings
+#> $settings$header_image_path
+#> NULL
+#> 
+#> $settings$description
+#> NULL
+#> 
+#> $settings$footer_text
+#> [1] "Contact the [study administration](mailto:rform@researchmixtapes.com) in case of questions. [Privacy Policy](http://localhost/test-run/privacy_policy/). [Terms of Service](http://localhost/test-run/terms_of_service/). [Settings](http://localhost/test-run/settings/)."
+#> 
+#> $settings$public_blurb
+#> NULL
+#> 
+#> $settings$privacy
+#> NULL
+#> 
+#> $settings$tos
+#> NULL
+#> 
+#> $settings$cron_active
+#> [1] 1
+#> 
+#> $settings$custom_js
+#> [1] ""
+#> 
+#> $settings$custom_css
+#> [1] ""
+#> 
+#> $settings$expiresOn
+#> NULL
+#> 
+#> 
+#> $files
+#> list()
+#> 
+#> attr(,"class")
+#> [1] "formr_run_structure" "list"
+```
 
+``` r
+
+# Not run: writes a file and needs a live server.
 # Save to file (Backup)
 formr_api_run_structure("pilot-study-v1", file = "pilot_v1_structure.json")
 ```
@@ -104,6 +213,7 @@ also create the necessary surveys for the run.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Overwrite the run's structure with a local JSON file
 formr_api_run_structure("pilot-study-v1", structure_json_path = "pilot_v1_structure.json")
 ```
@@ -120,7 +230,13 @@ However, the surveys used in the run will be kept.
 ``` r
 
 # Delete a run (prompts for confirmation by default)
-formr_api_delete_run("pilot-study-v1")
+vcr::use_cassette("formr_api_runs_delete", {
+  formr_api_delete_run("test-run", prompt = FALSE)
+})
+#> Run 'test-run' deleted.
+```
+
+``` r
 
 # Force delete without confirmation (for automated scripts)
 formr_api_delete_run("pilot-study-v1", prompt = FALSE)

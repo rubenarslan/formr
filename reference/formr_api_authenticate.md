@@ -14,7 +14,8 @@ formr_api_authenticate(
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
-  account = NULL
+  account = NULL,
+  verbose = TRUE
 )
 ```
 
@@ -40,3 +41,13 @@ formr_api_authenticate(
 - account:
 
   Optional string identifier for multiple accounts on the same host.
+
+- verbose:
+
+  Logical. If TRUE (default), reports success via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
+## Value
+
+Invisibly `NULL`; called for its side effect of obtaining and caching an
+OAuth access token (errors on failure).

@@ -3,6 +3,38 @@
 ``` r
 
 library(formr)
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
+```
+
+``` r
+
+# formr's writing functions never default to your working directory. Set a
+# session default once (here a temp dir) — or pass dir=/save_path= per call.
+formr_default_dir(tempdir())
+#> [1] "/tmp/Rtmpe0ihjM"
+formr_default_dir()
+#> [1] "/tmp/Rtmpe0ihjM"
 ```
 
 Version 0.12.0 of the `formr` package introduces a robust workflow for
@@ -19,6 +51,7 @@ guide.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Automatically finds your stored keys
 formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
 ```
@@ -32,8 +65,9 @@ current results.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Download everything to a folder named "backup_my_study"
-formr_api_backup_run("my-study-name", dir = "backup_my_study")
+formr_api_backup_run("my-study-name", dir = tempdir())
 ```
 
 This creates a self-contained archive of your study state at that
@@ -51,8 +85,9 @@ state from the server. This scaffolds the necessary folder structure.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Pull the project into a local folder
-formr_api_pull_project("my-study-name", dir = "my_project_folder")
+formr_api_pull_project("my-study-name", dir = tempdir())
 ```
 
 This will create the following structure:
@@ -86,8 +121,9 @@ what has changed.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Sync local changes to the server
-formr_api_push_project("my-study-name", dir = "my_project_folder")
+formr_api_push_project("my-study-name", dir = tempdir())
 ```
 
 #### Watch Mode
@@ -95,13 +131,16 @@ formr_api_push_project("my-study-name", dir = "my_project_folder")
 If you are heavily editing a survey, running `formr_api_push_project`
 manually every time can be tedious. You can use the `watch` argument to
 keep the connection open. The package will monitor your folder and
-upload changes immediately as you save files. Note that you cannot run
-other commands until you stop the watcher by pressing the “Esc”-Key.
+upload changes immediately as you save files. Note that you can run
+other commands in your R session, as the watcher launches as a
+background job. You can stop the watcher by terminating the background
+process.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Automatically push changes when files are saved (Press Esc to stop)
-formr_api_push_project("my-study-name", dir = "my_project_folder", watch = TRUE)
+formr_api_push_project("my-study-name", dir = tempdir(), watch = TRUE)
 ```
 
 ## Managing Run Settings
@@ -112,6 +151,7 @@ navigating the UI.
 
 ``` r
 
+# Not run: needs a live formr server.
 # View current settings
 settings <- formr_api_run_settings("my-study-name")
 print(settings)
@@ -132,6 +172,7 @@ designs or import them directly.
 
 ``` r
 
+# Not run: needs a live formr server.
 # Export structure to a file
 formr_api_run_structure("my-study-name", file = "structure.json")
 

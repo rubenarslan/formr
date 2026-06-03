@@ -74,6 +74,11 @@ formr_aggregate(
   formerly passed to `psych::alpha()`; ignored now that the
   reliability/Likert code has moved to the `codebook` package
 
+## Value
+
+The results data.frame with one added numeric column per scale (the row
+mean of its items).
+
 ## Examples
 
 ``` r

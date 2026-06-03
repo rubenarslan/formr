@@ -18,3 +18,8 @@ as.data.frame(x, ...)
 - ...:
 
   Additional arguments.
+
+## Value
+
+A data.frame with one row per unit and columns `position`, `type`,
+`description` and `details`.

@@ -22,3 +22,7 @@ random_date_in_range(N, lower = "2012/01/01", upper = "2012/12/31")
 - upper:
 
   upper limit
+
+## Value
+
+A POSIXct vector of `N` random dates within the given range.

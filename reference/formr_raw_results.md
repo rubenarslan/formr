@@ -22,10 +22,16 @@ formr_raw_results(survey_name, host = formr_last_host())
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+The survey's results before processing: a data.frame (or the raw parsed
+list).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_raw_results(survey_name = 'training_diary' )
 } # }
 ```

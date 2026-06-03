@@ -14,6 +14,11 @@ items(survey)
 
   survey with item_list attribute
 
+## Value
+
+A list of class `formr_item_list` extracted from a survey data.frame's
+variable attributes.
+
 ## Examples
 
 ``` r

@@ -83,7 +83,8 @@ the wrapper scope), then the keyring.</p>
 <span>  client_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  client_secret <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  access_token <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  account <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  account <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,7 +112,15 @@ rforms.org, otherwise <code>"https://rforms.org"</code>.</p></dd>
 <dt id="arg-account">account<a class="anchor" aria-label="anchor" href="#arg-account"></a></dt>
 <dd><p>Optional string identifier for multiple accounts on the same host.</p></dd>
 
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports success via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Invisibly <code>NULL</code>; called for its side effect of obtaining and caching an OAuth access token (errors on failure).</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

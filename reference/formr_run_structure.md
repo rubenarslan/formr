@@ -22,10 +22,15 @@ formr_run_structure(run_name, host = formr_last_host())
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+A list (parsed JSON) describing the run structure (its `units`).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_run_structure(run_name = 'training_diary' )
 } # }
 ```

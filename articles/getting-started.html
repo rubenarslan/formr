@@ -92,6 +92,30 @@
 
     
     
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># So this vignette runs offline, API calls are replayed from pre-recorded</span></span>
+<span><span class="co"># responses (vcr cassettes shipped with the package). With a real server you</span></span>
+<span><span class="co"># would instead call formr_api_authenticate() with your own host/credentials.</span></span>
+<span><span class="va">.formr_vcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"vcr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">.formr_vcr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/vcr_configure.html" class="external-link">vcr_configure</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span>,</span>
+<span>    filter_sensitive_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"formr-client-id-redacted"</span>     <span class="op">=</span> <span class="st">"dummy_client_id"</span>,</span>
+<span>      <span class="st">"formr-client-secret-redacted"</span> <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      <span class="st">"formr-host-redacted"</span>          <span class="op">=</span> <span class="st">"api.localhost"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_authenticate"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"http://api.localhost"</span>,</span>
+<span>      client_id <span class="op">=</span> <span class="st">"dummy_client_id"</span>, client_secret <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>The <code>formr</code> R package is the companion to the <a href="https://rforms.org" class="external-link">rforms.org</a> survey framework. It allows you
 to:</p>
 <ol style="list-style-type: decimal">
@@ -109,12 +133,13 @@ check user progress or previous answers dynamically.</li>
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the package from GitHub:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rubenarslan/formr"</span><span class="op">)</span></span></code></pre></div>
 <p>The package is automatically installed within your formr server. Just
 use:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -252,8 +277,9 @@ rotated, not recovered.</p></li>
 <li><p>Run the following code <strong>once</strong> in your R
 console:</p></li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Store your credentials once</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="co"># Store your credentials once</span></span>
 <span><span class="co"># This saves them securely in your OS credential store</span></span>
 <span><span class="fu"><a href="../reference/formr_store_keys.html">formr_store_keys</a></span><span class="op">(</span></span>
 <span>  host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>,</span>
@@ -279,8 +305,9 @@ passwords in your script.</p>
 <li>You will be prompted to enter your email and password (and
 optionally a 2FA secret) securely.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Store your email/password under a shorthand name (e.g. "main_account")</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="co"># Store your email/password under a shorthand name (e.g. "main_account")</span></span>
 <span><span class="fu"><a href="../reference/formr_store_keys.html">formr_store_keys</a></span><span class="op">(</span><span class="st">"main_account"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -292,13 +319,14 @@ your session:</p>
 <div class="section level4">
 <h4 id="thru-the-api">2.1 Thru the API<a class="anchor" aria-label="anchor" href="#thru-the-api"></a>
 </h4>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Automatically finds your stored keys</span></span>
-<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom API-URL + account name!</span></span>
-<span></span>
-<span><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: authenticate with your own host/credentials.</span></span>
+<span><span class="co"># Automatically finds your stored keys</span></span>
+<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom API-URL + account name!</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># After authentication, you can see which scopes the credential carries:</span></span>
 <span><span class="fu"><a href="../reference/formr_api_session.html">formr_api_session</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">scope</span></span>
-<span><span class="co">#&gt; [1] "run:read run:write survey:read"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "user:read user:write survey:read survey:write run:read run:write session:read session:write data:read file:read file:write"</span></span></code></pre></div>
 <p>If you call a function whose endpoint needs a scope you don’t have,
 the package surfaces the server’s 403 alongside a hint at the bottom
 pointing at <code>admin/account#api</code> — the same place to fix
@@ -309,8 +337,9 @@ it.</p>
 </h4>
 <p>Once stored, you can connect in your scripts using this
 shorthand:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Connect using the stored credentials</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="co"># Connect using the stored credentials</span></span>
 <span><span class="fu"><a href="../reference/formr_connect.html">formr_connect</a></span><span class="op">(</span><span class="st">"main_account"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -321,8 +350,9 @@ shorthand:</p>
 survey run (e.g., to look up previous results). In this environment, you
 do not need credentials; the system provides a temporary context. Just
 run:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Inside a formr Run, simply call:</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="co"># Inside a formr Run, simply call:</span></span>
 <span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># The package detects that it's running inside a Run and uses the temporary context provided by the server.</span></span></code></pre></div>
 <hr>
 </div>
@@ -337,8 +367,9 @@ run:</p>
 locally and sync them to the server. Learn more about how this can save
 you time in the <a href="manage-your-projects.html">Manage your
 Projects</a> Tutorial.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Download a project (surveys and files) to your local folder</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs credentials / a live formr server.</span></span>
+<span><span class="co"># Download a project (surveys and files) to your local folder</span></span>
 <span><span class="fu"><a href="../reference/formr_api_pull_project.html">formr_api_pull_project</a></span><span class="op">(</span><span class="st">"daily_diary"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Upload changes back to the server</span></span>
@@ -351,9 +382,13 @@ Projects</a> Tutorial.</p>
 get data. It automatically recognizes data types, reverses items, and
 aggregates scales. Learn how it works in the <a href="fetch-and-process-results.html">Fetch &amp; Process Results</a>
 Tutorial.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fetch and process</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_results.html">formr_api_results</a></span><span class="op">(</span><span class="st">"daily_diary"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_results_fetch_single"</span>, <span class="op">{</span></span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_results.html">formr_api_results</a></span><span class="op">(</span><span class="st">"test-run"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "formr_results" "tbl_df"        "tbl"           "data.frame"</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -377,8 +412,9 @@ token remains valid until it expires or you revoke it.</li>
 </ul>
 <p>At the end of your analysis session, you may revoke the token
 manually:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/formr_api_logout.html">formr_api_logout</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: revokes the live token on the server.</span></span>
+<span><span class="fu"><a href="../reference/formr_api_logout.html">formr_api_logout</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

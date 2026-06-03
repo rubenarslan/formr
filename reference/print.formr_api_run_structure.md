@@ -18,3 +18,8 @@ print(x, ...)
 - ...:
 
   Additional arguments.
+
+## Value
+
+Invisibly returns `x`; called for its side effect of printing a
+formatted table of the run's units.

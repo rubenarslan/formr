@@ -117,6 +117,10 @@ defaults to quiet = TRUE
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A length-1 character string of class <code>knit_asis</code> (the knitted child document).</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Why default to the calling environment? Typically this function defaults to the global environment. This makes sense if you want to use knit_children in the same context as the rest of the document.
 However, you may also want to use knit_children inside functions to e.g. summarise a regression using a set of commands (e.g. plot some diagnostic graphs and a summary for a regression nicely formatted).</p>
@@ -126,6 +130,7 @@ However, you may also want to use knit_children inside functions to e.g. summari
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Not run: requires a knitr session and an external child .Rmd document.</span></span></span>
 <span class="r-in"><span><span class="co"># an example of a wrapper function that calls asis_knit_child with an argument</span></span></span>
 <span class="r-in"><span><span class="co"># ensures distinct paths for cache and figures, so that these calls can be looped in parallel</span></span></span>
 <span class="r-in"><span><span class="va">regression_summary</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">{</span></span></span>

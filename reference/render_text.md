@@ -18,3 +18,7 @@ render_text(text, ...)
 
   all other arguments passed to
   [`rmarkdown::render()`](https://pkgs.rstudio.com/rmarkdown/reference/render.html)
+
+## Value
+
+A length-1 character string of rendered HTML.

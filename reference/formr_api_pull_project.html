@@ -69,7 +69,7 @@ Scaffolds folder structure if missing, then overwrites local files with Server s
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_pull_project</span><span class="op">(</span><span class="va">run_name</span>, dir <span class="op">=</span> <span class="st">"."</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_pull_project</span><span class="op">(</span><span class="va">run_name</span>, dir <span class="op">=</span> <span class="cn">NULL</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,13 +81,26 @@ Scaffolds folder structure if missing, then overwrites local files with Server s
 
 
 <dt id="arg-dir">dir<a class="anchor" aria-label="anchor" href="#arg-dir"></a></dt>
-<dd><p>Local directory (default ".").</p></dd>
+<dd><p>Local directory to scaffold and write into. Defaults to
+<code><a href="formr_default_dir.html">formr_default_dir()</a></code>; set that (or pass <code>dir</code>) since formr never writes to
+the working directory by default.</p></dd>
 
 
 <dt id="arg-prompt">prompt<a class="anchor" aria-label="anchor" href="#arg-prompt"></a></dt>
-<dd><p>Logical. If TRUE (default), asks for confirmation before overwriting (unless dir is empty).</p></dd>
+<dd><p>Logical. If TRUE (default), asks for confirmation before
+overwriting when run interactively (unless <code>dir</code> is empty); in a
+non-interactive session it errors instead of overwriting unattended. Pass
+<code>prompt = FALSE</code> to overwrite without confirmation (e.g. in scripts).</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports progress via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Invisibly <code>NULL</code> on success (or <code>FALSE</code> if the user declines the overwrite prompt); called for its side effect of scaffolding <code>dir</code> and writing the run's structure, settings, surveys and files from the server.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

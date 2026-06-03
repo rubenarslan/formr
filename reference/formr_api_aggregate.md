@@ -22,3 +22,8 @@ formr_api_aggregate(results, item_list, min_items = 2)
 
   Minimum number of valid items required to calculate a mean (default
   2).
+
+## Value
+
+The results data.frame with one added numeric column per scale (the row
+mean of its items); scale reliability stored in attributes.

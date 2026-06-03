@@ -7,7 +7,7 @@ raw data without any type coercion or processing.
 
 ``` r
 formr_api_fetch_results(
-  run_name,
+  run_name = .formr$run_name,
   surveys = NULL,
   session_ids = NULL,
   item_names = NULL,
@@ -19,7 +19,9 @@ formr_api_fetch_results(
 
 - run_name:
 
-  Name of the run.
+  Name of the run. Defaults to `.formr$run_name`, which is set
+  automatically when the code runs inside an OpenCPU session on
+  rforms.org.
 
 - surveys:
 
@@ -36,3 +38,8 @@ formr_api_fetch_results(
 - join:
 
   Logical. If TRUE, joins the results into a single data frame.
+
+## Value
+
+A tibble of survey results, or (when `join = FALSE`) a named list of
+tibbles, one per survey.

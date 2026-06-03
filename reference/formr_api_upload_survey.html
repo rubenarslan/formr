@@ -66,7 +66,11 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_upload_survey</span><span class="op">(</span>file_path <span class="op">=</span> <span class="cn">NULL</span>, google_sheet_url <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_upload_survey</span><span class="op">(</span></span>
+<span>  file_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  google_sheet_url <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,7 +84,15 @@
 <dt id="arg-google-sheet-url">google_sheet_url<a class="anchor" aria-label="anchor" href="#arg-google-sheet-url"></a></dt>
 <dd><p>Google Sheet URL.</p></dd>
 
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports progress via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Invisibly the server response; called to upload or update a survey from a local file or Google Sheet.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

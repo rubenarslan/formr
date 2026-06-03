@@ -18,3 +18,8 @@ summary(object, ...)
 - ...:
 
   Additional arguments passed to summary (ignored).
+
+## Value
+
+Invisibly `NULL`; called for its side effect of printing the processing
+audit trail.

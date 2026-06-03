@@ -7,7 +7,7 @@ that directory).
 ## Usage
 
 ``` r
-formr_api_upload_file(run_name, path)
+formr_api_upload_file(run_name, path, verbose = TRUE)
 ```
 
 ## Arguments
@@ -19,6 +19,11 @@ formr_api_upload_file(run_name, path)
 - path:
 
   Local path to the file, a vector of paths, or a directory path.
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

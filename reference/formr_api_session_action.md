@@ -5,7 +5,13 @@ Controls the flow of one or more sessions.
 ## Usage
 
 ``` r
-formr_api_session_action(run_name, session_codes, action, position = NULL)
+formr_api_session_action(
+  run_name,
+  session_codes,
+  action,
+  position = NULL,
+  verbose = TRUE
+)
 ```
 
 ## Arguments
@@ -26,6 +32,11 @@ formr_api_session_action(run_name, session_codes, action, position = NULL)
 - position:
 
   Required only if action is "move_to_position".
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

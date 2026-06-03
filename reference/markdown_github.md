@@ -32,3 +32,8 @@ markdown_github(fragment.only = FALSE, break_on_error = FALSE, ...)
 
   all other arguments passed to
   [`rmarkdown::html_document()`](https://pkgs.rstudio.com/rmarkdown/reference/html_document.html)
+
+## Value
+
+An rmarkdown `output_format` object configured for GitHub-flavoured
+markdown.

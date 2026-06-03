@@ -22,10 +22,15 @@ formr_uploaded_files(survey_name, host = formr_last_host())
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+A list (parsed JSON) of uploaded-file metadata.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_uploaded_files(survey_name = 'training_diary' )
 } # }
 ```

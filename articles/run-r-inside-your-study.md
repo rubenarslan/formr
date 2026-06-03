@@ -1,8 +1,22 @@
 # Running R Inside Your formr Study
 
+``` r
+
+library(formr)
+```
+
 If you haven’t already, read the [Getting
 Started](https://rubenarslan.github.io/formr/articles/getting-started.md)
 guide for authentication basics.
+
+Most code in this vignette is meant to be **pasted into a formr study**
+(a calculate item or a label), where the server injects the run context
+and credentials. Those snippets are shown but not executed here. The
+local helper functions
+([`current()`](https://rubenarslan.github.io/formr/reference/current.md),
+[`first()`](https://rubenarslan.github.io/formr/reference/first.md),
+[`last()`](https://rubenarslan.github.io/formr/reference/last.md), and
+JSON parsing), however, run anywhere — and are executed below.
 
 ## 1. Why Run R Inside Your Study?
 
@@ -181,11 +195,21 @@ session’s value:
 
 ``` r
 
-# In a showif condition — check the current selection
-current(menu_survey$choice) == "option_a"
+# formr repeats items within a session; current() returns the latest value.
+# Here is a participant's history of one menu item across repeats:
+choice_history <- c("option_a", "option_b", "option_a")
+current(choice_history)                 # the current (most recent) selection
+#> [1] "option_a"
 
-# In a calculate item — capture the latest input
-current(my_survey$text_input)
+# In a showif you would compare it directly, e.g.:
+current(choice_history) == "option_a"   # TRUE
+#> [1] TRUE
+
+# first() and last() are siblings that drop missing values by default:
+first(c(NA, 2, 3))   # 2
+#> [1] 2
+last(c(1, 2, NA))    # 2
+#> [1] 2
 ```
 
 This is cleaner than the equivalent base-R `x[length(x)]` pattern and
@@ -427,6 +451,15 @@ safe_parse_json <- function(x) {
     error = function(e) list()
   )
 }
+
+safe_parse_json('{"score": 5, "label": "high"}')   # parses to a list
+#> $score
+#> [1] 5
+#> 
+#> $label
+#> [1] "high"
+safe_parse_json("not valid json")                    # returns list(), no error
+#> list()
 ```
 
 **Guard against empty results.** Before processing fetched data, check

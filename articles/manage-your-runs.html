@@ -94,8 +94,28 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
-<span><span class="co"># Automatically finds your stored keys</span></span>
-<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># So this vignette runs offline, API calls are replayed from pre-recorded</span></span>
+<span><span class="co"># responses (vcr cassettes shipped with the package). With a real server you</span></span>
+<span><span class="co"># would instead call formr_api_authenticate() with your own host/credentials.</span></span>
+<span><span class="va">.formr_vcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"vcr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">.formr_vcr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/vcr_configure.html" class="external-link">vcr_configure</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span>,</span>
+<span>    filter_sensitive_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"formr-client-id-redacted"</span>     <span class="op">=</span> <span class="st">"dummy_client_id"</span>,</span>
+<span>      <span class="st">"formr-client-secret-redacted"</span> <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      <span class="st">"formr-host-redacted"</span>          <span class="op">=</span> <span class="st">"api.localhost"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_authenticate"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"http://api.localhost"</span>,</span>
+<span>      client_id <span class="op">=</span> <span class="st">"dummy_client_id"</span>, client_secret <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>While the <code>formr_api_push_project</code> and
 <code>formr_api_pull_project</code> functions are excellent for managing
 file-based assets (surveys, CSS, images), sometimes you need direct
@@ -112,10 +132,19 @@ the run ID, name, and status flags (whether it is public, locked, or has
 active cron jobs).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List all runs and their status</span></span>
-<span><span class="va">runs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_runs.html">formr_api_runs</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_runs_list"</span>, <span class="op">{</span></span>
+<span>  <span class="va">runs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_runs.html">formr_api_runs</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Quickly check which runs are currently active/public</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">runs</span>, <span class="va">public</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">runs</span>, <span class="va">public</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
+<span><span class="co">#&gt;      id name        title          public cron_active locked created            </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     2 auto-submit Comprehensive… TRUE   TRUE        FALSE  2025-09-29 <span style="color: #949494;">13:54:11</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     3 EMI         EMI            TRUE   TRUE        FALSE  2025-09-29 <span style="color: #949494;">14:59:33</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     4 test2       test2          TRUE   TRUE        FALSE  2025-10-08 <span style="color: #949494;">22:49:04</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: modified &lt;dttm&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="creating-a-new-run">Creating a New Run<a class="anchor" aria-label="anchor" href="#creating-a-new-run"></a>
@@ -123,8 +152,10 @@ active cron jobs).</p>
 <p>You can create a new, empty run directly from R. This is useful if
 you are setting up a battery of studies programmatically.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a new run named "pilot-study-v1"</span></span>
-<span><span class="fu"><a href="../reference/formr_api_create_run.html">formr_api_create_run</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Create a new run named "test-run"</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_runs_create"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/formr_api_create_run.html">formr_api_create_run</a></span><span class="op">(</span><span class="st">"test-run"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>The function returns the public link to your new run upon
 success.</p>
 </div>
@@ -142,7 +173,8 @@ returns the current settings.</p></li>
 list, it updates the run.</p></li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. View current settings</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># 1. View current settings</span></span>
 <span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_run_settings.html">formr_api_run_settings</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. Update settings: Lock the run and make it public</span></span>
@@ -167,9 +199,83 @@ a study design.</p>
 JSON file to create a 1:1 backup of the runs configuration.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect structure in R</span></span>
-<span><span class="va">struct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span><span class="op">)</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_run_structure_import"</span>, <span class="op">{</span></span>
+<span>  <span class="va">struct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"test-run"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">struct</span><span class="op">)</span></span>
-<span></span>
+<span><span class="co">#&gt; $name</span></span>
+<span><span class="co">#&gt; [1] "test-run"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units</span></span>
+<span><span class="co">#&gt; $units[[1]]</span></span>
+<span><span class="co">#&gt; $units[[1]]$type</span></span>
+<span><span class="co">#&gt; [1] "Pause"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$description</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$position</span></span>
+<span><span class="co">#&gt; [1] 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$special</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$wait_until_time</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$wait_until_date</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$wait_minutes</span></span>
+<span><span class="co">#&gt; [1] "10.00"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$relative_to</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $units[[1]]$body</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings</span></span>
+<span><span class="co">#&gt; $settings$header_image_path</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$description</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$footer_text</span></span>
+<span><span class="co">#&gt; [1] "Contact the [study administration](mailto:rform@researchmixtapes.com) in case of questions. [Privacy Policy](http://localhost/test-run/privacy_policy/). [Terms of Service](http://localhost/test-run/terms_of_service/). [Settings](http://localhost/test-run/settings/)."</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$public_blurb</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$privacy</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$tos</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$cron_active</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$custom_js</span></span>
+<span><span class="co">#&gt; [1] ""</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$custom_css</span></span>
+<span><span class="co">#&gt; [1] ""</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $settings$expiresOn</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $files</span></span>
+<span><span class="co">#&gt; list()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "formr_run_structure" "list"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: writes a file and needs a live server.</span></span>
 <span><span class="co"># Save to file (Backup)</span></span>
 <span><span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span>, file <span class="op">=</span> <span class="st">"pilot_v1_structure.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -180,8 +286,9 @@ JSON file to create a 1:1 backup of the runs configuration.</p>
 is useful for creating templates: you can define a complex flow once and
 apply it to multiple runs. If they are part of your JSON file, this will
 also create the necessary surveys for the run.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Overwrite the run's structure with a local JSON file</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Overwrite the run's structure with a local JSON file</span></span>
 <span><span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span>, structure_json_path <span class="op">=</span> <span class="st">"pilot_v1_structure.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -193,11 +300,14 @@ no longer needed.</p>
 <p><strong>Warning:</strong> This will remove everything associated with
 the run, including the structure, attached files, and all collected
 results. However, the surveys used in the run will be kept.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Delete a run (prompts for confirmation by default)</span></span>
-<span><span class="fu"><a href="../reference/formr_api_delete_run.html">formr_api_delete_run</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Force delete without confirmation (for automated scripts)</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_runs_delete"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/formr_api_delete_run.html">formr_api_delete_run</a></span><span class="op">(</span><span class="st">"test-run"</span>, prompt <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Run 'test-run' deleted.</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Force delete without confirmation (for automated scripts)</span></span>
 <span><span class="fu"><a href="../reference/formr_api_delete_run.html">formr_api_delete_run</a></span><span class="op">(</span><span class="st">"pilot-study-v1"</span>, prompt <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

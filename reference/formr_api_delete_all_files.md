@@ -7,7 +7,7 @@ iterates through them to delete.
 ## Usage
 
 ``` r
-formr_api_delete_all_files(run_name, prompt = TRUE)
+formr_api_delete_all_files(run_name, prompt = TRUE, verbose = TRUE)
 ```
 
 ## Arguments
@@ -18,6 +18,15 @@ formr_api_delete_all_files(run_name, prompt = TRUE)
 
 - prompt:
 
-  Logical. If TRUE (default), the function asks for interactive
-  confirmation before deleting. Set to FALSE for automated scripts (use
-  with care).
+  Logical. If TRUE (default), asks for interactive confirmation before
+  deleting; in a non-interactive session it errors instead of proceeding
+  unattended. Set to FALSE for automated scripts (use with care).
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
+
+## Value
+
+Invisibly `TRUE` on success; called to delete all files from the run.

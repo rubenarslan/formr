@@ -31,10 +31,16 @@ formr_reverse(results, item_list = NULL, fallback_max = 5)
   defaults to 5 - if the item_list is set to null, we will use this to
   reverse
 
+## Value
+
+The results data.frame with reverse-keyed (`R`-suffixed) items flipped
+and labelled items' value labels updated.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 icar_items = formr_items(survey_name='ICAR',host = 'http://localhost:8888/formr/')
 # get some simulated data and aggregate it

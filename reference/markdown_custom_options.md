@@ -60,3 +60,9 @@ markdown_custom_options(
   default rmarkdown additions to Pandoc's enhanced markdown are:
   +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash,
   -implicit_figures.
+
+## Value
+
+An rmarkdown `output_format` object (from
+[`rmarkdown::html_document()`](https://pkgs.rstudio.com/rmarkdown/reference/html_document.html)/`html_fragment()`)
+with customised pandoc/knitr options.

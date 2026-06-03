@@ -69,7 +69,7 @@ Note: The API may prevent deletion if this survey is currently used in an active
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_delete_survey</span><span class="op">(</span><span class="va">survey_name</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_api_delete_survey</span><span class="op">(</span><span class="va">survey_name</span>, prompt <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,12 +81,18 @@ Note: The API may prevent deletion if this survey is currently used in an active
 
 
 <dt id="arg-prompt">prompt<a class="anchor" aria-label="anchor" href="#arg-prompt"></a></dt>
-<dd><p>Logical. If TRUE (default), asks for interactive confirmation.</p></dd>
+<dd><p>Logical. If TRUE (default), asks for interactive confirmation;
+in a non-interactive session it errors instead of proceeding unattended.
+Pass <code>prompt = FALSE</code> to delete without confirmation (e.g. in scripts).</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports progress via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly returns TRUE on success.</p>
+    <p>Invisibly <code>TRUE</code> on success; <code>FALSE</code> if the user declines the prompt.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

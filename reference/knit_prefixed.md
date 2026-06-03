@@ -19,3 +19,8 @@ knit_prefixed(input, ...)
 
   all arguments passed to
   [`knitr::knit()`](https://rdrr.io/pkg/knitr/man/knit.html)
+
+## Value
+
+A length-1 character string of knitted output, with figure/cache paths
+prefixed by the input file name.

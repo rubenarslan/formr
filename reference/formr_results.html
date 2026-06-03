@@ -97,10 +97,15 @@ and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_ext
 <dd><p>passed to <code><a href="formr_post_process_results.html">formr_post_process_results()</a></code></p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A tibble of processed, aggregated survey results (the output of <code><a href="formr_post_process_results.html">formr_post_process_results()</a></code>).</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Not run: needs a live formr server and an authenticated session.</span></span></span>
 <span class="r-in"><span><span class="fu">formr_results</span><span class="op">(</span>survey_name <span class="op">=</span> <span class="st">'training_diary'</span> <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

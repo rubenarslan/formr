@@ -17,3 +17,7 @@ markdown_hard_line_breaks(...)
 
   all other arguments passed to
   [`rmarkdown::html_document()`](https://pkgs.rstudio.com/rmarkdown/reference/html_document.html)
+
+## Value
+
+An rmarkdown `output_format` object with hard line breaks enabled.

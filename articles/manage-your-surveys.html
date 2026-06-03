@@ -94,8 +94,28 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
-<span><span class="co"># Automatically finds your stored keys</span></span>
-<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># So this vignette runs offline, API calls are replayed from pre-recorded</span></span>
+<span><span class="co"># responses (vcr cassettes shipped with the package). With a real server you</span></span>
+<span><span class="co"># would instead call formr_api_authenticate() with your own host/credentials.</span></span>
+<span><span class="va">.formr_vcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"vcr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">.formr_vcr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/vcr_configure.html" class="external-link">vcr_configure</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span>,</span>
+<span>    filter_sensitive_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"formr-client-id-redacted"</span>     <span class="op">=</span> <span class="st">"dummy_client_id"</span>,</span>
+<span>      <span class="st">"formr-client-secret-redacted"</span> <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      <span class="st">"formr-host-redacted"</span>          <span class="op">=</span> <span class="st">"api.localhost"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_authenticate"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"http://api.localhost"</span>,</span>
+<span>      client_id <span class="op">=</span> <span class="st">"dummy_client_id"</span>, client_secret <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>In addition to managing Runs, <code>formr</code> allows you to
 directly interact with the underlying Surveys (the spreadsheets
 containing your items and logic). While the <a href="manage-your-projects.html">Project Workflow</a>
@@ -112,11 +132,25 @@ containing the survey ID, name, and modification timestamps.</p>
 <code>name_pattern</code> argument.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List all surveys</span></span>
-<span><span class="va">all_surveys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_surveys.html">formr_api_surveys</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Find specific surveys (e.g., all diaries)</span></span>
-<span><span class="va">diaries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_surveys.html">formr_api_surveys</a></span><span class="op">(</span>name_pattern <span class="op">=</span> <span class="st">"diary"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">diaries</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_survey_structure_fetch"</span>, <span class="op">{</span></span>
+<span>  <span class="va">all_surveys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_surveys.html">formr_api_surveys</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">all_surveys</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 5</span></span></span>
+<span><span class="co">#&gt;       id name              created             modified            results_table</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     4 platzhalter       2025-09-29 <span style="color: #949494;">10:58:16</span> 2026-01-09 <span style="color: #949494;">22:55:57</span> s4_platzhalt…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>    12 friend_rate       2025-09-29 <span style="color: #949494;">13:40:45</span> 2025-09-29 <span style="color: #949494;">13:40:45</span> s12_friend_r…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>    77 platzhalter_copy  2025-10-30 <span style="color: #949494;">22:07:03</span> 2025-12-17 <span style="color: #949494;">13:42:18</span> s77_platzhal…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   968 Fragebogen_Grupp… 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s968_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   970 Fragebogen_Instr… 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s970_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   972 Fragebogen_Atten… 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s972_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   973 Fragebogen_Szena… 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s973_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   975 Fragebogen_Fragen 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s975_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   976 Fragebogen_mehr_… 2025-12-14 <span style="color: #949494;">18:40:28</span> 2025-12-14 <span style="color: #949494;">18:40:28</span> s976_Fragebo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>448 <span style="color: #BB0000;">NA</span>                2025-12-15 <span style="color: #949494;">23:21:20</span> 2025-12-15 <span style="color: #949494;">23:21:20</span> s1448_       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>  <span style="text-decoration: underline;">1</span>464 platzhalter__copy 2025-12-17 <span style="color: #949494;">13:46:55</span> 2025-12-17 <span style="color: #949494;">13:46:55</span> s1464_platzh…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>  <span style="text-decoration: underline;">2</span>222 survey_1          2026-01-21 <span style="color: #949494;">11:54:24</span> 2026-01-21 <span style="color: #949494;">12:04:16</span> s2222_survey…</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspecting-and-downloading-surveys">Inspecting and Downloading Surveys<a class="anchor" aria-label="anchor" href="#inspecting-and-downloading-surveys"></a>
@@ -131,10 +165,24 @@ containing the survey ID, name, and modification timestamps.</p>
 choice labels without leaving your R session.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the survey items as a tibble</span></span>
-<span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_survey_structure.html">formr_api_survey_structure</a></span><span class="op">(</span><span class="st">"daily_diary_v1"</span><span class="op">)</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_survey_structure_items"</span>, <span class="op">{</span></span>
+<span>  <span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_survey_structure.html">formr_api_survey_structure</a></span><span class="op">(</span><span class="st">"platzhalter"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check the first few items</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">items</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">items</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 18</span></span></span>
+<span><span class="co">#&gt;   type   choice_list type_options name  label label_parsed optional class showif</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> note   <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>          pic_… <span style="color: #949494;">"</span>&lt;di… <span style="color: #949494;">"</span>&lt;div align…        1 <span style="color: #949494;">""</span>    <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> note   <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>          mc1_… <span style="color: #949494;">"</span>&lt;di… <span style="color: #949494;">"</span>&lt;div align…        1 <span style="color: #949494;">""</span>    <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> calcu… <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>          nav2  <span style="color: #949494;">""</span>    <span style="color: #949494;">""</span>                  0 <span style="color: #949494;">"</span>lab… <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> mc_bu… nav1        <span style="color: #949494;">""</span>           nav1  <span style="color: #949494;">"</span>Bit… <span style="color: #949494;">"</span>Bitte bean…        0 <span style="color: #949494;">"</span>lab… <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> calcu… <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>          test… <span style="color: #949494;">""</span>    <span style="color: #949494;">""</span>                  0 <span style="color: #949494;">""</span>    <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> submit <span style="color: #BB0000;">NA</span>          <span style="color: #949494;">"</span>auto<span style="color: #949494;">"</span>       subm… <span style="color: #949494;">"</span>Tag… <span style="color: #949494;">"</span>Tagebuch a…        0 <span style="color: #949494;">"</span>hid… <span style="color: #949494;">""</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: value &lt;chr&gt;, block_order &lt;chr&gt;, item_order &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   input_attributes &lt;list&gt;, parent_attributes &lt;list&gt;, allowed_classes &lt;list&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   choices &lt;list&gt;, val_errors &lt;list&gt;, val_warnings &lt;list&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="download-survey-source--xlsx">Download Survey Source (.xlsx)<a class="anchor" aria-label="anchor" href="#download-survey-source--xlsx"></a>
@@ -142,7 +190,8 @@ choice labels without leaving your R session.</p>
 <p>If you have lost your local copy of a survey or want to backup the
 version currently on the server, you can download it directly.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Download the survey as an Excel file</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Download the survey as an Excel file</span></span>
 <span><span class="fu"><a href="../reference/formr_api_survey_structure.html">formr_api_survey_structure</a></span><span class="op">(</span></span>
 <span>  survey_name <span class="op">=</span> <span class="st">"daily_diary_v1"</span>, </span>
 <span>  format <span class="op">=</span> <span class="st">"xlsx"</span>, </span>
@@ -157,7 +206,8 @@ version currently on the server, you can download it directly.</p>
 want to update just one component of a study without syncing the entire
 project folder.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Upload a local Excel file</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Upload a local Excel file</span></span>
 <span><span class="co"># The survey name on the server is derived from the filename</span></span>
 <span><span class="fu"><a href="../reference/formr_api_upload_survey.html">formr_api_upload_survey</a></span><span class="op">(</span>file_path <span class="op">=</span> <span class="st">"surveys/my_new_survey.xlsx"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
@@ -166,7 +216,8 @@ project folder.</p>
 <p>You can also import a survey directly from a published Google Sheet
 URL.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/formr_api_upload_survey.html">formr_api_upload_survey</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="fu"><a href="../reference/formr_api_upload_survey.html">formr_api_upload_survey</a></span><span class="op">(</span></span>
 <span>  survey_name <span class="op">=</span> <span class="st">"google_imported_survey"</span>,</span>
 <span>  google_sheet_url <span class="op">=</span> <span class="st">"https://docs.google.com/spreadsheets/d/..."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -177,7 +228,8 @@ URL.</p>
 </h2>
 <p>You can permanently delete a survey if it is no longer needed.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Delete a survey (prompts for confirmation by default)</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Delete a survey (prompts for confirmation by default)</span></span>
 <span><span class="fu"><a href="../reference/formr_api_delete_survey.html">formr_api_delete_survey</a></span><span class="op">(</span><span class="st">"old_pilot_survey"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Force delete without confirmation (for automated scripts)</span></span>

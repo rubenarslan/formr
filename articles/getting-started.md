@@ -1,5 +1,32 @@
 # Getting Started
 
+``` r
+
+library(formr)
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
+```
+
 The `formr` R package is the companion to the
 [rforms.org](https://rforms.org) survey framework. It allows you to:
 
@@ -15,6 +42,7 @@ You can install the package from GitHub:
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 if (!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github("rubenarslan/formr")
 ```
@@ -102,6 +130,7 @@ don’t have to type them every time.
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 # Store your credentials once
 # This saves them securely in your OS credential store
 formr_store_keys(
@@ -131,6 +160,7 @@ passwords in your script.
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 # Store your email/password under a shorthand name (e.g. "main_account")
 formr_store_keys("main_account")
 ```
@@ -144,12 +174,16 @@ session:
 
 ``` r
 
+# Not run: authenticate with your own host/credentials.
 # Automatically finds your stored keys
 formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom API-URL + account name!
+```
+
+``` r
 
 # After authentication, you can see which scopes the credential carries:
 formr_api_session()$scope
-#> [1] "run:read run:write survey:read"
+#> [1] "user:read user:write survey:read survey:write run:read run:write session:read session:write data:read file:read file:write"
 ```
 
 If you call a function whose endpoint needs a scope you don’t have, the
@@ -162,6 +196,7 @@ Once stored, you can connect in your scripts using this shorthand:
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 # Connect using the stored credentials
 formr_connect("main_account")
 ```
@@ -175,6 +210,7 @@ run:
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 # Inside a formr Run, simply call:
 formr_api_authenticate() # The package detects that it's running inside a Run and uses the temporary context provided by the server.
 ```
@@ -193,6 +229,7 @@ Tutorial.
 
 ``` r
 
+# Not run: needs credentials / a live formr server.
 # Download a project (surveys and files) to your local folder
 formr_api_pull_project("daily_diary")
 
@@ -213,7 +250,11 @@ Tutorial.
 ``` r
 
 # Fetch and process
-df <- formr_api_results("daily_diary")
+vcr::use_cassette("formr_api_results_fetch_single", {
+  df <- formr_api_results("test-run", verbose = FALSE)
+})
+class(df)
+#> [1] "formr_results" "tbl_df"        "tbl"           "data.frame"
 ```
 
 ------------------------------------------------------------------------
@@ -235,5 +276,6 @@ At the end of your analysis session, you may revoke the token manually:
 
 ``` r
 
+# Not run: revokes the live token on the server.
 formr_api_logout()
 ```

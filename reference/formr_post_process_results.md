@@ -63,6 +63,11 @@ formr_post_process_results(
   by default, formr removes results resulting from test session (animal
   names and null session codes)
 
+## Value
+
+A data.frame/tibble with recognised types, reverse-keyed items flipped,
+scales aggregated, and missing values tagged.
+
 ## Examples
 
 ``` r

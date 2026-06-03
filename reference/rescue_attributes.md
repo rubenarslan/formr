@@ -20,3 +20,8 @@ rescue_attributes(df_no_attributes, df_with_attributes)
 - df_with_attributes:
 
   the data frame from which you want to restore attributes
+
+## Value
+
+A data.frame: `df` with variable attributes restored from a reference
+data.frame.

@@ -27,6 +27,10 @@ qplot_on_polar(normed_data, ylab = "Your value", title = "")
 
   Plot title
 
+## Value
+
+A `ggplot` object drawn in polar coordinates.
+
 ## Examples
 
 ``` r

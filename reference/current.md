@@ -15,6 +15,10 @@ current(x)
 
   vector of which you want the current element
 
+## Value
+
+A length-1 vector (the last element of `x`), keeping `x`'s type.
+
 ## Examples
 
 ``` r

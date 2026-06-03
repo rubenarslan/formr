@@ -27,10 +27,16 @@ formr_items(survey_name = NULL, host = formr_last_host(), path = NULL)
 
   path to local JSON copy of the item table
 
+## Value
+
+A list of class `formr_item_list` (item metadata per item, named by item
+name).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_items(survey_name = 'training_diary' )
 } # }

@@ -19,6 +19,11 @@ finished(survey, variable = "ended")
 
   which variable should be filled out, defaults to "ended"
 
+## Value
+
+An integer: the count of non-missing values in `survey[[variable]]` (0
+when the survey or column is empty).
+
 ## Examples
 
 ``` r

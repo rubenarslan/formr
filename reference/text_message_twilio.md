@@ -35,10 +35,16 @@ text_message_twilio(To, From, Body, Account, Token, return_result = FALSE)
   whether to return simply TRUE/FALSE on success/failure or the whole
   result
 
+## Value
+
+Logical `TRUE`/`FALSE` indicating send success, or (when
+`return_result = TRUE`) the raw API response list.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: sends a real SMS via the Twilio gateway (needs an account).
 text_message_twilio(
   To = '492222',
   From = '15005000',

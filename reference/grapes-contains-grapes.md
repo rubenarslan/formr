@@ -22,6 +22,11 @@ haystack %contains% needle
 
   string to search for
 
+## Value
+
+A logical vector, `TRUE` where `haystack` contains `needle` as a fixed
+substring.
+
 ## Examples
 
 ``` r

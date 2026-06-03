@@ -24,10 +24,16 @@ formr_simulate_from_items(item_list, n = 300)
 
   defaults to 300
 
+## Value
+
+A data.frame of simulated survey data (columns `id`, `created`,
+`modified`, `ended`, plus sampled values for each item).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 sim = formr_simulate_from_items(item_list = formr_items('training_diary'), n = 100)
 summary(lm(pushups ~ pullups, data = sim))
@@ -37,8 +43,8 @@ system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRU
 fakedata = formr_simulate_from_items(items, n = 20)
 fakedata[1:2,]
 #>   id             created               ended            modified
-#> 1  1 2026-01-31 12:31:03 2026-01-31 12:33:14 2026-01-31 12:33:14
-#> 2  2 2026-02-08 22:19:17 2026-02-08 22:21:56 2026-02-08 22:21:56
+#> 1  1 2026-02-08 12:24:35 2026-02-08 12:26:46 2026-02-08 12:26:46
+#> 2  2 2026-02-16 20:28:26 2026-02-16 20:31:05 2026-02-16 20:31:05
 #>                gods religiousness_1 religiousness_2R religiousness_3
 #> 1 spaghetti_monster               4                1               3
 #> 2 spaghetti_monster               1                3               3

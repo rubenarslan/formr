@@ -14,6 +14,10 @@ formr_render_commonmark(text)
 
   that will be passed to knitr
 
+## Value
+
+A length-1 character string of HTML rendered from CommonMark.
+
 ## Examples
 
 ``` r

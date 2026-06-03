@@ -22,10 +22,16 @@ get_opencpu_rds(session_url, local = TRUE)
   another server, and do some not-very-smart substitution to load it via
   the file system instead of HTTP/HTTPS
 
+## Value
+
+The R object deserialised from an OpenCPU session's RDS result (or
+loaded from a local `.RData`).
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: fetches a result from a remote OpenCPU server.
 get_opencpu_rds('https://public.opencpu.org/ocpu/tmp/x02a93ec/R/.val/rds')
 } # }
 ```

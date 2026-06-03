@@ -24,6 +24,10 @@ haystack %begins_with% needle
 
   string to search for
 
+## Value
+
+A logical vector, `TRUE` where `haystack` begins with `needle`.
+
 ## Examples
 
 ``` r

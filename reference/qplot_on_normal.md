@@ -38,6 +38,11 @@ qplot_on_normal(
   the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to
   minuses, pluses and the average sign
 
+## Value
+
+A `ggplot` object showing the standard normal distribution with a
+reference line at `normed_value`.
+
 ## Examples
 
 ``` r

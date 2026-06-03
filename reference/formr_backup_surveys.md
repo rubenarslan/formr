@@ -9,7 +9,7 @@ file lists.
 formr_backup_surveys(
   survey_names,
   surveys = list(),
-  save_path = "./",
+  save_path = NULL,
   overwrite = FALSE,
   host = formr_last_host()
 )
@@ -27,7 +27,10 @@ formr_backup_surveys(
 
 - save_path:
 
-  path to save the study data, defaults to the study name
+  directory to write the surveys into. Defaults to
+  [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md);
+  set that (or pass `save_path`) since formr never writes to the working
+  directory by default.
 
 - overwrite:
 
@@ -39,10 +42,16 @@ formr_backup_surveys(
   [`formr_last_host()`](https://rubenarslan.github.io/formr/reference/formr_last_host.md),
   which defaults to https://rforms.org
 
+## Value
+
+Invisibly `NULL`; called for its side effect of downloading surveys
+(items, results, item displays and files) into `save_path`.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-formr_backup_surveys(survey_names = 'training_diary', save_path = 'surveys')
+# Not run: needs a live formr server and an authenticated session.
+formr_backup_surveys(survey_names = 'training_diary', save_path = file.path(tempdir(), 'surveys'))
 } # }
 ```

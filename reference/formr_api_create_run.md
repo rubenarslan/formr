@@ -6,7 +6,7 @@ message with the public link for each.
 ## Usage
 
 ``` r
-formr_api_create_run(name)
+formr_api_create_run(name, verbose = TRUE)
 ```
 
 ## Arguments
@@ -14,6 +14,11 @@ formr_api_create_run(name)
 - name:
 
   A character vector of names for the new runs (must be unique).
+
+- verbose:
+
+  Logical. If TRUE (default), reports progress via
+  [`message()`](https://rdrr.io/r/base/message.html).
 
 ## Value
 

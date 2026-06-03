@@ -30,10 +30,16 @@ ifelsena(test, yes, no, missing = no)
 
   defaults to the value for no
 
+## Value
+
+A vector like [`ifelse()`](https://rdrr.io/r/base/ifelse.html)'s result,
+with `NA` positions replaced by `missing`.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Not run: ifelsena() is deprecated; use dplyr::if_else() instead.
 data(beavers)
 beaver1$activ[1:10] = NA
 beaver1$hyperactive = ifelse(beaver1$activ > 1, 1, 0)

@@ -25,6 +25,11 @@ last(x, n = 1, na.rm = TRUE)
 
   whether to remove missings first, defaults to TRUE
 
+## Value
+
+A vector of the same type as `x` holding its last `n` elements (after
+dropping `NA`s when `na.rm = TRUE`); an empty vector if none remain.
+
 ## Examples
 
 ``` r

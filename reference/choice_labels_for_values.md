@@ -21,6 +21,10 @@ choice_labels_for_values(survey, item_name)
 
   item name
 
+## Value
+
+A vector of choice labels mapped onto the supplied item values.
+
 ## Examples
 
 ``` r

@@ -22,3 +22,8 @@ formr_api_survey_structure(survey_name, format = "json", file_path = NULL)
 - file_path:
 
   Optional. Required if format is "xlsx".
+
+## Value
+
+In JSON mode (the default) a tibble of the survey's items; in `xlsx`
+mode invisibly the `file_path` written.

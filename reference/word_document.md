@@ -21,3 +21,9 @@ word_document(..., break_on_error = FALSE)
 
   should an error in the R code execution interrupt the rendering or
   should rendering continue, defaults to FALSE
+
+## Value
+
+An rmarkdown `output_format` object like
+[`rmarkdown::word_document()`](https://pkgs.rstudio.com/rmarkdown/reference/word_document.html),
+with an added option not to break on error.

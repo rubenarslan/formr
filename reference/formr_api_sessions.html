@@ -75,7 +75,8 @@ or fetch specific sessions by their codes.</p>
 <span>  active <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  testing <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  offset <span class="op">=</span> <span class="fl">0</span></span>
+<span>  offset <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,10 @@ If provided, <code>active</code>, <code>limit</code>, and <code>offset</code> ar
 
 <dt id="arg-offset">offset<a class="anchor" aria-label="anchor" href="#arg-offset"></a></dt>
 <dd><p>Pagination offset (default 0).</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If TRUE (default), reports progress via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

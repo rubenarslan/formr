@@ -25,6 +25,11 @@ haystack %contains_word% needle
 
   string to search for
 
+## Value
+
+A logical vector, `TRUE` where `haystack` contains `needle` as a whole
+word.
+
 ## Examples
 
 ``` r

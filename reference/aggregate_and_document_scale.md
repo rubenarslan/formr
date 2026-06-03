@@ -26,6 +26,11 @@ aggregate_and_document_scale(items, fun = rowMeans, stem = NULL)
   common stem for the variables, specify if it should not be
   auto-detected as the longest common stem of the variable names
 
+## Value
+
+A numeric vector (the aggregated scale score) carrying
+`scale_item_names` and `label` attributes.
+
 ## Examples
 
 ``` r

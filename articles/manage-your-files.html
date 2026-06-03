@@ -94,8 +94,28 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
-<span><span class="co"># Automatically finds your stored keys</span></span>
-<span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># So this vignette runs offline, API calls are replayed from pre-recorded</span></span>
+<span><span class="co"># responses (vcr cassettes shipped with the package). With a real server you</span></span>
+<span><span class="co"># would instead call formr_api_authenticate() with your own host/credentials.</span></span>
+<span><span class="va">.formr_vcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"vcr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">.formr_vcr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/vcr_configure.html" class="external-link">vcr_configure</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span>,</span>
+<span>    filter_sensitive_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"formr-client-id-redacted"</span>     <span class="op">=</span> <span class="st">"dummy_client_id"</span>,</span>
+<span>      <span class="st">"formr-client-secret-redacted"</span> <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      <span class="st">"formr-host-redacted"</span>          <span class="op">=</span> <span class="st">"api.localhost"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_authenticate"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"http://api.localhost"</span>,</span>
+<span>      client_id <span class="op">=</span> <span class="st">"dummy_client_id"</span>, client_secret <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Most complex studies require more than just survey spreadsheets. For
 example, you might need to host images for experimental stimuli.</p>
 <p>While the <a href="manage-your-projects.html">Project Workflow</a>
@@ -110,10 +130,16 @@ control over the file storage of your run.</p>
 file names, their public URLs, and upload timestamps.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List all files attached to the study</span></span>
-<span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_files.html">formr_api_files</a></span><span class="op">(</span><span class="st">"my-study-name"</span><span class="op">)</span></span>
+<span><span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_upload_delete_flow"</span>, <span class="op">{</span></span>
+<span>  <span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_files.html">formr_api_files</a></span><span class="op">(</span><span class="st">"test-run"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View the first few files</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;      id name            path                           url   created            </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   309 test_upload.txt assets/tmp/admin/v4eCM-ns0ZuB… http… 2026-02-02 <span style="color: #949494;">19:05:26</span></span></span></code></pre></div>
 <p>The returned <code>url</code> column is particularly useful if you
 need to embed these assets in external emails or websites.</p>
 </div>
@@ -127,7 +153,8 @@ re-syncing the entire project.</p>
 <h3 id="single-file">Single File<a class="anchor" aria-label="anchor" href="#single-file"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Upload a single logo</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Upload a single logo</span></span>
 <span><span class="fu"><a href="../reference/formr_api_upload_file.html">formr_api_upload_file</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, path <span class="op">=</span> <span class="st">"assets/logo.png"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -137,7 +164,8 @@ re-syncing the entire project.</p>
 directory. If you pass a directory, <code>formr</code> will upload all
 files directly inside it.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Upload multiple specific files</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Upload multiple specific files</span></span>
 <span><span class="fu"><a href="../reference/formr_api_upload_file.html">formr_api_upload_file</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"assets/img1.jpg"</span>, <span class="st">"assets/img2.jpg"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Upload an entire folder of stimuli</span></span>
@@ -149,7 +177,8 @@ files directly inside it.</p>
 </h2>
 <p>To keep your run clean, you can remove obsolete files.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Delete a specific file</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Delete a specific file</span></span>
 <span><span class="fu"><a href="../reference/formr_api_delete_file.html">formr_api_delete_file</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, file_name <span class="op">=</span> <span class="st">"old_logo.png"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Delete a list of files</span></span>
@@ -160,7 +189,8 @@ files directly inside it.</p>
 <p>If you are restructuring your study and want to start fresh, you can
 wipe all files. <strong>Use this with caution.</strong></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Delete ALL files (prompts for confirmation)</span></span>
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Delete ALL files (prompts for confirmation)</span></span>
 <span><span class="fu"><a href="../reference/formr_api_delete_all_files.html">formr_api_delete_all_files</a></span><span class="op">(</span><span class="st">"my-study-name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

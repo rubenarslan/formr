@@ -58,6 +58,11 @@ time_passed(
   defaults to .formr\$last_action_time, a hidden variable that is
   automatically set by rforms.org
 
+## Value
+
+A length-1 logical: `TRUE` if at least the specified duration has
+elapsed since `time`.
+
 ## Examples
 
 ``` r

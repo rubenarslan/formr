@@ -93,7 +93,36 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rubenarslan.github.io/formr/">formr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># So this vignette runs offline, API calls are replayed from pre-recorded</span></span>
+<span><span class="co"># responses (vcr cassettes shipped with the package). With a real server you</span></span>
+<span><span class="co"># would instead call formr_api_authenticate() with your own host/credentials.</span></span>
+<span><span class="va">.formr_vcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"vcr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">.formr_vcr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/vcr_configure.html" class="external-link">vcr_configure</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vcr_cassettes"</span>, package <span class="op">=</span> <span class="st">"formr"</span><span class="op">)</span>,</span>
+<span>    filter_sensitive_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"formr-client-id-redacted"</span>     <span class="op">=</span> <span class="st">"dummy_client_id"</span>,</span>
+<span>      <span class="st">"formr-client-secret-redacted"</span> <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      <span class="st">"formr-host-redacted"</span>          <span class="op">=</span> <span class="st">"api.localhost"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu">vcr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/vcr/reference/use_cassette.html" class="external-link">use_cassette</a></span><span class="op">(</span><span class="st">"formr_api_authenticate"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"http://api.localhost"</span>,</span>
+<span>      client_id <span class="op">=</span> <span class="st">"dummy_client_id"</span>, client_secret <span class="op">=</span> <span class="st">"dummy_client_secret"</span>,</span>
+<span>      verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># formr's writing functions never default to your working directory. Set a</span></span>
+<span><span class="co"># session default once (here a temp dir) — or pass dir=/save_path= per call.</span></span>
+<span><span class="fu"><a href="../reference/formr_default_dir.html">formr_default_dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpe0ihjM"</span></span>
+<span><span class="fu"><a href="../reference/formr_default_dir.html">formr_default_dir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpe0ihjM"</span></span></code></pre></div>
 <p>Version 0.12.0 of the <code>formr</code> package introduces a robust
 workflow for managing your studies locally. Instead of uploading files
 one by one on the website, you can now sync your entire project folder.
@@ -103,8 +132,9 @@ local editors for Excel, CSS, and JavaScript files.</p>
 <h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h2>
 <p>Ensure you have stored your API credentials as described in the <a href="getting-started.html">Getting Started</a> guide.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Automatically finds your stored keys</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Automatically finds your stored keys</span></span>
 <span><span class="fu"><a href="../reference/formr_api_authenticate.html">formr_api_authenticate</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://api.rforms.org"</span>, account <span class="op">=</span> <span class="st">"dashboard"</span><span class="op">)</span> <span class="co"># or your custom URL and account name!</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -114,9 +144,10 @@ local editors for Excel, CSS, and JavaScript files.</p>
 backup of your run. This function downloads the run structure (JSON),
 all survey item tables (Excel), attached files (images/scripts), and the
 current results.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Download everything to a folder named "backup_my_study"</span></span>
-<span><span class="fu"><a href="../reference/formr_api_backup_run.html">formr_api_backup_run</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="st">"backup_my_study"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Download everything to a folder named "backup_my_study"</span></span>
+<span><span class="fu"><a href="../reference/formr_api_backup_run.html">formr_api_backup_run</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This creates a self-contained archive of your study state at that
 moment.</p>
 </div>
@@ -131,9 +162,10 @@ Edit -&gt; Push</strong>.</p>
 <p>First, create a local directory for your project and pull the current
 state from the server. This scaffolds the necessary folder
 structure.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Pull the project into a local folder</span></span>
-<span><span class="fu"><a href="../reference/formr_api_pull_project.html">formr_api_pull_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="st">"my_project_folder"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Pull the project into a local folder</span></span>
+<span><span class="fu"><a href="../reference/formr_api_pull_project.html">formr_api_pull_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This will create the following structure:</p>
 <ul>
 <li><p><code>surveys/</code>: Contains your survey spreadsheets
@@ -164,9 +196,10 @@ RStudio.</p></li>
 <p>Once you are happy with your local changes, push them back to the
 server. The function compares file modification times and only uploads
 what has changed.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Sync local changes to the server</span></span>
-<span><span class="fu"><a href="../reference/formr_api_push_project.html">formr_api_push_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="st">"my_project_folder"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Sync local changes to the server</span></span>
+<span><span class="fu"><a href="../reference/formr_api_push_project.html">formr_api_push_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="watch-mode">Watch Mode<a class="anchor" aria-label="anchor" href="#watch-mode"></a>
 </h4>
@@ -174,11 +207,13 @@ what has changed.</p>
 <code>formr_api_push_project</code> manually every time can be tedious.
 You can use the <code>watch</code> argument to keep the connection open.
 The package will monitor your folder and upload changes immediately as
-you save files. Note that you cannot run other commands until you stop
-the watcher by pressing the “Esc”-Key.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Automatically push changes when files are saved (Press Esc to stop)</span></span>
-<span><span class="fu"><a href="../reference/formr_api_push_project.html">formr_api_push_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="st">"my_project_folder"</span>, watch <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+you save files. Note that you can run other commands in your R session,
+as the watcher launches as a background job. You can stop the watcher by
+terminating the background process.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Automatically push changes when files are saved (Press Esc to stop)</span></span>
+<span><span class="fu"><a href="../reference/formr_api_push_project.html">formr_api_push_project</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, watch <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -188,8 +223,9 @@ the watcher by pressing the “Esc”-Key.</p>
 <p>You can also view and update run settings programmatically. This is
 useful for toggling specific flags like <code>public</code> or
 <code>locked</code> without navigating the UI.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># View current settings</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># View current settings</span></span>
 <span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/formr_api_run_settings.html">formr_api_run_settings</a></span><span class="op">(</span><span class="st">"my-study-name"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">settings</span><span class="op">)</span></span>
 <span></span>
@@ -206,8 +242,9 @@ useful for toggling specific flags like <code>public</code> or
 <p>For advanced users, the entire flow of the run (the “Unit” list) can
 be exported and imported as JSON. This allows you to template complex
 study designs or import them directly.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Export structure to a file</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Not run: needs a live formr server.</span></span>
+<span><span class="co"># Export structure to a file</span></span>
 <span><span class="fu"><a href="../reference/formr_api_run_structure.html">formr_api_run_structure</a></span><span class="op">(</span><span class="st">"my-study-name"</span>, file <span class="op">=</span> <span class="st">"structure.json"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Import structure from a file (Replaces current structure!)</span></span>

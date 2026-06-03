@@ -27,6 +27,11 @@ if_na_null(test, na = FALSE, null = FALSE)
 
   passed to ifelse
 
+## Value
+
+A length-0-or-1 value: `test` when it is non-missing, `na` when `test`
+is `NA`, or `null` when `test` has length 0.
+
 ## Examples
 
 ``` r

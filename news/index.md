@@ -2,6 +2,47 @@
 
 ## formr 1.1.0
 
+- **CRAN resubmission fixes (addressing the 1.0.0 review):**
+
+  - Every exported function and method now documents its return value
+    with `\value`, describing the class/structure and meaning of the
+    output.
+  - Functions no longer write informational output with
+    [`cat()`](https://rdrr.io/r/base/cat.html)/[`print()`](https://rdrr.io/r/base/print.html).
+    Progress and status messages now use
+    [`message()`](https://rdrr.io/r/base/message.html) and can be
+    silenced with a new `verbose` argument; the warnings before
+    destructive actions use
+    [`warning()`](https://rdrr.io/r/base/warning.html). The confirmation
+    prompt now only appears in interactive sessions:
+    destructive/overwriting calls
+    ([`formr_api_delete_run()`](https://rubenarslan.github.io/formr/reference/formr_api_delete_run.md),
+    [`formr_api_delete_survey()`](https://rubenarslan.github.io/formr/reference/formr_api_delete_survey.md),
+    [`formr_api_delete_all_files()`](https://rubenarslan.github.io/formr/reference/formr_api_delete_all_files.md),
+    [`formr_api_backup_run()`](https://rubenarslan.github.io/formr/reference/formr_api_backup_run.md),
+    [`formr_api_pull_project()`](https://rubenarslan.github.io/formr/reference/formr_api_pull_project.md))
+    **error** in a non-interactive session rather than proceeding
+    unattended — pass `prompt = FALSE` to confirm in scripts.
+  - New
+    [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md)
+    sets a session-wide default output directory. The writing helpers
+    ([`formr_backup_study()`](https://rubenarslan.github.io/formr/reference/formr_backup_study.md),
+    [`formr_backup_surveys()`](https://rubenarslan.github.io/formr/reference/formr_backup_surveys.md),
+    [`formr_backup_files()`](https://rubenarslan.github.io/formr/reference/formr_backup_files.md),
+    [`formr_api_backup_run()`](https://rubenarslan.github.io/formr/reference/formr_api_backup_run.md),
+    [`formr_api_pull_project()`](https://rubenarslan.github.io/formr/reference/formr_api_pull_project.md),
+    [`formr_api_push_project()`](https://rubenarslan.github.io/formr/reference/formr_api_push_project.md))
+    no longer default to the working directory: set
+    [`formr_default_dir()`](https://rubenarslan.github.io/formr/reference/formr_default_dir.md)
+    once, or pass `dir`/`save_path` explicitly. In examples, vignettes
+    and tests these write only to
+    [`tempdir()`](https://rdrr.io/r/base/tempfile.html).
+  - Vignettes now execute code — API calls are replayed offline from
+    bundled `vcr` cassettes, and the reverse/aggregate pipeline runs on
+    bundled example data — so users can run them and CRAN can test them.
+  - `\dontrun{}` examples now begin with a one-line comment explaining
+    why they are not run.
+
 - **[`formr_api_fetch_results()`](https://rubenarslan.github.io/formr/reference/formr_api_fetch_results.md)
   now defaults `run_name` to `.formr$run_name`**, matching
   [`formr_api_results()`](https://rubenarslan.github.io/formr/reference/formr_api_results.md)

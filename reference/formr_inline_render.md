@@ -23,3 +23,7 @@ formr_inline_render(text, self_contained = TRUE, ...)
 
   all other arguments passed to
   [`rmarkdown::render()`](https://pkgs.rstudio.com/rmarkdown/reference/render.html)
+
+## Value
+
+A length-1 character string of rendered inline HTML.
