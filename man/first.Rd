@@ -13,6 +13,10 @@ first(x, n = 1, na.rm = TRUE)
 
 \item{na.rm}{whether to remove missings first, defaults to TRUE}
 }
+\value{
+A vector of the same type as \code{x} holding its first \code{n} elements
+(after dropping \code{NA}s when \code{na.rm = TRUE}); an empty vector if none remain.
+}
 \description{
 Just a simple shorthand to get the first, non-missing argument per default.
 Can give more than one element and can include missing elements.

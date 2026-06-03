@@ -4,7 +4,13 @@
 \alias{formr_api_session_action}
 \title{Perform Action on Session(s)}
 \usage{
-formr_api_session_action(run_name, session_codes, action, position = NULL)
+formr_api_session_action(
+  run_name,
+  session_codes,
+  action,
+  position = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{run_name}{Name of the run.}
@@ -14,6 +20,8 @@ formr_api_session_action(run_name, session_codes, action, position = NULL)
 \item{action}{One of: "end_external", "toggle_testing", "move_to_position", "execute", "advance".}
 
 \item{position}{Required only if action is "move_to_position".}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 A logical vector indicating success for each session.

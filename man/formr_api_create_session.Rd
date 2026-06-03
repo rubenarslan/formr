@@ -4,7 +4,12 @@
 \alias{formr_api_create_session}
 \title{Create Session(s)}
 \usage{
-formr_api_create_session(run_name, codes = NULL, testing = FALSE)
+formr_api_create_session(
+  run_name,
+  codes = NULL,
+  testing = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{run_name}{Name of the run.}
@@ -12,9 +17,12 @@ formr_api_create_session(run_name, codes = NULL, testing = FALSE)
 \item{codes}{Character vector of codes. If NULL, creates one random code.}
 
 \item{testing}{Logical. Mark these sessions as testing?}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
-Invisibly returns the API response (including created sessions and any errors).
+Invisibly the API response: a list with the created \code{sessions} and,
+for any that failed, an \code{errors} data.frame to inspect.
 }
 \description{
 Creates one or more sessions. If \code{codes} is NULL, one random session is created.

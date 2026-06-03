@@ -8,6 +8,7 @@
 #' @param xlab X-axis label, empty by default, useful for labeling the plotted trait
 #' @param colour defaults to blue
 #' @param x_ticks the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to minuses, pluses and the average sign 
+#' @return A `ggplot` object showing the standard normal distribution with a reference line at `normed_value`.
 #' @export
 #' @import ggplot2
 #' @examples
@@ -39,6 +40,7 @@ qplot_on_normal = function(normed_value, ylab = "Percentage of other people with
 #'
 #' @param normed_value a z-standardised value
 #' @param chunks a three or five element long character vector containing the text chunks for feedback
+#' @return A length-1 character string: the chunk selected for the interval containing `normed_value`.
 #' @export
 #' @examples
 #' feedback_chunk(normed_value = 0.7, chunks = c("You are rather introverted.",
@@ -72,6 +74,7 @@ feedback_chunk = function(normed_value,  chunks)
 #' @param title Plot title
 #' @param y_ticks the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to 
 #' minuses, pluses and the average sign 
+#' @return A `ggplot` object: a bar chart, optionally with error bars.
 #' @export
 #' @import ggplot2
 #' @examples
@@ -123,6 +126,7 @@ qplot_on_bar = function(normed_data, ylab = "Your value", xlab = "Trait", title 
 #' @param normed_data a dataset with a value column containing z-standardised value and a variable column containing labels for those values
 #' @param ylab Y-axis label, defaults to "Percentage of other people with this value"
 #' @param title Plot title
+#' @return A `ggplot` object drawn in polar coordinates.
 #' @export
 #' @import ggplot2
 #' @examples

@@ -6,22 +6,30 @@
 \usage{
 formr_api_push_project(
   run_name,
-  dir = ".",
+  dir = NULL,
   watch = FALSE,
   background = TRUE,
-  interval = 2
+  interval = 2,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{run_name}{Name of the run.}
 
-\item{dir}{Local directory (default ".").}
+\item{dir}{Local directory to push from. Defaults to \code{\link[=formr_default_dir]{formr_default_dir()}};
+set that (or pass \code{dir}) since formr never writes to the working directory
+by default.}
 
 \item{watch}{Logical. If TRUE, keeps the connection open and uploads changes immediately when files are saved.}
 
 \item{background}{Logical. If TRUE (default), launches watcher as an RStudio Job.}
 
 \item{interval}{Seconds between checks (default 2).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{TRUE} when the watcher is launched as a background RStudio job; otherwise invisibly \code{NULL}. Called for its side effect of uploading the local project in \code{dir} to the server (optionally starting a file-watcher).
 }
 \description{
 Uploads local project files (surveys, assets, settings) to the formr server.

@@ -14,10 +14,13 @@
 #' @param client_secret (API) OAuth Client Secret.
 #' @param access_token (API) Direct Personal Access Token (alternative to OAuth).
 #' @param account (API) Optional string identifier for multiple accounts on the same host.
+#' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #'
+#' @return Invisibly `NULL`; called for its side effect of storing the password and 2FA seed in the system keyring.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: prompts interactively and writes to the system keyring.
 #' # --- Classic EXAMPLES ---
 #' # Prompts for password interactively
 #' formr_store_keys("formr_diary_study_account")
@@ -43,7 +46,8 @@ formr_store_keys <- function(account_name = NULL,
 														 client_id = NULL,
 														 client_secret = NULL,
 														 access_token = NULL,
-														 account = NULL) {
+														 account = NULL,
+														 verbose = TRUE) {
 	
 	if (!requireNamespace("keyring", quietly = TRUE)) {
 		stop("Package 'keyring' is required.")
@@ -86,7 +90,7 @@ formr_store_keys <- function(account_name = NULL,
 			)
 		}
 		
-		message("[SUCCESS] Classic credentials stored for account: ", account_name)
+		if (verbose) message("Classic credentials stored for account: ", account_name)
 		return(invisible(NULL))
 	}
 	
@@ -110,7 +114,7 @@ formr_store_keys <- function(account_name = NULL,
 			username = "access_token",
 			password = access_token
 		)
-		message("[SUCCESS] Access Token stored for ", service_name)
+		if (verbose) message("Access Token stored for ", service_name)
 		
 	} else if (!is.null(client_id) && !is.null(client_secret)) {
 		keyring::key_set_with_value(
@@ -123,6 +127,6 @@ formr_store_keys <- function(account_name = NULL,
 			username = "client_secret",
 			password = client_secret
 		)
-		message("[SUCCESS] OAuth Credentials stored for ", service_name)
+		if (verbose) message("OAuth Credentials stored for ", service_name)
 	}
 }

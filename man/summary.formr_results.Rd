@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments passed to summary (ignored).}
 }
+\value{
+Invisibly \code{NULL}; called for its side effect of printing the processing audit trail.
+}
 \description{
 Prints a human-readable audit trail of all data cleaning steps.
 }

@@ -7,6 +7,8 @@
 #' @param x vector of which you want the first element
 #' @param n number of elements to take from the beginning
 #' @param na.rm whether to remove missings first, defaults to TRUE
+#' @return A vector of the same type as `x` holding its first `n` elements
+#'   (after dropping `NA`s when `na.rm = TRUE`); an empty vector if none remain.
 #' @export
 #' @examples
 #' first( c(NA,1:10) )
@@ -28,6 +30,8 @@ first = function(x, n = 1, na.rm = TRUE) {
 #' @param x vector of which you want the last element
 #' @param n number of elements to take from the end
 #' @param na.rm whether to remove missings first, defaults to TRUE
+#' @return A vector of the same type as `x` holding its last `n` elements
+#'   (after dropping `NA`s when `na.rm = TRUE`); an empty vector if none remain.
 #' @export
 #' @examples
 #' last( c(1:10,NA) )
@@ -46,6 +50,7 @@ last = function(x, n = 1, na.rm = TRUE) {
 #' where the last element is always the one from the current session).
 #'
 #' @param x vector of which you want the current element
+#' @return A length-1 vector (the last element of `x`), keeping `x`'s type.
 #' @export
 #' @examples
 #' current( c(1:10,NA) )
@@ -62,6 +67,8 @@ current = function(x) {
 #'
 #' @param survey which survey are you asking about?
 #' @param variable which variable should be filled out, defaults to "ended"
+#' @return An integer: the count of non-missing values in `survey[[variable]]`
+#'   (0 when the survey or column is empty).
 #' @export
 #' @examples
 #' survey = data.frame(ended = c("2016-05-28 10:11:00", NA, "2016-05-30 11:18:28"))
@@ -85,6 +92,8 @@ finished = function(survey, variable = "ended") {
 #'
 #' @param survey which survey are you asking about?
 #' @param variable which variable should be filled out, defaults to "ended"
+#' @return An integer: the count of expired sessions (non-missing values in
+#'   `survey[[variable]]`).
 #' @export
 #' @examples
 #' survey = data.frame(expired = c(NA, "2016-05-29 10:11:00", NA))
@@ -101,6 +110,7 @@ expired = function(survey, variable = "expired") {
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
+#' @return A logical vector, `TRUE` where `haystack` contains `needle` as a fixed substring.
 #' @export
 #' @examples
 #' "1, 2, 3, 4, you" %contains% "you"
@@ -130,6 +140,7 @@ escapeRegex = function(string)
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
+#' @return A logical vector, `TRUE` where `haystack` contains `needle` as a whole word.
 #' @export
 #' @examples
 #' "1, 3, 4" %contains_word% "1" # TRUE
@@ -150,6 +161,7 @@ escapeRegex = function(string)
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
+#' @return A logical vector, `TRUE` where `haystack` begins with `needle`.
 #' @export
 #' @aliases %starts_with%
 #' @examples
@@ -172,6 +184,7 @@ escapeRegex = function(string)
 #'
 #' @param haystack string in which you search
 #' @param needle string to search for
+#' @return A logical vector, `TRUE` where `haystack` ends with `needle`.
 #' @export
 #' @examples
 #' "1, 3, 4" %ends_with% "4" # TRUE
@@ -220,6 +233,7 @@ escapeRegex = function(string)
 #' @param months 30 days
 #' @param years 365 days
 #' @param time defaults to .formr$last_action_time, a hidden variable that is automatically set by rforms.org
+#' @return A length-1 logical: `TRUE` if at least the specified duration has elapsed since `time`.
 #' @export
 #' @examples
 #' 
@@ -244,6 +258,7 @@ time_passed = function(years = 0, months = 0, weeks = 0, days = 0,
 #' a simple utility functions to avoid that looped Skip Backwards/Skip Forwards in formr are true repeatedly.
 #'
 #' @param date defaults to .formr$last_action_date, a hidden variable that is automatically set by rforms.org. Will be coerced to POSIXct.
+#' @return A POSIXct: midnight at the start of the day after `date`.
 #' @export
 #' @examples
 #' next_day(Sys.time())
@@ -262,6 +277,7 @@ next_day = function(date = NULL) {
 #'
 #' @param min POSIXct < max
 #' @param max POSIXct > min
+#' @return A length-1 logical: `TRUE` if the current time lies between `min` and `max`.
 #' @export
 #' @examples
 #' in_time_window(Sys.time() - 1, Sys.time() + 1)
@@ -281,9 +297,11 @@ in_time_window = function(min, max) {
 #' @param yes passed to ifelse
 #' @param no passed to ifelse
 #' @param missing defaults to the value for no
+#' @return A vector like [ifelse()]'s result, with `NA` positions replaced by `missing`.
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run: ifelsena() is deprecated; use dplyr::if_else() instead.
 #' data(beavers)
 #' beaver1$activ[1:10] = NA
 #' beaver1$hyperactive = ifelse(beaver1$activ > 1, 1, 0)
@@ -307,6 +325,8 @@ ifelsena = function(test, yes, no, missing = no) {
 #' @param test condition. can only have length 0 or length 1
 #' @param na returned if the condition has a missing value
 #' @param null passed to ifelse
+#' @return A length-0-or-1 value: `test` when it is non-missing, `na` when `test`
+#'   is `NA`, or `null` when `test` has length 0.
 #' @export
 #' @examples
 #' testdf = data.frame(test1 = 1, test2 = NA)
@@ -337,6 +357,7 @@ if_na_null = function(test, na = FALSE, null = FALSE) {
 #' 
 #' @param x the variable
 #' @param missing What to replace missing values with
+#' @return `x` with its `NA` values replaced by `missing`.
 #' @export
 #' @examples
 #' number_of_sex_partners <- c(1, 3, 5, 10, NA, 29)

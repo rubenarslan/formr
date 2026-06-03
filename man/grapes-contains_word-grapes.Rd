@@ -11,6 +11,9 @@ haystack \%contains_word\% needle
 
 \item{needle}{string to search for}
 }
+\value{
+A logical vector, \code{TRUE} where \code{haystack} contains \code{needle} as a whole word.
+}
 \description{
 Looks for a string appearing on its own. This is needed e.g.
 when checking whether the replies to a mmc item, stored as a

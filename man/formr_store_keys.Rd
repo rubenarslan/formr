@@ -13,7 +13,8 @@ formr_store_keys(
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
-  account = NULL
+  account = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,11 @@ formr_store_keys(
 \item{access_token}{(API) Direct Personal Access Token (alternative to OAuth).}
 
 \item{account}{(API) Optional string identifier for multiple accounts on the same host.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{NULL}; called for its side effect of storing the password and 2FA seed in the system keyring.
 }
 \description{
 Securely stores formr credentials in the system keyring.
@@ -45,6 +51,7 @@ This function supports two modes:
 }
 \examples{
 \dontrun{
+# Not run: prompts interactively and writes to the system keyring.
 # --- Classic EXAMPLES ---
 # Prompts for password interactively
 formr_store_keys("formr_diary_study_account")

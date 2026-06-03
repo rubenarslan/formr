@@ -11,6 +11,9 @@ rescue_attributes(df_no_attributes, df_with_attributes)
 
 \item{df_with_attributes}{the data frame from which you want to restore attributes}
 }
+\value{
+A data.frame: \code{df} with variable attributes restored from a reference data.frame.
+}
 \description{
 Taken from codebook
 You can use this function if some of your items have lost their attributes during wrangling

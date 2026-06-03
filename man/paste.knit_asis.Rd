@@ -13,6 +13,9 @@ paste.knit_asis(..., sep = "\\n\\n\\n", collapse = "\\n\\n\\n")
 
 \item{collapse}{defaults to two empty lines, passed to \code{\link[=paste]{paste()}}}
 }
+\value{
+A length-1 character string of class \code{knit_asis} (the inputs concatenated).
+}
 \description{
 Helper function for knit_asis objects, useful when e.g. \code{\link[=asis_knit_child]{asis_knit_child()}} was used in a loop.
 }

@@ -14,6 +14,9 @@ aggregate_and_document_scale(items, fun = rowMeans, stem = NULL)
 \item{stem}{common stem for the variables, specify if it should not be auto-detected
 as the longest common stem of the variable names}
 }
+\value{
+A numeric vector (the aggregated scale score) carrying \code{scale_item_names} and \code{label} attributes.
+}
 \description{
 Copied from codebook.
 The resulting variables will have the attribute \code{scale_item_names} containing

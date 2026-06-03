@@ -59,6 +59,7 @@ reference:
     - '`formr_connect`'
     - '`formr_disconnect`'
     - '`formr_last_host`'
+    - '`formr_default_dir`'
     - '`.formr`'
 
   - title: API - Project Management

@@ -9,7 +9,8 @@ formr_api_authenticate(
   client_id = NULL,
   client_secret = NULL,
   access_token = NULL,
-  account = NULL
+  account = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,11 @@ rforms.org, otherwise \code{"https://rforms.org"}.}
 \item{access_token}{Direct Access Token.}
 
 \item{account}{Optional string identifier for multiple accounts on the same host.}
+
+\item{verbose}{Logical. If TRUE (default), reports success via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{NULL}; called for its side effect of obtaining and caching an OAuth access token (errors on failure).
 }
 \description{
 Connects to the API. If no credentials are provided, the auto-pickup

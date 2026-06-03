@@ -11,6 +11,9 @@ word_document(..., break_on_error = FALSE)
 
 \item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 }
+\value{
+An rmarkdown \code{output_format} object like \code{\link[rmarkdown:word_document]{rmarkdown::word_document()}}, with an added option not to break on error.
+}
 \description{
 Exactly like \code{\link[rmarkdown:word_document]{rmarkdown::word_document()}}, but with one added argument
 }

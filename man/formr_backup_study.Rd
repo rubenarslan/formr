@@ -6,7 +6,7 @@
 \usage{
 formr_backup_study(
   study_name,
-  save_path = study_name,
+  save_path = NULL,
   host = formr_last_host(),
   overwrite = FALSE
 )
@@ -14,17 +14,25 @@ formr_backup_study(
 \arguments{
 \item{study_name}{case-sensitive name of a study your account owns}
 
-\item{save_path}{path to save the study data, defaults to the study name}
+\item{save_path}{directory to write the backup into. Defaults to a sub-folder
+named after the study inside \code{\link[=formr_default_dir]{formr_default_dir()}}; set that (or pass
+\code{save_path}) since formr never writes to the working directory by default.}
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 
 \item{overwrite}{should existing files be overwritten?}
+}
+\value{
+Invisibly \code{NULL}; called for its side effect of downloading a whole study
+(run structure, surveys, files and results) into \code{save_path}.
 }
 \description{
 Backup a study by downloading all surveys, results, item displays, run shuffle, user overview and user details. This function will save the data in a folder named after the study.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_default_dir(tempdir())
 formr_backup_study(study_name = 'training_diary' )
 }
 }

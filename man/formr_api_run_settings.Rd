@@ -4,13 +4,15 @@
 \alias{formr_api_run_settings}
 \title{Get or Update Run Settings}
 \usage{
-formr_api_run_settings(run_name, settings = NULL)
+formr_api_run_settings(run_name, settings = NULL, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run (or a vector of names).}
 
 \item{settings}{A list of settings to update (e.g., \code{list(public = 1, locked = TRUE)}).
 If NULL, returns the current settings.}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 \itemize{

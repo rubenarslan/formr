@@ -11,6 +11,10 @@ expired(survey, variable = "expired")
 
 \item{variable}{which variable should be filled out, defaults to "ended"}
 }
+\value{
+An integer: the count of expired sessions (non-missing values in
+\code{survey[[variable]]}).
+}
 \description{
 Just a simple to check how many times a survey (e.g. diary)
 has expired (i.e. user missed it). It defaults to checking the "expired" variable for this.

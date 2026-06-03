@@ -13,12 +13,16 @@ formr_items(survey_name = NULL, host = formr_last_host(), path = NULL)
 
 \item{path}{path to local JSON copy of the item table}
 }
+\value{
+A list of class \code{formr_item_list} (item metadata per item, named by item name).
+}
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download items using this command. One of survey_name or path has to be specified, if both are specified, survey_name is preferred.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 formr_items(survey_name = 'training_diary' )
 }

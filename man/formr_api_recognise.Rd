@@ -11,6 +11,9 @@ formr_api_recognise(item_list, results)
 
 \item{results}{A data frame containing the raw results.}
 }
+\value{
+The results data.frame with item types applied: POSIXct timestamps and choice items as \code{haven::labelled} vectors.
+}
 \description{
 Apply Type Definitions and Labels
 }

@@ -25,6 +25,9 @@ and a variable column containing labels for those values}
 \item{y_ticks}{the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to
 minuses, pluses and the average sign}
 }
+\value{
+A \code{ggplot} object: a bar chart, optionally with error bars.
+}
 \description{
 Pass in a data.frame with z-standardised values (x - Mean)/SD,
 and variable names, get a bar chart. Getting your data.frame into this shape

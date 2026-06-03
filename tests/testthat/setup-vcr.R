@@ -23,8 +23,17 @@ if (Sys.getenv("FORMR_CLIENT_SECRET") == "") {
 # Clean the host to get ONLY the domain for filtering
 host_domain <- gsub("^https?://", "", Sys.getenv("FORMR_HOST"))
 
+# Single source of cassettes: the ones shipped in inst/extdata (also used by
+# the vignettes), resolved via the installed/loaded package so tests and
+# vignettes can never drift apart. system.file() returns the source inst/ path
+# under devtools::load_all() and the installed path under R CMD check.
+cassette_dir <- system.file("extdata/vcr_cassettes", package = "formr")
+if (!nzchar(cassette_dir)) {
+	return(invisible(NULL))
+}
+
 vcr::vcr_configure(
-	dir = "../fixtures/vcr_cassettes",
+	dir = cassette_dir,
 	filter_sensitive_data = list(
 		"formr-client-id-redacted" = Sys.getenv("FORMR_CLIENT_ID"),
 		"formr-client-secret-redacted" = Sys.getenv("FORMR_CLIENT_SECRET"),

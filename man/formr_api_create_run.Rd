@@ -4,10 +4,12 @@
 \alias{formr_api_create_run}
 \title{Create a new run}
 \usage{
-formr_api_create_run(name)
+formr_api_create_run(name, verbose = TRUE)
 }
 \arguments{
 \item{name}{A character vector of names for the new runs (must be unique).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
 Invisibly returns a data frame containing the \code{name} and \code{link} of the created runs.

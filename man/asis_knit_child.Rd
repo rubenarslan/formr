@@ -26,6 +26,9 @@ asis_knit_child(
 
 \item{envir}{passed to \code{\link[knitr:knit_child]{knitr::knit_child()}}}
 }
+\value{
+A length-1 character string of class \code{knit_asis} (the knitted child document).
+}
 \description{
 This slightly modifies the \code{\link[knitr:knit_child]{knitr::knit_child()}} function to have different defaults.
 \itemize{
@@ -45,6 +48,7 @@ Some caveats:
 }
 \examples{
 \dontrun{
+# Not run: requires a knitr session and an external child .Rmd document.
 # an example of a wrapper function that calls asis_knit_child with an argument
 # ensures distinct paths for cache and figures, so that these calls can be looped in parallel
 regression_summary = function(model) {

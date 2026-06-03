@@ -11,6 +11,9 @@
 
 \item{...}{ignored}
 }
+\value{
+Invisibly \code{NULL}; called for its side effect of printing the \code{knit_asis} content.
+}
 \description{
 Print new lines in knit_asis outputs
 }

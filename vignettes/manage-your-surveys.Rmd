@@ -15,10 +15,30 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, eval = FALSE}
+```{r setup}
 library(formr)
-# Automatically finds your stored keys
-formr_api_authenticate(host = "https://api.rforms.org", account = "dashboard") # or your custom URL and account name!
+
+# So this vignette runs offline, API calls are replayed from pre-recorded
+# responses (vcr cassettes shipped with the package). With a real server you
+# would instead call formr_api_authenticate() with your own host/credentials.
+.formr_vcr <- requireNamespace("vcr", quietly = TRUE) &&
+  nzchar(system.file("extdata/vcr_cassettes", package = "formr"))
+
+if (.formr_vcr) {
+  vcr::vcr_configure(
+    dir = system.file("extdata/vcr_cassettes", package = "formr"),
+    filter_sensitive_data = list(
+      "formr-client-id-redacted"     = "dummy_client_id",
+      "formr-client-secret-redacted" = "dummy_client_secret",
+      "formr-host-redacted"          = "api.localhost"
+    )
+  )
+  vcr::use_cassette("formr_api_authenticate", {
+    formr_api_authenticate(host = "http://api.localhost",
+      client_id = "dummy_client_id", client_secret = "dummy_client_secret",
+      verbose = FALSE)
+  })
+}
 ```
 
 In addition to managing Runs, `formr` allows you to directly interact with the underlying Surveys (the spreadsheets containing your items and logic). While the [Project Workflow](manage-your-projects.html) (`formr_api_push_project`) is recommended for syncing entire studies, the functions below allow you to list, inspect, download, or delete specific surveys individually.
@@ -29,13 +49,12 @@ To view a list of all surveys associated with your account, use `formr_api_surve
 
 You can also filter the list by name using the `name_pattern` argument.
 
-```{r, eval = FALSE}
+```{r, eval = .formr_vcr}
 # List all surveys
-all_surveys <- formr_api_surveys()
-
-# Find specific surveys (e.g., all diaries)
-diaries <- formr_api_surveys(name_pattern = "diary")
-print(diaries)
+vcr::use_cassette("formr_api_survey_structure_fetch", {
+  all_surveys <- formr_api_surveys(verbose = FALSE)
+})
+all_surveys
 ```
 
 ## Inspecting and Downloading Surveys
@@ -46,9 +65,11 @@ You can retrieve the content of a survey in two ways: as a data frame (tibble) f
 
 This is useful for quickly checking variable names, item types, or choice labels without leaving your R session.
 
-```{r, eval = FALSE}
+```{r, eval = .formr_vcr}
 # Get the survey items as a tibble
-items <- formr_api_survey_structure("daily_diary_v1")
+vcr::use_cassette("formr_api_survey_structure_items", {
+  items <- formr_api_survey_structure("platzhalter")
+})
 
 # Check the first few items
 head(items)
@@ -59,6 +80,7 @@ head(items)
 If you have lost your local copy of a survey or want to backup the version currently on the server, you can download it directly.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Download the survey as an Excel file
 formr_api_survey_structure(
   survey_name = "daily_diary_v1", 
@@ -72,6 +94,7 @@ formr_api_survey_structure(
 You can upload a single survey file directly. This is useful if you want to update just one component of a study without syncing the entire project folder.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Upload a local Excel file
 # The survey name on the server is derived from the filename
 formr_api_upload_survey(file_path = "surveys/my_new_survey.xlsx")
@@ -82,6 +105,7 @@ formr_api_upload_survey(file_path = "surveys/my_new_survey.xlsx")
 You can also import a survey directly from a published Google Sheet URL.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 formr_api_upload_survey(
   survey_name = "google_imported_survey",
   google_sheet_url = "https://docs.google.com/spreadsheets/d/..."
@@ -93,6 +117,7 @@ formr_api_upload_survey(
 You can permanently delete a survey if it is no longer needed.
 
 ```{r, eval = FALSE}
+# Not run: needs a live formr server.
 # Delete a survey (prompts for confirmation by default)
 formr_api_delete_survey("old_pilot_survey")
 

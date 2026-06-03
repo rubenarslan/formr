@@ -7,7 +7,7 @@
 formr_backup_files(
   survey_name,
   overwrite = FALSE,
-  save_path = paste0(survey_name, "/user_uploaded_files"),
+  save_path = NULL,
   host = formr_last_host()
 )
 }
@@ -16,9 +16,15 @@ formr_backup_files(
 
 \item{overwrite}{should existing files be overwritten? defaults to FALSE}
 
-\item{save_path}{defaults to the survey name}
+\item{save_path}{directory to write the files into. Defaults to a sub-folder
+named after the survey inside \code{\link[=formr_default_dir]{formr_default_dir()}}; set that (or pass
+\code{save_path}) since formr never writes to the working directory by default.}
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
+}
+\value{
+Invisibly the file list with an updated \code{downloaded} field; called to
+download a survey's user-uploaded files into \code{save_path}.
 }
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
@@ -26,6 +32,7 @@ you can backup uploaded files using this command.
 }
 \examples{
 \dontrun{
-formr_backup_files(survey_name = 'training_diary' )
+# Not run: needs a live formr server and an authenticated session.
+formr_backup_files(survey_name = 'training_diary', save_path = tempdir() )
 }
 }

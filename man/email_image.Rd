@@ -11,11 +11,16 @@ email_image(x, ext = ".png")
 
 \item{ext}{extension, defaults to .png}
 }
+\value{
+A length-1 character string holding a \verb{cid:} reference for inline email images,
+carrying the source path in its \code{link} attribute.
+}
 \description{
 can be used as an argument to \link[knitr:opts_knit]{knitr::opts_knit}. If you attach the images properly, you can then send knit emails including plots. See the formr OpenCPU module on Github for a sample implementation.
 }
 \examples{
 \dontrun{
+# Not run: meant to run inside a knitr session as the figure upload hook.
 library(knitr); library(formr)
 opts_knit$set(upload.fun=formr::email_image)
 }

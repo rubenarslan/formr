@@ -39,6 +39,9 @@ formr_aggregate(
 \item{...}{formerly passed to \code{psych::alpha()}; ignored now that the
 reliability/Likert code has moved to the \code{codebook} package}
 }
+\value{
+The results data.frame with one added numeric column per scale (the row mean of its items).
+}
 \description{
 If you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to aggregate your multiple choice items into mean scores.

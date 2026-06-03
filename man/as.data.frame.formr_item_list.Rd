@@ -13,11 +13,16 @@
 
 \item{...}{not used}
 }
+\value{
+A data.frame of item metadata, one row per item, with \code{choices}
+collapsed to a comma-separated string.
+}
 \description{
 This function just turns a formr_item_list into a data.frame. The reason, these lists don't come as data.frames as default is because the 'choices' are a list themselves. When transforming, the choice column contains a collapsed choice list, which may be less useful for some purposes.
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_connect(email = 'you@example.net', password = 'zebrafinch' )
 as.data.frame(formr_items(survey_name = 'training_diary' ))
 }

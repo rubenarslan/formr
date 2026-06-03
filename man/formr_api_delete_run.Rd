@@ -4,15 +4,20 @@
 \alias{formr_api_delete_run}
 \title{Delete a Run}
 \usage{
-formr_api_delete_run(run_name, prompt = TRUE)
+formr_api_delete_run(run_name, prompt = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{run_name}{Name of the run to delete.}
 
-\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation.}
+\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation;
+in a non-interactive session it errors instead of proceeding unattended.
+Pass \code{prompt = FALSE} to delete without confirmation (e.g. in scripts).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
-Invisibly returns TRUE on success.
+Invisibly \code{TRUE} (single run) or a named logical vector (multiple
+runs) indicating per-run success; \code{FALSE} if the user declines the prompt.
 }
 \description{
 Permanently deletes a run and all associated data (sessions, results).

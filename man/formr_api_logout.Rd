@@ -4,7 +4,13 @@
 \alias{formr_api_logout}
 \title{Revoke Access Token (Logout)}
 \usage{
-formr_api_logout()
+formr_api_logout(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
+}
+\value{
+Invisibly \code{TRUE} on success (or \code{FALSE} if there was no active session); called to revoke the access token on the server and clear the local session.
 }
 \description{
 Invalidates the current access token on the server and

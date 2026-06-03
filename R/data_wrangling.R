@@ -83,6 +83,7 @@ as_same_type_as <- function(instance_of_target_class, object_to_convert) {
 #' @param fun aggregation function, defaults to rowMeans with na.rm = FALSE
 #' @param stem common stem for the variables, specify if it should not be auto-detected
 #' as the longest common stem of the variable names
+#' @return A numeric vector (the aggregated scale score) carrying `scale_item_names` and `label` attributes.
 #' @export
 #' @examples
 #' testdf <- data.frame(bfi_neuro_1 = rnorm(20), bfi_neuro_2 = rnorm(20),
@@ -126,6 +127,7 @@ aggregate_and_document_scale <- function(items, fun = rowMeans, stem = NULL) {
 #' @param df_no_attributes the data frame with missing attributes
 #' @param df_with_attributes the data frame from which you want to restore attributes
 #'
+#' @return A data.frame: `df` with variable attributes restored from a reference data.frame.
 #' @export
 #'
 rescue_attributes <- function(df_no_attributes, df_with_attributes) {

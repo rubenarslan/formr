@@ -23,6 +23,9 @@ qplot_on_normal(
 
 \item{x_ticks}{the ticks labels for -2,1,0,1 and 2 SDs around the mean, default to minuses, pluses and the average sign}
 }
+\value{
+A \code{ggplot} object showing the standard normal distribution with a reference line at \code{normed_value}.
+}
 \description{
 Pass in a z-standardised value (x - Mean)/SD,
 get a standard normal distribution.

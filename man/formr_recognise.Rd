@@ -20,6 +20,10 @@ formr_recognise(
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 }
+\value{
+The results data.frame with POSIXct timestamps and numeric/factor/\code{haven::labelled}
+columns set according to item types.
+}
 \description{
 Once you've retrieved an item table using \code{\link[=formr_items]{formr_items()}} you can use this
 function to correctly type your variables based on the item table (e.g. formr free text types will be character, but select_add_one will be factor, dates are also typed as Date, datetimes as POSIXct).

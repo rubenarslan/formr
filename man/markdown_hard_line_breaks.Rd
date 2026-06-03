@@ -9,6 +9,9 @@ markdown_hard_line_breaks(...)
 \arguments{
 \item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}}
 }
+\value{
+An rmarkdown \code{output_format} object with hard line breaks enabled.
+}
 \description{
 Custom rmarkdown template based on the standard \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}, but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
 }

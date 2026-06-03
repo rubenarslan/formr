@@ -4,15 +4,19 @@
 \alias{formr_api_delete_survey}
 \title{Delete a Survey}
 \usage{
-formr_api_delete_survey(survey_name, prompt = TRUE)
+formr_api_delete_survey(survey_name, prompt = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{survey_name}{Name of the survey to delete.}
 
-\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation.}
+\item{prompt}{Logical. If TRUE (default), asks for interactive confirmation;
+in a non-interactive session it errors instead of proceeding unattended.
+Pass \code{prompt = FALSE} to delete without confirmation (e.g. in scripts).}
+
+\item{verbose}{Logical. If TRUE (default), reports progress via \code{\link[=message]{message()}}.}
 }
 \value{
-Invisibly returns TRUE on success.
+Invisibly \code{TRUE} on success; \code{FALSE} if the user declines the prompt.
 }
 \description{
 Permanently deletes a survey study.

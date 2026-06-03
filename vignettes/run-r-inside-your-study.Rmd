@@ -15,7 +15,17 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup}
+library(formr)
+```
+
 If you haven't already, read the [Getting Started](getting-started.html) guide for authentication basics.
+
+Most code in this vignette is meant to be **pasted into a formr study** (a
+calculate item or a label), where the server injects the run context and
+credentials. Those snippets are shown but not executed here. The local helper
+functions (`current()`, `first()`, `last()`, and JSON parsing), however, run
+anywhere — and are executed below.
 
 ## 1. Why Run R Inside Your Study?
 
@@ -172,12 +182,18 @@ session. The helper `current(x)` returns the **most recent submission** of
 an item — the last element of the vector, which is always the current
 session's value:
 
-```{r, eval = FALSE}
-# In a showif condition — check the current selection
-current(menu_survey$choice) == "option_a"
+```{r}
+# formr repeats items within a session; current() returns the latest value.
+# Here is a participant's history of one menu item across repeats:
+choice_history <- c("option_a", "option_b", "option_a")
+current(choice_history)                 # the current (most recent) selection
 
-# In a calculate item — capture the latest input
-current(my_survey$text_input)
+# In a showif you would compare it directly, e.g.:
+current(choice_history) == "option_a"   # TRUE
+
+# first() and last() are siblings that drop missing values by default:
+first(c(NA, 2, 3))   # 2
+last(c(1, 2, NA))    # 2
 ```
 
 This is cleaner than the equivalent base-R `x[length(x)]` pattern and makes
@@ -401,13 +417,16 @@ break a participant's flow.
 3. **Parsing responses:** API columns sometimes contain nested JSON
    (e.g., multi-select choices). Always wrap parsing in a `tryCatch`:
 
-```{r, eval = FALSE}
+```{r}
 safe_parse_json <- function(x) {
   tryCatch(
     jsonlite::fromJSON(x),
     error = function(e) list()
   )
 }
+
+safe_parse_json('{"score": 5, "label": "high"}')   # parses to a list
+safe_parse_json("not valid json")                    # returns list(), no error
 ```
 
 **Guard against empty results.** Before processing fetched data, check

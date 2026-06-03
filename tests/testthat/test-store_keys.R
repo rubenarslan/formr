@@ -23,7 +23,7 @@ test_that("formr_store_keys (API Mode) stores Access Token correctly", {
 	# Run the function
 	expect_message(
 		formr_store_keys(host = test_host, access_token = test_token),
-		"\\[SUCCESS\\] Access Token stored"
+		"Access Token stored"
 	)
 	
 	# Verify: Retrieve the key back from the keyring to ensure it was saved
@@ -50,7 +50,7 @@ test_that("formr_store_keys (API Mode) stores OAuth Client Credentials correctly
 	# Run function
 	expect_message(
 		formr_store_keys(host = test_host, client_id = test_id, client_secret = test_secret),
-		"\\[SUCCESS\\] OAuth Credentials stored"
+		"OAuth Credentials stored"
 	)
 	
 	# Verify both keys were stored
@@ -84,7 +84,7 @@ test_that("formr_store_keys (Classic Mode) stores credentials correctly", {
 			password = test_pass,
 			secret_2fa = test_2fa
 		),
-		"\\[SUCCESS\\] Classic credentials stored" # <-- Updated this line
+		"Classic credentials stored"
 	)
 	
 	# 4. Verify the keys were actually stored in the keyring

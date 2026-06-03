@@ -13,6 +13,9 @@ formr_results(survey_name, host = formr_last_host(), ...)
 
 \item{...}{passed to \code{\link[=formr_post_process_results]{formr_post_process_results()}}}
 }
+\value{
+A tibble of processed, aggregated survey results (the output of \code{\link[=formr_post_process_results]{formr_post_process_results()}}).
+}
 \description{
 After connecting to formr using \code{\link[=formr_connect]{formr_connect()}}
 you can download data and process it. This approach calls the following functions in the right sequence: \code{\link[=formr_raw_results]{formr_raw_results()}}
@@ -22,6 +25,7 @@ and scales are aggregated (bfi_extra_1, bfi_extra_2, bfi_extra_3R become bfi_ext
 }
 \examples{
 \dontrun{
+# Not run: needs a live formr server and an authenticated session.
 formr_results(survey_name = 'training_diary' )
 }
 }

@@ -38,11 +38,15 @@ text_message_massenversand(
 
 \item{return_result}{whether to return simply TRUE/FALSE on success/failure or the whole result}
 }
+\value{
+Logical \code{TRUE}/\code{FALSE} indicating send success (or the raw character API response).
+}
 \description{
 Connects to Massenversand.de using your token and sends a text message.
 }
 \examples{
 \dontrun{
+# Not run: sends a real SMS via the massenversand.de gateway (needs an account).
 text_message_massenversand(
 	To = '492222', 
 	From = '15005000', 

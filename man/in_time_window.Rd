@@ -11,6 +11,9 @@ in_time_window(min, max)
 
 \item{max}{POSIXct > min}
 }
+\value{
+A length-1 logical: \code{TRUE} if the current time lies between \code{min} and \code{max}.
+}
 \description{
 supply min,max as POSIXct
 }

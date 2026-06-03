@@ -72,7 +72,7 @@ test_that("formr_api_run_structure can import (PUT) a valid JSON", {
       ]
     }'
 		
-		tmp_json <- "test_structure.json"
+		tmp_json <- tempfile(fileext = ".json")
 		writeLines(minimal_structure, tmp_json)
 		on.exit(unlink(tmp_json))
 		
@@ -137,17 +137,20 @@ test_that("formr_api_survey_structure parses nested choices correctly", {
 
 test_that("formr_api_upload_file works (multipart request)", {
 	vcr::use_cassette("formr_api_upload_delete_flow", {
-		tmp_file <- "test_upload.txt" 
-		writeLines("This is a test file", tmp_file)
-		on.exit(unlink(tmp_file)) 
-		
-		res <- formr_api_upload_file(run_name = "test-run", path = tmp_file)
-		files <- formr_api_files("test-run")
-		expect_true(tmp_file %in% files$name)
-		
-		formr_api_delete_file("test-run", tmp_file)
-		files_after <- formr_api_files("test-run")
-		expect_false(tmp_file %in% files_after$name)
+		# Run file ops in a tempdir (never the home/working dir) but keep the
+		# original basename so the recorded multipart upload + DELETE URI match.
+		withr::with_tempdir({
+			tmp_file <- "test_upload.txt"
+			writeLines("This is a test file", tmp_file)
+
+			res <- formr_api_upload_file(run_name = "test-run", path = tmp_file)
+			files <- formr_api_files("test-run")
+			expect_true(tmp_file %in% files$name)
+
+			formr_api_delete_file("test-run", tmp_file)
+			files_after <- formr_api_files("test-run")
+			expect_false(tmp_file %in% files_after$name)
+		})
 	}, match_requests_on = c("method", "uri"))
 })
 
