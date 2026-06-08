@@ -9,6 +9,14 @@ An environment.
 \usage{
 .formr
 }
+\value{
+An \link{environment} holding per-request state in its bindings (the
+\code{run_name}, \code{host}, \code{access_token}, \code{last_action_time} and
+\code{last_action_date} fields listed above). \code{.formr} is a data object, not a
+function, so it does not itself return a value; the rforms.org server
+populates these bindings before user code runs and the environment is empty
+outside a formr/OpenCPU session.
+}
 \description{
 An environment that the rforms.org server fills with per-request state
 when R code runs inside an OpenCPU session on a formr study (for
