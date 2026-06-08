@@ -1,15 +1,23 @@
 ## Resubmission
 
-This is a resubmission. Thank you for the review of 1.0.0. We have addressed
-every point raised:
+This is a resubmission. Thank you for the further review. The previous
+resubmission still left one missing `\value` tag, which is now fixed:
 
-* **Missing `\value` in .Rd files.** Every exported function and method now has
-  a `\value` (roxygen `@return`) tag describing the class/structure of the
-  result and what it means. Functions called only for their side effects say so
+* **Missing `\value` in `dot-formr.Rd`.** The exported `.formr` environment now
+  has a `\value` tag describing it (an environment holding per-request state in
+  its bindings), in addition to its `\format`. Every other exported function,
+  method and object already carries a `\value` describing the class/structure of
+  the result and what it means; functions called only for their side effects say
+  so explicitly. The only remaining `\value`-free topic is `reexports.Rd`, which
+  uses `\docType{import}` (re-exported objects from other packages).
+
+The original 1.0.0 review points remain addressed:
+
+* **Missing `\value` in .Rd files.** Every exported function and method has a
+  `\value` (roxygen `@return`) tag describing the class/structure of the result
+  and what it means. Functions called only for their side effects say so
   explicitly (e.g. "No return value, called for side effects" / "Invisibly
-  `TRUE`; called for its side effect of ..."). (Re-exported objects in
-  `reexports.Rd` use `\docType{import}` and the exported environment `.formr`
-  uses `\format`, neither of which takes `\value`.)
+  `TRUE`; called for its side effect of ...").
 
 * **Vignettes did not execute code.** All eight vignettes now run code. API
   calls are replayed offline from pre-recorded `vcr` cassettes shipped in
