@@ -83,6 +83,15 @@ fields the server may set:</p>
     <p>An environment.</p>
     </div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An <a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a> holding per-request state in its bindings (the
+<code>run_name</code>, <code>host</code>, <code>access_token</code>, <code>last_action_time</code> and
+<code>last_action_date</code> fields listed above). <code>.formr</code> is a data object, not a
+function, so it does not itself return a value; the rforms.org server
+populates these bindings before user code runs and the environment is empty
+outside a formr/OpenCPU session.</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
 <ul><li><p><code>.formr$run_name</code> – the name of the current run.</p></li>

@@ -15,6 +15,16 @@ fields the server may set:
 
 An environment.
 
+## Value
+
+An [environment](https://rdrr.io/r/base/environment.html) holding
+per-request state in its bindings (the `run_name`, `host`,
+`access_token`, `last_action_time` and `last_action_date` fields listed
+above). `.formr` is a data object, not a function, so it does not itself
+return a value; the rforms.org server populates these bindings before
+user code runs and the environment is empty outside a formr/OpenCPU
+session.
+
 ## Details
 
 - `.formr$run_name` – the name of the current run.

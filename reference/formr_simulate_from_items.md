@@ -43,8 +43,8 @@ system.file('extdata/gods_example_items.json', package = 'formr', mustWork = TRU
 fakedata = formr_simulate_from_items(items, n = 20)
 fakedata[1:2,]
 #>   id             created               ended            modified
-#> 1  1 2026-02-08 12:24:35 2026-02-08 12:26:46 2026-02-08 12:26:46
-#> 2  2 2026-02-16 20:28:26 2026-02-16 20:31:05 2026-02-16 20:31:05
+#> 1  1 2026-02-13 12:24:35 2026-02-13 12:26:46 2026-02-13 12:26:46
+#> 2  2 2026-02-21 20:28:26 2026-02-21 20:31:05 2026-02-21 20:31:05
 #>                gods religiousness_1 religiousness_2R religiousness_3
 #> 1 spaghetti_monster               4                1               3
 #> 2 spaghetti_monster               1                3               3
