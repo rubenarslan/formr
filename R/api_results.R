@@ -306,8 +306,16 @@ formr_api_recognise <- function(item_list, results) {
 		# Explicit Types for non-choice items
 		else if (type %in% c("date", "datetime")) {
 			results[[name]] <- tryCatch(as.POSIXct(results[[name]]), error = function(e) results[[name]])
-		} else if (type %in% c("number", "range", "calculate")) {
-			results[[name]] <- suppressWarnings(as.numeric(results[[name]]))
+		} else if (type == "calculate") {
+			# `calculate` items can hold arbitrary text (e.g. a CSV blob read
+			# from a file that merely starts with a number). They are NEVER
+			# numeric -- the old as.numeric() silently turned such values into
+			# NA in every row. Always keep them as strings. See issue #45.
+			results[[name]] <- as.character(results[[name]])
+		} else if (type %in% c("number", "range")) {
+			# number/range are UI-constrained numeric; coerce only when lossless
+			# so a stray non-numeric value can never silently nuke the column.
+			results[[name]] <- .lossless_as_numeric(results[[name]])
 		}
 		
 		# APPLY LABEL TO FINAL VECTOR
@@ -460,6 +468,25 @@ formr_api_aggregate <- function(results, item_list, min_items = 2) {
 		results <- .log_action(results, "Scale", sprintf("Computed %d scales (means)", scales_created))
 	}
 	results
+}
+
+#' Helper: Coerce to numeric only when lossless
+#'
+#' Returns `as.numeric(x)` only if the conversion introduces no new missings
+#' among values that were non-empty to begin with. Otherwise the input is
+#' returned untouched, so a stray non-numeric value can never silently flatten
+#' a `number`/`range` column to all-NA.
+#' @noRd
+.lossless_as_numeric <- function(x) {
+	if (is.numeric(x)) return(x)
+	chr <- as.character(x)
+	not_missing <- !is.na(chr) & nzchar(trimws(chr))
+	converted <- suppressWarnings(as.numeric(chr))
+	# A value that was present but no longer parses means coercion lost data.
+	if (any(not_missing & is.na(converted))) {
+		return(x)
+	}
+	converted
 }
 
 #' Helper: Join results safely
