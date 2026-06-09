@@ -1,3 +1,13 @@
+# formr 1.1.1
+
+* `formr_api_results()` (via `formr_api_recognise()`) no longer corrupts
+  `calculate` items. They are now **always returned as strings**: a `calculate`
+  item can legitimately hold non-numeric text — e.g. a CSV blob read from a file
+  that merely *starts* with a number, like `"6136,63,50,woman,man"` — which the
+  old code force-coerced with `as.numeric()`, silently turning every row into
+  `NA`. `number`/`range` items remain numeric but are now coerced only when
+  lossless (<https://github.com/rubenarslan/formr/issues/45>).
+
 # formr 1.1.0
 
 * **CRAN resubmission fixes (addressing the 1.0.0 review):**
