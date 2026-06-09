@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,11 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="formr-111">formr 1.1.1<a class="anchor" aria-label="anchor" href="#formr-111"></a></h2>
+<ul><li>
+<code><a href="../reference/formr_api_results.html">formr_api_results()</a></code> (via <code><a href="../reference/formr_api_recognise.html">formr_api_recognise()</a></code>) no longer corrupts <code>calculate</code> items. They are now <strong>always returned as strings</strong>: a <code>calculate</code> item can legitimately hold non-numeric text — e.g. a CSV blob read from a file that merely <em>starts</em> with a number, like <code>"6136,63,50,woman,man"</code> — which the old code force-coerced with <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code>, silently turning every row into <code>NA</code>. <code>number</code>/<code>range</code> items remain numeric but are now coerced only when lossless (<a href="https://github.com/rubenarslan/formr/issues/45" class="external-link uri">https://github.com/rubenarslan/formr/issues/45</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="formr-110">formr 1.1.0<a class="anchor" aria-label="anchor" href="#formr-110"></a></h2>
 <ul><li>

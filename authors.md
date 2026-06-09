@@ -10,13 +10,13 @@
 ## Citation
 
 Arslan R, Seidel T (2026). *formr: Companion R Package for the 'formr'
-Survey Framework*. R package version 1.1.0,
+Survey Framework*. R package version 1.1.1,
 <https://rubenarslan.github.io/formr/>.
 
     @Manual{,
       title = {formr: Companion R Package for the 'formr' Survey Framework},
       author = {Ruben Arslan and Tim B Seidel},
       year = {2026},
-      note = {R package version 1.1.0},
+      note = {R package version 1.1.1},
       url = {https://rubenarslan.github.io/formr/},
     }
