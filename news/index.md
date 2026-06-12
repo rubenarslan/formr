@@ -1,5 +1,18 @@
 # Changelog
 
+## formr 1.1.2
+
+- Hotfix:
+  [`formr_render()`](https://rubenarslan.github.io/formr/reference/formr_render.md)
+  and
+  [`formr_inline_render()`](https://rubenarslan.github.io/formr/reference/formr_inline_render.md)
+  again write their output to a file named `knit.html` in the working
+  directory. In 1.1.1 the CRAN review changes routed rendering through
+  [`tempdir()`](https://rdrr.io/r/base/tempfile.html) with a random
+  filename, which broke rforms.org/OpenCPU — the server serves the
+  rendered page via `getFiles("knit.html")` and so could no longer find
+  it. If you are on 1.1.1, upgrade to 1.1.2 (or pin to 1.1.0).
+
 ## formr 1.1.1
 
 - [`formr_api_results()`](https://rubenarslan.github.io/formr/reference/formr_api_results.md)

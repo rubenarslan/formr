@@ -24,5 +24,5 @@ A POSIXct: midnight at the start of the day after `date`.
 
 ``` r
 next_day(Sys.time())
-#> [1] "2026-06-10 UTC"
+#> [1] "2026-06-13 UTC"
 ```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,10 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.2" id="formr-112">formr 1.1.2<a class="anchor" aria-label="anchor" href="#formr-112"></a></h2>
+<ul><li>Hotfix: <code><a href="../reference/formr_render.html">formr_render()</a></code> and <code><a href="../reference/formr_inline_render.html">formr_inline_render()</a></code> again write their output to a file named <code>knit.html</code> in the working directory. In 1.1.1 the CRAN review changes routed rendering through <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> with a random filename, which broke rforms.org/OpenCPU — the server serves the rendered page via <code>getFiles("knit.html")</code> and so could no longer find it. If you are on 1.1.1, upgrade to 1.1.2 (or pin to 1.1.0).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="formr-111">formr 1.1.1<a class="anchor" aria-label="anchor" href="#formr-111"></a></h2>
 <ul><li>
