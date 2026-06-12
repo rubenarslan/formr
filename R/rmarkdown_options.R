@@ -119,7 +119,7 @@ render_text = function(text, ...) {
 
 formr_inline_render = function(text, self_contained = TRUE, ...) {
   fileName = rmarkdown::render(input = write_to_file(text,
-    ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
+    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
     fragment.only = TRUE, section_divs = FALSE), ...)
   readChar(fileName, file.info(fileName)$size)
 }
@@ -179,7 +179,7 @@ formr_render_commonmark = function(text) {
 
 formr_render = function(text, self_contained = FALSE, ...) {
   fileName = rmarkdown::render(input = write_to_file(text,
-    ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
+    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
     fragment.only = FALSE), clean = TRUE, quiet = TRUE, ...)
   fileName
 }
@@ -190,8 +190,12 @@ write_to_file <- function(..., name = NULL, ext = ".Rmd") {
   if (is.null(name)) {
     filename <- paste0(tempfile(), ext)
   } else {
-    # keep writes inside the session tempdir (never the working directory)
-    filename = file.path(tempdir(), paste0(basename(name), ext))
+    # A named write lands in the working directory on purpose: formr_render()
+    # passes name = "knit" so rmarkdown produces "knit.html" there, which is
+    # the file rforms.org/OpenCPU serves via getFiles("knit.html"). Moving this
+    # into tempdir() (v1.1.1) broke that lookup in production -- see issue #45's
+    # follow-up; do not "fix" it back to tempdir without updating the PHP side.
+    filename = paste0(name, ext)
   }
   mytext <- eval(...)
   write(mytext, filename)

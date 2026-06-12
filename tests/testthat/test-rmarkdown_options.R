@@ -14,6 +14,25 @@ test_that("formr_render_commonmark works correctly", {
   expect_match(result, "<em>italic</em>")
 })
 
+# Regression: rforms.org/OpenCPU serves the rendered page via
+# getFiles("knit.html"), so formr_render() must emit a file literally named
+# "knit.html" in the working directory. v1.1.1 moved this into tempdir() with a
+# random name and broke production rendering; this guards against a recurrence.
+test_that("formr_render writes knit.html to the working directory", {
+  skip_if_not_installed("rmarkdown")
+
+  wd <- file.path(tempdir(), "formr_render_wd")
+  dir.create(wd, showWarnings = FALSE)
+  old <- setwd(wd)
+  on.exit({ setwd(old); unlink(c("knit.Rmd", "knit.html", "knit_files"), recursive = TRUE) }, add = TRUE)
+  unlink(c("knit.Rmd", "knit.html"))
+
+  out <- formr_render("# Hi\n\nThere are `r 1 + 1` types.")
+
+  expect_identical(basename(out), "knit.html")
+  expect_true(file.exists(file.path(wd, "knit.html")))
+})
+
 test_that("paste.knit_asis works correctly", {
   # Test with example from documentation
   result <- paste.knit_asis("# Headline 1", "## Headline 2")
