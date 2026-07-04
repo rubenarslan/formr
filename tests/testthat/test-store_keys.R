@@ -95,18 +95,19 @@ test_that("formr_store_keys (Classic Mode) stores credentials correctly", {
 	expect_equal(stored_2fa, test_2fa)
 })
 
-test_that("formr_store_keys throws informative error if keyring is missing", {
+test_that("formr_store_keys checks for keyring before touching it", {
 	# This test requires the 'mockery' package to stub the environment
 	skip_if_not_installed("mockery")
-	
-	# 1. Setup the stub
-	# We tell R: "When 'formr_store_keys' calls 'requireNamespace', 
-	# make it return FALSE instead of actually checking the package."
-	mockery::stub(formr_store_keys, "requireNamespace", FALSE)
-	
-	# 2. Expect the specific error message
+
+	# Simulate the missing-package path: rlang::check_installed() throws (as
+	# it does when the user declines the install offer, or non-interactively)
+	# instead of consulting the real library.
+	mockery::stub(formr_store_keys, "rlang::check_installed",
+		function(pkg, ...) stop('The package "keyring" is required.'))
+
+	# The guard must fire before any keyring call
 	expect_error(
 		formr_store_keys(account_name = "dummy_account"),
-		"Package 'keyring' is required"
+		'"keyring" is required'
 	)
 })

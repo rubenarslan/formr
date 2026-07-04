@@ -39,7 +39,7 @@ Imports:
     rmarkdown,
     purrr,
     readr,
-    rlang
+    rlang (>= 1.0.0)
 Suggests:
     testthat (>= 3.0.0),
     vcr,

@@ -22,7 +22,8 @@ formr_connect(
 suggested \code{keyring} package; generating a 2FA code from a stored secret
 additionally requires the suggested \code{otp} package. Both are optional so
 that the package stays installable on platforms without a system
-credential store (e.g. WebAssembly/webR).}
+credential store (e.g. WebAssembly/webR); in interactive sessions you
+will be offered to install them the first time they are needed.}
 }
 \value{
 Invisibly \code{TRUE} on success; called for its side effect of establishing

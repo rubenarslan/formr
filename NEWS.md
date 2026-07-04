@@ -4,11 +4,13 @@
   installed on WebAssembly/webR (`keyring` needs a system credential store and
   has no wasm build; all remaining hard dependencies are available as wasm
   binaries). Both packages are only needed for the credential-storage
-  convenience path: `formr_store_keys()` and `formr_connect(keyring = ...)`
-  now error with an installation hint when `keyring` is missing, and
-  `formr_connect()` falls back to prompting for the 2FA code when `otp` is
-  missing. If you use these features, `install.packages(c("keyring", "otp"))`
-  once — nothing else changes.
+  convenience path. Functions that need a suggested package
+  (`formr_store_keys()`, `formr_connect(keyring = ...)`,
+  `formr_overview_sankey()`, `formr_render_commonmark()`) now check for it
+  via `rlang::check_installed()`: in interactive sessions you are offered to
+  install the package on first use, otherwise they error with an informative
+  message. `formr_connect()` falls back to prompting for the 2FA code
+  manually when `otp` is unavailable.
 
 * `formr_render()` and `formr_inline_render()` now pick their write directory
   automatically, reconciling the rforms.org/OpenCPU integration with CRAN
