@@ -1,5 +1,15 @@
 # formr 1.1.3
 
+* `keyring` and `otp` moved from Imports to Suggests so that formr can be
+  installed on WebAssembly/webR (`keyring` needs a system credential store and
+  has no wasm build; all remaining hard dependencies are available as wasm
+  binaries). Both packages are only needed for the credential-storage
+  convenience path: `formr_store_keys()` and `formr_connect(keyring = ...)`
+  now error with an installation hint when `keyring` is missing, and
+  `formr_connect()` falls back to prompting for the 2FA code when `otp` is
+  missing. If you use these features, `install.packages(c("keyring", "otp"))`
+  once — nothing else changes.
+
 * `formr_render()` and `formr_inline_render()` now pick their write directory
   automatically, reconciling the rforms.org/OpenCPU integration with CRAN
   policy. Inside an OpenCPU/formr session — detected because the `opencpu`

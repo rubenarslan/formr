@@ -18,7 +18,11 @@ formr_connect(
 
 \item{host}{defaults to \code{\link[=formr_last_host]{formr_last_host()}}, which defaults to https://rforms.org}
 
-\item{keyring}{a shorthand for the account you're using}
+\item{keyring}{a shorthand for the account you're using. Requires the
+suggested \code{keyring} package; generating a 2FA code from a stored secret
+additionally requires the suggested \code{otp} package. Both are optional so
+that the package stays installable on platforms without a system
+credential store (e.g. WebAssembly/webR).}
 }
 \value{
 Invisibly \code{TRUE} on success; called for its side effect of establishing

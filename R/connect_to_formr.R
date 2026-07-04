@@ -10,7 +10,11 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' @param email your registered email address
 #' @param password your password
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
-#' @param keyring a shorthand for the account you're using
+#' @param keyring a shorthand for the account you're using. Requires the
+#'   suggested `keyring` package; generating a 2FA code from a stored secret
+#'   additionally requires the suggested `otp` package. Both are optional so
+#'   that the package stays installable on platforms without a system
+#'   credential store (e.g. WebAssembly/webR).
 #' @return Invisibly `TRUE` on success; called for its side effect of establishing
 #'   an authenticated cookie session with the formr server (stored in httr's cookie jar).
 #' @export
@@ -22,7 +26,11 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(), keyring = NULL) {
 	formr_last_host(host)  # Store the host
 	if (!missing(keyring) && !is.null(keyring)) {
-		if (is.null(email) && 
+		if (!requireNamespace("keyring", quietly = TRUE)) {
+			stop("formr_connect(keyring = ...) needs the 'keyring' package. ",
+					 "Install it with install.packages(\"keyring\") or pass email and password directly.")
+		}
+		if (is.null(email) &&
 				length(keyring::key_list(keyring)[["username"]]) %in% 1:2) {
 			usernames <- keyring::key_list(keyring)[["username"]]
 			email <- usernames[!grepl(" 2FA", usernames)][[1]]
@@ -51,7 +59,13 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 		}
 		
 		if (!is.null(twofa_secret) && twofa_secret != "") {
-			code <- otp::TOTP$new(twofa_secret)$now()
+			if (requireNamespace("otp", quietly = TRUE)) {
+				code <- otp::TOTP$new(twofa_secret)$now()
+			} else {
+				message("The 'otp' package is not installed, so the 2FA code cannot be ",
+								"generated from the stored secret. Install it with install.packages(\"otp\").")
+				code <- readline("Enter 2FA code: ")
+			}
 		} else {
 			code <- readline("Enter 2FA code: ")
 		}

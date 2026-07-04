@@ -50,7 +50,7 @@ formr_store_keys <- function(account_name = NULL,
 														 verbose = TRUE) {
 	
 	if (!requireNamespace("keyring", quietly = TRUE)) {
-		stop("Package 'keyring' is required.")
+		stop("Package 'keyring' is required. Install it with install.packages(\"keyring\").")
 	}
 	
 	# --- LOGIC BRANCH 1: Classic MODE ---

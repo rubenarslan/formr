@@ -1,5 +1,4 @@
 library(testthat)
-library(keyring)
 library(httr)
 library(jsonlite)
 

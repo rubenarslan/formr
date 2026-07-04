@@ -37,8 +37,6 @@ Imports:
     jsonlite,
     lubridate,
     rmarkdown,
-    otp,
-    keyring,
     purrr,
     readr,
     rlang
@@ -49,7 +47,9 @@ Suggests:
     withr,
     rstudioapi,
     plotly,
-    commonmark
+    commonmark,
+    keyring,
+    otp
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
