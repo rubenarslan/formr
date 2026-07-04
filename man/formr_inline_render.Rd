@@ -4,12 +4,17 @@
 \alias{formr_inline_render}
 \title{render inline text for formr}
 \usage{
-formr_inline_render(text, self_contained = TRUE, ...)
+formr_inline_render(text, self_contained = TRUE, dir = NULL, ...)
 }
 \arguments{
 \item{text}{that will be written to a tmp file and used as the input argument}
 
 \item{self_contained}{passed to \link{markdown_custom_options}}
+
+\item{dir}{directory in which the intermediate \code{knit.Rmd} and the rendered
+\code{knit.html} are written. Defaults to the working directory inside an
+OpenCPU/formr session and to \code{\link[=tempdir]{tempdir()}} in ordinary R sessions; see
+\code{\link[=formr_render]{formr_render()}} for details.}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }

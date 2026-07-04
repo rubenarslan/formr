@@ -1,3 +1,17 @@
+# formr 1.1.3
+
+* `formr_render()` and `formr_inline_render()` now pick their write directory
+  automatically, reconciling the rforms.org/OpenCPU integration with CRAN
+  policy. Inside an OpenCPU/formr session — detected because the `opencpu`
+  namespace is loaded on the server, or because rforms.org populated the
+  per-request `.formr` environment — they keep writing `knit.Rmd`/`knit.html`
+  to the (ephemeral, per-request) working directory that the server reads via
+  `getFiles("knit.html")`, exactly as in 1.1.2. In ordinary R sessions they
+  write to `tempdir()` instead, as in 1.1.1, so the package no longer touches
+  the user's working directory by default. Override the detection with
+  `options(formr.in_opencpu = TRUE/FALSE)` or pass the new `dir` argument
+  explicitly.
+
 # formr 1.1.2
 
 * Hotfix: `formr_render()` and `formr_inline_render()` again write their output
