@@ -1,4 +1,4 @@
-# formr 1.1.3
+# formr 1.2.0
 
 * `keyring` and `otp` moved from Imports to Suggests so that formr can be
   installed on WebAssembly/webR (`keyring` needs a system credential store and
