@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_render</span><span class="op">(</span><span class="va">text</span>, self_contained <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formr_render</span><span class="op">(</span><span class="va">text</span>, self_contained <span class="op">=</span> <span class="cn">FALSE</span>, dir <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,6 +79,17 @@
 
 <dt id="arg-self-contained">self_contained<a class="anchor" aria-label="anchor" href="#arg-self-contained"></a></dt>
 <dd><p>passed to <a href="markdown_custom_options.html">markdown_custom_options</a></p></dd>
+
+
+<dt id="arg-dir">dir<a class="anchor" aria-label="anchor" href="#arg-dir"></a></dt>
+<dd><p>directory in which the intermediate <code>knit.Rmd</code> and the rendered
+<code>knit.html</code> are written. Defaults to the working directory when the code
+runs inside an OpenCPU/formr session (there, the working directory is the
+ephemeral per-request session directory from which rforms.org retrieves
+the rendered page via <code>getFiles("knit.html")</code>) and to <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> in
+ordinary R sessions, so the package never writes into your working
+directory unless you ask it to. Set
+<code>options(formr.in_opencpu = TRUE/FALSE)</code> to force either default.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -99,7 +110,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

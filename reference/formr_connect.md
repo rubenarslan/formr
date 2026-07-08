@@ -35,7 +35,12 @@ formr_connect(
 
 - keyring:
 
-  a shorthand for the account you're using
+  a shorthand for the account you're using. Requires the suggested
+  `keyring` package; generating a 2FA code from a stored secret
+  additionally requires the suggested `otp` package. Both are optional
+  so that the package stays installable on platforms without a system
+  credential store (e.g. WebAssembly/webR); in interactive sessions you
+  will be offered to install them the first time they are needed.
 
 ## Value
 

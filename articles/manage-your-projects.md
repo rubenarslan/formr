@@ -32,9 +32,9 @@ if (.formr_vcr) {
 # formr's writing functions never default to your working directory. Set a
 # session default once (here a temp dir) — or pass dir=/save_path= per call.
 formr_default_dir(tempdir())
-#> [1] "/tmp/RtmpU8eqy8"
+#> [1] "/tmp/RtmpzJ2eqk"
 formr_default_dir()
-#> [1] "/tmp/RtmpU8eqy8"
+#> [1] "/tmp/RtmpzJ2eqk"
 ```
 
 Version 0.12.0 of the `formr` package introduces a robust workflow for

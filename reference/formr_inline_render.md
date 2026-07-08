@@ -5,7 +5,7 @@ Render text
 ## Usage
 
 ``` r
-formr_inline_render(text, self_contained = TRUE, ...)
+formr_inline_render(text, self_contained = TRUE, dir = NULL, ...)
 ```
 
 ## Arguments
@@ -18,6 +18,16 @@ formr_inline_render(text, self_contained = TRUE, ...)
 
   passed to
   [markdown_custom_options](https://rubenarslan.github.io/formr/reference/markdown_custom_options.md)
+
+- dir:
+
+  directory in which the intermediate `knit.Rmd` and the rendered
+  `knit.html` are written. Defaults to the working directory inside an
+  OpenCPU/formr session and to
+  [`tempdir()`](https://rdrr.io/r/base/tempfile.html) in ordinary R
+  sessions; see
+  [`formr_render()`](https://rubenarslan.github.io/formr/reference/formr_render.md)
+  for details.
 
 - ...:
 

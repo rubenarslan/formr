@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">formr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,11 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.0" id="formr-120">formr 1.2.0<a class="anchor" aria-label="anchor" href="#formr-120"></a></h2>
+<ul><li><p><code>keyring</code> and <code>otp</code> moved from Imports to Suggests so that formr can be installed on WebAssembly/webR (<code>keyring</code> needs a system credential store and has no wasm build; all remaining hard dependencies are available as wasm binaries). Both packages are only needed for the credential-storage convenience path. Functions that need a suggested package (<code><a href="../reference/formr_store_keys.html">formr_store_keys()</a></code>, <code>formr_connect(keyring = ...)</code>, <code><a href="../reference/formr_overview_sankey.html">formr_overview_sankey()</a></code>, <code><a href="../reference/formr_render_commonmark.html">formr_render_commonmark()</a></code>) now check for it via <code><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">rlang::check_installed()</a></code>: in interactive sessions you are offered to install the package on first use, otherwise they error with an informative message. <code><a href="../reference/formr_connect.html">formr_connect()</a></code> falls back to prompting for the 2FA code manually when <code>otp</code> is unavailable.</p></li>
+<li><p><code><a href="../reference/formr_render.html">formr_render()</a></code> and <code><a href="../reference/formr_inline_render.html">formr_inline_render()</a></code> now pick their write directory automatically, reconciling the rforms.org/OpenCPU integration with CRAN policy. Inside an OpenCPU/formr session — detected because the <code>opencpu</code> namespace is loaded on the server, or because rforms.org populated the per-request <code>.formr</code> environment — they keep writing <code>knit.Rmd</code>/<code>knit.html</code> to the (ephemeral, per-request) working directory that the server reads via <code>getFiles("knit.html")</code>, exactly as in 1.1.2. In ordinary R sessions they write to <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> instead, as in 1.1.1, so the package no longer touches the user’s working directory by default. Override the detection with <code>options(formr.in_opencpu = TRUE/FALSE)</code> or pass the new <code>dir</code> argument explicitly.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="formr-112">formr 1.1.2<a class="anchor" aria-label="anchor" href="#formr-112"></a></h2>
 <ul><li>Hotfix: <code><a href="../reference/formr_render.html">formr_render()</a></code> and <code><a href="../reference/formr_inline_render.html">formr_inline_render()</a></code> again write their output to a file named <code>knit.html</code> in the working directory. In 1.1.1 the CRAN review changes routed rendering through <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> with a random filename, which broke rforms.org/OpenCPU — the server serves the rendered page via <code>getFiles("knit.html")</code> and so could no longer find it. If you are on 1.1.1, upgrade to 1.1.2 (or pin to 1.1.0).</li>
 </ul></div>
@@ -69,7 +74,7 @@
 <code><a href="../reference/formr_api_results.html">formr_api_results()</a></code> (via <code><a href="../reference/formr_api_recognise.html">formr_api_recognise()</a></code>) no longer corrupts <code>calculate</code> items. They are now <strong>always returned as strings</strong>: a <code>calculate</code> item can legitimately hold non-numeric text — e.g. a CSV blob read from a file that merely <em>starts</em> with a number, like <code>"6136,63,50,woman,man"</code> — which the old code force-coerced with <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code>, silently turning every row into <code>NA</code>. <code>number</code>/<code>range</code> items remain numeric but are now coerced only when lossless (<a href="https://github.com/rubenarslan/formr/issues/45" class="external-link uri">https://github.com/rubenarslan/formr/issues/45</a>).</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0" id="formr-110">formr 1.1.0<a class="anchor" aria-label="anchor" href="#formr-110"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="formr-110">formr 1.1.0<a class="anchor" aria-label="anchor" href="#formr-110"></a></h2><p class="text-muted">CRAN release: 2026-06-16</p>
 <ul><li>
 <p><strong>CRAN resubmission fixes (addressing the 1.0.0 review):</strong></p>
 <ul><li>Every exported function and method now documents its return value with <code>\value</code>, describing the class/structure and meaning of the output.</li>
@@ -113,7 +118,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>
