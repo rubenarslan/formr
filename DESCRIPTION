@@ -8,7 +8,7 @@ Description: Serves as a companion toolkit for the 'formr' survey
     assets (surveys, CSS) for local editing; and functions for use
     within 'formr' runs to generate dynamic, personalized feedback
     plots and to simplify survey logic.
-Version: 1.1.2
+Version: 1.2.0
 Authors@R: c(
     person("Ruben", "Arslan",
         email = "rubenarslan@gmail.com",
@@ -37,11 +37,9 @@ Imports:
     jsonlite,
     lubridate,
     rmarkdown,
-    otp,
-    keyring,
     purrr,
     readr,
-    rlang
+    rlang (>= 1.0.0)
 Suggests:
     testthat (>= 3.0.0),
     vcr,
@@ -49,7 +47,9 @@ Suggests:
     withr,
     rstudioapi,
     plotly,
-    commonmark
+    commonmark,
+    keyring,
+    otp
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8

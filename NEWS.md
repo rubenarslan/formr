@@ -1,3 +1,29 @@
+# formr 1.2.0
+
+* `keyring` and `otp` moved from Imports to Suggests so that formr can be
+  installed on WebAssembly/webR (`keyring` needs a system credential store and
+  has no wasm build; all remaining hard dependencies are available as wasm
+  binaries). Both packages are only needed for the credential-storage
+  convenience path. Functions that need a suggested package
+  (`formr_store_keys()`, `formr_connect(keyring = ...)`,
+  `formr_overview_sankey()`, `formr_render_commonmark()`) now check for it
+  via `rlang::check_installed()`: in interactive sessions you are offered to
+  install the package on first use, otherwise they error with an informative
+  message. `formr_connect()` falls back to prompting for the 2FA code
+  manually when `otp` is unavailable.
+
+* `formr_render()` and `formr_inline_render()` now pick their write directory
+  automatically, reconciling the rforms.org/OpenCPU integration with CRAN
+  policy. Inside an OpenCPU/formr session — detected because the `opencpu`
+  namespace is loaded on the server, or because rforms.org populated the
+  per-request `.formr` environment — they keep writing `knit.Rmd`/`knit.html`
+  to the (ephemeral, per-request) working directory that the server reads via
+  `getFiles("knit.html")`, exactly as in 1.1.2. In ordinary R sessions they
+  write to `tempdir()` instead, as in 1.1.1, so the package no longer touches
+  the user's working directory by default. Override the detection with
+  `options(formr.in_opencpu = TRUE/FALSE)` or pass the new `dir` argument
+  explicitly.
+
 # formr 1.1.2
 
 * Hotfix: `formr_render()` and `formr_inline_render()` again write their output

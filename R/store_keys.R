@@ -49,9 +49,10 @@ formr_store_keys <- function(account_name = NULL,
 														 account = NULL,
 														 verbose = TRUE) {
 	
-	if (!requireNamespace("keyring", quietly = TRUE)) {
-		stop("Package 'keyring' is required.")
-	}
+	# Offers to install keyring on first use in interactive sessions;
+	# errors with an informative message otherwise.
+	rlang::check_installed("keyring",
+		reason = "to store credentials in your system keyring.")
 	
 	# --- LOGIC BRANCH 1: Classic MODE ---
 	# Triggered if the user provides a positional argument or explicitly sets account_name

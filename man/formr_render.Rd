@@ -4,12 +4,21 @@
 \alias{formr_render}
 \title{render text for formr}
 \usage{
-formr_render(text, self_contained = FALSE, ...)
+formr_render(text, self_contained = FALSE, dir = NULL, ...)
 }
 \arguments{
 \item{text}{that will be written to a tmp file and used as the input argument}
 
 \item{self_contained}{passed to \link{markdown_custom_options}}
+
+\item{dir}{directory in which the intermediate \code{knit.Rmd} and the rendered
+\code{knit.html} are written. Defaults to the working directory when the code
+runs inside an OpenCPU/formr session (there, the working directory is the
+ephemeral per-request session directory from which rforms.org retrieves
+the rendered page via \code{getFiles("knit.html")}) and to \code{\link[=tempdir]{tempdir()}} in
+ordinary R sessions, so the package never writes into your working
+directory unless you ask it to. Set
+\code{options(formr.in_opencpu = TRUE/FALSE)} to force either default.}
 
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }

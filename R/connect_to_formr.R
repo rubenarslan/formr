@@ -10,7 +10,12 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 #' @param email your registered email address
 #' @param password your password
 #' @param host defaults to [formr_last_host()], which defaults to https://rforms.org
-#' @param keyring a shorthand for the account you're using
+#' @param keyring a shorthand for the account you're using. Requires the
+#'   suggested `keyring` package; generating a 2FA code from a stored secret
+#'   additionally requires the suggested `otp` package. Both are optional so
+#'   that the package stays installable on platforms without a system
+#'   credential store (e.g. WebAssembly/webR); in interactive sessions you
+#'   will be offered to install them the first time they are needed.
 #' @return Invisibly `TRUE` on success; called for its side effect of establishing
 #'   an authenticated cookie session with the formr server (stored in httr's cookie jar).
 #' @export
@@ -22,7 +27,11 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c(".")) # allow dplyr, ma
 formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(), keyring = NULL) {
 	formr_last_host(host)  # Store the host
 	if (!missing(keyring) && !is.null(keyring)) {
-		if (is.null(email) && 
+		# Offers to install keyring on first use in interactive sessions;
+		# errors with an informative message otherwise.
+		rlang::check_installed("keyring",
+			reason = "to look up the credentials referenced by `keyring =`.")
+		if (is.null(email) &&
 				length(keyring::key_list(keyring)[["username"]]) %in% 1:2) {
 			usernames <- keyring::key_list(keyring)[["username"]]
 			email <- usernames[!grepl(" 2FA", usernames)][[1]]
@@ -51,7 +60,19 @@ formr_connect <- function(email = NULL, password = NULL, host = formr_last_host(
 		}
 		
 		if (!is.null(twofa_secret) && twofa_secret != "") {
-			code <- otp::TOTP$new(twofa_secret)$now()
+			# Offer to install otp on first use (interactive prompt). Unlike the
+			# keyring check above this must not abort: if the user declines or the
+			# session is non-interactive, they can still type the code manually.
+			try(rlang::check_installed("otp",
+					reason = "to generate the 2FA code from your stored secret."),
+				silent = TRUE)
+			if (requireNamespace("otp", quietly = TRUE)) {
+				code <- otp::TOTP$new(twofa_secret)$now()
+			} else {
+				message("Without the 'otp' package the 2FA code cannot be generated ",
+								"from the stored secret; please enter it manually.")
+				code <- readline("Enter 2FA code: ")
+			}
 		} else {
 			code <- readline("Enter 2FA code: ")
 		}

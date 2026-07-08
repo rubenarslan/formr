@@ -112,14 +112,18 @@ render_text = function(text, ...) {
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}
+#' @param dir directory in which the intermediate `knit.Rmd` and the rendered
+#'   `knit.html` are written. Defaults to the working directory inside an
+#'   OpenCPU/formr session and to [tempdir()] in ordinary R sessions; see
+#'   [formr_render()] for details.
 #' @param ... all other arguments passed to [rmarkdown::render()]
-#' 
+#'
 #' @return A length-1 character string of rendered inline HTML.
 #' @export
 
-formr_inline_render = function(text, self_contained = TRUE, ...) {
+formr_inline_render = function(text, self_contained = TRUE, dir = NULL, ...) {
   fileName = rmarkdown::render(input = write_to_file(text,
-    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
+    name = "knit", ext = ".Rmd", dir = dir), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
     fragment.only = TRUE, section_divs = FALSE), ...)
   readChar(fileName, file.info(fileName)$size)
 }
@@ -151,10 +155,8 @@ formr_knit = function(text) {
 #' formr_render_commonmark("There are only `r sample(2:3, 1)` types of people.")
 
 formr_render_commonmark = function(text) {
-	if (!requireNamespace("commonmark", quietly = TRUE)) {
-		stop("formr_render_commonmark() needs the 'commonmark' package. ",
-		     "Install it with install.packages(\"commonmark\").")
-	}
+	rlang::check_installed("commonmark",
+		reason = "to render CommonMark markdown in formr_render_commonmark().")
 	commonmark::markdown_html(text =
 															knitr::knit(text = text, 
 																					quiet = TRUE, 
@@ -172,30 +174,68 @@ formr_render_commonmark = function(text) {
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}
+#' @param dir directory in which the intermediate `knit.Rmd` and the rendered
+#'   `knit.html` are written. Defaults to the working directory when the code
+#'   runs inside an OpenCPU/formr session (there, the working directory is the
+#'   ephemeral per-request session directory from which rforms.org retrieves
+#'   the rendered page via `getFiles("knit.html")`) and to [tempdir()] in
+#'   ordinary R sessions, so the package never writes into your working
+#'   directory unless you ask it to. Set
+#'   `options(formr.in_opencpu = TRUE/FALSE)` to force either default.
 #' @param ... all other arguments passed to [rmarkdown::render()]
-#' 
+#'
 #' @return A length-1 character string: the path to the rendered HTML file.
 #' @export
 
-formr_render = function(text, self_contained = FALSE, ...) {
+formr_render = function(text, self_contained = FALSE, dir = NULL, ...) {
   fileName = rmarkdown::render(input = write_to_file(text,
-    name = "knit", ext = ".Rmd"), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
+    name = "knit", ext = ".Rmd", dir = dir), output_format = formr::markdown_hard_line_breaks(self_contained = self_contained,
     fragment.only = FALSE), clean = TRUE, quiet = TRUE, ...)
   fileName
 }
 
 
+# Are we evaluating inside an OpenCPU request (i.e. on rforms.org)?
+#
+# Two signals, either suffices:
+# * The opencpu package evaluates every request in-process (forked children
+#   inherit loaded namespaces), so its namespace is loaded whenever code runs
+#   on an OpenCPU server -- but never in an ordinary user session.
+# * rforms.org populates the per-request `.formr` environment before user
+#   code runs, so any of its fields being set marks a formr study session.
+# `options(formr.in_opencpu = TRUE/FALSE)` overrides the detection.
+in_opencpu <- function() {
+  override <- getOption("formr.in_opencpu")
+  if (!is.null(override)) {
+    return(isTRUE(override))
+  }
+  if ("opencpu" %in% loadedNamespaces()) {
+    return(TRUE)
+  }
+  !is.null(.formr$host) || !is.null(.formr$run_name) ||
+    !is.null(.formr$access_token) || !is.null(.formr$last_action_time)
+}
 
-write_to_file <- function(..., name = NULL, ext = ".Rmd") {
+# Default directory for the named knit artifacts (knit.Rmd/knit.html).
+knit_dir <- function() {
+  if (in_opencpu()) getwd() else tempdir()
+}
+
+write_to_file <- function(..., name = NULL, ext = ".Rmd", dir = NULL) {
   if (is.null(name)) {
     filename <- paste0(tempfile(), ext)
   } else {
-    # A named write lands in the working directory on purpose: formr_render()
-    # passes name = "knit" so rmarkdown produces "knit.html" there, which is
-    # the file rforms.org/OpenCPU serves via getFiles("knit.html"). Moving this
-    # into tempdir() (v1.1.1) broke that lookup in production -- see issue #45's
-    # follow-up; do not "fix" it back to tempdir without updating the PHP side.
-    filename = paste0(name, ext)
+    # Named writes (formr_render()/formr_inline_render() pass name = "knit")
+    # must land in the OpenCPU session working directory when running on
+    # rforms.org: the server serves the rendered page via getFiles("knit.html"),
+    # and routing this through tempdir() (v1.1.1) broke that lookup in
+    # production -- see issue #45's follow-up. In ordinary user sessions that
+    # same write would violate CRAN policy, so knit_dir() picks getwd() only
+    # inside OpenCPU (see in_opencpu()) and tempdir() everywhere else.
+    if (is.null(dir)) {
+      dir <- knit_dir()
+    }
+    filename = file.path(dir, paste0(name, ext))
   }
   mytext <- eval(...)
   write(mytext, filename)
