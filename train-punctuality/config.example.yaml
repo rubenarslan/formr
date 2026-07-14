@@ -1,0 +1,60 @@
+# trainpunct configuration.
+# Copy to config.yaml and adjust. Environment variables (see .env.example) override these.
+
+# --- Route -------------------------------------------------------------------
+# EVA numbers. Verify on your server with:  trainpunct locations "Witten Hbf"
+origin:
+  eva: 8000001
+  name: "Aachen Hbf"
+destination:
+  eva: 8000251
+  name: "Witten Hbf"
+
+# Travel windows (local time, Europe/Berlin). day: ISO weekday, 1 = Monday.
+windows:
+  mon_out: { day: 1, start: "05:30", end: "10:30", direction: outbound }
+  tue_ret: { day: 2, start: "13:00", end: "18:30", direction: return }
+
+# --- Upstream services --------------------------------------------------------
+predictor_url: "http://predictor:8000"          # bahnvorhersage predictor container
+transportrest_url: "https://v6.db.transport.rest"
+iris_url: "https://iris.noncd.db.de"            # keyless DB InfraGO IRIS mirror
+journeys_results: 8
+options_cache_seconds: 75
+
+# --- Transfers ----------------------------------------------------------------
+# Minimal transfer time in minutes when the journey has no explicit walking leg.
+# Station-specific overrides by EVA (big stations need more).
+min_transfer_default: 5
+min_transfer_overrides:
+  8000207: 8   # Köln Hbf
+  8000085: 7   # Düsseldorf Hbf
+  8000142: 6   # Hagen Hbf
+  8000098: 7   # Essen Hbf
+  8000041: 6   # Bochum Hbf
+  8000080: 8   # Dortmund Hbf
+
+# --- Cancellation risk ---------------------------------------------------------
+# Empirical lookup built with:  trainpunct build-cancel-table  (see README)
+cancel_table_path: "/data/cancel_table.json"
+cancel_default_rate: 0.03      # prior when no table / unseen key
+# When all options fail (missed transfer or cancellation) beyond the listed
+# alternatives, assume the next chance leaves this many minutes later:
+fallback_headway_min: 60
+
+# --- Storage -------------------------------------------------------------------
+db_path: "/data/trainpunct.sqlite3"
+
+# --- Risk badges ----------------------------------------------------------------
+badge:
+  green_q80_max_delay: 5      # min
+  green_p_miss_max: 0.10
+  red_q50_min_delay: 10       # min
+  red_p_miss_min: 0.30
+
+# --- Desync display --------------------------------------------------------------
+desync_show_threshold_min: 2   # show both sources when they differ by >= this
+
+# --- Resolver ---------------------------------------------------------------------
+resolve_grace_min: 90          # keep polling until this long past scheduled arrival
+resolve_poll_seconds: 300

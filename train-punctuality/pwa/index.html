@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14213d">
+<title>Zug — Aachen ↔ Witten</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icons/icon-192.png">
+</head>
+<body>
+<header>
+  <h1>🚆 Aachen ↔ Witten</h1>
+  <nav id="day-toggle">
+    <button data-day="mon">Mo hin</button>
+    <button data-day="tue">Di zurück</button>
+    <button data-day="auto" class="active">Auto</button>
+  </nav>
+  <nav id="tab-toggle">
+    <button data-tab="options" class="active">Verbindungen</button>
+    <button data-tab="calibration">Kalibrierung</button>
+  </nav>
+</header>
+
+<main>
+  <div id="status"></div>
+  <section id="options"></section>
+  <section id="calibration" hidden></section>
+</main>
+
+<footer>
+  <span id="updated"></span>
+  <span>Modell: <a href="https://bahnvorhersage.de" target="_blank" rel="noopener">Bahn-Vorhersage</a> (self-hosted)</span>
+</footer>
+
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>

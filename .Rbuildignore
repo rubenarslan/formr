@@ -26,3 +26,4 @@
 ^vignettes/.*\.html$
 ^vignettes/.*\.R$
 ^CLAUDE\.md$
+^train-punctuality$

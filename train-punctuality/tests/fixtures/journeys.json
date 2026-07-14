@@ -1,0 +1,74 @@
+{
+  "journeys": [
+    {
+      "type": "journey",
+      "refreshToken": "j1",
+      "legs": [
+        {
+          "tripId": "trip-re4",
+          "origin": { "type": "stop", "id": "8000001", "name": "Aachen Hbf", "location": { "latitude": 50.7678, "longitude": 6.0911 } },
+          "destination": { "type": "stop", "id": "8000251", "name": "Witten Hbf", "location": { "latitude": 51.4366, "longitude": 7.3296 } },
+          "departure": "2026-07-20T07:32:00+02:00",
+          "plannedDeparture": "2026-07-20T07:30:00+02:00",
+          "arrival": "2026-07-20T09:50:00+02:00",
+          "plannedArrival": "2026-07-20T09:45:00+02:00",
+          "departurePlatform": "6",
+          "arrivalPlatform": "2",
+          "line": { "type": "line", "name": "RE 4", "fahrtNr": "10426", "productName": "RE", "product": "regional", "adminCode": "NXG4", "operator": { "name": "National Express" } },
+          "stopovers": [
+            { "stop": { "type": "stop", "id": "8000001", "name": "Aachen Hbf", "location": { "latitude": 50.7678, "longitude": 6.0911 } }, "plannedDeparture": "2026-07-20T07:30:00+02:00", "departure": "2026-07-20T07:32:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000253", "name": "Mönchengladbach Hbf", "location": { "latitude": 51.1965, "longitude": 6.4462 } }, "plannedArrival": "2026-07-20T08:05:00+02:00", "arrival": "2026-07-20T08:07:00+02:00", "plannedDeparture": "2026-07-20T08:07:00+02:00", "departure": "2026-07-20T08:09:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000085", "name": "Düsseldorf Hbf", "location": { "latitude": 51.2199, "longitude": 6.7943 } }, "plannedArrival": "2026-07-20T08:29:00+02:00", "arrival": "2026-07-20T08:33:00+02:00", "plannedDeparture": "2026-07-20T08:31:00+02:00", "departure": "2026-07-20T08:35:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000266", "name": "Wuppertal Hbf", "location": { "latitude": 51.2545, "longitude": 7.1508 } }, "plannedArrival": "2026-07-20T08:50:00+02:00", "arrival": "2026-07-20T08:54:00+02:00", "plannedDeparture": "2026-07-20T08:52:00+02:00", "departure": "2026-07-20T08:56:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000142", "name": "Hagen Hbf", "location": { "latitude": 51.3627, "longitude": 7.4602 } }, "plannedArrival": "2026-07-20T09:20:00+02:00", "arrival": "2026-07-20T09:24:00+02:00", "plannedDeparture": "2026-07-20T09:22:00+02:00", "departure": "2026-07-20T09:26:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000251", "name": "Witten Hbf", "location": { "latitude": 51.4366, "longitude": 7.3296 } }, "plannedArrival": "2026-07-20T09:45:00+02:00", "arrival": "2026-07-20T09:50:00+02:00" }
+          ],
+          "remarks": []
+        }
+      ]
+    },
+    {
+      "type": "journey",
+      "refreshToken": "j2",
+      "legs": [
+        {
+          "tripId": "trip-re9",
+          "origin": { "type": "stop", "id": "8000001", "name": "Aachen Hbf", "location": { "latitude": 50.7678, "longitude": 6.0911 } },
+          "destination": { "type": "stop", "id": "8000207", "name": "Köln Hbf", "location": { "latitude": 50.9432, "longitude": 6.9586 } },
+          "departure": "2026-07-20T07:40:00+02:00",
+          "plannedDeparture": "2026-07-20T07:40:00+02:00",
+          "arrival": "2026-07-20T08:35:00+02:00",
+          "plannedArrival": "2026-07-20T08:35:00+02:00",
+          "departurePlatform": "2",
+          "arrivalPlatform": "9",
+          "line": { "type": "line", "name": "RE 9", "fahrtNr": "20961", "productName": "RE", "product": "regional", "adminCode": "NXRE9", "operator": { "name": "National Express" } },
+          "stopovers": [
+            { "stop": { "type": "stop", "id": "8000001", "name": "Aachen Hbf", "location": { "latitude": 50.7678, "longitude": 6.0911 } }, "plannedDeparture": "2026-07-20T07:40:00+02:00", "departure": "2026-07-20T07:40:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000086", "name": "Düren", "location": { "latitude": 50.8089, "longitude": 6.4823 } }, "plannedArrival": "2026-07-20T08:02:00+02:00", "arrival": "2026-07-20T08:02:00+02:00", "plannedDeparture": "2026-07-20T08:03:00+02:00", "departure": "2026-07-20T08:03:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000207", "name": "Köln Hbf", "location": { "latitude": 50.9432, "longitude": 6.9586 } }, "plannedArrival": "2026-07-20T08:35:00+02:00", "arrival": "2026-07-20T08:35:00+02:00" }
+          ],
+          "remarks": []
+        },
+        {
+          "tripId": "trip-rb48",
+          "origin": { "type": "stop", "id": "8000207", "name": "Köln Hbf", "location": { "latitude": 50.9432, "longitude": 6.9586 } },
+          "destination": { "type": "stop", "id": "8000251", "name": "Witten Hbf", "location": { "latitude": 51.4366, "longitude": 7.3296 } },
+          "departure": "2026-07-20T08:48:00+02:00",
+          "plannedDeparture": "2026-07-20T08:48:00+02:00",
+          "arrival": "2026-07-20T10:05:00+02:00",
+          "plannedArrival": "2026-07-20T10:05:00+02:00",
+          "departurePlatform": "4",
+          "arrivalPlatform": "1",
+          "line": { "type": "line", "name": "RE 7", "fahrtNr": "28718", "productName": "RE", "product": "regional", "adminCode": "NRE7", "operator": { "name": "National Express" } },
+          "stopovers": [
+            { "stop": { "type": "stop", "id": "8000207", "name": "Köln Hbf", "location": { "latitude": 50.9432, "longitude": 6.9586 } }, "plannedDeparture": "2026-07-20T08:48:00+02:00", "departure": "2026-07-20T08:48:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000266", "name": "Wuppertal Hbf", "location": { "latitude": 51.2545, "longitude": 7.1508 } }, "plannedArrival": "2026-07-20T09:25:00+02:00", "arrival": "2026-07-20T09:25:00+02:00", "plannedDeparture": "2026-07-20T09:27:00+02:00", "departure": "2026-07-20T09:27:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000142", "name": "Hagen Hbf", "location": { "latitude": 51.3627, "longitude": 7.4602 } }, "plannedArrival": "2026-07-20T09:48:00+02:00", "arrival": "2026-07-20T09:48:00+02:00", "plannedDeparture": "2026-07-20T09:50:00+02:00", "departure": "2026-07-20T09:50:00+02:00" },
+            { "stop": { "type": "stop", "id": "8000251", "name": "Witten Hbf", "location": { "latitude": 51.4366, "longitude": 7.3296 } }, "plannedArrival": "2026-07-20T10:05:00+02:00", "arrival": "2026-07-20T10:05:00+02:00" }
+          ],
+          "remarks": []
+        }
+      ]
+    }
+  ]
+}

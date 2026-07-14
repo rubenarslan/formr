@@ -1,0 +1,13 @@
+{
+  "name": "Zug Aachen–Witten",
+  "short_name": "Zug",
+  "description": "Realistische Verspätungsprognosen für den Pendel Aachen Hbf – Witten Hbf",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14161b",
+  "theme_color": "#14213d",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

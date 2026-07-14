@@ -1,0 +1,52 @@
+services:
+  # Bahn-Vorhersage's self-hosted prediction model (GPLv3, updated weekly upstream).
+  # Refresh weekly, e.g. via cron:
+  #   0 4 * * 3  cd /path/to/train-punctuality && docker compose pull predictor && docker compose up -d predictor
+  predictor:
+    image: trainconnectionprediction/bahnvorhersage-predictor:latest
+    restart: unless-stopped
+    # Not exposed on the host on purpose; only the app talks to it.
+    expose:
+      - "8000"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  app:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: trainpunct serve --host 0.0.0.0 --port 8300
+    env_file: .env
+    environment:
+      TRAINPUNCT_CONFIG: /app/config.yaml
+    volumes:
+      - ./data:/data
+      - ./config.yaml:/app/config.yaml:ro
+    ports:
+      - "8300:8300"
+    depends_on:
+      - predictor
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8300/api/health')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # Resolves realized arrivals/cancellations for logged predictions (travel days)
+  # and writes the weekly calibration summary.
+  resolver:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: trainpunct resolve --loop
+    env_file: .env
+    environment:
+      TRAINPUNCT_CONFIG: /app/config.yaml
+    volumes:
+      - ./data:/data
+      - ./config.yaml:/app/config.yaml:ro
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }

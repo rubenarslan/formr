@@ -1,0 +1,11 @@
+<timetable station="Witten Hbf">
+  <s id="1234567890-2607200940-12">
+    <tl f="N" t="p" o="NXG4" c="RE" n="10426"/>
+    <ar pt="2607200945" pp="2" ppth="Aachen Hbf|M&#246;nchengladbach Hbf|D&#252;sseldorf Hbf|Wuppertal Hbf|Hagen Hbf"/>
+    <dp pt="2607200946" pp="2" ppth="Dortmund Hbf"/>
+  </s>
+  <s id="9876543210-2607200950-3">
+    <tl f="N" t="p" o="NRE7" c="RE" n="28718"/>
+    <ar pt="2607201005" pp="1" ppth="K&#246;ln Hbf|Wuppertal Hbf|Hagen Hbf"/>
+  </s>
+</timetable>
