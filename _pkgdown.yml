@@ -174,6 +174,14 @@ reference:
     - '`%starts_with%`'
     - '`random_date_in_range`'
 
+  - title: Data Quality
+    desc: Read the records of formr's data_quality items and flag automated or careless responding
+    contents:
+    - '`dq_parse`'
+    - '`dq_flags`'
+    - '`dq_flags_by_session`'
+    - '`dq_rrt`'
+
   - title: Data Wrangling
     desc: Internal utilities for item and scale manipulation
     contents:
