@@ -251,6 +251,27 @@ Utility functions for writing survey logic
 - [`random_date_in_range()`](https://rubenarslan.github.io/formr/reference/random_date_in_range.md)
   : Random date in range
 
+## Data Quality
+
+Read the records of formr’s data_quality items and flag automated or
+careless responding
+
+- [`dq_parse()`](https://rubenarslan.github.io/formr/reference/dq_parse.md)
+  :
+
+  Read the records of formr `data_quality` items
+
+- [`dq_flags()`](https://rubenarslan.github.io/formr/reference/dq_flags.md)
+  : Indicators of automated or careless responding for one participant
+
+- [`dq_flags_by_session()`](https://rubenarslan.github.io/formr/reference/dq_flags_by_session.md)
+  : Indicators of automated or careless responding for every session of
+  a results table
+
+- [`dq_rrt()`](https://rubenarslan.github.io/formr/reference/dq_rrt.md)
+  : Estimate the share of AI-assisted responses from a
+  randomised-response question
+
 ## Data Wrangling
 
 Internal utilities for item and scale manipulation

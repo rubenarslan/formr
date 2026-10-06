@@ -1,5 +1,24 @@
 # Changelog
 
+## formr 1.3.0
+
+- New helpers for formr’s `data_quality` and `agent_probe` survey items,
+  which record signs of automated or careless responding per page.
+  [`dq_parse()`](https://rubenarslan.github.io/formr/reference/dq_parse.md)
+  reads the JSON records of one participant into a data frame;
+  [`dq_flags()`](https://rubenarslan.github.io/formr/reference/dq_flags.md)
+  sums them over the pages and reports each indicator with what was
+  observed and whether it crosses its threshold, grouped into
+  `environment` (the browser and the request), `input` (how clicks and
+  text were made) and `attention` (time, leaving the page, copy and
+  paste);
+  [`dq_flags_by_session()`](https://rubenarslan.github.io/formr/reference/dq_flags_by_session.md)
+  does this for every row of a results table.
+  [`dq_rrt()`](https://rubenarslan.github.io/formr/reference/dq_rrt.md)
+  estimates the share of AI-assisted responses from a
+  randomised-response question. Flags are for a person to review: no
+  single indicator proves anything.
+
 ## formr 1.2.0
 
 - `keyring` and `otp` moved from Imports to Suggests so that formr can
