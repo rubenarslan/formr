@@ -33,3 +33,15 @@ This ensures a perfect 1:1 backup of the server configuration.}
 Export the current run structure as a list (GET) or replace it by importing
 a JSON file (PUT).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+structure <- formr_api_run_structure("my-study")
+vapply(structure$units, function(unit) unit$type, character(1))
+
+# Save an exact copy as JSON, edit it, then replace the run's modules with it
+json_file <- file.path(tempdir(), "my-study.json")
+formr_api_run_structure("my-study", file = json_file)
+formr_api_run_structure("my-study", structure_json_path = json_file)
+}
+}

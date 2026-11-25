@@ -22,3 +22,15 @@ will 403 until the user picks scopes at admin/account#api.
 \description{
 Returns the current session object or NULL if not authenticated.
 }
+\examples{
+# Without an active session, this returns NULL
+formr_api_session()
+
+\dontrun{
+# Not run: needs a live formr server and API credentials.
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+session <- formr_api_session()
+session$scope       # e.g. "run:read session:read data:read"
+session$expires_at
+}
+}

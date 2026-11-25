@@ -22,3 +22,13 @@ runs) indicating per-run success; \code{FALSE} if the user declines the prompt.
 \description{
 Permanently deletes a run and all associated data (sessions, results).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+# Asks for confirmation, then deletes the run and all its data
+formr_api_delete_run("my-study-pilot")
+
+# In a script, without the prompt
+formr_api_delete_run("my-study-pilot", prompt = FALSE)
+}
+}

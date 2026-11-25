@@ -13,3 +13,13 @@ TRUE if authenticated and token not expired, FALSE otherwise.
 Checks if there is a valid, non-expired session. Does NOT verify
 token validity with the server (use formr_api_session() for that).
 }
+\examples{
+formr_api_is_authenticated()   # FALSE until you authenticate
+
+\dontrun{
+# Not run: needs a live formr server and API credentials.
+if (!formr_api_is_authenticated()) {
+  formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+}
+}
+}

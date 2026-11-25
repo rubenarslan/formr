@@ -22,3 +22,9 @@ Invisibly \code{TRUE} on success; called to delete all files from the run.
 CAUTION: This will permanently remove every file attached to the specified run.
 It first fetches the list of existing files, then iterates through them to delete.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_delete_all_files("my-study")  # lists a few and asks first
+}
+}

@@ -19,16 +19,50 @@ session on rforms.org.}
 
 \item{surveys}{Optional character vector of survey names to filter by.}
 
-\item{session_ids}{Optional character vector of session IDs to filter by.}
+\item{session_ids}{Optional character vector of session codes to filter
+by. The server matches every code that starts with one of them.}
 
 \item{item_names}{Optional character vector of item names to filter by.}
 
-\item{join}{Logical. If TRUE, joins the results into a single data frame.}
+\item{join}{Logical. If TRUE, joins the results into a single data frame
+by \code{session} (see Details for the column names).}
 }
 \value{
-A tibble of survey results, or (when \code{join = FALSE}) a named list of tibbles, one per survey.
+With \code{join = FALSE} (the default), a tibble if only one survey
+table came back and there are no Shuffle assignments, otherwise a named
+list of tibbles, one per survey (plus \code{shuffles}). With \code{join = TRUE}, a
+single tibble.
 }
 \description{
 Fetches raw results. Advanced users can use this if they want
 completely raw data without any type coercion or processing.
+}
+\details{
+The server sends one table per survey in the run (or per survey named in
+\code{surveys}; a survey without the requested items comes back empty), and a
+table of Shuffle assignments once anyone has passed a Shuffle. Each survey
+table has a row for each time a participant was given that survey (a diary
+filled out 14 times gives 14 rows with the same \code{session}), with the
+columns \code{session}, \code{created}, \code{current_position} and the items. Test
+sessions are included.
+
+When more than one table comes back, including the Shuffle table,
+\code{join = TRUE} adds the survey's name as a suffix to every column except
+\code{session} (\code{mood} becomes \code{mood_diary}, \code{created} becomes
+\code{created_diary}), not only to names that occur in several surveys.
+}
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+diary <- formr_api_fetch_results("my-study", surveys = "diary",
+  item_names = c("mood", "sleep_hours"))
+# A tibble if only this table came back, else a list with one per survey
+if (!is.data.frame(diary)) diary <- diary$diary
+mean(diary$mood, na.rm = TRUE)
+
+# Everything, joined by session: in a run with several surveys (or a
+# Shuffle), every column gets the survey's name as a suffix
+all <- formr_api_fetch_results("my-study", join = TRUE)
+grep("_intake$", names(all), value = TRUE)
+}
 }

@@ -18,3 +18,13 @@ Invisibly returns a data frame containing the \code{name} and \code{link} of the
 Creates one or more new runs on the server. Prints a confirmation message
 with the public link for each.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_create_run("my-study")
+
+# Several runs at once; the result holds each run's public link
+new_runs <- formr_api_create_run(c("my-study-pilot", "my-study-main"))
+new_runs$link
+}
+}

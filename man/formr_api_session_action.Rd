@@ -29,3 +29,18 @@ A logical vector indicating success for each session.
 \description{
 Controls the flow of one or more sessions.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+sessions <- formr_api_sessions("my-study", active = TRUE)
+waiting <- sessions$session[sessions$position == 20]
+
+# Send everyone waiting at position 20 to position 50
+formr_api_session_action("my-study", session_codes = waiting,
+  action = "move_to_position", position = 50)
+
+# Or end their current module and let them move on through the run
+formr_api_session_action("my-study", session_codes = waiting,
+  action = "advance")
+}
+}

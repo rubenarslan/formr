@@ -8,6 +8,12 @@
 #' @return A data.frame containing: id, name, path, url, created, modified.
 #' @importFrom dplyr bind_rows
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' files <- formr_api_files("my-study")
+#' files[, c("name", "url")]   # use the url to show a file in your study
+#' }
 formr_api_files <- function(run_name, verbose = TRUE) {
 	# GET /runs/{run_name}/files
 	res <- formr_api_request(paste0("runs/", run_name, "/files"), method = "GET")
@@ -42,6 +48,14 @@ formr_api_files <- function(run_name, verbose = TRUE) {
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly returns a list of server responses.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_upload_file("my-study", "stimuli/face_01.png")
+#'
+#' # Every file in a local folder
+#' formr_api_upload_file("my-study", "stimuli")
+#' }
 formr_api_upload_file <- function(run_name, path, verbose = TRUE) {
 
 	# 1. Handle Directory Input
@@ -91,6 +105,15 @@ formr_api_upload_file <- function(run_name, path, verbose = TRUE) {
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE`; called to delete the named file(s) from the run.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_delete_file("my-study", "face_01.png")
+#'
+#' # Delete the files on the server that have the names of those in a
+#' # local folder
+#' formr_api_delete_file("my-study", "stimuli")
+#' }
 formr_api_delete_file <- function(run_name, file_name, verbose = TRUE) {
 
 	# 1. Handle Directory Input
@@ -139,6 +162,11 @@ formr_api_delete_file <- function(run_name, file_name, verbose = TRUE) {
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` on success; called to delete all files from the run.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_delete_all_files("my-study")  # lists a few and asks first
+#' }
 formr_api_delete_all_files <- function(run_name, prompt = TRUE, verbose = TRUE) {
 	# 1. Fetch existing files
 	files <- formr_api_files(run_name)

@@ -35,3 +35,17 @@ Invisibly \code{TRUE} when the watcher is launched as a background RStudio job; 
 Uploads local project files (surveys, assets, settings) to the formr server.
 Optionally monitors the directory for subsequent changes (Watcher mode).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+project <- file.path(tempdir(), "my-study")
+formr_api_pull_project("my-study", dir = project)
+
+# ... edit surveys/intake.xlsx or css/custom.css, then upload everything:
+formr_api_push_project("my-study", dir = project)
+
+# Or keep uploading each file as soon as you save it
+# (in RStudio this runs as a background job)
+formr_api_push_project("my-study", dir = project, watch = TRUE)
+}
+}

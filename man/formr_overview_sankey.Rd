@@ -53,3 +53,15 @@ the server injects the per-token \code{.formr$access_token} / \code{.formr$host}
 them up automatically. Outside an Overview render, set
 \code{run_name} explicitly and call \code{\link[=formr_api_authenticate]{formr_api_authenticate()}} first.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server, an authenticated session and plotly.
+# In a run's overview script:
+formr_api_authenticate()
+formr_overview_sankey()
+
+# From your own computer:
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+formr_overview_sankey("my-study", orientation = "h")
+}
+}

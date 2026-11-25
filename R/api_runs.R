@@ -7,6 +7,12 @@
 #' cron_active (bool), locked (bool), created (POSIXct), modified (POSIXct).
 #' @importFrom dplyr bind_rows mutate
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' runs <- formr_api_runs()
+#' runs[, c("name", "title", "modified")]
+#' }
 formr_api_runs <- function() {
 	raw <- formr_api_request("runs", api_version = "v1")
 	
@@ -33,6 +39,15 @@ formr_api_runs <- function() {
 #' @return Invisibly returns a data frame containing the `name` and `link` of the created runs.
 #' @importFrom dplyr bind_rows
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_create_run("my-study")
+#'
+#' # Several runs at once; the result holds each run's public link
+#' new_runs <- formr_api_create_run(c("my-study-pilot", "my-study-main"))
+#' new_runs$link
+#' }
 formr_api_create_run <- function(name, verbose = TRUE) {
 
 	# Helper function to create a single run
@@ -71,6 +86,16 @@ formr_api_create_run <- function(name, verbose = TRUE) {
 #'   - If `settings` is provided: Invisibly returns TRUE on success.
 #' @importFrom dplyr bind_rows mutate
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' settings <- formr_api_run_settings("my-study")
+#' settings$title
+#'
+#' # Change settings by passing a named list
+#' formr_api_run_settings("my-study",
+#'   settings = list(title = "Daily diary study", cron_active = TRUE))
+#' }
 formr_api_run_settings <- function(run_name, settings = NULL, verbose = TRUE) {
 	
 	# --- Helper function to process a single run ---
@@ -130,6 +155,17 @@ formr_api_run_settings <- function(run_name, settings = NULL, verbose = TRUE) {
 #'   - GET (file provided): Invisibly returns the file path.
 #'   - PUT: Invisibly returns TRUE on success.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' structure <- formr_api_run_structure("my-study")
+#' vapply(structure$units, function(unit) unit$type, character(1))
+#'
+#' # Save an exact copy as JSON, edit it, then replace the run's modules with it
+#' json_file <- file.path(tempdir(), "my-study.json")
+#' formr_api_run_structure("my-study", file = json_file)
+#' formr_api_run_structure("my-study", structure_json_path = json_file)
+#' }
 formr_api_run_structure <- function(run_name, structure_json_path = NULL, file = NULL, verbose = TRUE) {
 	
 	# --- PUT Mode: Import/Upload Structure ---
@@ -275,6 +311,15 @@ as.data.frame.formr_api_run_structure <- function(x, ...) {
 #' @return Invisibly `TRUE` (single run) or a named logical vector (multiple
 #'   runs) indicating per-run success; `FALSE` if the user declines the prompt.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' # Asks for confirmation, then deletes the run and all its data
+#' formr_api_delete_run("my-study-pilot")
+#'
+#' # In a script, without the prompt
+#' formr_api_delete_run("my-study-pilot", prompt = FALSE)
+#' }
 formr_api_delete_run <- function(run_name, prompt = TRUE, verbose = TRUE) {
 	
 	if (length(run_name) > 1) {

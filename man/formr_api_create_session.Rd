@@ -28,3 +28,17 @@ for any that failed, an \code{errors} data.frame to inspect.
 Creates one or more sessions. If \code{codes} is NULL, one random session is created.
 If \code{codes} is provided, tries to create sessions with those specific codes.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+# One test session with a random code
+res <- formr_api_create_session("my-study", testing = TRUE)
+res$sessions
+
+# Sessions with codes of your own. They must match the instance's pattern
+# for session codes (by default: 64 letters, digits, +, -, _ or ~).
+codes <- replicate(3, paste(sample(c(letters, LETTERS, 0:9), 64,
+  replace = TRUE), collapse = ""))
+formr_api_create_session("my-study", codes = codes)
+}
+}

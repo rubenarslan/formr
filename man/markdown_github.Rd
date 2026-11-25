@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{markdown_github}
 \alias{markdown_github}
-\title{github_markdown for rmarkdown}
+\title{HTML output format for GitHub-flavoured markdown}
 \usage{
 markdown_github(fragment.only = FALSE, break_on_error = FALSE, ...)
 }

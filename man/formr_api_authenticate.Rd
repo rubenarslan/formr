@@ -37,3 +37,30 @@ the code runs inside an OpenCPU session on rforms.org), then the
 calling-frame chain (for legacy injectors that wrote bare locals into
 the wrapper scope), then the keyring.
 }
+\details{
+Inside a formr study, the server fills \code{.formr} only for R code that
+itself contains a call to \verb{formr_api_authenticate(} (an item's value or
+showif, a condition, a label, a feedback or email body). A call that
+only appears inside a function from the study's R Functions does not
+count, and email subjects and push notification titles never get a
+token. The token is limited to the current run and to the scopes
+\verb{user:read session:read session:write run:read data:read}, expires after
+180 seconds and is deleted as soon as the request is answered. See
+\code{vignette("run-r-inside-your-study", package = "formr")}.
+}
+\examples{
+\dontrun{
+# Not run: needs a live formr server and API credentials.
+# Once: store the credential created at admin/account#api in your keyring
+formr_store_keys(host = "https://api.rforms.org",
+  client_id = "YOUR_CLIENT_ID", client_secret = "YOUR_CLIENT_SECRET",
+  account = "my-study")
+
+# In each R session: authenticate with the stored credential
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+
+# Inside a formr study (e.g. in an item's value or a feedback text),
+# call it without arguments: formr supplies a short-lived token.
+formr_api_authenticate()
+}
+}

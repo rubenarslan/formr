@@ -54,3 +54,15 @@ Special units (OverviewScriptPage, ServiceMessagePage, ReminderEmail)
 surface with \code{position = NA} because they live outside the ordered
 run flow.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+history <- formr_api_unit_sessions("my-study", testing = FALSE)
+
+# How many participants reached each position
+tapply(history$session, history$position, function(s) length(unique(s)))
+
+# Only what started in the last seven days
+formr_api_unit_sessions("my-study", since = format(Sys.Date() - 7))
+}
+}

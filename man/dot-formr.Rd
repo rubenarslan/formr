@@ -11,8 +11,7 @@ An environment.
 }
 \value{
 An \link{environment} holding per-request state in its bindings (the
-\code{run_name}, \code{host}, \code{access_token}, \code{last_action_time} and
-\code{last_action_date} fields listed above). \code{.formr} is a data object, not a
+fields listed above). \code{.formr} is a data object, not a
 function, so it does not itself return a value; the rforms.org server
 populates these bindings before user code runs and the environment is empty
 outside a formr/OpenCPU session.
@@ -20,14 +19,19 @@ outside a formr/OpenCPU session.
 \description{
 An environment that the rforms.org server fills with per-request state
 when R code runs inside an OpenCPU session on a formr study (for
-example, on a \code{CalculateUnit} page or an \code{OverviewScriptPage}). Useful
-fields the server may set:
+example, in an item's value or showif, a condition, a feedback page or
+the run's overview script). Useful fields the server may set:
 }
 \details{
 \itemize{
 \item \code{.formr$run_name} -- the name of the current run.
 \item \code{.formr$host} -- the API host (e.g. \verb{https://api.rforms.org}).
 \item \code{.formr$access_token} -- a short-lived OAuth token for the request.
+These three are set only when the code contains a call to
+\verb{formr_api_authenticate(} (see \code{\link[=formr_api_authenticate]{formr_api_authenticate()}}).
+\item \code{.formr$nr_of_participants} -- the number of sessions in the run:
+everyone who has opened the study, including test sessions, people who
+left early and the current participant.
 \item \code{.formr$last_action_time} / \code{.formr$last_action_date} -- timestamps
 used by \code{\link[=time_passed]{time_passed()}} and the other shorthands.
 }

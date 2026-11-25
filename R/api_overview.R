@@ -34,6 +34,17 @@
 #'   are no rows to plot. Returning `NULL` lets the caller's knitr chunk
 #'   gracefully display the message instead of erroring.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server, an authenticated session and plotly.
+#' # In a run's overview script:
+#' formr_api_authenticate()
+#' formr_overview_sankey()
+#'
+#' # From your own computer:
+#' formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#' formr_overview_sankey("my-study", orientation = "h")
+#' }
 formr_overview_sankey <- function(run_name = .formr$run_name,
                                   testing = FALSE,
                                   orientation = "v",

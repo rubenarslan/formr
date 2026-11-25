@@ -24,15 +24,43 @@ rforms.org -- so portable run code can omit this argument.}
 
 \item{join}{Logical. If TRUE (default), joins all surveys into one wide dataframe.}
 
-\item{remove_test_sessions}{Logical. Filter out sessions marked as testing?}
+\item{remove_test_sessions}{Logical. Filter out sessions marked as
+testing? This also drops every session whose code contains \code{"XXX"}.
+formr gives test sessions such codes, but participants created with
+\emph{New Named User} get them too and are dropped as well. To keep them,
+set this to \code{FALSE} and filter on the \code{testing} column of
+\code{\link[=formr_api_sessions]{formr_api_sessions()}} instead.}
 
 \item{verbose}{Logical. Print progress messages?}
 }
 \value{
-A processed tibble with class \code{formr_results}.
+With \code{join = TRUE}, a processed tibble with class \code{formr_results}.
+With \code{join = FALSE}, a named list of processed tibbles, one per survey
+(plus \code{shuffles} when the run has Shuffle assignments).
 }
 \description{
 This is the main function for scientists. It fetches data from the API,
 automatically cleans types (dates/numbers), reverses items, computes scales,
 and joins everything into one dataframe.
+}
+\details{
+Joining works as in \code{\link[=formr_api_fetch_results]{formr_api_fetch_results()}}: when more than
+one table comes back (several surveys, or one survey plus the run's
+Shuffle assignments), every column except \code{session} gets the survey's
+name as a suffix, e.g. \code{extraversion_intake}.
+}
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+results <- formr_api_results("my-study")
+summary(results)   # what was filtered, reversed and scored
+
+# The intake survey only, as its own tibble
+intake <- formr_api_results("my-study", surveys = "intake", join = FALSE)$intake
+
+# Keep participants whose code contains "XXX"; drop test sessions by flag
+results <- formr_api_results("my-study", remove_test_sessions = FALSE)
+real <- formr_api_sessions("my-study", testing = FALSE, limit = 10000)
+results <- results[results$session \%in\% real$session, ]
+}
 }

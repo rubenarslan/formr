@@ -28,3 +28,11 @@ Invisibly \code{NULL} on success (or \code{FALSE} if the user declines the overw
 Pull Project from Server
 Scaffolds folder structure if missing, then overwrites local files with Server state.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+project <- file.path(tempdir(), "my-study")
+formr_api_pull_project("my-study", dir = project)
+list.files(project, recursive = TRUE)  # run_structure.json, surveys/intake.xlsx, ...
+}
+}

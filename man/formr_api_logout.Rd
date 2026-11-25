@@ -16,3 +16,11 @@ Invisibly \code{TRUE} on success (or \code{FALSE} if there was no active session
 Invalidates the current access token on the server and
 clears the local session state.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+runs <- formr_api_runs()
+formr_api_logout()
+}
+}

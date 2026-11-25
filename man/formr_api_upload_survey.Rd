@@ -23,3 +23,15 @@ Invisibly the server response; called to upload or update a survey from a local 
 \description{
 Uploads a survey structure.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+# The survey is named after the file: this creates or updates "diary"
+formr_api_upload_survey(file_path = "surveys/diary.xlsx")
+
+# Or import a Google Sheet (link sharing on); the survey takes the
+# sheet's name
+formr_api_upload_survey(
+  google_sheet_url = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit")
+}
+}

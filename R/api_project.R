@@ -11,6 +11,13 @@
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `NULL` on success (or `FALSE` if the user declines the overwrite prompt); called for its side effect of scaffolding `dir` and writing the run's structure, settings, surveys and files from the server.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' project <- file.path(tempdir(), "my-study")
+#' formr_api_pull_project("my-study", dir = project)
+#' list.files(project, recursive = TRUE)  # run_structure.json, surveys/intake.xlsx, ...
+#' }
 formr_api_pull_project <- function(run_name, dir = NULL, prompt = TRUE, verbose = TRUE) {
 
 	if (is.null(dir)) dir <- .formr_default_or_stop("dir")
@@ -100,6 +107,19 @@ formr_api_pull_project <- function(run_name, dir = NULL, prompt = TRUE, verbose 
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` when the watcher is launched as a background RStudio job; otherwise invisibly `NULL`. Called for its side effect of uploading the local project in `dir` to the server (optionally starting a file-watcher).
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' project <- file.path(tempdir(), "my-study")
+#' formr_api_pull_project("my-study", dir = project)
+#'
+#' # ... edit surveys/intake.xlsx or css/custom.css, then upload everything:
+#' formr_api_push_project("my-study", dir = project)
+#'
+#' # Or keep uploading each file as soon as you save it
+#' # (in RStudio this runs as a background job)
+#' formr_api_push_project("my-study", dir = project, watch = TRUE)
+#' }
 formr_api_push_project <- function(run_name, dir = NULL, watch = FALSE, background = TRUE, interval = 2, verbose = TRUE) {
 	if (is.null(dir)) dir <- .formr_default_or_stop("dir")
 	if (!dir.exists(dir)) stop("Directory not found. Run formr_api_pull_project() first.")

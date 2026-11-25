@@ -19,3 +19,15 @@ Reverses numeric items ending in 'R' based on metadata bounds.
 Critically, it also updates \code{haven::labelled} attributes so that
 the text labels point to the new, reversed values.
 }
+\examples{
+agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+  `4` = "Agree", `5` = "Strongly agree")
+item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+  type = "rating_button")
+item_list$choices <- list(agree, agree, agree)
+results <- data.frame(session = c("a", "b", "c"),
+  extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+
+# extra_2R runs from 1 to 5, so each answer x becomes 6 - x
+formr_api_reverse(results, item_list)$extra_2R
+}

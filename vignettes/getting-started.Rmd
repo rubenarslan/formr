@@ -172,7 +172,7 @@ Once stored, you can connect in your scripts using this shorthand:
 ```{r, connect_classic, eval = FALSE}
 # Not run: needs credentials / a live formr server.
 # Connect using the stored credentials
-formr_connect("main_account")
+formr_connect(keyring = "main_account")
 ```
 
 ### 3. Authenticating *Inside* formr Runs
