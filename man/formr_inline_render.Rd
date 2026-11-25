@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{formr_inline_render}
 \alias{formr_inline_render}
-\title{render inline text for formr}
+\title{Render R Markdown text to an HTML fragment for formr}
 \usage{
 formr_inline_render(text, self_contained = TRUE, dir = NULL, ...)
 }
@@ -22,5 +22,8 @@ OpenCPU/formr session and to \code{\link[=tempdir]{tempdir()}} in ordinary R ses
 A length-1 character string of rendered inline HTML.
 }
 \description{
-Render text
+Knits and renders \code{text} with \code{\link[=markdown_hard_line_breaks]{markdown_hard_line_breaks()}} to an HTML
+fragment (no \verb{<html>} or \verb{<head>}, no section divs) and returns it as a
+string. formr uses it for dynamic text inserted into its own pages, such
+as item labels and email bodies.
 }

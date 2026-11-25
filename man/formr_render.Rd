@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{formr_render}
 \alias{formr_render}
-\title{render text for formr}
+\title{Render R Markdown text to an HTML file for formr}
 \usage{
 formr_render(text, self_contained = FALSE, dir = NULL, ...)
 }
@@ -26,5 +26,7 @@ directory unless you ask it to. Set
 A length-1 character string: the path to the rendered HTML file.
 }
 \description{
-Render text
+Writes \code{text} to \code{knit.Rmd} in \code{dir}, renders it with
+\code{\link[=markdown_hard_line_breaks]{markdown_hard_line_breaks()}} to a complete HTML page and returns the path
+of that page. formr uses it to show feedback pages in an iframe.
 }

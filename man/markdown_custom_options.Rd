@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{markdown_custom_options}
 \alias{markdown_custom_options}
-\title{custom markdown options for rmarkdown's pandoc}
+\title{HTML output format with your own pandoc markdown extensions}
 \usage{
 markdown_custom_options(
   add_to_format = c("+autolink_bare_uris", "+ascii_identifiers",
@@ -22,15 +22,15 @@ markdown_custom_options(
 
 \item{break_on_error}{should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE}
 
-\item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}
-
-Custom rmarkdown input format options based on the standard \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}, but with options that you can specify. Find the format options here in the pandoc documentation: \url{https://pandoc.org/MANUAL.html#pandocs-markdown}.
-Pandoc's enhanced version of markdown includes syntax for footnotes, tables, flexible ordered lists, definition lists, fenced code blocks, superscript, subscript, strikeout, title blocks, automatic tables of contents, embedded LaTeX math, citations, and markdown inside HTML block elements or spoken in options: +escaped_line_breaks, +header_attributes, +yaml_metadata_block, +auto_identifiers, +implicit_header_references, +blank_before_blockquote, +fenced_code_blocks, +fenced_code_attributes, +line_blocks, +definition_lists, +startnum, +fancy_lists, +pipe_tables, +pandoc_title_block, +intraword_underscores, +strikeout, +superscript, +subscript, +tex_math_dollars, +raw_html, +markdown_in_html_blocks, +implicit_figures, +footnotes, +inline_notes, +citations.
-The current default rmarkdown additions to Pandoc's enhanced markdown are: +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash, -implicit_figures.}
+\item{...}{all other arguments passed to \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}}
 }
 \value{
 An rmarkdown \code{output_format} object (from \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}/\code{html_fragment()}) with customised pandoc/knitr options.
 }
 \description{
-custom markdown options for rmarkdown's pandoc
+Custom rmarkdown input format options based on the standard \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}, but with options that you can specify. Find the format options here in the pandoc documentation: \url{https://pandoc.org/MANUAL.html#pandocs-markdown}.
+Pandoc's enhanced version of markdown includes syntax for footnotes, tables, flexible ordered lists, definition lists, fenced code blocks, superscript, subscript, strikeout, title blocks, automatic tables of contents, embedded LaTeX math, citations, and markdown inside HTML block elements or spoken in options: +escaped_line_breaks, +header_attributes, +yaml_metadata_block, +auto_identifiers, +implicit_header_references, +blank_before_blockquote, +fenced_code_blocks, +fenced_code_attributes, +line_blocks, +definition_lists, +startnum, +fancy_lists, +pipe_tables, +pandoc_title_block, +intraword_underscores, +strikeout, +superscript, +subscript, +tex_math_dollars, +raw_html, +markdown_in_html_blocks, +implicit_figures, +footnotes, +inline_notes, +citations.
+The current default rmarkdown additions to Pandoc's enhanced markdown are: +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash, -implicit_figures.
+Errors in R chunks are shown in the output instead of stopping the
+rendering, unless \code{break_on_error = TRUE}.
 }

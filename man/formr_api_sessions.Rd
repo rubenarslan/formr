@@ -24,7 +24,8 @@ If provided, \code{active}, \code{limit}, and \code{offset} are ignored.}
 
 \item{testing}{Filter: TRUE for test sessions, FALSE for real users, NULL for all.}
 
-\item{limit}{Pagination limit (default 1000).}
+\item{limit}{Pagination limit (default 1000). The server returns at most
+10,000 sessions per request, newest first.}
 
 \item{offset}{Pagination offset (default 0).}
 
@@ -36,4 +37,17 @@ A combined tibble of session states and details.
 \description{
 Returns a tidy data frame of sessions. Can either list all sessions (with filtering)
 or fetch specific sessions by their codes.
+}
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+sessions <- formr_api_sessions("my-study")
+
+# Real participants who have not finished yet, and where they are
+ongoing <- formr_api_sessions("my-study", active = TRUE, testing = FALSE)
+table(ongoing$position)
+
+# Details for particular participants
+formr_api_sessions("my-study", session_codes = ongoing$session[1:2])
+}
 }

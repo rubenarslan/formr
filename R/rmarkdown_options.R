@@ -1,16 +1,18 @@
 .datatable.aware = TRUE
 
-#' custom markdown options for rmarkdown's pandoc
+#' HTML output format with your own pandoc markdown extensions
+#'
+#' Custom rmarkdown input format options based on the standard [rmarkdown::html_document()], but with options that you can specify. Find the format options here in the pandoc documentation: <https://pandoc.org/MANUAL.html#pandocs-markdown>.
+#' Pandoc's enhanced version of markdown includes syntax for footnotes, tables, flexible ordered lists, definition lists, fenced code blocks, superscript, subscript, strikeout, title blocks, automatic tables of contents, embedded LaTeX math, citations, and markdown inside HTML block elements or spoken in options: +escaped_line_breaks, +header_attributes, +yaml_metadata_block, +auto_identifiers, +implicit_header_references, +blank_before_blockquote, +fenced_code_blocks, +fenced_code_attributes, +line_blocks, +definition_lists, +startnum, +fancy_lists, +pipe_tables, +pandoc_title_block, +intraword_underscores, +strikeout, +superscript, +subscript, +tex_math_dollars, +raw_html, +markdown_in_html_blocks, +implicit_figures, +footnotes, +inline_notes, +citations.
+#' The current default rmarkdown additions to Pandoc's enhanced markdown are: +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash, -implicit_figures. 
+#' Errors in R chunks are shown in the output instead of stopping the
+#' rendering, unless `break_on_error = TRUE`.
 #'
 #' @param add_to_format add these arguments to the default specification
 #' @param fragment.only whether to get only a html fragment
 #' @param section_divs whether to disable --section-divs (headings generate section including everything up to the next same-or-higher-level heading)
 #' @param break_on_error should an error in the R code execution interrupt the rendering or should rendering continue, defaults to FALSE
 #' @param ... all other arguments passed to [rmarkdown::html_document()]
-#'
-#' Custom rmarkdown input format options based on the standard [rmarkdown::html_document()], but with options that you can specify. Find the format options here in the pandoc documentation: <https://pandoc.org/MANUAL.html#pandocs-markdown>.
-#' Pandoc's enhanced version of markdown includes syntax for footnotes, tables, flexible ordered lists, definition lists, fenced code blocks, superscript, subscript, strikeout, title blocks, automatic tables of contents, embedded LaTeX math, citations, and markdown inside HTML block elements or spoken in options: +escaped_line_breaks, +header_attributes, +yaml_metadata_block, +auto_identifiers, +implicit_header_references, +blank_before_blockquote, +fenced_code_blocks, +fenced_code_attributes, +line_blocks, +definition_lists, +startnum, +fancy_lists, +pipe_tables, +pandoc_title_block, +intraword_underscores, +strikeout, +superscript, +subscript, +tex_math_dollars, +raw_html, +markdown_in_html_blocks, +implicit_figures, +footnotes, +inline_notes, +citations.
-#' The current default rmarkdown additions to Pandoc's enhanced markdown are: +autolink_bare_uris, +ascii_identifiers, +tex_math_single_backslash, -implicit_figures. 
 #'
 #' @return An rmarkdown `output_format` object (from [rmarkdown::html_document()]/`html_fragment()`) with customised pandoc/knitr options.
 #' @export
@@ -42,7 +44,7 @@ markdown_custom_options = function(add_to_format = c("+autolink_bare_uris",
 
 
 
-#' github_markdown for rmarkdown
+#' HTML output format for GitHub-flavoured markdown
 #'
 #'
 #' Custom template with github-flavoured markdown based on the standard [rmarkdown::html_document()]. Adds +pipe_tables, +raw_html, +tex_math_single_backslash, +fenced_code_blocks, +auto_identifiers, +ascii_identifiers, +backtick_code_blocks, +autolink_bare_uris, +intraword_underscores, +strikeout, +hard_line_breaks over markdown_strict. A number of pandoc features are disabled (see [markdown_custom_options()]), but +yaml_metadata_block is re-enabled, so that it is possible to specify this output function using YAML.
@@ -71,10 +73,12 @@ markdown_github = function(fragment.only = FALSE, break_on_error = FALSE,
 }
 
 
-#' hard line breaks
+#' HTML output format in which every line break is kept
 #'
 #'
 #' Custom rmarkdown template based on the standard [rmarkdown::html_document()], but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
+#' Uses the extensions of [markdown_custom_options()]; formr renders
+#' participant-facing R Markdown with it.
 #'
 #' @param ... all other arguments passed to [rmarkdown::html_document()]
 #' 
@@ -87,15 +91,19 @@ markdown_hard_line_breaks = function(...) {
     "+hard_line_breaks"), ...)
 }
 
-#' render text
+#' Render R Markdown text and return the output as a string
 #'
 #'
-#' Render text
+#' Writes `text` to a temporary `.Rmd` file, renders it with
+#' [rmarkdown::render()] and returns the contents of the rendered file.
+#' Without an `output_format` (here or in the text's YAML header) that is a
+#' complete HTML document.
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param ... all other arguments passed to [rmarkdown::render()]
 #' 
-#' @return A length-1 character string of rendered HTML.
+#' @return A length-1 character string with the contents of the rendered
+#'   file (by default HTML).
 #' @export
 
 render_text = function(text, ...) {
@@ -105,10 +113,13 @@ render_text = function(text, ...) {
 }
 
 
-#' render inline text for formr
+#' Render R Markdown text to an HTML fragment for formr
 #'
 #'
-#' Render text
+#' Knits and renders `text` with [markdown_hard_line_breaks()] to an HTML
+#' fragment (no `<html>` or `<head>`, no section divs) and returns it as a
+#' string. formr uses it for dynamic text inserted into its own pages, such
+#' as item labels and email bodies.
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}
@@ -128,10 +139,13 @@ formr_inline_render = function(text, self_contained = TRUE, dir = NULL, ...) {
   readChar(fileName, file.info(fileName)$size)
 }
 
-#' knit rmarkdown to markdown for formr
+#' Knit R Markdown text to Markdown
 #'
 #'
-#' Render text
+#' Runs the R chunks and inline R code in `text` with [knitr::knit()] and
+#' returns the resulting Markdown, without converting it to HTML. formr
+#' uses it for dynamic labels in its v2 forms and turns the Markdown into
+#' HTML itself.
 #'
 #' @param text rmarkdown that will be knit
 #' 
@@ -142,10 +156,12 @@ formr_knit = function(text) {
    knitr::knit(text = text, quiet = TRUE, encoding = "utf-8")
 }
 
-#' render inline text for formr
+#' Knit R Markdown text and render it to HTML with CommonMark
 #'
 #'
-#' Render text
+#' Runs the R code in `text` with [knitr::knit()] and converts the result
+#' to HTML with [commonmark::markdown_html()] (hard line breaks, autolinks,
+#' strikethrough, tables and smart punctuation) instead of pandoc.
 #'
 #' @param text that will be passed to knitr
 #' 
@@ -167,10 +183,12 @@ formr_render_commonmark = function(text) {
 														smart = TRUE)
 }
 
-#' render text for formr
+#' Render R Markdown text to an HTML file for formr
 #'
 #'
-#' Render text
+#' Writes `text` to `knit.Rmd` in `dir`, renders it with
+#' [markdown_hard_line_breaks()] to a complete HTML page and returns the path
+#' of that page. formr uses it to show feedback pages in an iframe.
 #'
 #' @param text that will be written to a tmp file and used as the input argument
 #' @param self_contained passed to \link{markdown_custom_options}

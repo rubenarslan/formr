@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{formr_knit}
 \alias{formr_knit}
-\title{knit rmarkdown to markdown for formr}
+\title{Knit R Markdown text to Markdown}
 \usage{
 formr_knit(text)
 }
@@ -13,5 +13,8 @@ formr_knit(text)
 A length-1 character string of knitted markdown.
 }
 \description{
-Render text
+Runs the R chunks and inline R code in \code{text} with \code{\link[knitr:knit]{knitr::knit()}} and
+returns the resulting Markdown, without converting it to HTML. formr
+uses it for dynamic labels in its v2 forms and turns the Markdown into
+HTML itself.
 }

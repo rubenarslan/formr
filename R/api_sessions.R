@@ -8,11 +8,24 @@
 #'   If provided, `active`, `limit`, and `offset` are ignored.
 #' @param active Filter: TRUE for ongoing, FALSE for finished, NULL for all.
 #' @param testing Filter: TRUE for test sessions, FALSE for real users, NULL for all.
-#' @param limit Pagination limit (default 1000).
+#' @param limit Pagination limit (default 1000). The server returns at most
+#'   10,000 sessions per request, newest first.
 #' @param offset Pagination offset (default 0).
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A combined tibble of session states and details.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' sessions <- formr_api_sessions("my-study")
+#'
+#' # Real participants who have not finished yet, and where they are
+#' ongoing <- formr_api_sessions("my-study", active = TRUE, testing = FALSE)
+#' table(ongoing$position)
+#'
+#' # Details for particular participants
+#' formr_api_sessions("my-study", session_codes = ongoing$session[1:2])
+#' }
 formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, testing = NULL, limit = 1000, offset = 0, verbose = TRUE) {
 	
 	# --- MODE A: Fetch specific codes ---
@@ -67,6 +80,19 @@ formr_api_sessions <- function(run_name, session_codes = NULL, active = NULL, te
 #' @return Invisibly the API response: a list with the created `sessions` and,
 #'   for any that failed, an `errors` data.frame to inspect.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' # One test session with a random code
+#' res <- formr_api_create_session("my-study", testing = TRUE)
+#' res$sessions
+#'
+#' # Sessions with codes of your own. They must match the instance's pattern
+#' # for session codes (by default: 64 letters, digits, +, -, _ or ~).
+#' codes <- replicate(3, paste(sample(c(letters, LETTERS, 0:9), 64,
+#'   replace = TRUE), collapse = ""))
+#' formr_api_create_session("my-study", codes = codes)
+#' }
 formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE, verbose = TRUE) {
 	body <- list(testing = if(testing) 1 else 0)
 	
@@ -117,6 +143,20 @@ formr_api_create_session <- function(run_name, codes = NULL, testing = FALSE, ve
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return A logical vector indicating success for each session.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' sessions <- formr_api_sessions("my-study", active = TRUE)
+#' waiting <- sessions$session[sessions$position == 20]
+#'
+#' # Send everyone waiting at position 20 to position 50
+#' formr_api_session_action("my-study", session_codes = waiting,
+#'   action = "move_to_position", position = 50)
+#'
+#' # Or end their current module and let them move on through the run
+#' formr_api_session_action("my-study", session_codes = waiting,
+#'   action = "advance")
+#' }
 formr_api_session_action <- function(run_name, session_codes, action, position = NULL, verbose = TRUE) {
 	
 	# 1. Validation
@@ -253,6 +293,17 @@ formr_api_session_action <- function(run_name, session_codes, action, position =
 #'   `iteration`, `created`, `expires`, `ended`, `expired`, `result`,
 #'   `state`.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' history <- formr_api_unit_sessions("my-study", testing = FALSE)
+#'
+#' # How many participants reached each position
+#' tapply(history$session, history$position, function(s) length(unique(s)))
+#'
+#' # Only what started in the last seven days
+#' formr_api_unit_sessions("my-study", since = format(Sys.Date() - 7))
+#' }
 formr_api_unit_sessions <- function(run_name, session_codes = NULL, testing = NULL,
                                      since = NULL, limit = 1000, offset = 0, verbose = TRUE) {
 	query <- list(limit = limit, offset = offset)

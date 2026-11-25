@@ -20,3 +20,12 @@ Invisibly returns a list of server responses.
 Uploads local file(s) to the run. Accepts a single file path, a vector of file paths,
 or a directory path (which will upload all files within that directory).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_upload_file("my-study", "stimuli/face_01.png")
+
+# Every file in a local folder
+formr_api_upload_file("my-study", "stimuli")
+}
+}

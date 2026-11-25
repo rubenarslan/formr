@@ -24,3 +24,14 @@ If NULL, returns the current settings.}
 Retrieve the settings for one or more runs as a tidy data frame, or update them
 by providing a named list of new values.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+settings <- formr_api_run_settings("my-study")
+settings$title
+
+# Change settings by passing a named list
+formr_api_run_settings("my-study",
+  settings = list(title = "Daily diary study", cron_active = TRUE))
+}
+}

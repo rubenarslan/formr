@@ -18,3 +18,10 @@ A data.frame containing: id, name, path, url, created, modified.
 Returns a data frame of all files uploaded to a specific run, including their
 public URLs and timestamps.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+files <- formr_api_files("my-study")
+files[, c("name", "url")]   # use the url to show a file in your study
+}
+}

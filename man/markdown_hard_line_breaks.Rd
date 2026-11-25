@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{markdown_hard_line_breaks}
 \alias{markdown_hard_line_breaks}
-\title{hard line breaks}
+\title{HTML output format in which every line break is kept}
 \usage{
 markdown_hard_line_breaks(...)
 }
@@ -14,4 +14,6 @@ An rmarkdown \code{output_format} object with hard line breaks enabled.
 }
 \description{
 Custom rmarkdown template based on the standard \code{\link[rmarkdown:html_document]{rmarkdown::html_document()}}, but with hard line breaks. Will add the pandoc '+hard_line_breaks' argument if the origin format is markdown.
+Uses the extensions of \code{\link[=markdown_custom_options]{markdown_custom_options()}}; formr renders
+participant-facing R Markdown with it.
 }

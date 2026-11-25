@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{formr_render_commonmark}
 \alias{formr_render_commonmark}
-\title{render inline text for formr}
+\title{Knit R Markdown text and render it to HTML with CommonMark}
 \usage{
 formr_render_commonmark(text)
 }
@@ -13,7 +13,9 @@ formr_render_commonmark(text)
 A length-1 character string of HTML rendered from CommonMark.
 }
 \description{
-Render text
+Runs the R code in \code{text} with \code{\link[knitr:knit]{knitr::knit()}} and converts the result
+to HTML with \code{\link[commonmark:markdown_html]{commonmark::markdown_html()}} (hard line breaks, autolinks,
+strikethrough, tables and smart punctuation) instead of pandoc.
 }
 \examples{
 formr_render_commonmark("There are only `r sample(2:3, 1)` types of people.")

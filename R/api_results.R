@@ -3,15 +3,47 @@
 #' Fetches raw results. Advanced users can use this if they want 
 #' completely raw data without any type coercion or processing.
 #'
+#' The server sends one table per survey in the run (or per survey named in
+#' `surveys`; a survey without the requested items comes back empty), and a
+#' table of Shuffle assignments once anyone has passed a Shuffle. Each survey
+#' table has a row for each time a participant was given that survey (a diary
+#' filled out 14 times gives 14 rows with the same `session`), with the
+#' columns `session`, `created`, `current_position` and the items. Test
+#' sessions are included.
+#'
+#' When more than one table comes back, including the Shuffle table,
+#' `join = TRUE` adds the survey's name as a suffix to every column except
+#' `session` (`mood` becomes `mood_diary`, `created` becomes
+#' `created_diary`), not only to names that occur in several surveys.
+#'
 #' @param run_name Name of the run. Defaults to `.formr$run_name`,
 #'   which is set automatically when the code runs inside an OpenCPU
 #'   session on rforms.org.
 #' @param surveys Optional character vector of survey names to filter by.
-#' @param session_ids Optional character vector of session IDs to filter by.
+#' @param session_ids Optional character vector of session codes to filter
+#'   by. The server matches every code that starts with one of them.
 #' @param item_names Optional character vector of item names to filter by.
-#' @param join Logical. If TRUE, joins the results into a single data frame.
-#' @return A tibble of survey results, or (when `join = FALSE`) a named list of tibbles, one per survey.
+#' @param join Logical. If TRUE, joins the results into a single data frame
+#'   by `session` (see Details for the column names).
+#' @return With `join = FALSE` (the default), a tibble if only one survey
+#'   table came back and there are no Shuffle assignments, otherwise a named
+#'   list of tibbles, one per survey (plus `shuffles`). With `join = TRUE`, a
+#'   single tibble.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' diary <- formr_api_fetch_results("my-study", surveys = "diary",
+#'   item_names = c("mood", "sleep_hours"))
+#' # A tibble if only this table came back, else a list with one per survey
+#' if (!is.data.frame(diary)) diary <- diary$diary
+#' mean(diary$mood, na.rm = TRUE)
+#'
+#' # Everything, joined by session: in a run with several surveys (or a
+#' # Shuffle), every column gets the survey's name as a suffix
+#' all <- formr_api_fetch_results("my-study", join = TRUE)
+#' grep("_intake$", names(all), value = TRUE)
+#' }
 formr_api_fetch_results <- function(run_name = .formr$run_name, surveys = NULL, session_ids = NULL, item_names = NULL, join = FALSE) {
 
 	if (is.null(run_name) || !nzchar(run_name)) {
@@ -77,11 +109,37 @@ formr_api_fetch_results <- function(run_name = .formr$run_name, surveys = NULL, 
 #' @param ... Filters passed to API (e.g. `surveys = c("Daily", "Intake")`, `session_ids = "..."`).
 #' @param compute_scales Logical. Should scales (e.g. `extraversion`) be computed from items (e.g. `extra_1`, `extra_2`)?
 #' @param join Logical. If TRUE (default), joins all surveys into one wide dataframe.
-#' @param remove_test_sessions Logical. Filter out sessions marked as testing?
+#' @param remove_test_sessions Logical. Filter out sessions marked as
+#'   testing? This also drops every session whose code contains `"XXX"`.
+#'   formr gives test sessions such codes, but participants created with
+#'   *New Named User* get them too and are dropped as well. To keep them,
+#'   set this to `FALSE` and filter on the `testing` column of
+#'   [formr_api_sessions()] instead.
 #' @param verbose Logical. Print progress messages?
 #'
-#' @return A processed tibble with class `formr_results`.
+#' @details Joining works as in [formr_api_fetch_results()]: when more than
+#'   one table comes back (several surveys, or one survey plus the run's
+#'   Shuffle assignments), every column except `session` gets the survey's
+#'   name as a suffix, e.g. `extraversion_intake`.
+#'
+#' @return With `join = TRUE`, a processed tibble with class `formr_results`.
+#'   With `join = FALSE`, a named list of processed tibbles, one per survey
+#'   (plus `shuffles` when the run has Shuffle assignments).
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' results <- formr_api_results("my-study")
+#' summary(results)   # what was filtered, reversed and scored
+#'
+#' # The intake survey only, as its own tibble
+#' intake <- formr_api_results("my-study", surveys = "intake", join = FALSE)$intake
+#'
+#' # Keep participants whose code contains "XXX"; drop test sessions by flag
+#' results <- formr_api_results("my-study", remove_test_sessions = FALSE)
+#' real <- formr_api_sessions("my-study", testing = FALSE, limit = 10000)
+#' results <- results[results$session %in% real$session, ]
+#' }
 formr_api_results <- function(run_name = .formr$run_name,
 															...,
 															compute_scales = TRUE,
@@ -227,10 +285,28 @@ formr_api_results <- function(run_name = .formr$run_name,
 }
 
 #' Apply Type Definitions and Labels
+#'
+#' Turns the `created`, `modified` and `ended` columns (where present) into
+#' date-times, gives choice items their value labels ([haven::labelled()])
+#' and every item its label, and converts `number`, `range`, `date` and
+#' `datetime` items.
+#'
 #' @param item_list A data frame containing item metadata.
 #' @param results A data frame containing the raw results.
 #' @return The results data.frame with item types applied: POSIXct timestamps and choice items as `haven::labelled` vectors.
 #' @export
+#' @examples
+#' agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+#'   `4` = "Agree", `5` = "Strongly agree")
+#' item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+#'   type = "rating_button",
+#'   label = c("I am talkative.", "I am reserved.", "I like parties."))
+#' item_list$choices <- list(agree, agree, agree)
+#' results <- data.frame(session = c("a", "b", "c"),
+#'   extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+#'
+#' results <- formr_api_recognise(item_list, results)
+#' results$extra_1
 formr_api_recognise <- function(item_list, results) {
 	if (is.null(results) || nrow(results) == 0) return(results)
 	if (is.null(item_list) || nrow(item_list) == 0) return(results)
@@ -341,6 +417,17 @@ formr_api_recognise <- function(item_list, results) {
 #' @param item_list A data frame containing item metadata.
 #' @return The results data.frame with reverse-keyed items (those ending in `R`) flipped and their value labels remapped.
 #' @export
+#' @examples
+#' agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+#'   `4` = "Agree", `5` = "Strongly agree")
+#' item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+#'   type = "rating_button")
+#' item_list$choices <- list(agree, agree, agree)
+#' results <- data.frame(session = c("a", "b", "c"),
+#'   extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+#'
+#' # extra_2R runs from 1 to 5, so each answer x becomes 6 - x
+#' formr_api_reverse(results, item_list)$extra_2R
 formr_api_reverse <- function(results, item_list) {
 	if (is.null(item_list)) return(results)
 	
@@ -415,13 +502,32 @@ formr_api_reverse <- function(results, item_list) {
 }
 
 #' Aggregate Scales
+#'
+#' Computes a scale for each group of numeric items that share a stem
+#' (`extra_1`, `extra_2R`, `extra_3` make the scale `extra`), unless a
+#' column of that name exists already. Reverse-keyed items should be
+#' reversed first ([formr_api_reverse()]).
 #' 
 #' @param results A data frame/tibble containing the run results.
 #' @param item_list A data frame containing item metadata (names, types, choices).
-#' @param min_items Minimum number of valid items required to calculate a mean (default 2).
+#' @param min_items Minimum number of numeric items a stem needs for a scale
+#'   to be computed (default 2). Each row's mean uses all of the scale's
+#'   items, so a missing answer gives a missing scale value.
 #' @return The results data.frame with one added numeric column per scale (the row mean of its items); scale reliability stored in attributes.
 #' @importFrom stats var
 #' @export
+#' @examples
+#' agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+#'   `4` = "Agree", `5` = "Strongly agree")
+#' item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+#'   type = "rating_button")
+#' item_list$choices <- list(agree, agree, agree)
+#' results <- data.frame(session = c("a", "b", "c"),
+#'   extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+#'
+#' scored <- formr_api_aggregate(formr_api_reverse(results, item_list), item_list)
+#' scored$extra
+#' attr(scored$extra, "reliability_alpha")
 formr_api_aggregate <- function(results, item_list, min_items = 2) {
 	item_names <- names(results)
 	stems <- stringr::str_match(item_names, "^([a-zA-Z0-9_]+?)[_]?\\d+[R]?$")[, 2]

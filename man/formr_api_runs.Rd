@@ -14,3 +14,10 @@ cron_active (bool), locked (bool), created (POSIXct), modified (POSIXct).
 Returns a data frame of all runs accessible to the user, including status flags
 and timestamps.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+runs <- formr_api_runs()
+runs[, c("name", "title", "modified")]
+}
+}

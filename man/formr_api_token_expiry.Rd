@@ -17,3 +17,13 @@ A list with:
 \description{
 Returns information about when the current token expires.
 }
+\examples{
+# Without a session, the token counts as expired
+formr_api_token_expiry()$is_expired
+
+\dontrun{
+# Not run: needs a live formr server and API credentials.
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+formr_api_token_expiry()$seconds_left   # about 3600 for a fresh token
+}
+}

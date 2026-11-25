@@ -11,11 +11,29 @@ formr_api_aggregate(results, item_list, min_items = 2)
 
 \item{item_list}{A data frame containing item metadata (names, types, choices).}
 
-\item{min_items}{Minimum number of valid items required to calculate a mean (default 2).}
+\item{min_items}{Minimum number of numeric items a stem needs for a scale
+to be computed (default 2). Each row's mean uses all of the scale's
+items, so a missing answer gives a missing scale value.}
 }
 \value{
 The results data.frame with one added numeric column per scale (the row mean of its items); scale reliability stored in attributes.
 }
 \description{
-Aggregate Scales
+Computes a scale for each group of numeric items that share a stem
+(\code{extra_1}, \code{extra_2R}, \code{extra_3} make the scale \code{extra}), unless a
+column of that name exists already. Reverse-keyed items should be
+reversed first (\code{\link[=formr_api_reverse]{formr_api_reverse()}}).
+}
+\examples{
+agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+  `4` = "Agree", `5` = "Strongly agree")
+item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+  type = "rating_button")
+item_list$choices <- list(agree, agree, agree)
+results <- data.frame(session = c("a", "b", "c"),
+  extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+
+scored <- formr_api_aggregate(formr_api_reverse(results, item_list), item_list)
+scored$extra
+attr(scored$extra, "reliability_alpha")
 }

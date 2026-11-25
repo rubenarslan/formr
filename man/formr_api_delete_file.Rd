@@ -21,3 +21,13 @@ Removes file attachment(s) from the run. Accepts a single filename, a vector
 of filenames, or a local directory path (which will delete files on the server
 that match the names of the files in the local directory).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_delete_file("my-study", "face_01.png")
+
+# Delete the files on the server that have the names of those in a
+# local folder
+formr_api_delete_file("my-study", "stimuli")
+}
+}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmarkdown_options.R
 \name{render_text}
 \alias{render_text}
-\title{render text}
+\title{Render R Markdown text and return the output as a string}
 \usage{
 render_text(text, ...)
 }
@@ -12,8 +12,12 @@ render_text(text, ...)
 \item{...}{all other arguments passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }
 \value{
-A length-1 character string of rendered HTML.
+A length-1 character string with the contents of the rendered
+file (by default HTML).
 }
 \description{
-Render text
+Writes \code{text} to a temporary \code{.Rmd} file, renders it with
+\code{\link[rmarkdown:render]{rmarkdown::render()}} and returns the contents of the rendered file.
+Without an \code{output_format} (here or in the text's YAML header) that is a
+complete HTML document.
 }

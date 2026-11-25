@@ -7,6 +7,14 @@
 #' @return A tibble of surveys (id, name, created, modified, results_table).
 #' @importFrom dplyr bind_rows as_tibble mutate
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_surveys()
+#'
+#' # Only surveys whose name contains "diary"
+#' formr_api_surveys(name_pattern = "diary")
+#' }
 formr_api_surveys <- function(name_pattern = NULL, verbose = TRUE) {
 	query <- list()
 	if (!is.null(name_pattern)) query$name <- name_pattern
@@ -38,6 +46,16 @@ formr_api_surveys <- function(name_pattern = NULL, verbose = TRUE) {
 #' @param file_path Optional. Required if format is "xlsx".
 #' @return In JSON mode (the default) a tibble of the survey's items; in `xlsx` mode invisibly the `file_path` written.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' items <- formr_api_survey_structure("intake")
+#' items[, c("type", "name", "label")]
+#'
+#' # Download the item table as an Excel file
+#' formr_api_survey_structure("intake", format = "xlsx",
+#'   file_path = file.path(tempdir(), "intake.xlsx"))
+#' }
 formr_api_survey_structure <- function(survey_name, format = "json", file_path = NULL) {
 	
 	# --- Mode: Download XLSX ---
@@ -116,6 +134,17 @@ formr_api_survey_structure <- function(survey_name, format = "json", file_path =
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly the server response; called to upload or update a survey from a local file or Google Sheet.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' # The survey is named after the file: this creates or updates "diary"
+#' formr_api_upload_survey(file_path = "surveys/diary.xlsx")
+#'
+#' # Or import a Google Sheet (link sharing on); the survey takes the
+#' # sheet's name
+#' formr_api_upload_survey(
+#'   google_sheet_url = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit")
+#' }
 formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL, verbose = TRUE) {
 	
 	body <- list()
@@ -160,6 +189,12 @@ formr_api_upload_survey <- function(file_path = NULL, google_sheet_url = NULL, v
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` on success; `FALSE` if the user declines the prompt.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_delete_survey("diary")                  # asks first
+#' formr_api_delete_survey("diary", prompt = FALSE)  # in a script
+#' }
 formr_api_delete_survey <- function(survey_name, prompt = TRUE, verbose = TRUE) {
 
 	if (!.formr_confirm(sprintf("You are about to permanently delete the survey '%s'.", survey_name), prompt)) {

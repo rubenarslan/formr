@@ -200,12 +200,17 @@ escapeRegex = function(string)
 #'
 #' An environment that the rforms.org server fills with per-request state
 #' when R code runs inside an OpenCPU session on a formr study (for
-#' example, on a `CalculateUnit` page or an `OverviewScriptPage`). Useful
-#' fields the server may set:
+#' example, in an item's value or showif, a condition, a feedback page or
+#' the run's overview script). Useful fields the server may set:
 #'
 #' * `.formr$run_name` -- the name of the current run.
 #' * `.formr$host` -- the API host (e.g. `https://api.rforms.org`).
 #' * `.formr$access_token` -- a short-lived OAuth token for the request.
+#'   These three are set only when the code contains a call to
+#'   `formr_api_authenticate(` (see [formr_api_authenticate()]).
+#' * `.formr$nr_of_participants` -- the number of sessions in the run:
+#'   everyone who has opened the study, including test sessions, people who
+#'   left early and the current participant.
 #' * `.formr$last_action_time` / `.formr$last_action_date` -- timestamps
 #'   used by [time_passed()] and the other shorthands.
 #'
@@ -217,8 +222,7 @@ escapeRegex = function(string)
 #'
 #' @format An environment.
 #' @return An [environment] holding per-request state in its bindings (the
-#'   `run_name`, `host`, `access_token`, `last_action_time` and
-#'   `last_action_date` fields listed above). `.formr` is a data object, not a
+#'   fields listed above). `.formr` is a data object, not a
 #'   function, so it does not itself return a value; the rforms.org server
 #'   populates these bindings before user code runs and the environment is empty
 #'   outside a formr/OpenCPU session.

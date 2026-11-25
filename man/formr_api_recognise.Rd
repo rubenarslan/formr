@@ -15,5 +15,21 @@ formr_api_recognise(item_list, results)
 The results data.frame with item types applied: POSIXct timestamps and choice items as \code{haven::labelled} vectors.
 }
 \description{
-Apply Type Definitions and Labels
+Turns the \code{created}, \code{modified} and \code{ended} columns (where present) into
+date-times, gives choice items their value labels (\code{\link[haven:labelled]{haven::labelled()}})
+and every item its label, and converts \code{number}, \code{range}, \code{date} and
+\code{datetime} items.
+}
+\examples{
+agree <- list(`1` = "Strongly disagree", `2` = "Disagree", `3` = "Neutral",
+  `4` = "Agree", `5` = "Strongly agree")
+item_list <- data.frame(name = c("extra_1", "extra_2R", "extra_3"),
+  type = "rating_button",
+  label = c("I am talkative.", "I am reserved.", "I like parties."))
+item_list$choices <- list(agree, agree, agree)
+results <- data.frame(session = c("a", "b", "c"),
+  extra_1 = c(5, 2, 4), extra_2R = c(1, 4, 2), extra_3 = c(4, 1, 5))
+
+results <- formr_api_recognise(item_list, results)
+results$extra_1
 }

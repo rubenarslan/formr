@@ -22,3 +22,10 @@ Invisibly \code{TRUE} on success; \code{FALSE} if the user declines the prompt.
 Permanently deletes a survey study.
 Note: The API may prevent deletion if this survey is currently used in an active run.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_delete_survey("diary")                  # asks first
+formr_api_delete_survey("diary", prompt = FALSE)  # in a script
+}
+}

@@ -16,6 +16,17 @@
 #'     will 403 until the user picks scopes at admin/account#api.
 #'   - `expires_at`: POSIXct of token expiry (or NULL).
 #' @export
+#' @examples
+#' # Without an active session, this returns NULL
+#' formr_api_session()
+#'
+#' \dontrun{
+#' # Not run: needs a live formr server and API credentials.
+#' formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#' session <- formr_api_session()
+#' session$scope       # e.g. "run:read session:read data:read"
+#' session$expires_at
+#' }
 formr_api_session <- function() {
 	if (exists("session", envir = .formr_state)) {
 		session <- get("session", envir = .formr_state)
@@ -84,6 +95,16 @@ formr_api_session <- function() {
 #' calling-frame chain (for legacy injectors that wrote bare locals into
 #' the wrapper scope), then the keyring.
 #'
+#' Inside a formr study, the server fills `.formr` only for R code that
+#' itself contains a call to `formr_api_authenticate(` (an item's value or
+#' showif, a condition, a label, a feedback or email body). A call that
+#' only appears inside a function from the study's R Functions does not
+#' count, and email subjects and push notification titles never get a
+#' token. The token is limited to the current run and to the scopes
+#' `user:read session:read session:write run:read data:read`, expires after
+#' 180 seconds and is deleted as soon as the request is answered. See
+#' `vignette("run-r-inside-your-study", package = "formr")`.
+#'
 #' @param host API Base URL. Defaults to `.formr$host` when running on
 #'   rforms.org, otherwise `"https://rforms.org"`.
 #' @param client_id OAuth Client ID.
@@ -93,6 +114,21 @@ formr_api_session <- function() {
 #' @param verbose Logical. If TRUE (default), reports success via [message()].
 #' @return Invisibly `NULL`; called for its side effect of obtaining and caching an OAuth access token (errors on failure).
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and API credentials.
+#' # Once: store the credential created at admin/account#api in your keyring
+#' formr_store_keys(host = "https://api.rforms.org",
+#'   client_id = "YOUR_CLIENT_ID", client_secret = "YOUR_CLIENT_SECRET",
+#'   account = "my-study")
+#'
+#' # In each R session: authenticate with the stored credential
+#' formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#'
+#' # Inside a formr study (e.g. in an item's value or a feedback text),
+#' # call it without arguments: formr supplies a short-lived token.
+#' formr_api_authenticate()
+#' }
 formr_api_authenticate <- function(host = "https://rforms.org",
 																	 client_id = NULL,
 																	 client_secret = NULL,
@@ -231,6 +267,13 @@ formr_api_authenticate <- function(host = "https://rforms.org",
 #' @param verbose Logical. If TRUE (default), reports progress via [message()].
 #' @return Invisibly `TRUE` on success (or `FALSE` if there was no active session); called to revoke the access token on the server and clear the local session.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Not run: needs a live formr server and an authenticated session.
+#' formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#' runs <- formr_api_runs()
+#' formr_api_logout()
+#' }
 formr_api_logout <- function(verbose = TRUE) {
 	# 1. Get current session
 	session <- formr_api_session()
@@ -286,6 +329,15 @@ formr_api_logout <- function(verbose = TRUE) {
 #'
 #' @return TRUE if authenticated and token not expired, FALSE otherwise.
 #' @export
+#' @examples
+#' formr_api_is_authenticated()   # FALSE until you authenticate
+#'
+#' \dontrun{
+#' # Not run: needs a live formr server and API credentials.
+#' if (!formr_api_is_authenticated()) {
+#'   formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#' }
+#' }
 formr_api_is_authenticated <- function() {
 	session <- formr_api_session()
 	if (is.null(session)) return(FALSE)
@@ -308,6 +360,15 @@ formr_api_is_authenticated <- function() {
 #'   - `seconds_left`: Seconds until expiry (or NA if unknown)
 #'   - `is_expired`: TRUE if token has expired
 #' @export
+#' @examples
+#' # Without a session, the token counts as expired
+#' formr_api_token_expiry()$is_expired
+#'
+#' \dontrun{
+#' # Not run: needs a live formr server and API credentials.
+#' formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+#' formr_api_token_expiry()$seconds_left   # about 3600 for a fresh token
+#' }
 formr_api_token_expiry <- function() {
 	session <- formr_api_session()
 

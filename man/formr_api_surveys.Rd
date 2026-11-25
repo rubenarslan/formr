@@ -17,3 +17,12 @@ A tibble of surveys (id, name, created, modified, results_table).
 \description{
 Returns a list of all surveys owned by the user.
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+formr_api_surveys()
+
+# Only surveys whose name contains "diary"
+formr_api_surveys(name_pattern = "diary")
+}
+}

@@ -20,3 +20,14 @@ In JSON mode (the default) a tibble of the survey's items; in \code{xlsx} mode i
 Retrieves the item table for a survey. Can return a tibble (JSON) or download
 the original Excel file (XLSX).
 }
+\examples{
+\dontrun{
+# Not run: needs a live formr server and an authenticated session.
+items <- formr_api_survey_structure("intake")
+items[, c("type", "name", "label")]
+
+# Download the item table as an Excel file
+formr_api_survey_structure("intake", format = "xlsx",
+  file_path = file.path(tempdir(), "intake.xlsx"))
+}
+}
