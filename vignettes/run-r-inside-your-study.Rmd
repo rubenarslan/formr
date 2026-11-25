@@ -22,10 +22,10 @@ library(formr)
 If you haven't already, read the [Getting Started](getting-started.html) guide for authentication basics.
 
 Most code in this vignette is meant to be **pasted into a formr study** (a
-calculate item or a label), where the server injects the run context and
-credentials. Those snippets are shown but not executed here. The local helper
-functions (`current()`, `first()`, `last()`, and JSON parsing), however, run
-anywhere — and are executed below.
+calculate item, a condition or a label), where the server injects the run
+context and credentials. Those snippets are shown but not executed here. The
+local helper functions (`current()`, `first()`, `last()`, and JSON parsing),
+however, run anywhere — and are executed below.
 
 ## 1. Why Run R Inside Your Study?
 
@@ -38,10 +38,10 @@ possible:
 
 - **Adapt in real time.** Check what other participants have answered so far and
   branch, skip, or compute norms on the fly.
-- **Balance experimental groups automatically.** Count completions per condition
-  and route each new participant to the smaller cell, compensating for differential
-  attrition without manual intervention.
-- **Synchronise participants.** Poll the database for incoming sessions and
+- **Balance experimental groups automatically.** Count participants per condition
+  and route each new participant to the smaller cell, without manual
+  intervention.
+- **Synchronise participants.** Check how many people have arrived and
   advance a whole cohort at once — enabling live dyadic tasks, focus groups,
   or team exercises inside an asynchronous survey framework.
 
@@ -54,27 +54,32 @@ server-side logic that benefits from cross-session data or further API functions
 
 ## 2. Where the API Code Goes
 
-The V1 API is called from **calculate items** — hidden fields that run R on
-the server between surveys. The results are then displayed or acted upon by
-two other mechanisms that already existed in formr.
+API calls work in the R code that formr runs for a participant: an item's
+`value` (e.g. a calculate item) or `showif`, a Skip Forward or Skip Backward
+condition, a Pause's *relative to*, item and choice labels, the feedback text
+of a Stop point or Page, an email body, and the run's overview script. They
+do **not** work in email subjects or push notification titles, which formr
+renders as plain text (see §3). Three of these places are shown below.
 
-### A. Calculate Items (API Entry Point)
+### A. Calculate Items
 
-A calculate item evaluates an R expression when the participant reaches it.
-The last value is stored in the session data and can be used by later units
-(showif conditions, labels, other calculate items). This is where
-`formr_api_authenticate()` and `formr_api_fetch_results()` go.
+A calculate item evaluates the R code in its `value` column and stores the
+result with the participant's answers, where showifs, labels, conditions and
+later modules can use it. If the code depends on answers from the same
+survey, put the calculate item in the last row, after the last submit button.
+Calculate items exist only in classic surveys, not in v2 forms.
 
 ```{r, eval = FALSE}
 # Inside a calculate item's "value" field:
 formr_api_authenticate()
 
-past <- formr_api_fetch_results(.formr$run_name, item_names = "score", join = TRUE)
-mean(past$score, na.rm = TRUE)
+quiz <- formr_api_fetch_results(surveys = "quiz", item_names = "score")
+if (!is.data.frame(quiz)) quiz <- quiz$quiz   # see "Fetching Data" in §3
+mean(quiz$score, na.rm = TRUE)
 ```
 
 Use calculate items for any logic that needs cross-session data: computing
-norms, generating tokens, processing JSON, or counting completions per
+norms, generating tokens, processing JSON, or counting participants per
 experimental cell.
 
 ### B. Inline R in Labels (Display + Fetch)
@@ -87,8 +92,9 @@ just like calculate items — `formr_api_authenticate()` and
 # In a note item's label — fetch and display in one step:
 # ```{r, echo=FALSE, results='asis'}
 # formr_api_authenticate()
-# scores <- formr_api_fetch_results(.formr$run_name,
-#   item_names = "engagement", join = TRUE)
+# scores <- formr_api_fetch_results(surveys = "burnout",
+#   item_names = "engagement")
+# if (!is.data.frame(scores)) scores <- scores$burnout
 # cat("The sample mean is ", mean(scores$engagement, na.rm = TRUE), ".")
 # ```
 ````
@@ -110,8 +116,9 @@ should reflect live database contents.
 # Inside a mc_multiple choice option's label — fetch and display in one step:
 # ```{r}
 # formr_api_authenticate()
-# posts <- formr_api_fetch_results(.formr$run_name, item_names = "title", join = TRUE)
-# posts$title[1]
+# posts <- formr_api_fetch_results(surveys = "forum", item_names = "title")
+# if (!is.data.frame(posts)) posts <- posts$forum
+# posts$title[which.max(posts$created)]
 # ```
 ````
 
@@ -128,17 +135,38 @@ Inside a run, credentials are injected automatically. Just call:
 formr_api_authenticate()
 ```
 
-The package detects `.formr$access_token` and `.formr$host` set by the server.
-The token is valid for the duration of the request and is revoked when the
-request finishes.
+Before formr sends a piece of R code to OpenCPU, it looks for a call to
+`formr_api_authenticate(` in that code. If it finds one, it creates a
+temporary token for the study owner's account and sets
+`.formr$access_token`, `.formr$host` and `.formr$run_name`, which
+`formr_api_authenticate()` picks up when called without arguments.
+
+- **Write the call in the code that uses the data.** formr only looks at the
+  code of the item, condition or text itself. If `formr_api_authenticate()`
+  appears only inside a function defined in the study's R Functions, no
+  token is created and the call fails. Functions from R Functions can still
+  use the API, as long as the code that calls them also calls
+  `formr_api_authenticate()`.
+- **Not in email subjects or push notification titles.** These are rendered
+  as plain text without a token. Put API code in the email body instead.
+- **What the token can do.** It works for the current run only, with the
+  scopes `user:read`, `session:read`, `session:write`, `run:read` and
+  `data:read`: your code can read the run's structure, sessions and results,
+  and move participants with `formr_api_session_action()`, but it cannot
+  change modules, settings, surveys or files.
+- **How long it lasts.** At most 180 seconds (OpenCPU's time limit for one
+  request), and formr deletes it as soon as the request is answered. The next
+  item, condition or page gets a token of its own, so each of them calls
+  `formr_api_authenticate()` again.
 
 ### Run Context
 
-Two hidden variables are always available:
+These hidden variables are available inside a run:
 
 | Variable | What it holds |
 |---|---|
-| `.formr$run_name` | The name of the current run (e.g. `"daily_diary"`) |
+| `.formr$run_name` | The name of the current run (e.g. `"daily_diary"`). Set together with the token, so only in code that calls `formr_api_authenticate()`. The results functions use it as their default `run_name`; pass it to `formr_api_sessions()` yourself. |
+| `.formr$nr_of_participants` | How many sessions the run has: everyone who has opened the study, including test sessions, people who left after the first page, and the current participant. Needs no API call. |
 | `survey_run_sessions$session` | The current participant's session code |
 
 ```{r, eval = FALSE}
@@ -156,24 +184,54 @@ It differs from `formr_api_results()` in important ways:
 
 | | `formr_api_results()` | `formr_api_fetch_results()` |
 |---|---|---|
+| Requests to the server | 3 (structure, sessions, results) | 1 |
+| Removes test sessions | Yes (by default) | No |
 | Auto-reverses items | Yes | No |
 | Auto-computes scales | Yes | No |
-| Returns processed data | Yes | No |
-| `item_names` filter | No | Yes |
 | Default `run_name` | `.formr$run_name` | `.formr$run_name` |
 | Default `join` | `TRUE` | `FALSE` |
 
-Inside a run, you almost always want `formr_api_fetch_results()` — raw data
-without transformations is safer when you process it yourself.
+Inside a run, `formr_api_fetch_results()` is usually the better choice: one
+request instead of three, and raw data without transformations is safer when
+you process it yourself.
+
+`formr_api_results()` drops test sessions because `remove_test_sessions =
+TRUE` by default. It drops every session marked as a test session and,
+in addition, every session whose code contains `"XXX"`. formr gives test
+sessions such codes, but participants you add with *New Named User* get them
+too, so they are dropped as well (this has been reported as a bug). If you use
+named users, set `remove_test_sessions = FALSE` and filter by the `testing`
+column of `formr_api_sessions()` instead (see §8).
+
+**What comes back.** Name the survey and the items you need:
 
 ```{r, eval = FALSE}
-data <- formr_api_fetch_results(.formr$run_name,
-  item_names = c("name", "age", "score"), join = TRUE)
+scores <- formr_api_fetch_results(surveys = "burnout", item_names = "engagement")
+if (!is.data.frame(scores)) scores <- scores$burnout
+scores$engagement
 ```
 
-Always specify `item_names` to keep requests fast. The result is a tibble with
-one row per session and a column per requested item (plus a `session` column).
-If the same item name appears in multiple surveys, the survey name is prefixed.
+The server sends one table per survey: the ones you name in `surveys`, or
+every survey in the run if you name none (those without the requested items
+come back empty). Once anyone has passed a Shuffle, it also sends a table of
+Shuffle assignments. What you get in R depends on how many tables arrive:
+
+- With `join = FALSE` (the default), a single tibble if only one survey table
+  came back and the run has no Shuffle assignments, and otherwise a named
+  list with one tibble per survey (plus `shuffles`). The second line above
+  picks the survey's table in either case.
+- With `join = TRUE`, one tibble joined by `session`. Whenever more than one
+  table came back, including the Shuffle table, **every** column except
+  `session` gets the survey's name as a suffix: `engagement` becomes
+  `engagement_burnout` and `created` becomes `created_burnout`. In a study
+  with more than one survey or with a Shuffle, `scores$engagement` is then
+  `NULL`.
+
+Each survey table has a row for each time a participant was given that
+survey (a diary filled out 14 times gives 14 rows with the same `session`),
+with the columns `session`, `created`, `current_position` and the items you
+asked for. Items a participant hasn't answered yet are `NA`, and test
+sessions are included. Always specify `item_names` to keep requests fast.
 
 ### The `current()` Shorthand
 
@@ -210,19 +268,24 @@ study, using cross-session data.
 
 | Position | Type | Name | What it does |
 |---|---|---|---|
-| 10 | Survey | `register` | Collects participant's name |
-| 20 | Calculate | `participant_count` | Counts all registrations so far |
-| 30 | Survey | `welcome` | Shows "You are participant #N" |
+| 10 | Survey | `register` | Collects participant's name; its last row, after the last submit button, is a calculate item `participant_number` |
+| 20 | Survey | `welcome` | Shows "You are participant #N" |
 
-### Calculate: `participant_count`
+### Calculate item: `participant_number`
 
 ```{r, eval = FALSE}
 formr_api_authenticate()
 
-past <- formr_api_fetch_results(.formr$run_name, item_names = "name", join = TRUE)
+registered <- formr_api_fetch_results(surveys = "register", item_names = "name")
+if (!is.data.frame(registered)) registered <- registered$register
 
-if (nrow(past) > 0) nrow(past) + 1 else 1
+sum(!is.na(registered$name))
 ```
+
+This counts everyone who has entered a name so far. The current participant
+is included, because their name is saved before the calculate item after the
+submit button runs, and so are test sessions. Two participants who submit at
+the same moment can get the same number.
 
 ### Survey: `welcome`
 
@@ -230,10 +293,22 @@ A note item with this label:
 
 ````{r, eval = FALSE}
 # ```{r, echo=FALSE, results='asis'}
-# cat("## Welcome, Participant #", participant_count, "\n\n", sep = "")
+# cat("## Welcome, Participant #", register$participant_number, "\n\n", sep = "")
 # cat("Please proceed with the study.")
 # ```
 ````
+
+If a rough number is enough, you don't need the API. A label can show how
+many sessions the run has:
+
+````{r, eval = FALSE}
+# In a note item's label:
+# You are one of `r .formr$nr_of_participants` people in this study so far.
+````
+
+`.formr$nr_of_participants` counts everyone who has opened the study — test
+sessions, people who never got past the first page, and the current
+participant — so it runs ahead of the number of people who registered.
 
 ## 5. Walkthrough: Real-Time Group Norms
 
@@ -265,9 +340,10 @@ a ggplot comparing the current participant against the sample distribution:
 # library(ggplot2)
 # formr_api_authenticate()
 #
-# # Fetch all participants' engagement scores
-# all_scores <- formr_api_fetch_results(.formr$run_name,
-#   item_names = "engagement", join = TRUE)
+# # Fetch all participants' engagement scores (the current one's included)
+# all_scores <- formr_api_fetch_results(surveys = "burnout",
+#   item_names = "engagement")
+# if (!is.data.frame(all_scores)) all_scores <- all_scores$burnout
 #
 # # Current participant's own score — local, no API needed
 # my_engagement <- current(burnout$engagement)
@@ -277,7 +353,8 @@ a ggplot comparing the current participant against the sample distribution:
 #   geom_vline(xintercept = my_engagement, colour = "red", linewidth = 1) +
 #   labs(
 #     title = "Your engagement score vs. the organisation",
-#     subtitle = paste0("Sample: ", nrow(all_scores), " colleagues"),
+#     subtitle = paste0("Sample: ", sum(!is.na(all_scores$engagement)),
+#       " answers"),
 #     x = "Engagement", y = ""
 #   ) +
 #   theme_minimal()
@@ -293,6 +370,10 @@ Note two patterns worth reusing:
    one OpenCPU session, and nothing stored in the database beyond what
    the `burnout` survey already saves.
 
+In the first days, the sample is a handful of people (and your test
+sessions), so you may want to show the comparison only once there are, say,
+30 answers.
+
 ---
 
 ## 6. Walkthrough: Dynamic Group Balancing
@@ -301,45 +382,44 @@ Note two patterns worth reusing:
 Static random assignment at the start produces unequal cell sizes by the end.
 Manually monitoring and rebalancing is tedious and error-prone.
 
-**Solution:** Count completed sessions per condition on every new entry and
+**Solution:** Count the participants per condition on every new entry and
 route the participant to the currently smaller group.
 
 ### Run Structure
 
+Survey modules have no showif of their own; a run routes participants with
+Skip Forward modules.
+
 | Position | Type | Name | What it does |
 |---|---|---|---|
-| 10 | Survey | `intake` | Baseline demographics |
-| 20 | Calculate | `pick_condition` | Fetches prior completions, picks smaller group |
-| 30 | Survey | `intervention_a` | Treatment module A (shown if condition == "A") |
-| 40 | Survey | `intervention_b` | Treatment module B (shown if condition == "B") |
+| 10 | Survey | `intake` | Baseline demographics; its last row, after the last submit button, is a calculate item `condition` |
+| 20 | Skip Forward | | If `intake$condition == "B"`, jumps to position 50 |
+| 30 | Survey | `intervention_a` | Treatment module A |
+| 40 | Skip Forward | | Condition `TRUE`: always jumps to position 60 |
+| 50 | Survey | `intervention_b` | Treatment module B |
+| 60 | Stop point | | End of the study |
 
-### Calculate: `pick_condition`
+### Calculate item: `condition`
 
 ```{r, eval = FALSE}
 formr_api_authenticate()
 
-# Fetch the condition assignments from all completed sessions
-past <- formr_api_fetch_results(.formr$run_name,
-  item_names = "assigned_condition", join = TRUE)
+# Everyone's condition so far (the current participant's is still empty)
+intake_all <- formr_api_fetch_results(surveys = "intake", item_names = "condition")
+if (!is.data.frame(intake_all)) intake_all <- intake_all$intake
 
-count_a <- sum(past$assigned_condition == "A", na.rm = TRUE)
-count_b <- sum(past$assigned_condition == "B", na.rm = TRUE)
+n <- table(factor(intake_all$condition, levels = c("A", "B")))
 
 # Assign to the smaller group; break ties randomly
-if (count_a <= count_b) "A" else "B"
+sample(names(n)[n == min(n)], 1)
 ```
 
-### Showif conditions
-
-Position 30 (`intervention_a`) showif:
-```
-current(pick_condition) == "A"
-```
-
-Position 40 (`intervention_b`) showif:
-```
-current(pick_condition) == "B"
-```
+This counts everyone who got a condition, including people who dropped out
+later and test sessions. Counting only those who finished would make up for
+different drop-out, but then everyone who starts before the next person
+finishes lands in the same group. And when the counts differ, the order in
+which people arrive decides their group, not chance: if your design needs
+random assignment, use a Shuffle.
 
 ---
 
@@ -349,51 +429,74 @@ current(pick_condition) == "B"
 multiple participants to start a module simultaneously. Asynchronous survey
 frameworks let everyone progress at their own pace.
 
-**Solution:** Trap early arrivals in a refresh loop, then advance the whole
-cohort at once via the API.
+**Solution:** Hold early arrivals on a page that reloads itself, check at
+every round how many people have arrived, and let the whole cohort go on
+once there are enough.
 
 ### Run Structure
 
 | Position | Type | Name | What it does |
 |---|---|---|---|
 | 10 | Survey | `lobby` | Intake survey |
-| 20 | Survey | `waiting_room` | Auto-refreshing hold page (submit: 2000 ms) |
-| 30 | SkipBackward | `loop_back` | Returns to position 20 |
-| 40 | Survey | `dyadic_task` | The live interaction — only visible after release |
+| 20 | Skip Forward | | Jumps to position 50 once enough people are there (condition below) |
+| 30 | Survey | `waiting_room` | A note ("Waiting for the others. This page reloads itself.") and a `submit 10000` button |
+| 40 | Skip Backward | | Condition `TRUE`: always goes back to position 20 |
+| 50 | Survey | `group_task` | The live interaction |
 
-The waiting room survey has a single hidden submit button configured with
-`submit: 2000` in its survey settings, causing it to re-submit every 2
-seconds. A SkipBackward unit (position 30) immediately sends the session
-back to position 20, creating a continuous loop.
+The waiting room's submit item has the type `submit 10000`, so the page
+submits itself after 10 seconds (10,000 ms). The Skip Backward at position 40
+then sends the participant back to the check at position 20.
 
-An **administrator trigger** (run manually or on a cron schedule) polls for
-queued sessions and releases them:
+### Skip Forward condition (position 20)
 
 ```{r, eval = FALSE}
-# Admin trigger — run outside the study, on your local machine or a cron job
-formr_api_authenticate(host = "https://api.rforms.org", account = "admin")
-
-# Find sessions currently at the waiting room (position 20)
-queued <- formr_api_sessions("my-run-name", active = TRUE)
-waiting <- queued$session[queued$position == 20]
-
-if (length(waiting) >= 2) {
-  formr_api_session_action("my-run-name",
-    session_codes = waiting, action = "move_to_position", position = 40)
-  message("Released ", length(waiting), " participants to the dyadic task.")
-}
+formr_api_authenticate()
+people <- formr_api_sessions(.formr$run_name, limit = 10000)
+sum(people$position >= 20) >= 4
 ```
 
-After release, sessions land directly on position 40 (the `dyadic_task`
-survey), bypassing the SkipBackward loop.
+Everyone who has reached position 20 counts, including someone who closed
+the page while waiting. Test sessions count too, so you can try the loop with
+a few test users and a lower number; add `testing = FALSE` to
+`formr_api_sessions()` before the real thing. This holds back one group:
+once four people have arrived, everyone after them goes straight on.
+
+**Why 10 seconds and not 2?** Each round runs the Skip Forward's R code
+again, on OpenCPU and with an API request, for every participant who is
+waiting. Four people waiting for ten minutes make 1,200 checks at a 2-second
+interval and 240 at 10 seconds. If your formr instance sets a monthly compute
+limit, that time counts toward it, and when you reach the limit formr makes
+all your studies private and switches off their automated actions. So don't
+make the interval much shorter than 10 seconds. If the wait can take hours or
+days, use a Pause with the same code as its *relative to* instead, followed
+by an Email that invites participants back.
+
+### Starting the group yourself
+
+You can also release the people who wait from your own computer, e.g. at a
+fixed time, with `formr_api_session_action()`:
+
+```{r, eval = FALSE}
+# On your own computer, not inside the study
+formr_api_authenticate(host = "https://api.rforms.org", account = "my-study")
+
+sessions <- formr_api_sessions("my-study", active = TRUE, limit = 10000)
+waiting <- sessions$session[sessions$position %in% c(20, 30, 40)]
+
+if (length(waiting) >= 2) {
+  formr_api_session_action("my-study",
+    session_codes = waiting, action = "move_to_position", position = 50)
+  message("Released ", length(waiting), " participants to the group task.")
+}
+```
 
 ### Participant experience
 
 1. Complete the lobby survey.
-2. Land on the waiting room — the page auto-re-submits every 2 s,
+2. Land on the waiting room — the page submits itself every 10 seconds,
    keeping them in the loop.
-3. When the admin trigger finds enough participants, it moves them past
-   the SkipBackward to the live task.
+3. When enough participants have arrived (or you release them), the Skip
+   Forward at position 20 lets them through to the live task.
 
 ---
 
@@ -404,18 +507,16 @@ to a real study, a few defensive habits will save you debugging time — code
 running inside formr runs on the server and a single unhandled error can
 break a participant's flow.
 
-**Handling JSON data.** formr handles JSON in three ways:
+**Handling JSON data.**
 
-1. **Automatic:** When a calculate item returns a named list (like
-   `list(my_score = ..., sample_n = ...)`), formr serialises it to JSON
-   and stores it. You never write `toJSON()` for this — it just works.
-2. **Persistence:** For complex state that must survive across OpenCPU
-   requests (e.g., a balancing matrix or network adjacency list), use
-   `jsonlite::toJSON(x, auto_unbox = TRUE)` to store it explicitly as a
-   session variable, and `jsonlite::fromJSON()` to read it back in a
-   later calculate item.
-3. **Parsing responses:** API columns sometimes contain nested JSON
-   (e.g., multi-select choices). Always wrap parsing in a `tryCatch`:
+1. **Storing several values:** A calculate item stores one value. For
+   complex state that must survive across OpenCPU requests (e.g., a
+   balancing matrix or network adjacency list), use
+   `jsonlite::toJSON(x, auto_unbox = TRUE)` to store it as a JSON string,
+   and `jsonlite::fromJSON()` to read it back in a later calculate item.
+2. **Parsing responses:** Columns you fetch can contain JSON (e.g., values
+   you stored with `toJSON()`, or the records of data_quality items). Always
+   wrap parsing in a `tryCatch`:
 
 ```{r}
 safe_parse_json <- function(x) {
@@ -433,18 +534,30 @@ safe_parse_json("not valid json")                    # returns list(), no error
 that it has rows:
 
 ```{r, eval = FALSE}
-data <- formr_api_fetch_results(.formr$run_name, item_names = "score", join = TRUE)
+quiz <- formr_api_fetch_results(surveys = "quiz", item_names = "score")
+if (!is.data.frame(quiz)) quiz <- quiz$quiz
 
-if (nrow(data) == 0 || all(is.na(data$score))) {
+if (nrow(quiz) == 0 || all(is.na(quiz$score))) {
   result <- 0
 } else {
-  result <- max(data$score, na.rm = TRUE)
+  result <- max(quiz$score, na.rm = TRUE)
 }
+result
 ```
 
-**Use `item_names`.** Always specify the exact columns you need when
-calling `formr_api_fetch_results()` inside a run. This keeps requests
-fast and avoids pulling unnecessary data.
+**Leave out test sessions.** `formr_api_fetch_results()` returns test
+sessions too. To count only real participants, ask for their codes (one more
+request):
+
+```{r, eval = FALSE}
+real <- formr_api_sessions(.formr$run_name, testing = FALSE, limit = 10000)
+quiz <- quiz[quiz$session %in% real$session, ]
+```
+
+**Use `surveys` and `item_names`.** Always specify the survey and the exact
+columns you need when calling `formr_api_fetch_results()` inside a run. This
+keeps requests fast, avoids pulling unnecessary data, and keeps the column
+names predictable.
 
 ---
 
@@ -454,5 +567,6 @@ fast and avoids pulling unnecessary data.
   covers the downstream analysis pipeline.
 - The `?formr_api_fetch_results` and `?formr_api_authenticate` help pages
   have the full parameter details.
+- See `?.formr` for the hidden variables formr sets inside a run.
 - See `?current`, `?first`, and `?last` for the other shorthand helpers
   available inside a run.
